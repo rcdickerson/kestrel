@@ -1,0 +1,9 @@
+[package]
+name = "kestrel"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+egg = { version = "0.9.3" }
+nom = "7"
+regex = "1"

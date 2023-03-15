@@ -32,7 +32,7 @@ pub enum CRel {
     body: Box<CRel>,
   },
   Call {
-    callee: Box<CRel>,
+    callee: String,
     args: Vec<CRel>,
   },
   Rel {

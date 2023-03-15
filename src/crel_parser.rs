@@ -104,7 +104,7 @@ fn trans_type_specifier(type_spec: TypeSpecifier) -> CRelType {
 
 fn trans_statement(stmt: &Node<Statement>) -> CRel {
   match &stmt.node {
-    Statement::Compound(items) => CRel::Seq(items.iter().map(trans_block_item).collect()),
+    Statement::Compound(items) => seq_with_rels(items.iter().map(trans_block_item).collect()),
     Statement::Expression(expr) => match expr {
       None => CRel::Skip,
       Some(expr) => trans_expression(expr),
@@ -116,6 +116,32 @@ fn trans_statement(stmt: &Node<Statement>) -> CRel {
     Statement::While(node) => trans_while_statement(&node),
     _ => CRel::Uninterp(format!("{:?}", stmt.node)),
   }
+}
+
+fn seq_with_rels(items: Vec<CRel>) -> CRel {
+  let mut stack = Vec::new();
+  let mut seq = Vec::new();
+  for item in items {
+    match &item {
+      CRel::Call{ callee, args:_ } if callee == "rel_left" => {
+        stack.push(seq);
+        seq = Vec::new();
+      },
+      CRel::Call{ callee, args:_ } if callee == "rel_mid" => {
+        stack.push(seq);
+        seq = Vec::new();
+      },
+      CRel::Call{ callee, args:_ } if callee == "rel_right" => {
+        let lhs = stack.pop().unwrap();
+        let rhs = seq;
+        seq = stack.pop().unwrap();
+        seq.push(CRel::Rel{ lhs: Box::new(CRel::Seq(lhs)),
+                            rhs: Box::new(CRel::Seq(rhs)) });
+      },
+      _ => seq.push(item),
+    }
+  };
+  CRel::Seq(seq)
 }
 
 fn trans_expression(expr: &Node<Expression>) -> CRel {
@@ -171,5 +197,10 @@ fn trans_call_expression(expr: &Node<CallExpression>) -> CRel {
   let args = expr.node.arguments.iter()
     .map(trans_expression)
     .collect();
-  CRel::Call{ callee: Box::new(callee), args: args }
+
+  match callee {
+    CRel::Id(name) => CRel::Call{ callee: name, args: args },
+    _ => panic!("Unexpected callee: {:?}", callee),
+  }
+
 }

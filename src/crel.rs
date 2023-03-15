@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum CRel {
   ConstInt(i32),
   Asgn {
@@ -27,8 +27,8 @@ pub enum CRel {
   },
   FunDef {
     specifiers: Vec<CRelSpecifier>,
-    declarator: Box<CRel>,
-    declarations: Vec<CRel>,
+    name: String,
+    args: Vec<CRel>,
     body: Box<CRel>,
   },
   Call {
@@ -39,8 +39,6 @@ pub enum CRel {
     lhs: Box<CRel>,
     rhs: Box<CRel>
   },
-  RelLeft(Box<CRel>),
-  RelRight(Box<CRel>),
   Lte(Box<CRel>, Box<CRel>),
   Eq(Box<CRel>, Box<CRel>),
   Add(Box<CRel>, Box<CRel>),
@@ -48,13 +46,13 @@ pub enum CRel {
   Uninterp(String),
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum CRelSpecifier {
   TypeSpecifier(CRelType),
   Uninterp(String),
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum CRelType {
   Float,
   Int,

@@ -4,15 +4,15 @@ use lang_c::driver::{Config, parse};
 use lang_c::span::Node;
 
 /// Read the given C file and parse it into the RelC IR.
-pub fn parse_relc(input_file: String) -> Vec<CRel> {
+pub fn parse_crel(input_file: String) -> CRel {
   let config = Config::with_clang();
   let ast = match parse(&config, input_file) {
     Err(msg) => panic!("{}", msg),
     Ok(ast)  => ast,
   };
-  ast.unit.0.into_iter()
+  CRel::Seq(ast.unit.0.into_iter()
     .map(trans_external_declaration)
-    .collect()
+    .collect())
 }
 
 fn trans_external_declaration(ext_decl: Node<ExternalDeclaration>) -> CRel {
@@ -38,6 +38,10 @@ fn trans_function_definition(def: Node<FunctionDefinition>) -> CRel {
     .map(trans_declaration_specifier)
     .collect::<Vec<CRelSpecifier>>();
   let declarator = trans_declarator(&def.node.declarator);
+  let name = match declarator {
+    CRel::Id(n) => n,
+    _ => panic!("Unexpected function declarator: {:?}", declarator),
+  };
   let declarations = def.node.declarations.iter()
     .map(trans_declaration)
     .collect::<Vec<CRel>>();
@@ -45,8 +49,8 @@ fn trans_function_definition(def: Node<FunctionDefinition>) -> CRel {
 
   CRel::FunDef{
     specifiers: specifiers,
-    declarator: Box::new(declarator),
-    declarations: declarations,
+    name: name,
+    args: declarations,
     body: Box::new(body),
   }
 }

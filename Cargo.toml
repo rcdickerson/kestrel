@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "4.0.22", features = ["derive"] }
-egg = { version = "0.9.3" }
+egg = "0.9.3"
+lang-c = "0.15"
 nom = "7"
 regex = "1"

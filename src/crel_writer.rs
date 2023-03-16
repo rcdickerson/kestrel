@@ -65,3 +65,68 @@ fn crel_specifier_to_c(crel_spec: &CRelSpecifier) -> String {
     _ => "".to_string(),
   }
 }
+
+pub fn crel_to_egg(crel: &CRel) -> String {
+  match crel {
+    CRel::Add(lhs, rhs) => {
+      format!("(+ {} {})", crel_to_egg(lhs), crel_to_egg(rhs))
+    }
+    CRel::Asgn{lhs, rhs} => format!("(:= {} {})", crel_to_egg(lhs), crel_to_egg(rhs)),
+    CRel::Call{callee, args} => {
+      let args_egg = args.iter().map(crel_to_c).collect::<Vec<String>>().join(" ");
+      format!("(call {} {})", callee, args_egg)
+    }
+    CRel::ConstInt(i) => i.to_string(),
+    CRel::Declaration{specifiers, declarators} => {
+      let spec_egg = specifiers.iter().map(crel_specifier_to_egg).collect::<Vec<String>>().join(" ");
+      let dec_egg = declarators.iter().map(crel_to_egg).collect::<Vec<String>>().join(" ");
+      format!("(declaration (specifiers {}) (declarators {}))", spec_egg, dec_egg)
+    },
+    CRel::Eq(lhs, rhs) => {
+      format!("(== {} {})", crel_to_egg(lhs), crel_to_egg(rhs))
+    }
+    CRel::FunDef{specifiers, name, args, body} => {
+      let spec_egg= specifiers.iter().map(crel_specifier_to_egg).collect::<Vec<String>>().join(" ");
+      let args_egg = args.iter().map(crel_to_egg).collect::<Vec<String>>().join(" ");
+      let body_egg = crel_to_egg(body);
+      format!("(fundef {} (specifiers {}) (args {}) {})", name, spec_egg, args_egg, body_egg)
+    }
+    CRel::Id(name) => name.clone(),
+    CRel::Init{var, val} => {
+      match val {
+        None => crel_to_egg(var),
+        Some(v) => format!("(:= {} {})", crel_to_egg(var), crel_to_egg(v)),
+      }
+    }
+    CRel::Lte(lhs, rhs) => {
+      format!("(<= {} {})", crel_to_egg(lhs), crel_to_egg(rhs))
+    }
+    CRel::Rel{lhs, rhs} => {
+      format!("(<|> {} {})", crel_to_egg(lhs), crel_to_egg(rhs))
+    }
+    CRel::Return(crel) => format!("(return {})", crel_to_egg(crel)),
+    CRel::Seq(crels) => {
+      match crels.len() {
+        0 => "".to_string(),
+        1 => crel_to_egg(&crels[0]),
+        _ => format!("(seq {} {})",
+                     crel_to_egg(&crels[0]),
+                     crel_to_egg(&CRel::Seq(crels[1..].to_vec())))
+      }
+    }
+    CRel::While{cond, body} => format!("(while {} {})", crel_to_egg(cond), crel_to_egg(body)),
+    _ => "".to_string(),
+  }
+}
+
+fn crel_specifier_to_egg(crel_spec: &CRelSpecifier) -> String {
+  match crel_spec {
+    CRelSpecifier::TypeSpecifier(ty) => match ty {
+      CRelType::Float => "float".to_string(),
+      CRelType::Int   => "int".to_string(),
+      CRelType::Void  => "void".to_string(),
+      _ => "".to_string(),
+    }
+    _ => "".to_string(),
+  }
+}

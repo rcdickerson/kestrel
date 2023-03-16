@@ -1,4 +1,4 @@
-use crate::crel::*;
+use crate::crel::ast::*;
 
 pub fn crel_to_c(crel: &CRel) -> String {
   match crel {

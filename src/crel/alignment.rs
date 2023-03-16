@@ -28,12 +28,12 @@ define_language! {
     "assert" = Assert(Id),
 
     // Declarations
-    "declaration" = Declaration(Id, Id),
+    "declaration" = Declaration([Id; 2]),
     "specifiers"  = Specifiers(Box<[Id]>),
     "declarators" = Declarators(Box<[Id]>),
 
     // Functions
-    "call"   = Call(Id, Box<[Id]>),
+    "call"   = Call(Box<[Id]>),
     "fundef" = FunDef([Id; 4]),
     "args"   = Args(Box<[Id]>),
 
@@ -48,7 +48,7 @@ define_language! {
   }
 }
 
-pub fn make_crel_rules() -> Vec<Rewrite<Imp, ()>> {
+pub fn make_crel_rules() -> Vec<Rewrite<CRelEgg, ()>> {
   vec![
     rewrite!("prod-assoc-l"; "(seq ?a (seq ?b ?c))" => "(seq (seq ?a ?b) ?c)"),
     rewrite!("prod-assoc-r"; "(seq (seq ?a ?b) ?c)" => "(seq ?a (seq ?b ?c))"),

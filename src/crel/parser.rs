@@ -1,4 +1,4 @@
-use crate::crel::*;
+use crate::crel::ast::*;
 use lang_c::ast::*;
 use lang_c::driver::{Config, parse};
 use lang_c::span::Node;

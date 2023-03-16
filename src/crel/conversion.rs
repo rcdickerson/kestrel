@@ -4,6 +4,10 @@ impl CRel {
   pub fn to_c(&self) -> String {
     crel_to_c(self)
   }
+
+  pub fn to_eggroll(&self) -> String {
+    crel_to_eggroll(self)
+  }
 }
 
 pub fn crel_to_c(crel: &CRel) -> String {

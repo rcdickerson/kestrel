@@ -22,7 +22,7 @@ fn main() {
   let crel = crel::parser::parse_crel(args.input);
   println!("CRel:\n{:?}", crel);
 
-  let crel_eggroll = crel::conversion::crel_to_eggroll(&crel);
+  let crel_eggroll = crel.to_eggroll();
   println!("\nCRel Egg:\n{:?}", crel_eggroll);
 
   let runner = Runner::default().with_expr(&crel_eggroll.parse().unwrap()).run(&eggroll::rewrite::make_rules());
@@ -32,8 +32,8 @@ fn main() {
   println!("\nAligned:\n{}", best);
   println!("Alignment cost: {}", best_cost);
 
-  let aligned_egg = format!("{}", best);
-  let aligned_crel = eggroll::conversion::eggroll_to_crel(&aligned_egg);
+  let aligned_eggroll = format!("{}", best);
+  let aligned_crel = eggroll::conversion::eggroll_to_crel(&aligned_eggroll);
 
   println!("\nAligned CRel:\n{:?}", aligned_crel);
 

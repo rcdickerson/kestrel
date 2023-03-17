@@ -1,9 +1,9 @@
 use crate::crel::ast::*;
-use lang_c::ast::*;
+use lang_c::ast as c;
 use lang_c::driver::{Config, parse};
 use lang_c::span::Node;
 
-/// Read the given C file and parse it into the RelC IR.
+/// Read the given C file and parse it into the CRel IR.
 pub fn parse_crel(input_file: String) -> CRel {
   let config = Config::with_clang();
   let ast = match parse(&config, input_file) {
@@ -15,196 +15,206 @@ pub fn parse_crel(input_file: String) -> CRel {
     .collect())
 }
 
-fn trans_external_declaration(ext_decl: Node<ExternalDeclaration>) -> CRel {
+fn trans_external_declaration(ext_decl: Node<c::ExternalDeclaration>) -> CRel {
   match ext_decl.node {
-    ExternalDeclaration::Declaration(node) => trans_declaration(&node),
-    ExternalDeclaration::StaticAssert(node) => CRel::Uninterp(format!("{:?}", node)),
-    ExternalDeclaration::FunctionDefinition(node) => trans_function_definition(node),
+    c::ExternalDeclaration::Declaration(decl) => {
+      let specifiers = decl.node.specifiers.iter()
+        .map(trans_declaration_specifier)
+        .collect();
+      let declarators = decl.node.declarators.iter()
+        .map(trans_init_declarator)
+        .collect();
+      CRel::Declaration{specifiers, declarators}
+    }
+    c::ExternalDeclaration::FunctionDefinition(node) => trans_function_definition(node),
+    _ => panic!("Unsupported external declaration: {:?}", ext_decl),
   }
 }
 
-fn trans_declaration(decl: &Node<Declaration>) -> CRel {
+fn trans_declaration(decl: &Node<c::Declaration>) -> Declaration {
   let specifiers = decl.node.specifiers.iter()
     .map(trans_declaration_specifier)
-    .collect::<Vec<CRelSpecifier>>();
+    .collect::<Vec<DeclarationSpecifier>>();
   let declarators = decl.node.declarators.iter()
     .map(trans_init_declarator)
-    .collect::<Vec<CRel>>();
-  CRel::Declaration{specifiers: specifiers, declarators: declarators}
+    .collect::<Vec<InitDeclarator>>();
+  Declaration{specifiers: specifiers, declarators: declarators}
 }
 
-fn trans_function_definition(def: Node<FunctionDefinition>) -> CRel {
+fn trans_function_definition(def: Node<c::FunctionDefinition>) -> CRel {
   let specifiers = def.node.specifiers.iter()
     .map(trans_declaration_specifier)
-    .collect::<Vec<CRelSpecifier>>();
-  let declarator = trans_declarator(&def.node.declarator);
-  let name = match declarator {
-    CRel::Id(n) => n,
-    _ => panic!("Unexpected function declarator: {:?}", declarator),
-  };
-  let declarations = def.node.declarations.iter()
+    .collect::<Vec<DeclarationSpecifier>>();
+  let name = trans_declarator(&def.node.declarator);
+  let params = def.node.declarations.iter()
     .map(trans_declaration)
-    .collect::<Vec<CRel>>();
+    .collect::<Vec<Declaration>>();
   let body = trans_statement(&def.node.statement);
 
-  CRel::FunDef{
-    specifiers: specifiers,
-    name: name,
-    args: declarations,
-    body: Box::new(body),
-  }
+  CRel::FunctionDefinition{ specifiers, name, params, body: Box::new(body) }
 }
 
-fn trans_declaration_specifier(decl_spec: &Node<DeclarationSpecifier>) -> CRelSpecifier {
+fn trans_declaration_specifier(decl_spec: &Node<c::DeclarationSpecifier>) -> DeclarationSpecifier {
   match &decl_spec.node {
-    DeclarationSpecifier::StorageClass(node) => CRelSpecifier::Uninterp(format!("{:?}", node)),
-    DeclarationSpecifier::TypeSpecifier(ts) => {
+    c::DeclarationSpecifier::TypeSpecifier(ts) => {
       let crel_type = trans_type_specifier(ts.node.clone());
-      CRelSpecifier::TypeSpecifier(crel_type)
+      DeclarationSpecifier::TypeSpecifier(crel_type)
     }
-    DeclarationSpecifier::TypeQualifier(node) => CRelSpecifier::Uninterp(format!("{:?}", node)),
-    DeclarationSpecifier::Function(node) => CRelSpecifier::Uninterp(format!("{:?}", node)),
-    DeclarationSpecifier::Alignment(node) => CRelSpecifier::Uninterp(format!("{:?}", node)),
-    DeclarationSpecifier::Extension(node) => CRelSpecifier::Uninterp(format!("{:?}", node)),
+    _ => panic!("Unsupported declaration specifier: {:?}", decl_spec),
   }
 }
 
-fn trans_declarator(decl: &Node<Declarator>) -> CRel {
+fn trans_declarator(decl: &Node<c::Declarator>) -> Declarator {
   match &decl.node.kind.node {
-    DeclaratorKind::Abstract => CRel::Uninterp(format!("{:?}", decl)),
-    DeclaratorKind::Identifier(id) => CRel::Id(id.node.name.clone()),
-    DeclaratorKind::Declarator(node_box) => trans_declarator(&*node_box),
+    c::DeclaratorKind::Identifier(id) => Declarator::Identifier{ name: id.node.name.clone() },
+    _ => panic!("Unsupported declarator: {:?}", decl),
   }
 }
 
-fn trans_init_declarator(decl: &Node<InitDeclarator>) -> CRel {
-  let var = trans_declarator(&decl.node.declarator);
-  let initializer = trans_initializer(&decl.node.initializer);
-  match initializer {
-    None => CRel::Init{ var: Box::new(var), val: None },
-    Some(init) => CRel::Init{ var: Box::new(var), val: Some(Box::new(init)) },
+fn trans_init_declarator(decl: &Node<c::InitDeclarator>) -> InitDeclarator {
+  let dec = trans_declarator(&decl.node.declarator);
+  let init = trans_initializer(&decl.node.initializer);
+  match init {
+    None => InitDeclarator{ declarator: dec, expression: None },
+    Some(init) => InitDeclarator{ declarator: dec, expression: Some(init) },
   }
 
 }
 
-fn trans_initializer(initializer: &Option<Node<Initializer>>) -> Option<CRel> {
+fn trans_initializer(initializer: &Option<Node<c::Initializer>>) -> Option<Expression> {
   match &initializer {
     None => None,
     Some(init) => Some( match &init.node {
-      Initializer::Expression(expr) => trans_expression(&*expr),
-      _ => CRel::Uninterp(format!("{:?}", init.node))
+      c::Initializer::Expression(expr) => trans_expression(&*expr),
+      _ => panic!("Unsupported initalizer: {:?}", init),
     })
   }
 }
 
-fn trans_type_specifier(type_spec: TypeSpecifier) -> CRelType {
+fn trans_type_specifier(type_spec: c::TypeSpecifier) -> Type {
   match type_spec {
-    TypeSpecifier::Float => CRelType::Float,
-    TypeSpecifier::Int   => CRelType::Int,
-    TypeSpecifier::Void  => CRelType::Void,
-    _ => CRelType::Uninterp(format!("{:?}", type_spec)),
+    c::TypeSpecifier::Bool  => Type::Bool,
+    c::TypeSpecifier::Float => Type::Float,
+    c::TypeSpecifier::Int   => Type::Int,
+    c::TypeSpecifier::Void  => Type::Void,
+    _ => panic!("Unsupported type specifier: {:?}", type_spec),
   }
 }
 
-fn trans_statement(stmt: &Node<Statement>) -> CRel {
+fn trans_statement(stmt: &Node<c::Statement>) -> Statement {
   match &stmt.node {
-    Statement::Compound(items) => seq_with_rels(items.iter().map(trans_block_item).collect()),
-    Statement::Expression(expr) => match expr {
-      None => CRel::Skip,
-      Some(expr) => trans_expression(expr),
+    c::Statement::Compound(items) => seq_with_rels(items.iter().map(trans_block_item).collect()),
+    c::Statement::Expression(expr) => match expr {
+      None => Statement::None,
+      Some(expr) => Statement::Expression(Box::new(trans_expression(&*expr))),
     }
-    Statement::Return(node) => match node {
-      None => CRel::Skip,
-      Some(expr) => CRel::Return(Box::new(trans_expression(expr))),
+    c::Statement::Return(node) => match node {
+      None => Statement::Return(None),
+      Some(expr) => {
+        let texpr = trans_expression(&expr);
+        Statement::Return(Some(Box::new(texpr)))
+      },
     }
-    Statement::While(node) => trans_while_statement(&node),
-    _ => CRel::Uninterp(format!("{:?}", stmt.node)),
+    c::Statement::While(node) => trans_while_statement(&node),
+    _ => panic!("Unsupported statement: {:?}", stmt),
   }
 }
 
-fn seq_with_rels(items: Vec<CRel>) -> CRel {
+fn seq_with_rels(items: Vec<BlockItem>) -> Statement {
   let mut stack = Vec::new();
   let mut seq = Vec::new();
   for item in items {
     match &item {
-      CRel::Call{ callee, args:_ } if callee == "rel_left" => {
-        stack.push(seq);
-        seq = Vec::new();
-      },
-      CRel::Call{ callee, args:_ } if callee == "rel_mid" => {
-        stack.push(seq);
-        seq = Vec::new();
-      },
-      CRel::Call{ callee, args:_ } if callee == "rel_right" => {
-        let lhs = stack.pop().unwrap();
-        let rhs = seq;
-        seq = stack.pop().unwrap();
-        seq.push(CRel::Rel{ lhs: Box::new(CRel::Seq(lhs)),
-                            rhs: Box::new(CRel::Seq(rhs)) });
+      BlockItem::Statement(stmt) => match &stmt {
+          Statement::Expression(expr) => match &**expr {
+            Expression::Call{ callee, args:_ } => match &**callee {
+              Expression::Identifier{name} => match name.as_str() {
+                "rel_left" => {
+                  stack.push(seq);
+                  seq = Vec::new();
+                },
+                "rel_mid" => {
+                  stack.push(seq);
+                  seq = Vec::new();
+                },
+                "rel_right" => {
+                  let lhs = stack.pop().unwrap();
+                  let rhs = seq;
+                  seq = stack.pop().unwrap();
+                  seq.push(BlockItem::Statement(Statement::Relation {
+                    lhs: Box::new(Statement::Compound(lhs)),
+                    rhs: Box::new(Statement::Compound(rhs)),
+                  }));
+                },
+                _ => seq.push(item),  // TODO: de-grossify
+              },
+              _ => seq.push(item),
+            },
+            _ => seq.push(item),
+          },
+          _ => seq.push(item),
       },
       _ => seq.push(item),
     }
   };
-  CRel::Seq(seq)
+  Statement::Compound(seq)
 }
 
-fn trans_expression(expr: &Node<Expression>) -> CRel {
+fn trans_expression(expr: &Node<c::Expression>) -> Expression {
   match &expr.node {
-    Expression::BinaryOperator(node) => trans_binary_operator_expression(&*node),
-    Expression::Call(call) => trans_call_expression(call),
-    Expression::Constant(cnst) => trans_constant(&*cnst),
-    Expression::Identifier(id) => CRel::Id(id.node.name.clone()),
-    _ => CRel::Uninterp(format!("{:?}", expr.node)),
+    c::Expression::BinaryOperator(binop) => {
+      let lhs = trans_expression(&*binop.node.lhs);
+      let rhs = trans_expression(&*binop.node.rhs);
+      let op = trans_binary_operator(&binop.node.operator.node);
+      Expression::Binop{ lhs: Box::new(lhs), rhs: Box::new(rhs), op }
+    },
+    c::Expression::Call(call) => trans_call_expression(call),
+    c::Expression::Constant(cnst) => trans_constant(&*cnst),
+    c::Expression::Identifier(id) => Expression::Identifier{ name: id.node.name.clone() },
+    _ => panic!("Unsupported expression: {:?}", expr),
   }
 }
 
-fn trans_binary_operator_expression(expr: &Node<BinaryOperatorExpression>) -> CRel {
-  let lhs = trans_expression(&*expr.node.lhs);
-  let rhs = trans_expression(&*expr.node.rhs);
-  trans_binary_operator(expr.node.operator.node.clone(), lhs, rhs)
-}
-
-fn trans_binary_operator(binop: BinaryOperator, lhs: CRel, rhs: CRel) -> CRel {
+fn trans_binary_operator(binop: &c::BinaryOperator) -> BinaryOp {
   match binop {
-    BinaryOperator::Assign => CRel::Asgn{ lhs: Box::new(lhs), rhs: Box::new(rhs) },
-    BinaryOperator::Equals => CRel::Eq(Box::new(lhs), Box::new(rhs)),
-    BinaryOperator::LessOrEqual => CRel::Lte(Box::new(lhs), Box::new(rhs)),
-    BinaryOperator::Plus => CRel::Add(Box::new(lhs), Box::new(rhs)),
+    c::BinaryOperator::Assign => BinaryOp::Assign,
+    c::BinaryOperator::Equals => BinaryOp::Equals,
+    c::BinaryOperator::LessOrEqual => BinaryOp::Lte,
+    c::BinaryOperator::Plus => BinaryOp::Add,
+    c::BinaryOperator::Minus => BinaryOp::Sub,
+    c::BinaryOperator::Multiply => BinaryOp::Mul,
+    c::BinaryOperator::Divide => BinaryOp::Div,
+    c::BinaryOperator::Modulo => BinaryOp::Mod,
     _ => panic!("Unsupported binary operator: {:?}", binop),
   }
 }
 
-fn trans_constant(cnst: &Node<Constant>) -> CRel {
+fn trans_constant(cnst: &Node<c::Constant>) -> Expression {
   match &cnst.node {
     // Making some assumptions about base / suffix of integer here.
-    Constant::Integer(i) => CRel::ConstInt(i.number.parse().unwrap()),
-    _ => CRel::Uninterp(format!("{:?}", cnst.node)),
+    c::Constant::Integer(i) => Expression::ConstInt(i.number.parse().unwrap()),
+    _ => panic!("Unsupported constant: {:?}", cnst),
   }
 }
 
-fn trans_block_item(item: &Node<BlockItem>) -> CRel {
+fn trans_block_item(item: &Node<c::BlockItem>) -> BlockItem {
   match &item.node {
-    BlockItem::Declaration(node) => trans_declaration(&node),
-    BlockItem::Statement(node) => trans_statement(&node),
-    _ => CRel::Uninterp(format!("{:?}", item.node)),
+    c::BlockItem::Declaration(node) => BlockItem::Declaration(trans_declaration(&node)),
+    c::BlockItem::Statement(node) => BlockItem::Statement(trans_statement(&node)),
+    _ => panic!("Unsupported block item: {:?}", item.node),
   }
 }
 
-fn trans_while_statement(expr: &Node<WhileStatement>) -> CRel {
+fn trans_while_statement(expr: &Node<c::WhileStatement>) -> Statement {
   let cond = trans_expression(&expr.node.expression);
   let body = trans_statement(&*expr.node.statement);
-  CRel::While { cond: Box::new(cond), body: Box::new(body) }
+  Statement::While { condition: Box::new(cond), body: Box::new(body) }
 }
 
-fn trans_call_expression(expr: &Node<CallExpression>) -> CRel {
+fn trans_call_expression(expr: &Node<c::CallExpression>) -> Expression {
   let callee = trans_expression(&*expr.node.callee);
   let args = expr.node.arguments.iter()
     .map(trans_expression)
     .collect();
-
-  match callee {
-    CRel::Id(name) => CRel::Call{ callee: name, args: args },
-    _ => panic!("Unexpected callee: {:?}", callee),
-  }
-
+  Expression::Call{callee: Box::new(callee), args}
 }

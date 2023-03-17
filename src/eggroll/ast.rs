@@ -20,26 +20,32 @@ define_language! {
     "not" = Not(Id),
 
     // Expressions
-    ":="     = Asgn([Id; 2]),
+    "="      = Asgn([Id; 2]),
     "if"     = If([Id; 3]),
     "while"  = While([Id; 2]),
     "seq"    = Seq([Id; 2]),
-    "return" = Return(Id),
     "assert" = Assert(Id),
 
     // Declarations
     "declaration" = Declaration([Id; 2]),
-    "specifiers"  = Specifiers(Box<[Id]>),
+    "init-declarator" = InitDeclarators([Id; 2]),
+    "specifiers" = Specifiers(Box<[Id]>),
     "declarators" = Declarators(Box<[Id]>),
+    "type" = Type(Id),
 
     // Functions
-    "call"   = Call(Box<[Id]>),
-    "fundef" = FunDef([Id; 4]),
-    "args"   = Args(Box<[Id]>),
+    "call"        = Call(Box<[Id]>),
+    "fundef"      = FunDef([Id; 4]),
+    "args"        = Args(Box<[Id]>),
+    "params"      = Params(Box<[Id]>),
+    "body"        = Body(Id),
+    "return-none" = ReturnNone,
+    "return"      = Return(Id),
 
     // Literals
     ConstInt(i32),
-    Id(Symbol),
+    Identifier(Symbol),
+    "lit-string" = LitString(Id),
 
     // Relational Constructions
     "<|>" = Rel([Id; 2]),

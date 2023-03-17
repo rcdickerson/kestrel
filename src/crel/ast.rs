@@ -1,61 +1,100 @@
 #[derive(Clone, Debug)]
 pub enum CRel {
-  ConstInt(i32),
-  Asgn {
-    lhs: Box<CRel>,
-    rhs: Box<CRel>,
+  Declaration {
+    specifiers: Vec<DeclarationSpecifier>,
+    declarators: Vec<InitDeclarator>,
   },
-  Init {
-    var: Box<CRel>,
-    val: Option<Box<CRel>>,
-  },
-  If {
-    cond: Box<CRel>,
-    br_then: Box<CRel>,
-    br_else: Box<CRel>,
-  },
-  While {
-    cond: Box<CRel>,
-    body: Box<CRel>,
+  FunctionDefinition {
+    specifiers: Vec<DeclarationSpecifier>,
+    name: Declarator,
+    params: Vec<Declaration>,
+    body: Box<Statement>,
   },
   Seq(Vec<CRel>),
-  Id(String),
-  Return(Box<CRel>),
-  Declaration {
-    specifiers: Vec<CRelSpecifier>,
-    declarators: Vec<CRel>,
-  },
-  FunDef {
-    specifiers: Vec<CRelSpecifier>,
-    name: String,
-    args: Vec<CRel>,
-    body: Box<CRel>,
-  },
+}
+
+#[derive(Clone, Debug)]
+pub enum Expression {
+  Identifier{ name: String },
+  ConstInt(i32),
+  StringLiteral(String),
   Call {
-    callee: String,
-    args: Vec<CRel>,
+    callee: Box<Expression>,
+    args: Vec<Expression>,
   },
-  Rel {
-    lhs: Box<CRel>,
-    rhs: Box<CRel>
+  Binop {
+    lhs: Box<Expression>,
+    rhs: Box<Expression>,
+    op: BinaryOp,
   },
-  Lte(Box<CRel>, Box<CRel>),
-  Eq(Box<CRel>, Box<CRel>),
-  Add(Box<CRel>, Box<CRel>),
-  Skip,
-  Uninterp(String),
+  Statement(Box<Statement>),
 }
 
 #[derive(Clone, Debug)]
-pub enum CRelSpecifier {
-  TypeSpecifier(CRelType),
-  Uninterp(String),
+pub enum Statement {
+  Compound(Vec<BlockItem>),
+  Expression(Box<Expression>),
+  If {
+    condition: Box<Expression>,
+    then: Box<Statement>,
+    els: Option<Box<Statement>>,
+  },
+  None,
+  Relation {
+    lhs: Box<Statement>,
+    rhs: Box<Statement>,
+  },
+  Return(Option<Box<Expression>>),
+  While {
+    condition: Box<Expression>,
+    body: Box<Statement>,
+  },
 }
 
 #[derive(Clone, Debug)]
-pub enum CRelType {
+pub struct InitDeclarator {
+  pub declarator: Declarator,
+  pub expression: Option<Expression>
+}
+
+#[derive(Clone, Debug)]
+pub enum DeclarationSpecifier {
+  TypeSpecifier(Type),
+}
+
+#[derive(Clone, Debug)]
+pub enum Type {
+  Bool,
   Float,
   Int,
   Void,
-  Uninterp(String),
+}
+
+#[derive(Clone, Debug)]
+pub enum Declarator {
+  Identifier{ name: String },
+}
+
+#[derive(Clone, Debug)]
+pub struct Declaration {
+  pub specifiers: Vec<DeclarationSpecifier>,
+  pub declarators: Vec<InitDeclarator>,
+}
+
+#[derive(Clone, Debug)]
+pub enum BinaryOp {
+  Add,
+  Assign,
+  Sub,
+  Div,
+  Equals,
+  Lte,
+  Mod,
+  Mul,
+}
+
+#[derive(Clone, Debug)]
+pub enum BlockItem {
+  Declaration(Declaration),
+  Statement(Statement),
 }

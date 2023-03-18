@@ -25,12 +25,14 @@ impl<'a> EggrollExtractor<'a> {
   pub fn new(egraph: &'a EGraph<Eggroll, ()>) -> Self {
     let mut model = Model::default();
 
+    // Create the initial choice groups based on eclasses.
     let groups: HashMap<Id, ChoiceGroup> = egraph
       .classes()
       .map(|class| {
         let mut choices = Vec::new();
         for (index, node) in class.nodes.iter().enumerate() {
           let cost = match node {
+            Eggroll::Assert(_) => 0.0,
             Eggroll::Rel(_) => 0.0,
             _ => 100.0,
           };
@@ -44,6 +46,10 @@ impl<'a> EggrollExtractor<'a> {
       })
       .collect();
 
+    // Add low cost choices for good-looking alignments.
+    // TODO
+
+    // Encode constraints.
     for (&id, group) in &groups {
       // One node in each selected group must get selected.
       let select_node = model.add_row();
@@ -65,9 +71,6 @@ impl<'a> EggrollExtractor<'a> {
       }
     }
 
-    // Add low cost choices for good-looking alignments.
-    // TODO
-
     // Set model to minimize cost.
     model.set_obj_sense(Sense::Minimize);
     for class in egraph.classes() {
@@ -80,9 +83,7 @@ impl<'a> EggrollExtractor<'a> {
   }
 
   pub fn solve(&mut self, root: Id) -> RecExpr<Eggroll> {
-    let egraph = self.egraph;
-
-    let root = &egraph.find(root);
+    let root = &self.egraph.find(root);
     self.model.set_col_lower(self.groups[root].col, 1.0);
 
     let solution = self.model.solve();

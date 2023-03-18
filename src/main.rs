@@ -2,7 +2,11 @@ mod crel;
 mod eggroll;
 
 use clap::Parser;
+use crate::eggroll::extractor::*;
 use egg::*;
+use std::fs::File;
+use std::io::prelude::*;
+use std::path::Path;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -25,17 +29,28 @@ fn main() {
   let crel_eggroll = crel.to_eggroll();
   println!("\nEggroll:\n{:?}", crel_eggroll);
 
-  let runner = Runner::default().with_expr(&crel_eggroll.parse().unwrap()).run(&eggroll::rewrite::make_rules());
-  let extractor = Extractor::new(&runner.egraph, eggroll::cost_model::CostModel);
-  let root = runner.roots[0];
-  let (best_cost, best) = extractor.find_best(root);
+  let runner = Runner::default()
+    .with_expr(&crel_eggroll.parse().unwrap())
+    .run(&eggroll::rewrite::make_rules());
 
-  let aligned_eggroll = best.to_string();
-  println!("\nAligned Eggroll:\n{}", aligned_eggroll);
-  println!("Alignment cost: {}", best_cost);
+  if args.dot {
+    write_dot(runner.egraph.dot().to_string());
+  }
+
+  let aligned_eggroll = EggrollExtractor::new(&runner.egraph)
+    .solve(runner.roots[0]).to_string();
 
   let aligned_crel = eggroll::to_crel::eggroll_to_crel(&aligned_eggroll);
   println!("\nAligned CRel:\n{:?}", aligned_crel);
 
   println!("\nC:\n{}", aligned_crel.to_c());
+}
+
+fn write_dot(dot: String) {
+  let dot_path = Path::new("egraph.dot");
+  let mut dot_file = match File::create(&dot_path) {
+    Err(_) => panic!("Could not create dot file."),
+    Ok(f)  => f,
+  };
+  dot_file.write_all(dot.as_bytes()).expect("Unable to write dot file.")
 }

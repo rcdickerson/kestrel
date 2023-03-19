@@ -54,6 +54,8 @@ fn expression_to_eggroll(expr: &Expression) -> String {
     Expression::Binop{ lhs, rhs, op } => match op {
       BinaryOp::Add    => format!("(+ {} {})",
                                   expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
+      BinaryOp::And    => format!("(&& {} {})",
+                                  expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
       BinaryOp::Assign => format!("(= {} {})",
                                   expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
       BinaryOp::Sub    => format!("(- {} {})",
@@ -67,6 +69,8 @@ fn expression_to_eggroll(expr: &Expression) -> String {
       BinaryOp::Mod    => format!("(mod {} {})",
                                   expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
       BinaryOp::Mul    => format!("(* {} {})",
+                                  expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
+      BinaryOp::Or    => format!("(|| {} {})",
                                   expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
     },
     Expression::Statement(stmt) => statement_to_eggroll(stmt),

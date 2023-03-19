@@ -2,6 +2,7 @@ use coin_cbc::{Col, Model, Sense};
 use crate::eggroll::ast::*;
 use egg::*;
 use std::collections::HashMap;
+use std::mem::discriminant;
 
 pub struct EggrollExtractor<'a> {
   egraph: &'a EGraph<Eggroll, ()>,
@@ -9,14 +10,17 @@ pub struct EggrollExtractor<'a> {
   groups: HashMap<Id, ChoiceGroup>,
 }
 
+#[derive(Clone)]
 struct Choice {
   index: usize,
   col: Col,
   cost: f64,
-  required: Vec<Choice>,
+  required: Vec<Col>,
 }
 
+#[derive(Clone)]
 struct ChoiceGroup {
+  class_id: Id,
   col: Col,
   choices: Vec<Choice>,
 }
@@ -25,8 +29,8 @@ impl<'a> EggrollExtractor<'a> {
   pub fn new(egraph: &'a EGraph<Eggroll, ()>) -> Self {
     let mut model = Model::default();
 
-    // Create the initial choice groups based on eclasses.
-    let groups: HashMap<Id, ChoiceGroup> = egraph
+    // Create the initial choice groups based on e-classes.
+    let mut groups: HashMap<Id, ChoiceGroup> = egraph
       .classes()
       .map(|class| {
         let mut choices = Vec::new();
@@ -41,17 +45,59 @@ impl<'a> EggrollExtractor<'a> {
                                 cost: cost,
                                 required: Vec::new() })
         }
-        let cgroup = ChoiceGroup { col: model.add_binary(), choices };
+        let cgroup = ChoiceGroup { class_id: class.id, col: model.add_binary(), choices };
         (class.id, cgroup)
       })
       .collect();
 
     // Add low cost choices for good-looking alignments.
-    // TODO
+    for class in egraph.classes() {
+      for (node_index, node) in class.nodes.iter().enumerate() {
+        match node {
+          Eggroll::Rel(child_ids) => {
+            let left_class  = &egraph[child_ids[0]];
+            let right_class = &egraph[child_ids[1]];
+            let rel_col = groups[&class.id].choices[node_index].col;
+
+            for (left_index, left_node) in left_class.iter().enumerate() {
+              for (right_index, right_node) in right_class.iter().enumerate() {
+                if discriminant(left_node) == discriminant(right_node)
+                   && !matches!(left_node, Eggroll::Seq(_))
+                   && !matches!(left_node, Eggroll::While(_)) {
+                  let left_choice = &groups[&left_class.id].choices[left_index];
+                  let right_choice = &groups[&right_class.id].choices[right_index];
+
+                  let mut cheap_left_choice = Choice {
+                    index: left_choice.index,
+                    col: model.add_binary(),
+                    cost: 1.0,
+                    required: vec!(rel_col),
+                  };
+                  let mut cheap_right_choice = Choice {
+                    index: right_choice.index,
+                    col: model.add_binary(),
+                    cost: 1.0,
+                    required: vec!(rel_col),
+                  };
+
+                  cheap_left_choice.required.push(cheap_right_choice.col);
+                  cheap_right_choice.required.push(cheap_left_choice.col);
+
+                  groups.get_mut(&left_class.id).unwrap().choices.push(cheap_left_choice);
+                  groups.get_mut(&right_class.id).unwrap().choices.push(cheap_right_choice);
+                }
+              }
+            }
+          }
+          _ => ()
+        }
+      }
+    }
 
     // Encode constraints.
-    for (&id, group) in &groups {
-      // One node in each selected group must get selected.
+    for (_, group) in &groups {
+
+      // One node in each selected group must be selected.
       let select_node = model.add_row();
       model.set_row_equal(select_node, 0.0);
       model.set_weight(select_node, group.col, -1.0);
@@ -60,8 +106,8 @@ impl<'a> EggrollExtractor<'a> {
       }
 
       // All child classes of selected nodes must get selected.
-      for (_, (node, choice)) in egraph[id].iter().zip(&group.choices).enumerate() {
-        for child in node.children() {
+      for choice in group.choices.iter() {
+        for child in egraph[group.class_id].nodes[choice.index].children().iter() {
           let child_group = &groups[child];
           let select_child = model.add_row();
           model.set_row_upper(select_child, 0.0);
@@ -69,12 +115,23 @@ impl<'a> EggrollExtractor<'a> {
           model.set_weight(select_child, child_group.col, -1.0);
         }
       }
+
+      // Any choices contingent on other selections can only be
+      // made along with those selections.
+      for choice in group.choices.iter() {
+        for req_col in choice.required.iter() {
+          let select_req = model.add_row();
+          model.set_row_upper(select_req, 0.0);
+          model.set_weight(select_req, choice.col, 1.0);
+          model.set_weight(select_req, *req_col, -1.0);
+        }
+      }
     }
 
     // Set model to minimize cost.
     model.set_obj_sense(Sense::Minimize);
-    for class in egraph.classes() {
-      for (_, choice) in class.iter().zip(&groups[&class.id].choices) {
+    for (_, group) in &groups {
+      for choice in group.choices.iter() {
         model.set_obj_coeff(choice.col, choice.cost);
       }
     }

@@ -39,6 +39,7 @@ fn main() {
 
   let aligned_eggroll = EggrollExtractor::new(&runner.egraph)
     .solve(runner.roots[0]).to_string();
+  println!("\nAligned Eggroll:\n{}", aligned_eggroll);
 
   let aligned_crel = eggroll::to_crel::eggroll_to_crel(&aligned_eggroll);
   println!("\nAligned CRel:\n{:?}", aligned_crel);

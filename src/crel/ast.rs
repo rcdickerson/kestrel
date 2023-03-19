@@ -84,6 +84,7 @@ pub struct Declaration {
 #[derive(Clone, Debug)]
 pub enum BinaryOp {
   Add,
+  And,
   Assign,
   Sub,
   Div,
@@ -91,6 +92,7 @@ pub enum BinaryOp {
   Lte,
   Mod,
   Mul,
+  Or,
 }
 
 #[derive(Clone, Debug)]

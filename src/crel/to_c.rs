@@ -44,6 +44,7 @@ fn expression_to_c(expr: &Expression) -> String {
     },
     Expression::Binop{ lhs, rhs, op } => match op {
       BinaryOp::Add    => format!("{} + {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::And    => format!("{} && {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::Assign => format!("{} = {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::Sub    => format!("{} - {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::Div    => format!("{} / {}", expression_to_c(lhs), expression_to_c(rhs)),
@@ -51,6 +52,7 @@ fn expression_to_c(expr: &Expression) -> String {
       BinaryOp::Lte    => format!("{} <= {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::Mod    => format!("{} % {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::Mul    => format!("{} * {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Or     => format!("{} || {}", expression_to_c(lhs), expression_to_c(rhs)),
     },
     Expression::Statement(stmt) => statement_to_c(stmt),
   }

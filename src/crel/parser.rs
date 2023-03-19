@@ -180,6 +180,8 @@ fn trans_binary_operator(binop: &c::BinaryOperator) -> BinaryOp {
     c::BinaryOperator::Assign => BinaryOp::Assign,
     c::BinaryOperator::Equals => BinaryOp::Equals,
     c::BinaryOperator::LessOrEqual => BinaryOp::Lte,
+    c::BinaryOperator::LogicalAnd => BinaryOp::And,
+    c::BinaryOperator::LogicalOr => BinaryOp::Or,
     c::BinaryOperator::Plus => BinaryOp::Add,
     c::BinaryOperator::Minus => BinaryOp::Sub,
     c::BinaryOperator::Multiply => BinaryOp::Mul,

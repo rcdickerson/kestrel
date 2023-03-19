@@ -38,6 +38,7 @@ impl<'a> EggrollExtractor<'a> {
           let cost = match node {
             Eggroll::Assert(_) => 0.0,
             Eggroll::Rel(_) => 0.0,
+            Eggroll::Seq(_) => 0.0,
             _ => 100.0,
           };
           choices.push(Choice { index,

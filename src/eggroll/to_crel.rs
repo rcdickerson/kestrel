@@ -172,6 +172,9 @@ fn expect_specifiers(sexp: &Sexp) -> Vec<DeclarationSpecifier> {
 fn expect_declaration_specifier(sexp: &Sexp) -> DeclarationSpecifier {
   match &sexp {
     Sexp::List(sexps) => match &sexps[0] {
+      Sexp::Atom(Atom::S(s)) if s == "storage-class" => {
+        DeclarationSpecifier::StorageClass(expect_storage_class_specifier(&sexps[1]))
+      },
       Sexp::Atom(Atom::S(s)) if s == "type" => {
         DeclarationSpecifier::TypeSpecifier(expect_type(&sexps[1]))
       },
@@ -191,6 +194,16 @@ fn expect_type(sexp: &Sexp) -> Type {
       _ => panic!("Unknown type: {}", ty),
     },
     _ => panic!("Expected type, got: {}", sexp)
+  }
+}
+
+fn expect_storage_class_specifier(sexp: &Sexp) -> StorageClassSpecifier {
+  match &sexp {
+    Sexp::Atom(Atom::S(scs)) => match scs.as_str() {
+      "extern" => StorageClassSpecifier::Extern,
+      _ => panic!("Expected storage class specifier, got: {}", scs),
+    },
+    _ => panic!("Expected storage class specifier, got: {}", sexp),
   }
 }
 

@@ -56,11 +56,22 @@ fn trans_function_definition(def: Node<c::FunctionDefinition>) -> CRel {
 
 fn trans_declaration_specifier(decl_spec: &Node<c::DeclarationSpecifier>) -> DeclarationSpecifier {
   match &decl_spec.node {
+    c::DeclarationSpecifier::StorageClass(scs) => {
+      let crel_spec = trans_storage_class_specifier(&scs.node);
+      DeclarationSpecifier::StorageClass(crel_spec)
+    }
     c::DeclarationSpecifier::TypeSpecifier(ts) => {
       let crel_type = trans_type_specifier(ts.node.clone());
       DeclarationSpecifier::TypeSpecifier(crel_type)
     }
     _ => panic!("Unsupported declaration specifier: {:?}", decl_spec),
+  }
+}
+
+fn trans_storage_class_specifier(sc_spec: &c::StorageClassSpecifier) -> StorageClassSpecifier {
+  match sc_spec {
+    c::StorageClassSpecifier::Extern => StorageClassSpecifier::Extern,
+    _ => panic!("Unsupported storage class specifier: {:?}", sc_spec),
   }
 }
 

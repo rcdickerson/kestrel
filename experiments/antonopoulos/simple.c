@@ -1,8 +1,4 @@
-//extern int arb_int(void);
-
-//extern void rel_left();
-//extern void rel_mid();
-//extern void rel_right();
+extern int arb_int(void);
 
 int main(void) {
   int N = arb_int();

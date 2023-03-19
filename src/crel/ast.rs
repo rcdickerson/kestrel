@@ -59,6 +59,7 @@ pub struct InitDeclarator {
 
 #[derive(Clone, Debug)]
 pub enum DeclarationSpecifier {
+  StorageClass(StorageClassSpecifier),
   TypeSpecifier(Type),
 }
 
@@ -93,6 +94,11 @@ pub enum BinaryOp {
   Mod,
   Mul,
   Or,
+}
+
+#[derive(Clone, Debug)]
+pub enum StorageClassSpecifier {
+  Extern,
 }
 
 #[derive(Clone, Debug)]

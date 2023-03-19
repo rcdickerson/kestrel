@@ -32,6 +32,7 @@ define_language! {
     "specifiers" = Specifiers(Box<[Id]>),
     "declarators" = Declarators(Box<[Id]>),
     "type" = Type(Id),
+    "storage-class" = StorageClass(Id),
 
     // Functions
     "call"        = Call(Box<[Id]>),

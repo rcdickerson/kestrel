@@ -116,6 +116,7 @@ fn statement_to_eggroll(stmt: &Statement) -> String {
 
 fn declaration_specifier_to_eggroll(spec: &DeclarationSpecifier) -> String {
   match spec {
+    DeclarationSpecifier::StorageClass(scs) => format!("(storage-class {})", storage_class_specifier_to_eggroll(scs)),
     DeclarationSpecifier::TypeSpecifier(ty) => format!("(type {})", type_to_eggroll(ty)),
   }
 }
@@ -141,6 +142,12 @@ fn type_to_eggroll(ty: &Type) -> String {
     Type::Float => "float".to_string(),
     Type::Int   => "int".to_string(),
     Type::Void  => "void".to_string(),
+  }
+}
+
+fn storage_class_specifier_to_eggroll(scs: &StorageClassSpecifier) -> String {
+  match scs {
+    StorageClassSpecifier::Extern => "extern".to_string(),
   }
 }
 

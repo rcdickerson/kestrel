@@ -105,6 +105,7 @@ fn declaration_specifiers_to_c(specs: &Vec<DeclarationSpecifier>) -> String {
 
 fn declaration_specifier_to_c(spec: &DeclarationSpecifier) -> String {
   match spec {
+    DeclarationSpecifier::StorageClass(scs) => storage_class_specifier_to_c(scs),
     DeclarationSpecifier::TypeSpecifier(ty) => type_to_c(ty),
   }
 }
@@ -115,6 +116,12 @@ fn type_to_c(ty: &Type) -> String {
     Type::Float => "float".to_string(),
     Type::Int   => "int".to_string(),
     Type::Void  => "void".to_string(),
+  }
+}
+
+fn storage_class_specifier_to_c(scs: &StorageClassSpecifier) -> String {
+  match scs {
+    StorageClassSpecifier::Extern => "extern".to_string(),
   }
 }
 

@@ -50,6 +50,8 @@ fn expression_to_c(expr: &Expression) -> String {
       BinaryOp::Div    => format!("{} / {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::Equals => format!("{} == {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::Gt     => format!("{} > {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Gte    => format!("{} >= {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Lt     => format!("{} < {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::Lte    => format!("{} <= {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::Mod    => format!("{} % {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::Mul    => format!("{} * {}", expression_to_c(lhs), expression_to_c(rhs)),
@@ -83,9 +85,12 @@ fn statement_to_c(stmt: &Statement) -> String {
       Some(ret) => format!("return {}", expression_to_c(ret)),
     },
     Statement::While{condition, body} => {
-      format!("while ({}) {{\n{}\n}}",
-              expression_to_c(condition),
-              statement_to_c(body))
+      match body {
+        None => format!("while ({})",  expression_to_c(condition)),
+        Some(stmt) => format!("while ({}) {{\n{}\n}}",
+                              expression_to_c(condition),
+                              statement_to_c(stmt)),
+      }
     }
   }
 }

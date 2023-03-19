@@ -87,6 +87,16 @@ fn expect_expression(sexp: &Sexp) -> Expression {
         let rhs = Box::new(expect_expression(&sexps[2]));
         Expression::Binop{lhs, rhs, op: BinaryOp::Gt}
       },
+      Sexp::Atom(Atom::S(s)) if s == ">=" => {
+        let lhs = Box::new(expect_expression(&sexps[1]));
+        let rhs = Box::new(expect_expression(&sexps[2]));
+        Expression::Binop{lhs, rhs, op: BinaryOp::Gte}
+      },
+      Sexp::Atom(Atom::S(s)) if s == "<" => {
+        let lhs = Box::new(expect_expression(&sexps[1]));
+        let rhs = Box::new(expect_expression(&sexps[2]));
+        Expression::Binop{lhs, rhs, op: BinaryOp::Lt}
+      },
       Sexp::Atom(Atom::S(s)) if s == "<=" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
@@ -156,9 +166,13 @@ fn expect_statement(sexp: &Sexp) -> Statement {
       Sexp::Atom(Atom::S(s)) if s == "return" => {
         Statement::Return(Some(Box::new(expect_expression(&sexps[1]))))
       },
+      Sexp::Atom(Atom::S(s)) if s == "while-no-body" => {
+        let condition = Box::new(expect_expression(&sexps[1]));
+        Statement::While{condition, body: None}
+      },
       Sexp::Atom(Atom::S(s)) if s == "while" => {
         let condition = Box::new(expect_expression(&sexps[1]));
-        let body = Box::new(expect_statement(&sexps[2]));
+        let body = Some(Box::new(expect_statement(&sexps[2])));
         Statement::While{condition, body}
       },
       _ => Statement::Expression(Box::new(expect_expression(&sexp)))

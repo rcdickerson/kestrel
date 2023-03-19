@@ -200,6 +200,8 @@ fn trans_binary_operator(binop: &c::BinaryOperator) -> BinaryOp {
     c::BinaryOperator::Assign => BinaryOp::Assign,
     c::BinaryOperator::Equals => BinaryOp::Equals,
     c::BinaryOperator::Greater => BinaryOp::Gt,
+    c::BinaryOperator::GreaterOrEqual => BinaryOp::Gte,
+    c::BinaryOperator::Less => BinaryOp::Lt,
     c::BinaryOperator::LessOrEqual => BinaryOp::Lte,
     c::BinaryOperator::LogicalAnd => BinaryOp::And,
     c::BinaryOperator::LogicalOr => BinaryOp::Or,
@@ -229,9 +231,12 @@ fn trans_block_item(item: &Node<c::BlockItem>) -> BlockItem {
 }
 
 fn trans_while_statement(expr: &Node<c::WhileStatement>) -> Statement {
-  let cond = trans_expression(&expr.node.expression);
-  let body = trans_statement(&*expr.node.statement);
-  Statement::While { condition: Box::new(cond), body: Box::new(body) }
+  let condition = Box::new(trans_expression(&expr.node.expression));
+  let body = match trans_statement(&*expr.node.statement) {
+    Statement::None => None,
+    stmt => Some(Box::new(stmt)),
+  };
+  Statement::While { condition, body }
 }
 
 fn trans_call_expression(expr: &Node<c::CallExpression>) -> Expression {

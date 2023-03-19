@@ -47,7 +47,7 @@ pub enum Statement {
   Return(Option<Box<Expression>>),
   While {
     condition: Box<Expression>,
-    body: Box<Statement>,
+    body: Option<Box<Statement>>,
   },
 }
 
@@ -91,6 +91,8 @@ pub enum BinaryOp {
   Div,
   Equals,
   Gt,
+  Gte,
+  Lt,
   Lte,
   Mod,
   Mul,

@@ -144,6 +144,12 @@ fn expect_statement(sexp: &Sexp) -> Statement {
         let rhs = Box::new(expect_statement(&sexps[2]));
         Statement::Relation{lhs, rhs}
       },
+      Sexp::Atom(Atom::S(s)) if s == "|>" => {
+        expect_statement(&sexps[1])
+      },
+      Sexp::Atom(Atom::S(s)) if s == "<|" => {
+        expect_statement(&sexps[1])
+      },
       Sexp::Atom(Atom::S(s)) if s == "declaration" => {
         Statement::Compound(vec!(BlockItem::Declaration(expect_declaration(sexp))))
       },

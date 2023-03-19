@@ -82,6 +82,11 @@ fn expect_expression(sexp: &Sexp) -> Expression {
         let rhs = Box::new(expect_expression(&sexps[2]));
         Expression::Binop{lhs, rhs, op: BinaryOp::Equals}
       },
+      Sexp::Atom(Atom::S(s)) if s == ">" => {
+        let lhs = Box::new(expect_expression(&sexps[1]));
+        let rhs = Box::new(expect_expression(&sexps[2]));
+        Expression::Binop{lhs, rhs, op: BinaryOp::Gt}
+      },
       Sexp::Atom(Atom::S(s)) if s == "<=" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
@@ -126,10 +131,12 @@ fn expect_statement(sexp: &Sexp) -> Statement {
       Sexp::Atom(Atom::S(s)) if s == "if" => {
         let condition = Box::new(expect_expression(&sexps[1]));
         let then = Box::new(expect_statement(&sexps[2]));
-        let els  =
-          if sexps.len() > 3 {
-            Some(Box::new(expect_statement(&sexps[3])))
-          } else { None };
+        Statement::If{condition, then, els: None}
+      },
+      Sexp::Atom(Atom::S(s)) if s == "if-else" => {
+        let condition = Box::new(expect_expression(&sexps[1]));
+        let then = Box::new(expect_statement(&sexps[2]));
+        let els  = Some(Box::new(expect_statement(&sexps[3])));
         Statement::If{condition, then, els}
       },
       Sexp::Atom(Atom::S(s)) if s == "<|>" => {

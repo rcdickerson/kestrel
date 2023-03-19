@@ -118,14 +118,23 @@ fn trans_statement(stmt: &Node<c::Statement>) -> Statement {
     c::Statement::Expression(expr) => match expr {
       None => Statement::None,
       Some(expr) => Statement::Expression(Box::new(trans_expression(&*expr))),
-    }
+    },
+    c::Statement::If(stmt) => {
+      let condition = Box::new(trans_expression(&stmt.node.condition));
+      let then = Box::new(trans_statement(&stmt.node.then_statement));
+      let els = match &stmt.node.else_statement {
+        None => None,
+        Some(else_stmt) => Some(Box::new(trans_statement(&else_stmt))),
+      };
+      Statement::If{condition, then, els}
+    },
     c::Statement::Return(node) => match node {
       None => Statement::Return(None),
       Some(expr) => {
         let texpr = trans_expression(&expr);
         Statement::Return(Some(Box::new(texpr)))
       },
-    }
+    },
     c::Statement::While(node) => trans_while_statement(&node),
     _ => panic!("Unsupported statement: {:?}", stmt),
   }
@@ -190,6 +199,7 @@ fn trans_binary_operator(binop: &c::BinaryOperator) -> BinaryOp {
   match binop {
     c::BinaryOperator::Assign => BinaryOp::Assign,
     c::BinaryOperator::Equals => BinaryOp::Equals,
+    c::BinaryOperator::Greater => BinaryOp::Gt,
     c::BinaryOperator::LessOrEqual => BinaryOp::Lte,
     c::BinaryOperator::LogicalAnd => BinaryOp::And,
     c::BinaryOperator::LogicalOr => BinaryOp::Or,

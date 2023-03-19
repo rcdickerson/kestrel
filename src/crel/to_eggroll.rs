@@ -64,6 +64,8 @@ fn expression_to_eggroll(expr: &Expression) -> String {
                                   expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
       BinaryOp::Equals => format!("(== {} {})",
                                   expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
+      BinaryOp::Gt     => format!("(> {} {})",
+                                  expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
       BinaryOp::Lte    => format!("(<= {} {})",
                                   expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
       BinaryOp::Mod    => format!("(mod {} {})",
@@ -93,7 +95,7 @@ fn statement_to_eggroll(stmt: &Statement) -> String {
       None => format!("(if {} {})",
                       expression_to_eggroll(condition),
                       statement_to_eggroll(then)),
-      Some(ebranch) => format!("(if {} {} {})",
+      Some(ebranch) => format!("(if-else {} {} {})",
                                expression_to_eggroll(condition),
                                statement_to_eggroll(then),
                                statement_to_eggroll(ebranch))

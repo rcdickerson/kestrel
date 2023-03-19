@@ -90,6 +90,7 @@ pub enum BinaryOp {
   Sub,
   Div,
   Equals,
+  Gt,
   Lte,
   Mod,
   Mul,

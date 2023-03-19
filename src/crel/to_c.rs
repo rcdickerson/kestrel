@@ -49,6 +49,7 @@ fn expression_to_c(expr: &Expression) -> String {
       BinaryOp::Sub    => format!("{} - {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::Div    => format!("{} / {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::Equals => format!("{} == {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Gt     => format!("{} > {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::Lte    => format!("{} <= {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::Mod    => format!("{} % {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::Mul    => format!("{} * {}", expression_to_c(lhs), expression_to_c(rhs)),

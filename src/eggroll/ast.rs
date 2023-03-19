@@ -20,11 +20,12 @@ define_language! {
     "not" = Not(Id),
 
     // Expressions
-    "="      = Asgn([Id; 2]),
-    "if"     = If([Id; 3]),
-    "while"  = While([Id; 2]),
-    "seq"    = Seq([Id; 2]),
-    "assert" = Assert(Id),
+    "="       = Asgn([Id; 2]),
+    "if"      = If([Id; 2]),
+    "if-else" = IfElse([Id; 3]),
+    "while"   = While([Id; 2]),
+    "seq"     = Seq([Id; 2]),
+    "assert"  = Assert(Id),
 
     // Declarations
     "declaration" = Declaration([Id; 2]),

@@ -175,6 +175,34 @@ fn expect_statement(sexp: &Sexp) -> Statement {
         let body = Some(Box::new(expect_statement(&sexps[2])));
         Statement::While{condition, body}
       },
+      Sexp::Atom(Atom::S(s)) if s == "while-lockstep" => {
+        let cond1 = expect_expression(&sexps[1]);
+        let cond2 = expect_expression(&sexps[2]);
+        let conds = Expression::Binop {
+          lhs: Box::new(cond1.clone()),
+          rhs: Box::new(cond2.clone()),
+          op: BinaryOp::And,
+        };
+        let body1 = expect_statement(&sexps[3]);
+        let body2 = expect_statement(&sexps[4]);
+        let bodies = Statement::Compound(vec![
+          BlockItem::Statement(body1.clone()),
+          BlockItem::Statement(body2.clone()),
+        ]);
+
+        let stmts = vec! [
+          BlockItem::Statement(Statement::While {
+            condition: Box::new(conds),
+            body: Some(Box::new(bodies))}),
+          BlockItem::Statement(Statement::While {
+            condition: Box::new(cond1),
+            body: Some(Box::new(body1))}),
+          BlockItem::Statement(Statement::While {
+            condition: Box::new(cond2),
+            body: Some(Box::new(body2))}),
+        ];
+        Statement::Compound(stmts)
+      },
       _ => Statement::Expression(Box::new(expect_expression(&sexp)))
     },
     _ => Statement::Expression(Box::new(expect_expression(&sexp)))

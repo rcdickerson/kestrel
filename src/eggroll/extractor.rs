@@ -37,6 +37,7 @@ impl<'a> EggrollExtractor<'a> {
         for (index, node) in class.nodes.iter().enumerate() {
           let cost = match node {
             Eggroll::Assert(_) => 0.0,
+            Eggroll::Call(_) => 0.0,
             Eggroll::Rel(_) => 0.0,
             _ => 100.0,
           };

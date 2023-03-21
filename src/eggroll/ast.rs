@@ -28,6 +28,22 @@ define_language! {
     "seq"           = Seq([Id; 2]),
     "assert"        = Assert(Id),
 
+    // An abbreviated form of :
+    //   while c1 && c2 { b1; b2 };
+    //   while c1 b1;
+    //   while c2 b2;
+    // We use this form to rewrite to aligned while
+    // loops without introducing lots of AST nodes
+    // which inflates the cost of the alignment.
+    // This makes the cost function simpler at the
+    // expense of making the rewrite rules more
+    // complicated if we ever want to rewrite within
+    // the expanded form. Currently we do not need to
+    // make these kinds of rewrites within the
+    // expanded form, but we may want to revisit this
+    // tradeoff in the future.
+    "while-lockstep" = WhileLockstep([Id; 4]),
+
     // Declarations
     "declaration" = Declaration([Id; 2]),
     "init-declarator" = InitDeclarators([Id; 2]),

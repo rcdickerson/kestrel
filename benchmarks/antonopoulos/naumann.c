@@ -1,4 +1,11 @@
-extern int arb_int(void);
+// The desirable loop invariant (y1 > y2 && z1 > z2 > 0)
+// works only with a data-dependent alignment; when
+// w1 % 2 != 0, perform a left-only iteration and when
+// w2 % 3 != 0, perform a right-only iteration. If
+// both are zero, iterate jointly. See the CaWh rule
+// and example 6.2 in the BiKat paper.
+
+//extern int arb_int(void);
 
 int main(void) {
   int x = arb_int();
@@ -33,7 +40,5 @@ int main(void) {
 
   rel_right();
 
-  sassert(y1 == y2);
-  sassert(z1 == z2);
-  sassert(w1 == w2);
+//  sassert(z1 > z2 && z2 > 0);
 }

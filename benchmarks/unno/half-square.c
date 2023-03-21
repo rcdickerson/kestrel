@@ -34,4 +34,6 @@ int main(void) {
   }
 
   rel_right();
+
+  //sassert(y1 == y2);
 }

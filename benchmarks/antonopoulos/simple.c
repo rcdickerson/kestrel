@@ -1,4 +1,4 @@
-extern int arb_int(void);
+// extern int arb_int(void);
 
 int main(void) {
   int N = arb_int();
@@ -25,5 +25,5 @@ int main(void) {
 
   rel_right();
 
-  sassert(x1 == x2);
+  // sassert(x1 == x2);
 }

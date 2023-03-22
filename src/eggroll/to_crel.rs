@@ -251,6 +251,7 @@ fn expect_type(sexp: &Sexp) -> Type {
   match &sexp {
     Sexp::Atom(Atom::S(ty)) => match ty.as_str() {
       "bool" => Type::Bool,
+      "double" => Type::Double,
       "float" => Type::Float,
       "int" => Type::Int,
       "void" => Type::Void,

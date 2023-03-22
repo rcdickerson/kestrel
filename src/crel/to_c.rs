@@ -122,10 +122,11 @@ fn declaration_specifier_to_c(spec: &DeclarationSpecifier) -> String {
 
 fn type_to_c(ty: &Type) -> String {
   match ty {
-    Type::Bool  => "bool".to_string(),
-    Type::Float => "float".to_string(),
-    Type::Int   => "int".to_string(),
-    Type::Void  => "void".to_string(),
+    Type::Bool   => "bool".to_string(),
+    Type::Double => "double".to_string(),
+    Type::Float  => "float".to_string(),
+    Type::Int    => "int".to_string(),
+    Type::Void   => "void".to_string(),
   }
 }
 

@@ -42,6 +42,10 @@ fn expression_to_c(expr: &Expression) -> String {
         .join(", ");
       format!("{}({})", callee_c, args_c)
     },
+    Expression::Unop{ expr, op } => match op {
+      UnaryOp::Minus => format!("-{}", expression_to_c(expr)),
+      UnaryOp::Not => format!("!{}", expression_to_c(expr)),
+    },
     Expression::Binop{ lhs, rhs, op } => match op {
       BinaryOp::Add    => format!("{} + {}", expression_to_c(lhs), expression_to_c(rhs)),
       BinaryOp::And    => format!("{} && {}", expression_to_c(lhs), expression_to_c(rhs)),

@@ -50,7 +50,11 @@ fn expression_to_eggroll(expr: &Expression) -> String {
       let callee_egg = expression_to_eggroll(callee);
       let args_egg = args.iter().map(expression_to_eggroll).collect::<Vec<String>>().join(" ");
       format!("(call {} (args {}))", callee_egg, args_egg)
-    }
+    },
+    Expression::Unop{ expr, op } => match op {
+      UnaryOp::Minus => format!("(neg {})", expression_to_eggroll(expr)),
+      UnaryOp::Not => format!("(not {})", expression_to_eggroll(expr)),
+    },
     Expression::Binop{ lhs, rhs, op } => match op {
       BinaryOp::Add    => format!("(+ {} {})",
                                   expression_to_eggroll(lhs), expression_to_eggroll(rhs)),

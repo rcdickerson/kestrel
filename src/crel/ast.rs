@@ -22,6 +22,10 @@ pub enum Expression {
     callee: Box<Expression>,
     args: Vec<Expression>,
   },
+  Unop {
+    expr: Box<Expression>,
+    op: UnaryOp,
+  },
   Binop {
     lhs: Box<Expression>,
     rhs: Box<Expression>,
@@ -80,6 +84,12 @@ pub enum Declarator {
 pub struct Declaration {
   pub specifiers: Vec<DeclarationSpecifier>,
   pub declarators: Vec<InitDeclarator>,
+}
+
+#[derive(Clone, Debug)]
+pub enum UnaryOp {
+  Minus,
+  Not,
 }
 
 #[derive(Clone, Debug)]

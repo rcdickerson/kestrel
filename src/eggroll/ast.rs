@@ -8,6 +8,7 @@ define_language! {
     "*"   = Mul([Id; 2]),
     "/"   = Div([Id; 2]),
     "mod" = Mod([Id; 2]),
+    "neg" = Neg(Id),
 
     // Boolean Expressions
     "<"   = Lt([Id; 2]),

@@ -47,75 +47,83 @@ fn expect_expression(sexp: &Sexp) -> Expression {
       Sexp::Atom(Atom::S(s)) if s == "lit-string" => {
         Expression::StringLiteral(expect_string(&sexps[1]))
       },
+      Sexp::Atom(Atom::S(s)) if s == "neg" => {
+        let expr = Box::new(expect_expression(&sexps[1]));
+        Expression::Unop{ expr, op: UnaryOp::Minus }
+      },
+      Sexp::Atom(Atom::S(s)) if s == "not" => {
+        let expr = Box::new(expect_expression(&sexps[1]));
+        Expression::Unop{ expr, op: UnaryOp::Not }
+      },
       Sexp::Atom(Atom::S(s)) if s == "call" => {
         let callee = Box::new(expect_expression(&sexps[1]));
         let args = expect_args(&sexps[2]);
-        Expression::Call{callee, args}
+        Expression::Call{ callee, args }
       },
       Sexp::Atom(Atom::S(s)) if s == "+" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
-        Expression::Binop{lhs, rhs, op: BinaryOp::Add}
+        Expression::Binop{ lhs, rhs, op: BinaryOp::Add }
       },
       Sexp::Atom(Atom::S(s)) if s == "&&" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
-        Expression::Binop{lhs, rhs, op: BinaryOp::And}
+        Expression::Binop{ lhs, rhs, op: BinaryOp::And }
       },
       Sexp::Atom(Atom::S(s)) if s == "=" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
-        Expression::Binop{lhs, rhs, op: BinaryOp::Assign}
+        Expression::Binop{ lhs, rhs, op: BinaryOp::Assign }
       },
       Sexp::Atom(Atom::S(s)) if s == "-" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
-        Expression::Binop{lhs, rhs, op: BinaryOp::Sub}
+        Expression::Binop{ lhs, rhs, op: BinaryOp::Sub }
       },
       Sexp::Atom(Atom::S(s)) if s == "/" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
-        Expression::Binop{lhs, rhs, op: BinaryOp::Div}
+        Expression::Binop{ lhs, rhs, op: BinaryOp::Div }
       },
       Sexp::Atom(Atom::S(s)) if s == "==" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
-        Expression::Binop{lhs, rhs, op: BinaryOp::Equals}
+        Expression::Binop{ lhs, rhs, op: BinaryOp::Equals }
       },
       Sexp::Atom(Atom::S(s)) if s == ">" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
-        Expression::Binop{lhs, rhs, op: BinaryOp::Gt}
+        Expression::Binop{ lhs, rhs, op: BinaryOp::Gt }
       },
       Sexp::Atom(Atom::S(s)) if s == ">=" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
-        Expression::Binop{lhs, rhs, op: BinaryOp::Gte}
+        Expression::Binop{ lhs, rhs, op: BinaryOp::Gte }
       },
       Sexp::Atom(Atom::S(s)) if s == "<" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
-        Expression::Binop{lhs, rhs, op: BinaryOp::Lt}
+        Expression::Binop{ lhs, rhs, op: BinaryOp::Lt }
       },
       Sexp::Atom(Atom::S(s)) if s == "<=" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
-        Expression::Binop{lhs, rhs, op: BinaryOp::Lte}
+        Expression::Binop{ lhs, rhs, op: BinaryOp::Lte }
       },
       Sexp::Atom(Atom::S(s)) if s == "mod" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
-        Expression::Binop{lhs, rhs, op: BinaryOp::Mod}
+        Expression::Binop{ lhs, rhs, op: BinaryOp::Mod }
       },
       Sexp::Atom(Atom::S(s)) if s == "*" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
-        Expression::Binop{lhs, rhs, op: BinaryOp::Mul}
+        Expression::Binop{ lhs, rhs, op: BinaryOp::Mul }
       },
       Sexp::Atom(Atom::S(s)) if s == "||" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
-        Expression::Binop{lhs, rhs, op: BinaryOp::Or}
+        Expression::Binop{ lhs, rhs, op: BinaryOp::Or }
       },
       _ => Expression::Statement(Box::new(expect_statement(sexp))),
     },

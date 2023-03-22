@@ -182,16 +182,29 @@ fn seq_with_rels(items: Vec<BlockItem>) -> Statement {
 
 fn trans_expression(expr: &Node<c::Expression>) -> Expression {
   match &expr.node {
+    c::Expression::UnaryOperator(unop) => {
+      let expr = Box::new(trans_expression(&*unop.node.operand));
+      let op = trans_unary_operator(&unop.node.operator.node);
+      Expression::Unop{ expr, op }
+    },
     c::Expression::BinaryOperator(binop) => {
-      let lhs = trans_expression(&*binop.node.lhs);
-      let rhs = trans_expression(&*binop.node.rhs);
+      let lhs = Box::new(trans_expression(&*binop.node.lhs));
+      let rhs = Box::new(trans_expression(&*binop.node.rhs));
       let op = trans_binary_operator(&binop.node.operator.node);
-      Expression::Binop{ lhs: Box::new(lhs), rhs: Box::new(rhs), op }
+      Expression::Binop{ lhs, rhs, op }
     },
     c::Expression::Call(call) => trans_call_expression(call),
     c::Expression::Constant(cnst) => trans_constant(&*cnst),
     c::Expression::Identifier(id) => Expression::Identifier{ name: id.node.name.clone() },
     _ => panic!("Unsupported expression: {:?}", expr),
+  }
+}
+
+fn trans_unary_operator(unop: &c::UnaryOperator) -> UnaryOp {
+  match unop {
+    c::UnaryOperator::Minus => UnaryOp::Minus,
+    c::UnaryOperator::Negate => UnaryOp::Not,
+    _ => panic!("Unsupported unary operator: {:?}", unop),
   }
 }
 

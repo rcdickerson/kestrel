@@ -3,9 +3,9 @@
  *
  */
 
-#include "seahorn/seahorn.h"
-extern int arb_int(void);
-extern double arb_double(void);
+//#include "seahorn/seahorn.h"
+//extern int arb_int(void);
+//extern double arb_double(void);
 
 int main() {
   int getScore(int num);
@@ -85,5 +85,5 @@ int main() {
 
   rel_right();
 
-  sassert(ret_1 = -ret_2);
+//  sassert(ret_1 = -ret_2);
 }

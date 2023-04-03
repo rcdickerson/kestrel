@@ -60,6 +60,11 @@ fn expect_expression(sexp: &Sexp) -> Expression {
         let args = expect_args(&sexps[2]);
         Expression::Call{ callee, args }
       },
+      Sexp::Atom(Atom::S(s)) if s == "index" => {
+        let lhs = Box::new(expect_expression(&sexps[1]));
+        let rhs = Box::new(expect_expression(&sexps[2]));
+        Expression::Binop{ lhs, rhs, op: BinaryOp::Index }
+      },
       Sexp::Atom(Atom::S(s)) if s == "+" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));

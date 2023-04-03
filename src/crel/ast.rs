@@ -103,6 +103,7 @@ pub enum BinaryOp {
   Equals,
   Gt,
   Gte,
+  Index,
   Lt,
   Lte,
   Mod,

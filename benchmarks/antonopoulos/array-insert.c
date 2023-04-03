@@ -2,9 +2,6 @@ extern int  arbitraryI(void);
 extern int* arbitraryIP(void);
 extern int  shiftArray(int* A, int idx, int amt);
 
-extern void rel_left();
-extern void rel_mid();
-extern void rel_right();
 
 void prog(int* A, int len, int h) {
   int i = 0;

@@ -213,6 +213,7 @@ fn trans_binary_operator(binop: &c::BinaryOperator) -> BinaryOp {
   match binop {
     c::BinaryOperator::Assign => BinaryOp::Assign,
     c::BinaryOperator::Equals => BinaryOp::Equals,
+    c::BinaryOperator::Index => BinaryOp::Index,
     c::BinaryOperator::Greater => BinaryOp::Gt,
     c::BinaryOperator::GreaterOrEqual => BinaryOp::Gte,
     c::BinaryOperator::Less => BinaryOp::Lt,

@@ -26,6 +26,7 @@ define_language! {
     "if-else"       = IfElse([Id; 3]),
     "while"         = While([Id; 2]),
     "while-no-body" = WhileNoBody([Id; 1]),
+    "index"         = Index([Id; 2]),
     "seq"           = Seq([Id; 2]),
     "assert"        = Assert(Id),
 

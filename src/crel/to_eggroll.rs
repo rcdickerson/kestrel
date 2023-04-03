@@ -72,6 +72,8 @@ fn expression_to_eggroll(expr: &Expression) -> String {
                                   expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
       BinaryOp::Gte    => format!("(>= {} {})",
                                   expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
+      BinaryOp::Index  => format!("(index {} {})",
+                                  expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
       BinaryOp::Lt     => format!("(< {} {})",
                                   expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
       BinaryOp::Lte    => format!("(<= {} {})",

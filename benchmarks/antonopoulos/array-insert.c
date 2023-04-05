@@ -11,8 +11,6 @@ int main(void) {
 
   // for(int i=0; i<N; i++) assume(A_1[i] == A_2[i]);
 
-  int val_to_insert = havoc();
-
   rel_left();
 
   int val_1 = havoc();

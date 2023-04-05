@@ -47,20 +47,21 @@ fn expression_to_c(expr: &Expression) -> String {
       UnaryOp::Not => format!("!{}", expression_to_c(expr)),
     },
     Expression::Binop{ lhs, rhs, op } => match op {
-      BinaryOp::Add    => format!("{} + {}", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::And    => format!("{} && {}", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Assign => format!("{} = {}", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Sub    => format!("{} - {}", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Div    => format!("{} / {}", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Equals => format!("{} == {}", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Gt     => format!("{} > {}", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Gte    => format!("{} >= {}", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Index  => format!("{}[{}]", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Lt     => format!("{} < {}", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Lte    => format!("{} <= {}", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Mod    => format!("{} % {}", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Mul    => format!("{} * {}", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Or     => format!("{} || {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Add       => format!("{} + {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::And       => format!("{} && {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Assign    => format!("{} = {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Sub       => format!("{} - {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Div       => format!("{} / {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Equals    => format!("{} == {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Gt        => format!("{} > {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Gte       => format!("{} >= {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Index     => format!("{}[{}]", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Lt        => format!("{} < {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Lte       => format!("{} <= {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Mod       => format!("{} % {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Mul       => format!("{} * {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::NotEquals => format!("{} != {}", expression_to_c(lhs), expression_to_c(rhs)),
+      BinaryOp::Or        => format!("{} || {}", expression_to_c(lhs), expression_to_c(rhs)),
     },
     Expression::Statement(stmt) => statement_to_c(stmt),
   }
@@ -68,6 +69,7 @@ fn expression_to_c(expr: &Expression) -> String {
 
 fn statement_to_c(stmt: &Statement) -> String {
   match stmt {
+    Statement::Break => "break".to_string(),
     Statement::Compound(items) => {
       items.iter().map(block_item_to_c).collect::<Vec<String>>().join(";\n")
     },

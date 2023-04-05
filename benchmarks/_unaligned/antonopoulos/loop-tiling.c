@@ -8,15 +8,11 @@ int a_2[N][M];
 
 int main(void) {
 
-  rel_left();
-
   int x = 0;
   while (x < N * M) {
     a_1[x] = f(x);
     x = x + 1;
   }
-
-  rel_mid();
 
   int i = 0;
   while (i < N) {
@@ -28,9 +24,9 @@ int main(void) {
     i = i + 1;
   }
 
-  rel_right();
-
-  for(int i = 0; i < N; i++)
-    for(int j = 0; j < M; j++)
+  for(int i = 0; i < N; i++) {
+    for(int j = 0; j < M; j++) {
       sassert(a_1[i * M + j] == a_2[i][j]);
+    }
+  }
 }

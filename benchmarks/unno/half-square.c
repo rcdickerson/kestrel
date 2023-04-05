@@ -1,5 +1,5 @@
-#include "seahorn/seahorn.h"
-extern int arb_int(void);
+//#include "seahorn/seahorn.h"
+//extern int arb_int(void);
 
 int main(void) {
 
@@ -43,5 +43,5 @@ int main(void) {
 
   rel_right();
 
-  sassert(y1 == y2);
+//  sassert(y1 == y2);
 }

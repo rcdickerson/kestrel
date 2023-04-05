@@ -36,6 +36,7 @@ pub enum Expression {
 
 #[derive(Clone, Debug)]
 pub enum Statement {
+  Break,
   Compound(Vec<BlockItem>),
   Expression(Box<Expression>),
   If {
@@ -108,6 +109,7 @@ pub enum BinaryOp {
   Lte,
   Mod,
   Mul,
+  NotEquals,
   Or,
 }
 

@@ -16,6 +16,7 @@ define_language! {
     ">"   = Gt([Id; 2]),
     ">="  = Gte([Id; 2]),
     "=="  = Eq([Id; 2]),
+    "!="  = Neq([Id; 2]),
     "&&"  = And([Id; 2]),
     "||"  = Or([Id; 2]),
     "not" = Not(Id),
@@ -29,6 +30,7 @@ define_language! {
     "index"         = Index([Id; 2]),
     "seq"           = Seq([Id; 2]),
     "assert"        = Assert(Id),
+    "break"         = Break,
 
     // An abbreviated form of :
     //   while c1 && c2 { b1; b2 };

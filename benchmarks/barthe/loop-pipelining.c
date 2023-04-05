@@ -1,7 +1,7 @@
 //#include "seahorn/seahorn.h"
 //extern int arb_int(void);
 
-//#define N 100
+//#define N 10
 //int a[N];
 //int b[N];
 //int c[N];

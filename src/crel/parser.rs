@@ -115,6 +115,7 @@ fn trans_type_specifier(type_spec: c::TypeSpecifier) -> Type {
 
 fn trans_statement(stmt: &Node<c::Statement>) -> Statement {
   match &stmt.node {
+    c::Statement::Break => Statement::Break,
     c::Statement::Compound(items) => seq_with_rels(items.iter().map(trans_block_item).collect()),
     c::Statement::Expression(expr) => match expr {
       None => Statement::None,
@@ -225,6 +226,7 @@ fn trans_binary_operator(binop: &c::BinaryOperator) -> BinaryOp {
     c::BinaryOperator::Multiply => BinaryOp::Mul,
     c::BinaryOperator::Divide => BinaryOp::Div,
     c::BinaryOperator::Modulo => BinaryOp::Mod,
+    c::BinaryOperator::NotEquals => BinaryOp::NotEquals,
     _ => panic!("Unsupported binary operator: {:?}", binop),
   }
 }

@@ -8,7 +8,7 @@ int a_2[N + 1];
 int b_2[N + 1];
 int d_2[N + 1];
 
-int main() {
+int main(void) {
 
   for (int i = 0; i <= N; i++) assume(a_1[i] == a_2[i]);
   assume(b_1[0] == b_2[0]);

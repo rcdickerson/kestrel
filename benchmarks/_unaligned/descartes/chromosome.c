@@ -1,18 +1,9 @@
-/*
- * Based on http://stackoverflow.com/questions/16809000/how-to-make-the-compareto-method-respect-the-general-contract
- *
- */
-
-//#include "seahorn/seahorn.h"
-//extern int arb_int(void);
-//extern double arb_double(void);
+#include "seahorn/seahorn.h"
 
 double o1_score[5];
 double o2_score[5];
 
 int main() {
-
-  rel_left();
 
   int ret_1 = -999;
 
@@ -38,8 +29,6 @@ int main() {
 
   if (ret_1 == -999) ret_1 = 0;
 
-  rel_mid();
-
   int ret_2 = -999;
 
   int comp_2 = 0;
@@ -64,7 +53,5 @@ int main() {
 
   if (ret_2 == -999) ret_2 = 0;
 
-  rel_right();
-
-//  sassert(ret_1 == -ret_2);
+  sassert(ret_1 == -ret_2);
 }

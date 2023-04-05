@@ -1,17 +1,9 @@
-// The desirable loop invariant (y1 > y2 && z1 > z2 > 0)
-// works only with a data-dependent alignment; when
-// w1 % 2 != 0, perform a left-only iteration and when
-// w2 % 3 != 0, perform a right-only iteration. If
-// both are zero, iterate jointly. See the CaWh rule
-// and example 6.2 in the BiKat paper.
-
 #include "seahorn/seahorn.h"
 extern int arb_int(void);
 
 int main(void) {
   int x = arb_int();
-
-  rel_left();
+  assume(x >= 0);
 
   int y1 = x;
   int z1 = 24;
@@ -24,8 +16,6 @@ int main(void) {
     w1 = w1 + 1;
   }
 
-  rel_mid();
-
   int y2 = x;
   int z2 = 16;
   int w2 = 0;
@@ -36,8 +26,6 @@ int main(void) {
     }
     w2 = w2 + 1;
   }
-
-  rel_right();
 
   sassert(z1 > z2);
 }

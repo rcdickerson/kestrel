@@ -125,6 +125,11 @@ fn expect_expression(sexp: &Sexp) -> Expression {
         let rhs = Box::new(expect_expression(&sexps[2]));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Mul }
       },
+      Sexp::Atom(Atom::S(s)) if s == "!=" => {
+        let lhs = Box::new(expect_expression(&sexps[1]));
+        let rhs = Box::new(expect_expression(&sexps[2]));
+        Expression::Binop{ lhs, rhs, op: BinaryOp::NotEquals }
+      },
       Sexp::Atom(Atom::S(s)) if s == "||" => {
         let lhs = Box::new(expect_expression(&sexps[1]));
         let rhs = Box::new(expect_expression(&sexps[2]));
@@ -138,6 +143,7 @@ fn expect_expression(sexp: &Sexp) -> Expression {
 
 fn expect_statement(sexp: &Sexp) -> Statement {
   match &sexp {
+    Sexp::Atom(Atom::S(s)) if s == "break" => Statement::Break,
     Sexp::Atom(Atom::S(s)) if s == "return-none" => Statement::Return(None),
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "seq" => {

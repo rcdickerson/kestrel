@@ -1,6 +1,6 @@
 /* #include "seahorn/seahorn.h" */
 
-/* #define N 100 */
+/* #define N 20 */
 /* int a_1[N + 1]; */
 /* int b_1[N + 1]; */
 /* int d_1[N + 1]; */
@@ -9,6 +9,9 @@
 /* int d_2[N + 1]; */
 
 int main(void) {
+
+//  for (int i = 0; i <= N; i++) assume(a_1[i] == a_2[i]);
+//  assume(b_1[0] == b_2[0]);
 
   rel_left();
 
@@ -32,7 +35,5 @@ int main(void) {
 
   rel_right();
 
-//  for (int i = 0; i <= N; i++) sassert(a_1[i] == a_2[i]);
-//  for (int i = 0; i <= N; i++) sassert(b_1[i] == b_2[i]);
-//  for (int i = 0; i <= N; i++) sassert(d_1[i] == d_2[i]);
+//  for (int i = 1; i <= N; i++) sassert(d_1[i] == d_2[i]);
 }

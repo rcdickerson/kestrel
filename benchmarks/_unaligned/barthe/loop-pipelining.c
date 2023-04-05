@@ -40,6 +40,4 @@ int main(void) {
   for (int i = 0; i < N; i++) sassert(a[i] == a_2[i]);
   for (int i = 0; i < N; i++) sassert(b[i] == b_2[i]);
   for (int i = 0; i < N; i++) sassert(c[i] == c_2[i]);
-
-  return 0;
 }

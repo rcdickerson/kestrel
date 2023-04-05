@@ -4,7 +4,7 @@ use egg::*;
 use std::collections::HashMap;
 use std::mem::discriminant;
 
-pub struct EggrollExtractor<'a> {
+pub struct MilpExtractor<'a> {
   egraph: &'a EGraph<Eggroll, ()>,
   model: Model,
   groups: HashMap<Id, ChoiceGroup>,
@@ -25,7 +25,7 @@ struct ChoiceGroup {
   choices: Vec<Choice>,
 }
 
-impl<'a> EggrollExtractor<'a> {
+impl<'a> MilpExtractor<'a> {
   pub fn new(egraph: &'a EGraph<Eggroll, ()>) -> Self {
     let mut model = Model::default();
 

@@ -5,8 +5,8 @@
 // both are zero, iterate jointly. See the CaWh rule
 // and example 6.2 in the BiKat paper.
 
-#include "seahorn/seahorn.h"
-extern int arb_int(void);
+//#include "seahorn/seahorn.h"
+//extern int arb_int(void);
 
 int main(void) {
   int x = arb_int();
@@ -39,5 +39,5 @@ int main(void) {
 
   rel_right();
 
-  sassert(z1 > z2);
+//  sassert(z1 > z2);
 }

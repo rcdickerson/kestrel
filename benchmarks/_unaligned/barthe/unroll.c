@@ -1,10 +1,8 @@
-//#include "seahorn/seahorn.h"
-//extern int havoc(void);
+#include "seahorn/seahorn.h"
+extern int havoc(void);
 
 int main(void) {
   int N = havoc();
-
-  rel_left();
 
   int x_1 = 0;
   int i_1 = 0;
@@ -13,8 +11,6 @@ int main(void) {
     i_1 = i_1 + 1;
   }
 
-  rel_mid();
-
   int x_2 = 0;
   int i_2 = 1;
   while (i_2 <= N ) {
@@ -22,7 +18,5 @@ int main(void) {
     i_2 = i_2 + 1;
   }
 
-  rel_right();
-
-//  sassert(x_1 == x_2);
+  sassert(x_1 == x_2);
 }

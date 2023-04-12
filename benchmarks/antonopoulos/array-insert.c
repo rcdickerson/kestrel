@@ -1,45 +1,38 @@
-/* #include "seahorn/seahorn.h" */
+/* @KESTREL
+ * pre 1.A == 2.A
+    && 1.A_len == length(1.A)
+    && 2.A_len == length(2.A);
+ * left left;
+ * right right;
+ * post 1.i == 2.j;
+ */
 
-/* #define N 30 */
-/* int A_1[N]; */
-/* int A_2[N]; */
+extern int shiftArray(int* A, int idx, int amt);
 
-// extern int havoc();
-// extern int shiftArray(int* A, int idx, int amt);
-
-int main(void) {
-
-  // for(int i=0; i<N; i++) assume(A_1[i] == A_2[i]);
-
-  rel_left();
-
-  int val_1 = havoc();
+int left(int A[], int A_len, int val) {
   int i = 0;
-  while( i < N && A_1[i] < val_1) {
+  while( i < A_len && A[i] < val) {
     i = i + 1;
   }
-  int len_1 = shiftArray(A_1, i, 1);
-  assume(len_1 == N + 1); // spec of shiftArray
-  A_1[i] = val_1;
-  while (i < len_1) {
+  int len = shiftArray(A, i, 1);
+  assume(len == A_len + 1); // spec of shiftArray
+  A[i] = val;
+  while (i < len) {
     i = i + 1;
   }
+  return i;
+}
 
-  rel_mid();
-
-  int val_2 = havoc();
+int right(int A[], int A_len, int val) {
   int j = 0;
-  while( j < N && A_2[j] < val_2) {
+  while( j < A_len && A[j] < val) {
     j = j + 1;
   }
-  int len_2 = shiftArray(A_2, j, 1);
-  assume(len_2 == N + 1); // spec of shiftArray
-  A_2[j] = val_2;
-  while (j < len_2) {
+  int len = shiftArray(A, j, 1);
+  assume(len == A_len+ 1); // spec of shiftArray
+  A[j] = val;
+  while (j < len) {
     j = j + 1;
   }
-
-  rel_right();
-
-  // sassert(i == j);
+  return j;
 }

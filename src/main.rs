@@ -1,5 +1,6 @@
 mod crel;
 mod eggroll;
+mod spec;
 
 use clap::{Parser, ValueEnum};
 use crate::eggroll::cost_functions::*;
@@ -40,11 +41,11 @@ fn main() {
   let crel = crel::parser::parse_crel(args.input);
   println!("CRel:\n{:?}", crel);
 
-  let crel_eggroll = crel.to_eggroll();
-  println!("\nEggroll:\n{:?}", crel_eggroll);
+  let unaligned_eggroll = crel.to_eggroll();
+  println!("\nEggroll:\n{:?}", unaligned_eggroll);
 
   let runner = Runner::default()
-    .with_expr(&crel_eggroll.parse().unwrap())
+    .with_expr(&unaligned_eggroll.parse().unwrap())
     .run(&eggroll::rewrite::make_rules());
 
   if args.dot {

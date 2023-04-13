@@ -52,7 +52,7 @@ fn main() {
 
   let spec = parse_spec(&args.input).unwrap();
 
-  let crel = crel::parser::parse_crel(args.input);
+  let crel = crel::parser::parse_c_file(args.input);
   println!("CRel:\n{:?}", crel);
 
   let unaligned_crel = build_unaligned_crel(&spec, &crel);

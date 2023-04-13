@@ -1,4 +1,4 @@
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum CRel {
   Declaration {
     specifiers: Vec<DeclarationSpecifier>,
@@ -13,7 +13,7 @@ pub enum CRel {
   Seq(Vec<CRel>),
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Expression {
   Identifier{ name: String },
   ConstInt(i32),
@@ -34,7 +34,7 @@ pub enum Expression {
   Statement(Box<Statement>),
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Statement {
   Break,
   Compound(Vec<BlockItem>),
@@ -56,19 +56,19 @@ pub enum Statement {
   },
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct InitDeclarator {
   pub declarator: Declarator,
   pub expression: Option<Expression>
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum DeclarationSpecifier {
   StorageClass(StorageClassSpecifier),
   TypeSpecifier(Type),
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Type {
   Bool,
   Double,
@@ -77,24 +77,24 @@ pub enum Type {
   Void,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Declarator {
   Identifier{ name: String },
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Declaration {
   pub specifiers: Vec<DeclarationSpecifier>,
   pub declarators: Vec<InitDeclarator>,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum UnaryOp {
   Minus,
   Not,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum BinaryOp {
   Add,
   And,
@@ -113,12 +113,12 @@ pub enum BinaryOp {
   Or,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum StorageClassSpecifier {
   Extern,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum BlockItem {
   Declaration(Declaration),
   Statement(Statement),

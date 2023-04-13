@@ -379,10 +379,17 @@ fn expect_body(sexp: &Sexp) -> Statement {
   match &sexp {
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "body" => {
-        expect_statement(&sexps[1])
+        if sexps.len() < 1 {
+          Statement::None
+        } else {
+          expect_statement(&sexps[1])
+        }
       },
       _ => panic!("Expected body, got: {}", sexp),
     },
+    Sexp::Atom(Atom::S(s)) if s == "body" => {
+      Statement::None
+    }
     _ => panic!("Expected body, got: {}", sexp),
   }
 }

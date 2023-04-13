@@ -3,8 +3,10 @@ mod eggroll;
 mod spec;
 
 use clap::{Parser, ValueEnum};
+use crate::crel::ast::*;
 use crate::eggroll::cost_functions::*;
 use crate::eggroll::milp_extractor::*;
+use crate::spec::{KestrelSpec, parser::parse_spec};
 use egg::*;
 use std::fs::File;
 use std::io::prelude::*;
@@ -22,7 +24,7 @@ struct Args {
   dot: bool,
 
   /// Type of extractor to use
-  #[arg(value_enum, default_value_t = ExtractorArg::MILP)]
+  #[arg(value_enum, default_value_t = ExtractorArg::CountLoops)]
   extractor: ExtractorArg,
 }
 
@@ -35,14 +37,29 @@ enum ExtractorArg {
   MILP,
 }
 
+fn build_unaligned_crel(spec: &KestrelSpec, crel: &CRel) -> CRel {
+  let new_main = CRel::FunctionDefinition {
+    specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
+    name: Declarator::Identifier{ name: "main".to_string() },
+    params: vec!(),
+    body: Box::new(Statement::None),
+  };
+  new_main
+}
+
 fn main() {
   let args = Args::parse();
+
+  let spec = parse_spec(&args.input).unwrap();
 
   let crel = crel::parser::parse_crel(args.input);
   println!("CRel:\n{:?}", crel);
 
-  let unaligned_eggroll = crel.to_eggroll();
-  println!("\nEggroll:\n{:?}", unaligned_eggroll);
+  let unaligned_crel = build_unaligned_crel(&spec, &crel);
+  println!("Unaliged CRel:\n{:?}", crel);
+
+  let unaligned_eggroll = unaligned_crel.to_eggroll();
+  println!("\nUnaliged Eggroll:\n{:?}", unaligned_eggroll);
 
   let runner = Runner::default()
     .with_expr(&unaligned_eggroll.parse().unwrap())

@@ -116,7 +116,7 @@ fn trans_type_specifier(type_spec: c::TypeSpecifier) -> Type {
 fn trans_statement(stmt: &Node<c::Statement>) -> Statement {
   match &stmt.node {
     c::Statement::Break => Statement::Break,
-    c::Statement::Compound(items) => seq_with_rels(items.iter().map(trans_block_item).collect()),
+    c::Statement::Compound(items) => Statement::Compound(items.iter().map(trans_block_item).collect()),
     c::Statement::Expression(expr) => match expr {
       None => Statement::None,
       Some(expr) => Statement::Expression(Box::new(trans_expression(&*expr))),
@@ -140,46 +140,6 @@ fn trans_statement(stmt: &Node<c::Statement>) -> Statement {
     c::Statement::While(node) => trans_while_statement(&node),
     _ => panic!("Unsupported statement: {:?}", stmt),
   }
-}
-
-fn seq_with_rels(items: Vec<BlockItem>) -> Statement {
-  let mut stack = Vec::new();
-  let mut seq = Vec::new();
-  for item in items {
-    match &item {
-      BlockItem::Statement(stmt) => match &stmt {
-          Statement::Expression(expr) => match &**expr {
-            Expression::Call{ callee, args:_ } => match &**callee {
-              Expression::Identifier{name} => match name.as_str() {
-                "rel_left" => {
-                  stack.push(seq);
-                  seq = Vec::new();
-                },
-                "rel_mid" => {
-                  stack.push(seq);
-                  seq = Vec::new();
-                },
-                "rel_right" => {
-                  let lhs = stack.pop().unwrap();
-                  let rhs = seq;
-                  seq = stack.pop().unwrap();
-                  seq.push(BlockItem::Statement(Statement::Relation {
-                    lhs: Box::new(Statement::Compound(lhs)),
-                    rhs: Box::new(Statement::Compound(rhs)),
-                  }));
-                },
-                _ => seq.push(item),  // TODO: de-grossify
-              },
-              _ => seq.push(item),
-            },
-            _ => seq.push(item),
-          },
-          _ => seq.push(item),
-      },
-      _ => seq.push(item),
-    }
-  };
-  Statement::Compound(seq)
 }
 
 fn trans_expression(expr: &Node<c::Expression>) -> Expression {

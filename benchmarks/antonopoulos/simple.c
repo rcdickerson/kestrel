@@ -1,8 +1,8 @@
 /* @KESTREL
- * pre:   1.N == 2.N;
+ * pre:   left.N == right.N;
  * left:  fun;
  * right: fun;
- * post:  1.x == 2.x;
+ * post:  left.x == right.x;
  */
 
 void fun(int N) {

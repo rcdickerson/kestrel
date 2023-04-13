@@ -38,13 +38,61 @@ enum ExtractorArg {
 }
 
 fn build_unaligned_crel(spec: &KestrelSpec, crel: &CRel) -> CRel {
+  let (crel, left_fun) = remove_fundef(spec.left.as_str(), crel);
+  let (crel, right_fun) = if spec.left == spec.right {
+    (crel, left_fun.clone())
+  } else {
+    let crel = crel.expect(format!("Function not found: {}", spec.right).as_str());
+    remove_fundef(spec.right.as_str(), &crel)
+  };
+  let left_fun = left_fun.expect(format!("Function not found: {}", spec.left).as_str());
+  let right_fun = right_fun.expect(format!("Function not found: {}", spec.right).as_str());
+
   let new_main = CRel::FunctionDefinition {
     specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
     name: Declarator::Identifier{ name: "main".to_string() },
     params: vec!(),
-    body: Box::new(Statement::None),
+    body: Box::new(Statement::Relation {
+      lhs: Box::new(left_fun.body),
+      rhs: Box::new(right_fun.body),
+    }),
   };
-  new_main
+
+  match crel {
+    None => new_main,
+    Some(CRel::Seq(crels)) => {
+      crels.clone().push(new_main);
+      CRel::Seq(crels)
+    },
+    Some(crel) => CRel::Seq(vec!{crel, new_main})
+  }
+}
+
+#[derive(Clone, Debug)]
+struct FunDef {
+  body: Statement,
+}
+
+fn remove_fundef(name: &str, crel: &CRel) -> (Option<CRel>, Option<FunDef>) {
+  match crel {
+    CRel::Declaration{ specifiers: _, declarators: _ } => {
+      (Some(crel.clone()), None)
+    },
+    CRel::FunctionDefinition{ specifiers: _, name: _, params, body } => {
+      (None, Some(FunDef{
+        body: *body.clone(),
+      }))
+    },
+    CRel::Seq(crels) => {
+      let (crels, defs): (Vec<_>, Vec<_>) = crels.iter()
+        .map(|c| remove_fundef(name, c))
+        .unzip();
+      let crels: Vec<_> = crels.iter().flatten().map(|c| (*c).clone()).collect();
+      let defs: Vec<_> = defs.iter().flatten().collect();
+      ( if crels.len() > 0 { Some(CRel::Seq(crels)) } else { None },
+        if defs.len() > 0 { Some((*defs[0]).clone()) } else { None } )
+    },
+  }
 }
 
 fn main() {
@@ -56,7 +104,7 @@ fn main() {
   println!("CRel:\n{:?}", crel);
 
   let unaligned_crel = build_unaligned_crel(&spec, &crel);
-  println!("Unaliged CRel:\n{:?}", crel);
+  println!("\nUnaliged CRel:\n{:?}", crel);
 
   let unaligned_eggroll = unaligned_crel.to_eggroll();
   println!("\nUnaliged Eggroll:\n{:?}", unaligned_eggroll);

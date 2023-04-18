@@ -1,12 +1,15 @@
 mod crel;
 mod eggroll;
+mod names;
 mod spec;
+mod var_map;
 
 use clap::{Parser, ValueEnum};
 use crate::crel::ast::*;
 use crate::eggroll::cost_functions::*;
 use crate::eggroll::milp_extractor::*;
 use crate::spec::{KestrelSpec, parser::parse_spec};
+use crate::var_map::*;
 use egg::*;
 use std::fs::File;
 use std::io::prelude::*;

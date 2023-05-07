@@ -36,6 +36,20 @@ impl CollectVars for CRel {
     }
   }
 }
+impl MapVars for CRel {
+  fn map_vars<F>(&self, f: F)
+    where F: FnMut(String) -> String
+  {
+    match self {
+      CRel::Declaration{ specifiers, declarators } => {
+
+      },
+      CRel::FunctionDefinition{ specifiers, name, params, body } => {
+      },
+      CRel::Seq(crels) => ,
+    }
+  }
+}
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Expression {

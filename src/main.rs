@@ -1,10 +1,16 @@
 mod crel;
 mod eggroll;
+mod names;
+mod spec;
 
 use clap::{Parser, ValueEnum};
+use crate::crel::ast::*;
 use crate::eggroll::cost_functions::*;
 use crate::eggroll::milp_extractor::*;
+use crate::names::*;
+use crate::spec::{KestrelSpec, parser::parse_spec};
 use egg::*;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
@@ -21,7 +27,7 @@ struct Args {
   dot: bool,
 
   /// Type of extractor to use
-  #[arg(value_enum, default_value_t = ExtractorArg::MILP)]
+  #[arg(value_enum, default_value_t = ExtractorArg::CountLoops)]
   extractor: ExtractorArg,
 }
 
@@ -34,17 +40,96 @@ enum ExtractorArg {
   MILP,
 }
 
+fn build_unaligned_crel(spec: &KestrelSpec, crel: &CRel) -> CRel {
+  let (crel, fundefs) = extract_fundefs(spec.left.as_str(), crel);
+  let left_fun = fundefs.get(&spec.left).expect(format!("Function not found: {}", spec.left).as_str());
+  let right_fun = fundefs.get(&spec.right).expect(format!("Function not found: {}", spec.right).as_str());
+
+  let left_fun = left_fun.map_vars(&|s: String| {
+    format!("l_{}", s)
+  });
+  let right_fun = right_fun.map_vars(&|s: String| {
+    format!("r_{}", s)
+  });
+
+  let new_main = CRel::FunctionDefinition {
+    specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
+    name: Declarator::Identifier{ name: "main".to_string() },
+    params: vec!(),
+    body: Box::new(Statement::Relation {
+      lhs: Box::new(left_fun.body),
+      rhs: Box::new(right_fun.body),
+    }),
+  };
+
+  match crel {
+    None => new_main,
+    Some(CRel::Seq(crels)) => {
+      crels.clone().push(new_main);
+      CRel::Seq(crels)
+    },
+    Some(crel) => CRel::Seq(vec!{crel, new_main})
+  }
+}
+
+fn extract_fundefs(name: &str, crel: &CRel) -> (Option<CRel>, HashMap<String, FunDef>) {
+  match crel {
+    CRel::Declaration{ specifiers: _, declarators: _ } => {
+      (Some(crel.clone()), HashMap::new())
+    },
+    CRel::FunctionDefinition{ specifiers: _, name, params: _, body } => {
+      let name = match name {
+        Declarator::Identifier{name} => name.clone(),
+      };
+      let mut map = HashMap::new();
+      map.insert(name, FunDef{
+        body: *body.clone(),
+      });
+      (None, map)
+    },
+    CRel::Seq(crels) => {
+      let (crels, defs): (Vec<_>, Vec<_>) = crels.iter()
+        .map(|c| extract_fundefs(name, c))
+        .unzip();
+      let crels: Vec<_> = crels.iter().flatten().map(|c| (*c).clone()).collect();
+      let mut def_union = HashMap::new();
+      for def in defs {
+        def_union.extend(def);
+      }
+      ( if crels.len() > 0 { Some(CRel::Seq(crels)) } else { None }, def_union )
+    },
+  }
+}
+
+#[derive(Clone, Debug)]
+struct FunDef {
+  // TODO: Params, initialized to arbitrary values.
+  body: Statement,
+}
+impl MapVars for FunDef {
+  fn map_vars<F>(&self, f: &F) -> Self
+    where F: Fn(String) -> String
+  {
+    FunDef{body: self.body.map_vars(f)}
+  }
+}
+
 fn main() {
   let args = Args::parse();
 
-  let crel = crel::parser::parse_crel(args.input);
+  let spec = parse_spec(&args.input).unwrap();
+
+  let crel = crel::parser::parse_c_file(args.input);
   println!("CRel:\n{:?}", crel);
 
-  let crel_eggroll = crel.to_eggroll();
-  println!("\nEggroll:\n{:?}", crel_eggroll);
+  let unaligned_crel = build_unaligned_crel(&spec, &crel);
+  println!("\nUnaliged CRel:\n{:?}", crel);
+
+  let unaligned_eggroll = unaligned_crel.to_eggroll();
+  println!("\nUnaliged Eggroll:\n{:?}", unaligned_eggroll);
 
   let runner = Runner::default()
-    .with_expr(&crel_eggroll.parse().unwrap())
+    .with_expr(&unaligned_eggroll.parse().unwrap())
     .run(&eggroll::rewrite::make_rules());
 
   if args.dot {

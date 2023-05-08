@@ -1,24 +1,25 @@
-int main(void) {
-  int x = arb_int();
+/* @KESTREL
+ * pre:   left.x == right.x;
+ * left:  left;
+ * right: right;
+ * post:  left.x == right.x;
+ */
 
-  rel_left();
-
-  int y1 = 0;
-  int z1 = 2 * x;
-  while (z1 > 0) {
-    z1 = z1 - 1;
-    y1 = y1 + x;
+void left(int x) {
+  int y = 0;
+  int z = 2 * x;
+  while (z > 0) {
+    z = z - 1;
+    y = y + x;
   }
+}
 
-  rel_mid();
-
-  int y2 = 0;
-  int z2 = x;
-  while (z2 > 0) {
-    z2 = z2 - 1;
-    y2 = y2 + x;
+void right(int x) {
+  int y = 0;
+  int z = x;
+  while (z > 0) {
+    z = z - 1;
+    y = y + x;
   }
-  y2 = y2 * 2;
-
-  rel_right();
+  y = y * 2;
 }

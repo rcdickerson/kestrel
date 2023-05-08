@@ -7,8 +7,10 @@ use clap::{Parser, ValueEnum};
 use crate::crel::ast::*;
 use crate::eggroll::cost_functions::*;
 use crate::eggroll::milp_extractor::*;
+use crate::names::*;
 use crate::spec::{KestrelSpec, parser::parse_spec};
 use egg::*;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
@@ -39,15 +41,16 @@ enum ExtractorArg {
 }
 
 fn build_unaligned_crel(spec: &KestrelSpec, crel: &CRel) -> CRel {
-  let (crel, left_fun) = remove_fundef(spec.left.as_str(), crel);
-  let (crel, right_fun) = if spec.left == spec.right {
-    (crel, left_fun.clone())
-  } else {
-    let crel = crel.expect(format!("Function not found: {}", spec.right).as_str());
-    remove_fundef(spec.right.as_str(), &crel)
-  };
-  let left_fun = left_fun.expect(format!("Function not found: {}", spec.left).as_str());
-  let right_fun = right_fun.expect(format!("Function not found: {}", spec.right).as_str());
+  let (crel, fundefs) = extract_fundefs(spec.left.as_str(), crel);
+  let left_fun = fundefs.get(&spec.left).expect(format!("Function not found: {}", spec.left).as_str());
+  let right_fun = fundefs.get(&spec.right).expect(format!("Function not found: {}", spec.right).as_str());
+
+  let left_fun = left_fun.map_vars(&|s: String| {
+    format!("l_{}", s)
+  });
+  let right_fun = right_fun.map_vars(&|s: String| {
+    format!("r_{}", s)
+  });
 
   let new_main = CRel::FunctionDefinition {
     specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
@@ -69,30 +72,45 @@ fn build_unaligned_crel(spec: &KestrelSpec, crel: &CRel) -> CRel {
   }
 }
 
-#[derive(Clone, Debug)]
-struct FunDef {
-  body: Statement,
-}
-
-fn remove_fundef(name: &str, crel: &CRel) -> (Option<CRel>, Option<FunDef>) {
+fn extract_fundefs(name: &str, crel: &CRel) -> (Option<CRel>, HashMap<String, FunDef>) {
   match crel {
     CRel::Declaration{ specifiers: _, declarators: _ } => {
-      (Some(crel.clone()), None)
+      (Some(crel.clone()), HashMap::new())
     },
-    CRel::FunctionDefinition{ specifiers: _, name: _, params: _, body } => {
-      (None, Some(FunDef{
+    CRel::FunctionDefinition{ specifiers: _, name, params: _, body } => {
+      let name = match name {
+        Declarator::Identifier{name} => name.clone(),
+      };
+      let mut map = HashMap::new();
+      map.insert(name, FunDef{
         body: *body.clone(),
-      }))
+      });
+      (None, map)
     },
     CRel::Seq(crels) => {
       let (crels, defs): (Vec<_>, Vec<_>) = crels.iter()
-        .map(|c| remove_fundef(name, c))
+        .map(|c| extract_fundefs(name, c))
         .unzip();
       let crels: Vec<_> = crels.iter().flatten().map(|c| (*c).clone()).collect();
-      let defs: Vec<_> = defs.iter().flatten().collect();
-      ( if crels.len() > 0 { Some(CRel::Seq(crels)) } else { None },
-        if defs.len() > 0 { Some((*defs[0]).clone()) } else { None } )
+      let mut def_union = HashMap::new();
+      for def in defs {
+        def_union.extend(def);
+      }
+      ( if crels.len() > 0 { Some(CRel::Seq(crels)) } else { None }, def_union )
     },
+  }
+}
+
+#[derive(Clone, Debug)]
+struct FunDef {
+  // TODO: Params, initialized to arbitrary values.
+  body: Statement,
+}
+impl MapVars for FunDef {
+  fn map_vars<F>(&self, f: &F) -> Self
+    where F: Fn(String) -> String
+  {
+    FunDef{body: self.body.map_vars(f)}
   }
 }
 

@@ -1,9 +1,9 @@
 /* @KESTREL
- * pre 1.A == 2.A
-    && 1.A_len == length(1.A)
-    && 2.A_len == length(2.A);
- * left left;
- * right right;
+ * pre left.A == right.A
+    && left.A_len == length(left.A)
+    && right.A_len == length(right.A);
+ * left: left;
+ * right: right;
  * post 1.i == 2.j;
  */
 

@@ -69,6 +69,58 @@ fn cond_neq(i: &str) -> IResult<&str, CondExpr> {
   }))
 }
 
+fn cond_lt(i: &str) -> IResult<&str, CondExpr> {
+  let (i, _)   = multispace0(i)?;
+  let (i, lhs) = cond_id(i)?;
+  let (i, _)   = multispace0(i)?;
+  let (i, _)   = tag("<")(i)?;
+  let (i, _)   = multispace0(i)?;
+  let (i, rhs) = cond_id(i)?;
+  Ok((i, CondExpr::Lt{
+    lhs: Box::new(CondExpr::Variable(lhs)),
+    rhs: Box::new(CondExpr::Variable(rhs))
+  }))
+}
+
+fn cond_lte(i: &str) -> IResult<&str, CondExpr> {
+  let (i, _)   = multispace0(i)?;
+  let (i, lhs) = cond_id(i)?;
+  let (i, _)   = multispace0(i)?;
+  let (i, _)   = tag("<=")(i)?;
+  let (i, _)   = multispace0(i)?;
+  let (i, rhs) = cond_id(i)?;
+  Ok((i, CondExpr::Lte{
+    lhs: Box::new(CondExpr::Variable(lhs)),
+    rhs: Box::new(CondExpr::Variable(rhs))
+  }))
+}
+
+fn cond_gt(i: &str) -> IResult<&str, CondExpr> {
+  let (i, _)   = multispace0(i)?;
+  let (i, lhs) = cond_id(i)?;
+  let (i, _)   = multispace0(i)?;
+  let (i, _)   = tag(">")(i)?;
+  let (i, _)   = multispace0(i)?;
+  let (i, rhs) = cond_id(i)?;
+  Ok((i, CondExpr::Gt{
+    lhs: Box::new(CondExpr::Variable(lhs)),
+    rhs: Box::new(CondExpr::Variable(rhs))
+  }))
+}
+
+fn cond_gte(i: &str) -> IResult<&str, CondExpr> {
+  let (i, _)   = multispace0(i)?;
+  let (i, lhs) = cond_id(i)?;
+  let (i, _)   = multispace0(i)?;
+  let (i, _)   = tag(">=")(i)?;
+  let (i, _)   = multispace0(i)?;
+  let (i, rhs) = cond_id(i)?;
+  Ok((i, CondExpr::Gte{
+    lhs: Box::new(CondExpr::Variable(lhs)),
+    rhs: Box::new(CondExpr::Variable(rhs))
+  }))
+}
+
 fn cond_and(i: &str) -> IResult<&str, CondExpr> {
   let (i, _)   = multispace0(i)?;
   let (i, lhs) = cond_id(i)?;
@@ -102,6 +154,13 @@ fn cond_not(i: &str) -> IResult<&str, CondExpr> {
   Ok((i, CondExpr::Not(Box::new(expr))))
 }
 
+fn cond_fun(i: &str) -> IResult<&str, CondExpr> {
+  let (i, _)    = multispace0(i)?;
+  let (i, name) = c_id(i)?;
+  Ok((i, CondExpr::Fun{name: name.to_string()}))
+}
+
+
 fn cond_expr(i: &str) -> IResult<&str, CondExpr> {
   let (i, _) = multispace0(i)?;
   alt((
@@ -110,8 +169,13 @@ fn cond_expr(i: &str) -> IResult<&str, CondExpr> {
     cond_not,
     cond_eq,
     cond_neq,
+    cond_lte,
+    cond_gte,
+    cond_lt,
+    cond_gt,
     cond_and,
-    cond_or
+    cond_or,
+    cond_fun
   ))(i)
 }
 

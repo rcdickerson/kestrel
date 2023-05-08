@@ -5,7 +5,7 @@ pub trait CollectVars {
 }
 
 pub trait MapVars {
-  fn map_vars<F>(&self, f: F) where F: FnMut(String) -> String;
+  fn map_vars<F>(&self, f: &F) -> Self where F: Fn(String) -> String;
 }
 
 pub fn all_vars<I>(collectable: I) -> HashSet<String>

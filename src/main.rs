@@ -2,14 +2,12 @@ mod crel;
 mod eggroll;
 mod names;
 mod spec;
-mod var_map;
 
 use clap::{Parser, ValueEnum};
 use crate::crel::ast::*;
 use crate::eggroll::cost_functions::*;
 use crate::eggroll::milp_extractor::*;
 use crate::spec::{KestrelSpec, parser::parse_spec};
-use crate::var_map::*;
 use egg::*;
 use std::fs::File;
 use std::io::prelude::*;
@@ -81,7 +79,7 @@ fn remove_fundef(name: &str, crel: &CRel) -> (Option<CRel>, Option<FunDef>) {
     CRel::Declaration{ specifiers: _, declarators: _ } => {
       (Some(crel.clone()), None)
     },
-    CRel::FunctionDefinition{ specifiers: _, name: _, params, body } => {
+    CRel::FunctionDefinition{ specifiers: _, name: _, params: _, body } => {
       (None, Some(FunDef{
         body: *body.clone(),
       }))

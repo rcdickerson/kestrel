@@ -1,3 +1,4 @@
+mod annealer;
 mod crel;
 mod eggroll;
 mod names;
@@ -18,26 +19,32 @@ use std::path::Path;
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-  /// Input file
+  /// Input file.
   #[arg(short, long)]
   input: String,
 
-  /// Output a dot file representation of the e-graph
+  /// Output a dot file representation of the e-graph.
   #[arg(short, long)]
   dot: bool,
 
-  /// Type of extractor to use
+  /// Which technique to use for extracting the aligned program from the
+  /// saturated e-graph.
   #[arg(value_enum, default_value_t = ExtractorArg::CountLoops)]
   extractor: ExtractorArg,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 enum ExtractorArg {
-  /// Local cost function extractor that minimizes total number of loops
+  /// Local cost function extractor that minimizes total number of loops.
   CountLoops,
 
-  /// Non-local cost function extractor that optimizes for good alignments
+  /// Non-local extraction which optimizes an objective function via
+  /// mixed-integer linear programming.
   MILP,
+
+  /// Non-local extraction which optimizes an objective function via simulated
+  /// annealing.
+  SA,
 }
 
 fn build_unaligned_crel(spec: &KestrelSpec, crel: &CRel) -> CRel {
@@ -145,6 +152,9 @@ fn main() {
     ExtractorArg::MILP => {
       let mut extractor = MilpExtractor::new(&runner.egraph);
       extractor.solve(runner.roots[0]).to_string()
+    },
+    ExtractorArg::SA => {
+      panic!("unimplemented")
     },
   };
   println!("\nAligned Eggroll:\n{}", aligned_eggroll);

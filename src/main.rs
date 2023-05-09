@@ -7,6 +7,7 @@ mod spec;
 use clap::{Parser, ValueEnum};
 use crate::annealer::*;
 use crate::crel::ast::*;
+use crate::eggroll::ast::*;
 use crate::eggroll::cost_functions::*;
 use crate::eggroll::milp_extractor::*;
 use crate::names::*;
@@ -156,7 +157,16 @@ fn main() {
     },
     ExtractorArg::SA => {
       let annealer = Annealer::new(&runner.egraph);
-      annealer.find_best(runner.roots[0])
+      annealer.find_best(runner.roots[0], |expr| {
+        let mut lockstep_count = 0;
+        for node in expr.as_ref() {
+          lockstep_count += match node {
+            Eggroll::WhileLockstep(_) => 1,
+            _ => 0,
+          }
+        }
+        lockstep_count
+      })
     },
   };
   println!("\nAligned Eggroll:\n{}", aligned_eggroll.pretty(80));

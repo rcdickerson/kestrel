@@ -12,8 +12,24 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
     Annealer{egraph}
   }
 
-  pub fn find_best(&self, root: egg::Id) -> RecExpr<L> {
-    let selection = Selection::random(self.egraph);
+  pub fn find_best<F>(&self, root: egg::Id, fitness: F) -> RecExpr<L>
+    where F: Fn(RecExpr<L>) -> i32
+  {
+    let mut rng = rand::thread_rng();
+    let mut selection = Selection::random(self.egraph);
+    let mut score = fitness(selection.program(root));
+    for k in 1..500 {
+      let temp = 1.0 - ((k as f32) + 1.0) / 1000.0;
+      let neighbor = selection.neighbor(root);
+      let n_score = fitness(neighbor.program(root));
+      let transition = if n_score <= score { true } else {
+        ((score - n_score) as f32 / temp).exp() > rng.gen()
+      };
+      if transition {
+        selection = neighbor;
+        score = n_score;
+      }
+    }
     selection.program(root)
   }
 }

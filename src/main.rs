@@ -5,6 +5,7 @@ mod names;
 mod spec;
 
 use clap::{Parser, ValueEnum};
+use crate::annealer::*;
 use crate::crel::ast::*;
 use crate::eggroll::cost_functions::*;
 use crate::eggroll::milp_extractor::*;
@@ -147,19 +148,20 @@ fn main() {
     ExtractorArg::CountLoops => {
       let extractor = Extractor::new(&runner.egraph, CountLoops);
       let (_, best) = extractor.find_best(runner.roots[0]);
-      best.to_string()
+      best
     },
     ExtractorArg::MILP => {
       let mut extractor = MilpExtractor::new(&runner.egraph);
-      extractor.solve(runner.roots[0]).to_string()
+      extractor.solve(runner.roots[0])
     },
     ExtractorArg::SA => {
-      panic!("unimplemented")
+      let annealer = Annealer::new(&runner.egraph);
+      annealer.find_best(runner.roots[0])
     },
   };
-  println!("\nAligned Eggroll:\n{}", aligned_eggroll);
+  println!("\nAligned Eggroll:\n{}", aligned_eggroll.pretty(80));
 
-  let aligned_crel = eggroll::to_crel::eggroll_to_crel(&aligned_eggroll);
+  let aligned_crel = eggroll::to_crel::eggroll_to_crel(&aligned_eggroll.to_string());
   println!("\nAligned CRel:\n{:?}", aligned_crel);
 
   println!("\nC:\n{}", aligned_crel.to_c());

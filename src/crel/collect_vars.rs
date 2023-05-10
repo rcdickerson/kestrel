@@ -48,6 +48,7 @@ impl CollectVars for Expression {
 impl CollectVars for Statement {
   fn vars(&self) -> HashSet<String> {
     match self {
+      Statement::BasicBlock(items) => all_vars(items.clone()),
       Statement::Break => HashSet::new(),
       Statement::Compound(items) => all_vars(items.clone()),
       Statement::Expression(expr) => expr.vars(),

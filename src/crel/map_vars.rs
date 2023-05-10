@@ -57,6 +57,9 @@ impl MapVars for Statement {
     where F: Fn(String) -> String
   {
     match self {
+      Statement::BasicBlock(items) => {
+        Statement::BasicBlock(items.iter().map(|i| i.map_vars(f)).collect())
+      },
       Statement::Break => Statement::Break,
       Statement::Compound(items) => {
         Statement::Compound(items.iter().map(|i| i.map_vars(f)).collect())

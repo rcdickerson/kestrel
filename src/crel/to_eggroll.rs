@@ -93,6 +93,13 @@ fn expression_to_eggroll(expr: &Expression) -> String {
 
 fn statement_to_eggroll(stmt: &Statement) -> String {
   match stmt {
+    Statement::BasicBlock(items) => {
+      let items_eggroll = items.iter()
+        .map(block_item_to_eggroll)
+        .collect::<Vec<String>>()
+        .join(" ");
+      format!("(basic-block {})", items_eggroll)
+    },
     Statement::Break => "break".to_string(),
     Statement::Compound(items) => {
       match items.len() {

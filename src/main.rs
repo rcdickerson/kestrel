@@ -6,7 +6,7 @@ mod spec;
 
 use clap::{Parser, ValueEnum};
 use crate::annealer::*;
-use crate::crel::ast::*;
+use crate::crel::{ast::*, bblock::*};
 use crate::eggroll::ast::*;
 use crate::eggroll::cost_functions::*;
 use crate::eggroll::milp_extractor::*;
@@ -66,8 +66,8 @@ fn build_unaligned_crel(spec: &KestrelSpec, crel: &CRel) -> CRel {
     name: Declarator::Identifier{ name: "main".to_string() },
     params: vec!(),
     body: Box::new(Statement::Relation {
-      lhs: Box::new(left_fun.body),
-      rhs: Box::new(right_fun.body),
+      lhs: Box::new(left_fun.body.blockify()),
+      rhs: Box::new(right_fun.body.blockify()),
     }),
   };
 
@@ -132,7 +132,7 @@ fn main() {
   println!("CRel:\n{:?}", crel);
 
   let unaligned_crel = build_unaligned_crel(&spec, &crel);
-  println!("\nUnaliged CRel:\n{:?}", crel);
+  println!("\nUnaliged CRel:\n{:?}", unaligned_crel);
 
   let unaligned_eggroll = unaligned_crel.to_eggroll();
   println!("\nUnaliged Eggroll:\n{:?}", unaligned_eggroll);

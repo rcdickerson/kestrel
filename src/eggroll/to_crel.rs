@@ -146,6 +146,12 @@ fn expect_statement(sexp: &Sexp) -> Statement {
     Sexp::Atom(Atom::S(s)) if s == "break" => Statement::Break,
     Sexp::Atom(Atom::S(s)) if s == "return-none" => Statement::Return(None),
     Sexp::List(sexps) => match &sexps[0] {
+      Sexp::Atom(Atom::S(s)) if s == "basic-block" => {
+        let items = sexps[1..].iter()
+          .map(expect_block_item)
+          .collect();
+        Statement::BasicBlock(items)
+      },
       Sexp::Atom(Atom::S(s)) if s == "seq" => {
         let mut seq = vec!(expect_block_item(&sexps[1]));
         let rhs = expect_statement(&sexps[2]);

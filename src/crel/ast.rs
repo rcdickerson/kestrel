@@ -36,6 +36,7 @@ pub enum Expression {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Statement {
+  BasicBlock(Vec<BlockItem>),
   Break,
   Compound(Vec<BlockItem>),
   Expression(Box<Expression>),

@@ -65,6 +65,9 @@ define_language! {
     "return-none" = ReturnNone,
     "return"      = Return(Id),
 
+    // Tagged basic blocks (straight-line code will not be rewritten)
+    "basic-block" = BasicBlock(Box<[Id]>),
+
     // Literals
     ConstInt(i32),
     Identifier(Symbol),

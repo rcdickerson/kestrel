@@ -69,6 +69,9 @@ fn expression_to_c(expr: &Expression) -> String {
 
 fn statement_to_c(stmt: &Statement) -> String {
   match stmt {
+    Statement::BasicBlock(items) => {
+      items.iter().map(block_item_to_c).collect::<Vec<String>>().join(";\n")
+    },
     Statement::Break => "break".to_string(),
     Statement::Compound(items) => {
       items.iter().map(block_item_to_c).collect::<Vec<String>>().join(";\n")

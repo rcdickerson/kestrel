@@ -1,25 +1,25 @@
-/*
- * Based on http://stackoverflow.com/questions/11441666/java-error-comparison-method-violates-its-general-contract
- *
+/* @KESTREL
+ * pre:   left.o1 == right.o1 &&
+          left.o1_getCardSet == right.o1_getCardSet &&
+          left.o1_getCardRarity == right.o1_getCardRarity &&
+          left.o1_getCardId == right.o1_getCardId &&
+          left.o1_cardType == right.o1_cardType &&
+          left.o2 == right.o2 &&
+          left.o2_getCardSet == right.o2_getCardSet &&
+          left.o2_getCardRarity == right.o2_getCardRarity &&
+          left.o2_getCardId == right.o2_getCardId &&
+          left.o2_cardType == right.o2_cardType;
+ * left:  left;
+ * right: right;
+ * post:  left.ret == right.ret;
  */
 
-//#include "seahorn/seahorn.h"
-//extern int arb_int(void);
+/*
+ * Based on http://stackoverflow.com/questions/11441666/java-error-comparison-method-violates-its-general-contract
+ */
 
-int main() {
-   int o1 = arb_int();
-	 int o1_getCardSet = arb_int();
-   int o1_getCardRarity = arb_int();
-   int o1_getCardId = arb_int();
-   int o1_cardType = arb_int();
-
-   int o2 = arb_int();
-	 int o2_getCardSet = arb_int();
-   int o2_getCardRarity = arb_int();
-   int o2_getCardId = arb_int();
-   int o2_cardType = arb_int();
-
-   rel_left();
+void left(int o1, int o1_getCardSet, int o1_getCardRarity, int o1_getCardId, int o1_cardType,
+          int o2, int o2_getCardSet, int o2_getCardRarity, int o2_getCardId, int o2_cardType) {
 
      int ret_1;
 
@@ -47,8 +47,10 @@ int main() {
        ret_1 =  o1_cardType - o2_cardType;  //watch out for overflow!
      }
 
-   rel_mid();
+}
 
+void right(int o1, int o1_getCardSet, int o1_getCardRarity, int o1_getCardId, int o1_cardType,
+           int o2, int o2_getCardSet, int o2_getCardRarity, int o2_getCardId, int o2_cardType) {
      int ret_2;
 
      if (o2 == o1){
@@ -74,9 +76,4 @@ int main() {
 		 } else {
        ret_2 = o2_cardType - o1_cardType;  //watch out for overflow!
      }
-
-   rel_right();
-
-//   sassert(ret_1 == -ret_2);
-
 }

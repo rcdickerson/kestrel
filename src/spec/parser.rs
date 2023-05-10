@@ -123,27 +123,27 @@ fn cond_gte(i: &str) -> IResult<&str, CondExpr> {
 
 fn cond_and(i: &str) -> IResult<&str, CondExpr> {
   let (i, _)   = multispace0(i)?;
-  let (i, lhs) = cond_id(i)?;
+  let (i, lhs) = cond_expr_lhs(i)?;
   let (i, _)   = multispace0(i)?;
   let (i, _)   = tag("&&")(i)?;
   let (i, _)   = multispace0(i)?;
-  let (i, rhs) = cond_id(i)?;
+  let (i, rhs) = cond_expr(i)?;
   Ok((i, CondExpr::And{
-    lhs: Box::new(CondExpr::Variable(lhs)),
-    rhs: Box::new(CondExpr::Variable(rhs))
+    lhs: Box::new(lhs),
+    rhs: Box::new(rhs),
   }))
 }
 
 fn cond_or(i: &str) -> IResult<&str, CondExpr> {
   let (i, _)   = multispace0(i)?;
-  let (i, lhs) = cond_id(i)?;
+  let (i, lhs) = cond_expr_lhs(i)?;
   let (i, _)   = multispace0(i)?;
   let (i, _)   = tag("||")(i)?;
   let (i, _)   = multispace0(i)?;
-  let (i, rhs) = cond_id(i)?;
+  let (i, rhs) = cond_expr(i)?;
   Ok((i, CondExpr::Or{
-    lhs: Box::new(CondExpr::Variable(lhs)),
-    rhs: Box::new(CondExpr::Variable(rhs))
+    lhs: Box::new(lhs),
+    rhs: Box::new(rhs),
   }))
 }
 
@@ -160,8 +160,13 @@ fn cond_fun(i: &str) -> IResult<&str, CondExpr> {
   Ok((i, CondExpr::Fun{name: name.to_string()}))
 }
 
+fn cond_var(i: &str) -> IResult<&str, CondExpr> {
+  let (i, _)  = multispace0(i)?;
+  let (i, id) = cond_id(i)?;
+  Ok((i, CondExpr::Variable(id)))
+}
 
-fn cond_expr(i: &str) -> IResult<&str, CondExpr> {
+fn cond_expr_lhs(i: &str) -> IResult<&str, CondExpr> {
   let (i, _) = multispace0(i)?;
   alt((
     cond_true,
@@ -173,8 +178,26 @@ fn cond_expr(i: &str) -> IResult<&str, CondExpr> {
     cond_gte,
     cond_lt,
     cond_gt,
+    cond_var,
+    cond_fun
+  ))(i)
+}
+
+fn cond_expr(i: &str) -> IResult<&str, CondExpr> {
+  let (i, _) = multispace0(i)?;
+  alt((
+    cond_true,
+    cond_false,
     cond_and,
     cond_or,
+    cond_not,
+    cond_eq,
+    cond_neq,
+    cond_lte,
+    cond_gte,
+    cond_lt,
+    cond_gt,
+    cond_var,
     cond_fun
   ))(i)
 }

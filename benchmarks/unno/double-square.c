@@ -1,40 +1,30 @@
-//#include "seahorn/seahorn.h"
-//extern int arb_int(void);
+/* @KESTREL
+ * pre:   left.x == right.x;
+ * left:  left;
+ * right: right;
+ * post:  left.y == right.y;
+ */
 
-int main() {
-  int x = arb_int();
-
-  rel_left();
-
-  int h_1 = arb_int();
-  int x_1 = x;
-
-  int z_1 = 0;
-  int y_1 = 0;
-  if(h_1) { z_1 = 2*x_1; }
-  else { z_1 = x_1; }
-  while (z_1>0) {
-    z_1 = z_1 - 1;
-    y_1 = y_1+x_1;
+void left(int x, int h) {
+  int z = 0;
+  int y = 0;
+  if(h) { z = 2*x; }
+  else { z = x; }
+  while (z>0) {
+    z = z - 1;
+    y = y+x;
   }
-  if(!h_1) { y_1 = 2*y_1; }
+  if(!h) { y = 2*y; }
+}
 
-  rel_mid();
-
-  int h_2 = arb_int();
-  int x_2 = x;
-
-  int z_2 = 0;
-  int y_2 = 0;
-  if(h_2) { z_2 = 2*x_2; }
-  else { z_2 = x_2; }
-  while (z_2>0) {
-    z_2 = z_2 - 1;
-    y_2 = y_2+x_2;
+void right(int x, int h) {
+  int z = 0;
+  int y = 0;
+  if(h) { z = 2*x; }
+  else { z = x; }
+  while (z>0) {
+    z = z - 1;
+    y = y+x;
   }
-  if(!h_2) { y_2 = 2*y_2; }
-
-  rel_right();
-
-//  sassert(y_1 == y_2);
+  if(!h) { y = 2*y; }
 }

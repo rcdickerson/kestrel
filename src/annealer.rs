@@ -92,6 +92,10 @@ impl<'a, L: Language, N: Analysis<L>> Selection<'a, L, N> {
     let advance = rng.gen_range(1..*num_options);
     let new_selection = (old_selection + advance) % num_options;
 
+    //print!("Changing class {} from {:?} => {:?}\n", change_index,
+    //       self.egraph[*change_index].nodes[*old_selection],
+    //       self.egraph[*change_index].nodes[new_selection]);
+
     let mut updated_selections = self.selections.clone();
     updated_selections.insert(change_index.clone(), new_selection);
     Selection {

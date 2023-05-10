@@ -159,13 +159,24 @@ fn main() {
       let annealer = Annealer::new(&runner.egraph);
       annealer.find_best(runner.roots[0], |expr| {
         let mut lockstep_count = 0;
+        let mut rel_count = 0;
+        let mut halfrel_count = 0;
         for node in expr.as_ref() {
           lockstep_count += match node {
             Eggroll::WhileLockstep(_) => 1,
             _ => 0,
-          }
+          };
+          rel_count += match node {
+            Eggroll::Rel(_) => 1,
+            _ => 0,
+          };
+          halfrel_count += match node {
+            Eggroll::RelLeft(_) => 1,
+            Eggroll::RelRight(_) => 1,
+            _ => 0,
+          };
         }
-        lockstep_count
+        std::cmp::max(0, (10*lockstep_count) + (5*rel_count) - halfrel_count)
       })
     },
   };

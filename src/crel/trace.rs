@@ -11,25 +11,36 @@ pub enum Result {
   Return(i32),
   Break,
   None,
+  OutOfFuel,
 }
 
 pub struct Execution {
   trace: Trace,
   result: Result,
+  max_trace: usize,
 }
 impl Execution {
-  fn new() -> Self {
+  fn new(max_trace: usize) -> Self {
     Execution {
       trace: vec!{},
       result: Result::None,
+      max_trace,
     }
   }
 
   fn set_state(&mut self, state: State) {
+    if self.trace.len() >= self.max_trace {
+      self.result = Result::OutOfFuel;
+      return;
+    }
     self.trace.push(state);
   }
 
   fn update_state(&mut self, id: String, value: i32) {
+    if self.trace.len() >= self.max_trace {
+      self.result = Result::OutOfFuel;
+      return;
+    }
     let mut new_state = self.current_state().clone();
     new_state.insert(id, value);
     self.trace.push(new_state);
@@ -43,18 +54,22 @@ impl Execution {
   }
 
   fn set_break(&mut self) {
+    if self.result == Result::OutOfFuel { return }
     self.result = Result::Break;
   }
 
   fn set_return(&mut self, value: i32) {
+    if self.result == Result::OutOfFuel { return }
     self.result = Result::Return(value);
   }
 
   fn set_value(&mut self, value: i32) {
+    if self.result == Result::OutOfFuel { return }
     self.result = Result::Int(value);
   }
 
   fn set_bool(&mut self, value: bool) {
+    if self.result == Result::OutOfFuel { return }
     if value {
       self.set_value(1)
     } else {
@@ -63,6 +78,7 @@ impl Execution {
   }
 
   fn set_identifier(&mut self, id: String) {
+    if self.result == Result::OutOfFuel { return }
     let value = match self.current_state().get(&id) {
       None => None,
       Some(i) => Some(*i),
@@ -97,6 +113,7 @@ impl Execution {
     match self.result {
       Result::Int(i) => i,
       Result::Identifier(_, Some(val)) => val,
+      Result::OutOfFuel => 0,
       _ => panic!("Result not an int: {:?}", self.result),
     }
   }
@@ -112,13 +129,14 @@ impl Execution {
     match self.result {
       Result::Return(_) => true,
       Result::Break => true,
+      Result::OutOfFuel => true,
       _ => false,
     }
   }
 }
 
-pub fn run(stmt: &Statement, state: State) -> Trace {
-  let mut exec = Execution::new();
+pub fn run(stmt: &Statement, state: State, max_trace: usize) -> Trace {
+  let mut exec = Execution::new(max_trace);
   exec.set_state(state);
   eval_statement(stmt, &mut exec);
   exec.trace
@@ -342,7 +360,7 @@ mod test {
       mk_state(vec!(("x", 1), ("y", 5))),
       mk_state(vec!(("x", 1), ("y", 6))),
     };
-    assert_eq!(expected, run(&body(prog), HashMap::new()));
+    assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
   }
 
   #[test]
@@ -369,7 +387,7 @@ mod test {
       mk_state(vec!(("x", 0),   ("y", 1))),
       mk_state(vec!(("x", 100), ("y", 1))),
     };
-    assert_eq!(expected, run(&body(prog), HashMap::new()));
+    assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
   }
 
   #[test]
@@ -400,7 +418,7 @@ mod test {
 
       mk_state(vec!(("x", 3), ("y", 2), ("z", 100))),
     };
-    assert_eq!(expected, run(&body(prog), HashMap::new()));
+    assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
   }
 
   #[test]
@@ -423,7 +441,26 @@ mod test {
       mk_state(vec!(("x", 1), ("y", 5))),
       mk_state(vec!(("x", 1), ("y", 5), ("z", 100))),
     };
-    assert_eq!(expected, run(&body(prog), HashMap::new()));
+    assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
+  }
+
+  #[test]
+  fn test_run_loop_fuel() {
+    let prog = parse_c_string(
+      "int main() {
+         int x = 0;
+         while (1) {
+           x = x + 1;
+         }
+       }".to_string());
+    let expected = vec!{
+      HashMap::new(),
+      mk_state(vec!(("x", 0))),
+      mk_state(vec!(("x", 1))),
+      mk_state(vec!(("x", 2))),
+      mk_state(vec!(("x", 3))),
+    };
+    assert_eq!(expected, run(&body(prog), HashMap::new(), 5));
   }
 
   fn mk_state(mapping: Vec<(&str, i32)>) -> State {

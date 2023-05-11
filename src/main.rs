@@ -50,7 +50,7 @@ enum ExtractorArg {
 }
 
 fn build_unaligned_crel(spec: &KestrelSpec, crel: &CRel) -> CRel {
-  let (crel, fundefs) = extract_fundefs(spec.left.as_str(), crel);
+  let (crel, fundefs) = extract_fundefs(crel);
   let left_fun = fundefs.get(&spec.left).expect(format!("Function not found: {}", spec.left).as_str());
   let right_fun = fundefs.get(&spec.right).expect(format!("Function not found: {}", spec.right).as_str());
 
@@ -81,7 +81,7 @@ fn build_unaligned_crel(spec: &KestrelSpec, crel: &CRel) -> CRel {
   }
 }
 
-fn extract_fundefs(name: &str, crel: &CRel) -> (Option<CRel>, HashMap<String, FunDef>) {
+fn extract_fundefs(crel: &CRel) -> (Option<CRel>, HashMap<String, FunDef>) {
   match crel {
     CRel::Declaration{ specifiers: _, declarators: _ } => {
       (Some(crel.clone()), HashMap::new())
@@ -98,7 +98,7 @@ fn extract_fundefs(name: &str, crel: &CRel) -> (Option<CRel>, HashMap<String, Fu
     },
     CRel::Seq(crels) => {
       let (crels, defs): (Vec<_>, Vec<_>) = crels.iter()
-        .map(|c| extract_fundefs(name, c))
+        .map(|c| extract_fundefs(c))
         .unzip();
       let crels: Vec<_> = crels.iter().flatten().map(|c| (*c).clone()).collect();
       let mut def_union = HashMap::new();

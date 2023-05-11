@@ -4,6 +4,12 @@ use std::collections::HashMap;
 pub type State = HashMap<String, i32>;
 pub type Trace = Vec<State>;
 
+pub fn state(mapping: Vec<(&str, i32)>) -> State {
+  let mut st = HashMap::new();
+  for (name, val) in mapping { st.insert(name.to_string(), val); }
+  st
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum Result {
   Int(i32),
@@ -355,10 +361,10 @@ mod test {
        }".to_string());
     let expected = vec!{
       HashMap::new(),
-      mk_state(vec!(("x", 0))),
-      mk_state(vec!(("x", 0), ("y", 5))),
-      mk_state(vec!(("x", 1), ("y", 5))),
-      mk_state(vec!(("x", 1), ("y", 6))),
+      state(vec!(("x", 0))),
+      state(vec!(("x", 0), ("y", 5))),
+      state(vec!(("x", 1), ("y", 5))),
+      state(vec!(("x", 1), ("y", 6))),
     };
     assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
   }
@@ -382,10 +388,10 @@ mod test {
        }".to_string());
     let expected = vec!{
       HashMap::new(),
-      mk_state(vec!(("x", 0))),
-      mk_state(vec!(("x", 0),   ("y", 0))),
-      mk_state(vec!(("x", 0),   ("y", 1))),
-      mk_state(vec!(("x", 100), ("y", 1))),
+      state(vec!(("x", 0))),
+      state(vec!(("x", 0),   ("y", 0))),
+      state(vec!(("x", 0),   ("y", 1))),
+      state(vec!(("x", 100), ("y", 1))),
     };
     assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
   }
@@ -404,19 +410,19 @@ mod test {
        }".to_string());
     let expected = vec!{
       HashMap::new(),
-      mk_state(vec!(("x", 0))),
-      mk_state(vec!(("x", 0), ("y", 5))),
+      state(vec!(("x", 0))),
+      state(vec!(("x", 0), ("y", 5))),
 
-      mk_state(vec!(("x", 1), ("y", 5))),
-      mk_state(vec!(("x", 1), ("y", 4))),
+      state(vec!(("x", 1), ("y", 5))),
+      state(vec!(("x", 1), ("y", 4))),
 
-      mk_state(vec!(("x", 2), ("y", 4))),
-      mk_state(vec!(("x", 2), ("y", 3))),
+      state(vec!(("x", 2), ("y", 4))),
+      state(vec!(("x", 2), ("y", 3))),
 
-      mk_state(vec!(("x", 3), ("y", 3))),
-      mk_state(vec!(("x", 3), ("y", 2))),
+      state(vec!(("x", 3), ("y", 3))),
+      state(vec!(("x", 3), ("y", 2))),
 
-      mk_state(vec!(("x", 3), ("y", 2), ("z", 100))),
+      state(vec!(("x", 3), ("y", 2), ("z", 100))),
     };
     assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
   }
@@ -436,10 +442,10 @@ mod test {
        }".to_string());
     let expected = vec!{
       HashMap::new(),
-      mk_state(vec!(("x", 0))),
-      mk_state(vec!(("x", 0), ("y", 5))),
-      mk_state(vec!(("x", 1), ("y", 5))),
-      mk_state(vec!(("x", 1), ("y", 5), ("z", 100))),
+      state(vec!(("x", 0))),
+      state(vec!(("x", 0), ("y", 5))),
+      state(vec!(("x", 1), ("y", 5))),
+      state(vec!(("x", 1), ("y", 5), ("z", 100))),
     };
     assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
   }
@@ -455,18 +461,12 @@ mod test {
        }".to_string());
     let expected = vec!{
       HashMap::new(),
-      mk_state(vec!(("x", 0))),
-      mk_state(vec!(("x", 1))),
-      mk_state(vec!(("x", 2))),
-      mk_state(vec!(("x", 3))),
+      state(vec!(("x", 0))),
+      state(vec!(("x", 1))),
+      state(vec!(("x", 2))),
+      state(vec!(("x", 3))),
     };
     assert_eq!(expected, run(&body(prog), HashMap::new(), 5));
-  }
-
-  fn mk_state(mapping: Vec<(&str, i32)>) -> State {
-    let mut st = HashMap::new();
-    for (name, val) in mapping { st.insert(name.to_string(), val); }
-    st
   }
 
   fn body(crel: CRel) -> Statement {

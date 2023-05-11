@@ -2,13 +2,29 @@ use crate::crel::ast::*;
 use std::collections::HashMap;
 
 pub type State = HashMap<String, i32>;
-pub type Trace = Vec<State>;
 
 pub fn state(mapping: Vec<(&str, i32)>) -> State {
   let mut st = HashMap::new();
   for (name, val) in mapping { st.insert(name.to_string(), val); }
   st
 }
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum Tag {
+  LoopStart,
+  LoopHead,
+  LoopEnd,
+  RelationStart,
+  RelationEnd,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum TraceItem {
+  Tag(Tag),
+  State(State),
+}
+
+pub type Trace = Vec<TraceItem>;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Result {
@@ -21,13 +37,16 @@ pub enum Result {
 }
 
 pub struct Execution {
+  current_state: Option<State>,
   trace: Trace,
   result: Result,
   max_trace: usize,
 }
 impl Execution {
+
   fn new(max_trace: usize) -> Self {
     Execution {
+      current_state: None,
       trace: vec!{},
       result: Result::None,
       max_trace,
@@ -39,7 +58,8 @@ impl Execution {
       self.result = Result::OutOfFuel;
       return;
     }
-    self.trace.push(state);
+    self.trace.push(TraceItem::State(state.clone()));
+    self.current_state = Some(state);
   }
 
   fn update_state(&mut self, id: String, value: i32) {
@@ -47,15 +67,27 @@ impl Execution {
       self.result = Result::OutOfFuel;
       return;
     }
-    let mut new_state = self.current_state().clone();
+    let mut new_state = match &self.current_state {
+      None => HashMap::new(),
+      Some(state) => state.clone(),
+    };
     new_state.insert(id, value);
-    self.trace.push(new_state);
+    self.trace.push(TraceItem::State(new_state.clone()));
+    self.current_state = Some(new_state);
   }
 
-  fn current_state(&self) -> &State {
-    match self.trace.len() {
-      0 => panic!("No current state"),
-      len => &self.trace[len - 1],
+  fn push_tag(&mut self, tag: Tag) {
+    if self.trace.len() >= self.max_trace {
+      self.result = Result::OutOfFuel;
+      return;
+    }
+    self.trace.push(TraceItem::Tag(tag));
+  }
+
+  fn current_state(&self) -> State {
+    match &self.current_state {
+      None => panic!("No current state"),
+      Some(state) => state.clone(),
     }
   }
 
@@ -179,8 +211,10 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
     },
     Statement::None => (),
     Statement::Relation{lhs, rhs} => {
+      exec.push_tag(Tag::RelationStart);
       eval_statement(lhs, exec);
       eval_statement(rhs, exec);
+      exec.push_tag(Tag::RelationEnd);
     },
     Statement::Return(expr) => {
       match expr {
@@ -193,19 +227,30 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
     },
     Statement::While{condition, body} => {
       eval_expression(condition, exec);
+      exec.push_tag(Tag::LoopStart);
       while exec.result_true() {
         match body {
           None => (),
           Some(stmt) => {
+            exec.push_tag(Tag::LoopHead);
+            if exec.ended() {
+              exec.clear_break();
+              break;
+            }
             eval_statement(stmt, exec);
             if exec.ended() {
               exec.clear_break();
               break;
             }
             eval_expression(condition, exec);
+            if exec.ended() {
+              exec.clear_break();
+              break;
+            }
           }
         }
       }
+      exec.push_tag(Tag::LoopEnd);
     },
   }
 }
@@ -360,11 +405,11 @@ mod test {
          y = x + y;
        }".to_string());
     let expected = vec!{
-      HashMap::new(),
-      state(vec!(("x", 0))),
-      state(vec!(("x", 0), ("y", 5))),
-      state(vec!(("x", 1), ("y", 5))),
-      state(vec!(("x", 1), ("y", 6))),
+      TraceItem::State(HashMap::new()),
+      TraceItem::State(state(vec!(("x", 0)))),
+      TraceItem::State(state(vec!(("x", 0), ("y", 5)))),
+      TraceItem::State(state(vec!(("x", 1), ("y", 5)))),
+      TraceItem::State(state(vec!(("x", 1), ("y", 6)))),
     };
     assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
   }
@@ -387,11 +432,11 @@ mod test {
          }
        }".to_string());
     let expected = vec!{
-      HashMap::new(),
-      state(vec!(("x", 0))),
-      state(vec!(("x", 0),   ("y", 0))),
-      state(vec!(("x", 0),   ("y", 1))),
-      state(vec!(("x", 100), ("y", 1))),
+      TraceItem::State(HashMap::new()),
+      TraceItem::State(state(vec!(("x", 0)))),
+      TraceItem::State(state(vec!(("x", 0),   ("y", 0)))),
+      TraceItem::State(state(vec!(("x", 0),   ("y", 1)))),
+      TraceItem::State(state(vec!(("x", 100), ("y", 1)))),
     };
     assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
   }
@@ -409,20 +454,21 @@ mod test {
          int z = 100;
        }".to_string());
     let expected = vec!{
-      HashMap::new(),
-      state(vec!(("x", 0))),
-      state(vec!(("x", 0), ("y", 5))),
-
-      state(vec!(("x", 1), ("y", 5))),
-      state(vec!(("x", 1), ("y", 4))),
-
-      state(vec!(("x", 2), ("y", 4))),
-      state(vec!(("x", 2), ("y", 3))),
-
-      state(vec!(("x", 3), ("y", 3))),
-      state(vec!(("x", 3), ("y", 2))),
-
-      state(vec!(("x", 3), ("y", 2), ("z", 100))),
+      TraceItem::State(HashMap::new()),
+      TraceItem::State(state(vec!(("x", 0)))),
+      TraceItem::State(state(vec!(("x", 0), ("y", 5)))),
+      TraceItem::Tag(Tag::LoopStart),
+      TraceItem::Tag(Tag::LoopHead),
+      TraceItem::State(state(vec!(("x", 1), ("y", 5)))),
+      TraceItem::State(state(vec!(("x", 1), ("y", 4)))),
+      TraceItem::Tag(Tag::LoopHead),
+      TraceItem::State(state(vec!(("x", 2), ("y", 4)))),
+      TraceItem::State(state(vec!(("x", 2), ("y", 3)))),
+      TraceItem::Tag(Tag::LoopHead),
+      TraceItem::State(state(vec!(("x", 3), ("y", 3)))),
+      TraceItem::State(state(vec!(("x", 3), ("y", 2)))),
+      TraceItem::Tag(Tag::LoopEnd),
+      TraceItem::State(state(vec!(("x", 3), ("y", 2), ("z", 100)))),
     };
     assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
   }
@@ -441,11 +487,14 @@ mod test {
          int z = 100;
        }".to_string());
     let expected = vec!{
-      HashMap::new(),
-      state(vec!(("x", 0))),
-      state(vec!(("x", 0), ("y", 5))),
-      state(vec!(("x", 1), ("y", 5))),
-      state(vec!(("x", 1), ("y", 5), ("z", 100))),
+      TraceItem::State(HashMap::new()),
+      TraceItem::State(state(vec!(("x", 0)))),
+      TraceItem::State(state(vec!(("x", 0), ("y", 5)))),
+      TraceItem::Tag(Tag::LoopStart),
+      TraceItem::Tag(Tag::LoopHead),
+      TraceItem::State(state(vec!(("x", 1), ("y", 5)))),
+      TraceItem::Tag(Tag::LoopEnd),
+      TraceItem::State(state(vec!(("x", 1), ("y", 5), ("z", 100)))),
     };
     assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
   }
@@ -460,13 +509,17 @@ mod test {
          }
        }".to_string());
     let expected = vec!{
-      HashMap::new(),
-      state(vec!(("x", 0))),
-      state(vec!(("x", 1))),
-      state(vec!(("x", 2))),
-      state(vec!(("x", 3))),
+      TraceItem::State(HashMap::new()),
+      TraceItem::State(state(vec!(("x", 0)))),
+      TraceItem::Tag(Tag::LoopStart),
+      TraceItem::Tag(Tag::LoopHead),
+      TraceItem::State(state(vec!(("x", 1)))),
+      TraceItem::Tag(Tag::LoopHead),
+      TraceItem::State(state(vec!(("x", 2)))),
+      TraceItem::Tag(Tag::LoopHead),
+      TraceItem::State(state(vec!(("x", 3)))),
     };
-    assert_eq!(expected, run(&body(prog), HashMap::new(), 5));
+    assert_eq!(expected, run(&body(prog), HashMap::new(), 9));
   }
 
   fn body(crel: CRel) -> Statement {

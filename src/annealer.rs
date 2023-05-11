@@ -18,7 +18,7 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
     let mut rng = rand::thread_rng();
     let mut selection = Selection::random(self.egraph);
     let mut score = fitness(selection.program(root));
-    for k in 1..500 {
+    for k in 1..5000 {
       let temp = 1.0 - ((k as f32) + 1.0) / 1000.0;
       let neighbor = selection.neighbor(root);
       let n_score = fitness(neighbor.program(root));
@@ -83,6 +83,10 @@ impl<'a, L: Language, N: Analysis<L>> Selection<'a, L, N> {
     // Find the used class IDs with other available options and select one at random.
     let keys = self.options.keys().map(|i| i.clone()).collect::<HashSet<egg::Id>>();
     let mut changeable = keys.intersection(&used_ids).collect::<Vec<&egg::Id>>();
+    if changeable.len() == 0 {
+      // TODO: Not sure what to do when there are no choices to change?
+      return Selection::random(self.egraph)
+    }
     changeable.shuffle(&mut rng);
     let change_index = changeable[0];
 

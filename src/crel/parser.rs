@@ -1,12 +1,24 @@
 use crate::crel::ast::*;
 use lang_c::ast as c;
-use lang_c::driver::{Config, parse};
+use lang_c::driver::{Config, parse, parse_preprocessed};
 use lang_c::span::Node;
 
 /// Read the given C file and parse it into the CRel IR.
 pub fn parse_c_file(input_file: String) -> CRel {
   let config = Config::with_clang();
   let ast = match parse(&config, input_file) {
+    Err(msg) => panic!("{}", msg),
+    Ok(ast)  => ast,
+  };
+  CRel::Seq(ast.unit.0.into_iter()
+    .map(trans_external_declaration)
+    .collect())
+}
+
+/// Read the given C string and parse it into the CRel IR.
+pub fn parse_c_string(input_str: String) -> CRel {
+  let config = Config::with_clang();
+  let ast = match parse_preprocessed(&config, input_str) {
     Err(msg) => panic!("{}", msg),
     Ok(ast)  => ast,
   };

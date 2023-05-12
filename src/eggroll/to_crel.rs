@@ -224,10 +224,10 @@ fn expect_statement(sexp: &Sexp) -> Statement {
         };
         let body1 = expect_statement(&sexps[3]);
         let body2 = expect_statement(&sexps[4]);
-        let bodies = Statement::Compound(vec![
-          BlockItem::Statement(body1.clone()),
-          BlockItem::Statement(body2.clone()),
-        ]);
+        let bodies = Statement::Relation {
+          lhs: Box::new(body1.clone()),
+          rhs: Box::new(body2.clone()),
+        };
 
         let stmts = vec! [
           BlockItem::Statement(Statement::While {

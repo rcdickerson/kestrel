@@ -13,16 +13,40 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
   }
 
   pub fn find_best<F>(&self, root: egg::Id, fitness: F) -> RecExpr<L>
-    where F: Fn(RecExpr<L>) -> i32
+    where F: Fn(RecExpr<L>) -> f32
   {
+    println!("Starting simulated annealing...");
+
+    let mut seen_selections = HashSet::new();
+
     let mut rng = rand::thread_rng();
     let mut selection = Selection::random(self.egraph);
     let mut score = fitness(selection.program(root));
-    for k in 1..5000 {
-      let temp = 1.0 - ((k as f32) + 1.0) / 1000.0;
+
+    let mut best = selection.program(root);
+    let mut best_score = score;
+
+    let max_k = 10000;
+
+    for k in 0..max_k {
+      let mut selections = selection.selections.iter()
+        .map( |(k, v)| (k.clone(), v.clone()))
+        .collect::<Vec<(egg::Id, usize)>>();
+      selections.sort();
+      seen_selections.insert(selections);
+
+      let temp = 1.0 - (k as f32) / ((1 + max_k) as f32);
       let neighbor = selection.neighbor(root);
       let n_score = fitness(neighbor.program(root));
+      if n_score < best_score {
+        best = neighbor.program(root);
+        best_score = n_score;
+      }
       let transition = if n_score <= score { true } else {
+        println!("score: {}", score);
+        println!("n score: {}", n_score);
+        println!("temp: {}", temp);
+        println!("Transitioning with probability: {}", ((score - n_score) as f32 / temp).exp());
         ((score - n_score) as f32 / temp).exp() > rng.gen()
       };
       if transition {
@@ -30,7 +54,10 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
         score = n_score;
       }
     }
-    selection.program(root)
+    println!("Simulated annealing complete.");
+    println!("Saw {} configurations", seen_selections.len());
+    println!("Best score: {}", best_score);
+    best
   }
 }
 
@@ -72,23 +99,27 @@ impl<'a, L: Language, N: Analysis<L>> Selection<'a, L, N> {
     let mut rng = rand::thread_rng();
 
     // Get the class IDs used by the current selection.
-    let mut used_ids = HashSet::new();
-    used_ids.insert(root.clone());
-    for node in self.program(root).as_ref() {
-      for id in node.children() {
-        used_ids.insert(id.clone());
-      }
-    }
+    // let mut used_ids = HashSet::new();
+    // used_ids.insert(root.clone());
+    // for node in self.program(root).as_ref() {
+    //   for id in node.children() {
+    //     used_ids.insert(id.clone());
+    //   }
+    // }
+    // println!("Used ids: {:?}", used_ids);
 
     // Find the used class IDs with other available options and select one at random.
     let keys = self.options.keys().map(|i| i.clone()).collect::<HashSet<egg::Id>>();
-    let mut changeable = keys.intersection(&used_ids).collect::<Vec<&egg::Id>>();
+    //let mut changeable = keys.intersection(&used_ids).collect::<Vec<&egg::Id>>();
+    let mut changeable = keys.iter().collect::<Vec<&egg::Id>>();
+//    println!("{} possible classes to change", changeable.len());
     if changeable.len() == 0 {
       // TODO: Not sure what to do when there are no choices to change?
       return Selection::random(self.egraph)
     }
     changeable.shuffle(&mut rng);
     let change_index = changeable[0];
+//    println!("Changing class {}", change_index);
 
     // Select a new option for that class ID.
     let old_selection = self.selections.get(change_index).expect("Id not in selections");

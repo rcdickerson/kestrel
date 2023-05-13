@@ -15,6 +15,7 @@ pub enum Tag {
   LoopHead,
   LoopEnd,
   RelationStart,
+  RelationMid,
   RelationEnd,
 }
 
@@ -173,6 +174,55 @@ impl Execution {
   }
 }
 
+pub fn loop_heads(trace: &Trace) -> Vec<Vec<State>> {
+  let mut all_heads = Vec::new();
+  let mut current_heads = Vec::new();
+  let mut current_state = None;
+  for item in trace {
+    match item {
+      TraceItem::State(state) => {
+         current_state = Some(state)
+      },
+      TraceItem::Tag(Tag::LoopHead) => {
+        let head_state = current_state.expect("Loop head before first state").clone();
+        current_heads.push(head_state);
+      },
+      TraceItem::Tag(Tag::LoopEnd) => {
+        all_heads.push(current_heads);
+        current_heads = Vec::new();
+      },
+      _ => ()
+    }
+  }
+  all_heads
+}
+
+pub fn relation_states(trace: &Trace) -> Vec<Vec<State>> {
+  let mut all_rels = Vec::new();
+  let mut current_rel = Vec::new();
+  let mut current_state = None;
+  for item in trace {
+    match item {
+      TraceItem::State(state) => {
+         current_state = Some(state);
+         if current_rel.len() > 0 {
+           current_rel.push(state.clone());
+         }
+      },
+      TraceItem::Tag(Tag::RelationStart) => {
+        let state = current_state.expect("Relation start before first state");
+        current_rel.push(state.clone());
+      },
+      TraceItem::Tag(Tag::RelationEnd) => {
+        all_rels.push(current_rel);
+        current_rel = Vec::new();
+      },
+      _ => ()
+    }
+  }
+  all_rels
+}
+
 pub fn run(stmt: &Statement, state: State, max_trace: usize) -> Trace {
   let mut exec = Execution::new(max_trace);
   exec.set_state(state);
@@ -213,6 +263,7 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
     Statement::Relation{lhs, rhs} => {
       exec.push_tag(Tag::RelationStart);
       eval_statement(lhs, exec);
+      exec.push_tag(Tag::RelationMid);
       eval_statement(rhs, exec);
       exec.push_tag(Tag::RelationEnd);
     },

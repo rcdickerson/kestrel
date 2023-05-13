@@ -14,6 +14,7 @@ use crate::names::*;
 use crate::spec::{KestrelSpec, parser::parse_spec};
 use egg::*;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
@@ -158,25 +159,71 @@ fn main() {
     ExtractorArg::SA => {
       let annealer = Annealer::new(&runner.egraph);
       annealer.find_best(runner.roots[0], |expr| {
-        let mut lockstep_count = 0;
-        let mut rel_count = 0;
-        let mut halfrel_count = 0;
-        for node in expr.as_ref() {
-          lockstep_count += match node {
-            Eggroll::WhileLockstep(_) => 1,
-            _ => 0,
-          };
-          rel_count += match node {
-            Eggroll::Rel(_) => 1,
-            _ => 0,
-          };
-          halfrel_count += match node {
-            Eggroll::RelLeft(_) => 1,
-            Eggroll::RelRight(_) => 1,
-            _ => 0,
-          };
+        let crel = eggroll::to_crel::eggroll_to_crel(&expr.to_string());
+        let body = extract_fundefs(&crel).1
+          .get(&"main".to_string())
+          .expect("Missing main function")
+          .body.clone();
+//        let trace = crel::trace::run(&body, crel::trace::state(vec!(("l_n", 5), ("r_n", 5))), 100);
+        let trace = crel::trace::run(&body, crel::trace::state(vec!(("l_x", 5), ("r_x", 5))), 100);
+        let loop_heads = crel::trace::loop_heads(&trace);
+        let rel_states = crel::trace::relation_states(&trace);
+
+        let num_rels = rel_states.len() as i32;
+        let score_rel_size = if num_rels == 0 {
+          1.0
+        } else {
+          let sum : usize = rel_states.iter().map(|v| v.len()).sum();
+          (sum as f32) / (num_rels as f32) / (trace.len() as f32)
+        };
+
+        let mut similarity_sum = 0.0;
+        for head_states in &loop_heads {
+          if head_states.len() == 0 { continue }
+          let mut l_head_seqs : HashMap<String, Vec<i32>> = HashMap::new();
+          let mut r_head_seqs : HashMap<String, Vec<i32>> = HashMap::new();
+          for head_state in head_states {
+            for (var, val) in head_state {
+              match var.get(..2) {
+                Some("l_") => {
+                  let mut seq = match l_head_seqs.get(var) {
+                    None => Vec::new(),
+                    Some(seq) => seq.clone(),
+                  };
+                  seq.push(val.clone());
+                  l_head_seqs.insert(var.clone(), seq);
+                },
+                Some("r_") => {
+                  let mut seq = match r_head_seqs.get(var) {
+                    None => Vec::new(),
+                    Some(seq) => seq.clone(),
+                  };
+                  seq.push(val.clone());
+                  r_head_seqs.insert(var.clone(), seq);
+                },
+                _ => (),
+              }
+            }
+          }
+          let l_diffs = l_head_seqs.values()
+            .map(|v| {
+              v.windows(2).map(|w| w[1] - w[0]).collect::<Vec<i32>>()
+            })
+            .filter(|v| { !v.iter().all(|i| *i == 0) })
+            .collect::<HashSet<Vec<i32>>>();
+          let r_diffs = r_head_seqs.values()
+            .map(|v| {
+              v.windows(2).map(|w| w[1] - w[0]).collect::<Vec<i32>>()
+            })
+            .filter(|v| { !v.iter().all(|i| *i == 0) })
+            .collect::<HashSet<Vec<i32>>>();
+          let similar = l_diffs.intersection(&r_diffs).count();
+          let increment = 2.0 * (similar as f32) / ((l_head_seqs.len() + r_head_seqs.len()) as f32);
+          similarity_sum += increment;
         }
-        std::cmp::max(0, (10*lockstep_count) + (5*rel_count) - halfrel_count)
+        let score_similarity = 1.0 - (similarity_sum / loop_heads.len() as f32);
+
+        (0.5 * score_rel_size) + (0.5 * score_similarity)
       })
     },
   };

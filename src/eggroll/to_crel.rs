@@ -200,6 +200,22 @@ fn expect_statement(sexp: &Sexp) -> Statement {
         let body = Some(Box::new(expect_statement(&sexps[2])));
         Statement::While{condition, body}
       },
+      Sexp::Atom(Atom::S(s)) if s == "while-double" => {
+        let condition = expect_expression(&sexps[1]);
+        let body_stmt = expect_statement(&sexps[2]);
+        let double_body = Statement::Compound(vec!(
+          BlockItem::Statement(body_stmt.clone()),
+          BlockItem::Statement(Statement::If {
+            condition: Box::new(condition.clone()),
+            then: Box::new(body_stmt.clone()),
+            els: None,
+          }),
+        ));
+        Statement::While {
+          condition: Box::new(condition),
+          body: Some(Box::new(double_body))
+        }
+      },
       Sexp::Atom(Atom::S(s)) if s == "while-lockstep" => {
         let cond1 = expect_expression(&sexps[1]);
         let cond2 = expect_expression(&sexps[2]);

@@ -326,6 +326,7 @@ fn eval_expression(expr: &Expression, exec: &mut Execution) {
 
 fn eval_unop(expr: &Expression, op: &UnaryOp, exec: &mut Execution) {
   eval_expression(expr, exec);
+  if exec.ended() { return; }
   match op {
     UnaryOp::Minus => exec.set_value(-1 * exec.result_int()),
     UnaryOp::Not => {
@@ -340,10 +341,12 @@ fn eval_unop(expr: &Expression, op: &UnaryOp, exec: &mut Execution) {
 
 fn eval_binop(lhs: &Expression, rhs: &Expression, op: &BinaryOp, exec: &mut Execution) {
   eval_expression(lhs, exec);
+  if exec.ended() { return; }
   match op {
     BinaryOp::Add => {
       let lhs_val = exec.result_int();
       eval_expression(rhs, exec);
+      if exec.ended() { return; }
       exec.set_value(lhs_val + exec.result_int());
     },
     BinaryOp::And => {
@@ -356,57 +359,68 @@ fn eval_binop(lhs: &Expression, rhs: &Expression, op: &BinaryOp, exec: &mut Exec
     BinaryOp::Assign => {
       let id = exec.result_identifier();
       eval_expression(rhs, exec);
+      if exec.ended() { return; }
       exec.update_state(id, exec.result_int());
     },
     BinaryOp::Sub => {
       let lhs_val = exec.result_int();
       eval_expression(rhs, exec);
+      if exec.ended() { return; }
       exec.set_value(lhs_val - exec.result_int());
     },
     BinaryOp::Div => {
       let lhs_val = exec.result_int();
       eval_expression(rhs, exec);
+      if exec.ended() { return; }
       exec.set_value(lhs_val / exec.result_int());
     },
     BinaryOp::Equals => {
       let lhs_val = exec.result_int();
       eval_expression(rhs, exec);
+      if exec.ended() { return; }
       exec.set_bool(lhs_val == exec.result_int());
     },
     BinaryOp::Gt => {
       let lhs_val = exec.result_int();
       eval_expression(rhs, exec);
+      if exec.ended() { return; }
       exec.set_bool(lhs_val > exec.result_int());
     },
     BinaryOp::Gte => {
       let lhs_val = exec.result_int();
       eval_expression(rhs, exec);
+      if exec.ended() { return; }
       exec.set_bool(lhs_val >= exec.result_int());
     },
     BinaryOp::Index => panic!("unsupported"),
     BinaryOp::Lt => {
       let lhs_val = exec.result_int();
       eval_expression(rhs, exec);
+      if exec.ended() { return; }
       exec.set_bool(lhs_val < exec.result_int());
     },
     BinaryOp::Lte => {
       let lhs_val = exec.result_int();
       eval_expression(rhs, exec);
+      if exec.ended() { return; }
       exec.set_bool(lhs_val <= exec.result_int());
     },
     BinaryOp::Mod => {
       let lhs_val = exec.result_int();
       eval_expression(rhs, exec);
+      if exec.ended() { return; }
       exec.set_value(lhs_val % exec.result_int());
     },
     BinaryOp::Mul => {
       let lhs_val = exec.result_int();
       eval_expression(rhs, exec);
+      if exec.ended() { return; }
       exec.set_value(lhs_val * exec.result_int());
     },
     BinaryOp::NotEquals => {
       let lhs_val = exec.result_int();
       eval_expression(rhs, exec);
+      if exec.ended() { return; }
       exec.set_bool(lhs_val != exec.result_int());
     },
     BinaryOp::Or => {
@@ -435,6 +449,7 @@ fn eval_declaration(decl: &Declaration, exec: &mut Execution) {
       None => exec.update_state(name.clone(), 0),
       Some(expr) => {
         eval_expression(&expr, exec);
+        if exec.ended() { return; }
         exec.update_state(name.clone(), exec.result_int())
       }
     }

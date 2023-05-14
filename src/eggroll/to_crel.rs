@@ -221,8 +221,10 @@ fn expect_statement(sexp: &Sexp) -> Statement {
         }
       },
       Sexp::Atom(Atom::S(s)) if s == "while-lockstep" => {
-        let cond1 = expect_expression(&sexps[1]);
-        let cond2 = expect_expression(&sexps[2]);
+        let left_iters = expect_i64(&sexps[1]);
+        let right_iters = expect_i64(&sexps[2]);
+        let cond1 = expect_expression(&sexps[3]);
+        let cond2 = expect_expression(&sexps[4]);
         let conj = Expression::Binop {
           lhs: Box::new(cond1.clone()),
           rhs: Box::new(cond2.clone()),
@@ -242,8 +244,41 @@ fn expect_statement(sexp: &Sexp) -> Statement {
           rhs: Box::new(cond2.clone()),
           op: BinaryOp::And,
         };
-        let body1 = expect_statement(&sexps[3]);
-        let body2 = expect_statement(&sexps[4]);
+
+        let mut body1 = expect_statement(&sexps[5]);
+        let mut repeats1 = vec!(body1.clone());
+        for _i in [1..left_iters] {
+          let next_iter = Statement::If {
+            condition: Box::new(cond1.clone()),
+            then: Box::new(body1.clone()),
+            els: None,
+          };
+          repeats1.push(next_iter);
+        }
+        if repeats1.len() > 1 {
+          let items = repeats1.iter()
+            .map(|s| BlockItem::Statement(s.clone()))
+            .collect();
+          body1 = Statement::Compound(items);
+        }
+
+        let mut body2 = expect_statement(&sexps[6]);
+        let mut repeats2 = Vec::new();
+        for _i in [1..right_iters] {
+          let next_iter = Statement::If {
+            condition: Box::new(cond2.clone()),
+            then: Box::new(body2.clone()),
+            els: None,
+          };
+          repeats2.push(next_iter);
+        }
+        if repeats2.len() > 1 {
+          let items = repeats2.iter()
+            .map(|s| BlockItem::Statement(s.clone()))
+            .collect();
+          body2 = Statement::Compound(items);
+        }
+
         let bodies = Statement::Relation {
           lhs: Box::new(body1.clone()),
           rhs: Box::new(body2.clone()),
@@ -438,5 +473,12 @@ fn expect_string(sexp: &Sexp) -> String {
   match &sexp {
     Sexp::Atom(Atom::S(s)) => s.clone(),
     _ => panic!("Expected string literal, got: {}", sexp)
+  }
+}
+
+fn expect_i64(sexp: &Sexp) -> i64 {
+  match &sexp {
+    Sexp::Atom(Atom::I(i)) => *i,
+    _ => panic!("Expected i64, got: {}", sexp)
   }
 }

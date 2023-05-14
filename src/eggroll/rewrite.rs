@@ -11,12 +11,27 @@ pub fn make_rules() -> Vec<Rewrite<Eggroll, ()>> {
     rewrite!("rel-unembed"; "(seq (<| ?x) (|> ?y))" => "(<|> ?x ?y)"),
     rewrite!("embed-hom-l"; "(<| (seq ?x ?y))" => "(seq (<| ?x) (<| ?y))"),
     rewrite!("embed-hom-r"; "(|> (seq ?x ?y))" => "(seq (|> ?x) (|> ?y))"),
-    rewrite!("while-lockstep"; "(<|> (while ?e1 ?c1) (while ?e2 ?c2))" =>
-                               "(seq (while (&& ?e1 ?e2) (<|> ?c1 ?c2))
-                                (seq (while ?e1 ?c1)
-                                     (while ?e2 ?c2)))"),
-    rewrite!("while-double"; "(while ?e1 ?c1)" => "(while-double ?e1 ?c1)"),
     // rewrite!("while-lockstep"; "(<|> (while ?e1 ?c1) (while ?e2 ?c2))" =>
-    //                            "(while-lockstep ?e1 ?e2 ?c1 ?c2)"),
+    //                            "(seq (while (&& ?e1 ?e2) (<|> ?c1 ?c2))
+    //                             (seq (while ?e1 ?c1)
+    //                                  (while ?e2 ?c2)))"),
+
+    // rewrite!("while-lockstep-double-l"; "(<|> (while ?e1 ?c1) (while ?e2 ?c2))" =>
+    //                            "(seq (while (&& ?e1 ?e2) (<|> (seq ?c1 (if ?e1 ?c1)) ?c2))
+    //                             (seq (while ?e1 ?c1)
+    //                                  (while ?e2 ?c2)))"),
+    // rewrite!("while-lockstep-double-r"; "(<|> (while ?e1 ?c1) (while ?e2 ?c2))" =>
+    //                            "(seq (while (&& ?e1 ?e2) (<|> ?c1 (seq ?c2 (if ?e2 ?c2))))
+    //                             (seq (while ?e1 ?c1)
+    //                                  (while ?e2 ?c2)))"),
+
+    // rewrite!("while-double"; "(while ?e1 ?c1)" => "(while-double ?e1 ?c1)"),
+    rewrite!("while-lockstep11"; "(<|> (while ?e1 ?c1) (while ?e2 ?c2))" =>
+                                 "(while-lockstep 1 1 ?e1 ?e2 ?c1 ?c2)"),
+    rewrite!("while-lockstep21"; "(<|> (while ?e1 ?c1) (while ?e2 ?c2))" =>
+                                 "(while-lockstep 2 1 ?e1 ?e2 ?c1 ?c2)"),
+    rewrite!("while-lockstep12"; "(<|> (while ?e1 ?c1) (while ?e2 ?c2))" =>
+                                 "(while-lockstep 1 2 ?e1 ?e2 ?c1 ?c2)"),
+
   ]
 }

@@ -129,7 +129,7 @@ struct StatesSummary {
   r_vals: HashMap<String, Vec<i32>>,
   l_diffs: HashMap<String, Vec<i32>>,
   r_diffs: HashMap<String, Vec<i32>>,
-  vars: HashSet<String>,
+  changed_vars: HashSet<String>,
 }
 
 fn summarize_states(states: &Vec<crel::trace::State>) -> StatesSummary {
@@ -178,9 +178,9 @@ fn summarize_states(states: &Vec<crel::trace::State>) -> StatesSummary {
 
   let l_vars : HashSet<String> = HashSet::from_iter(l_diffs.keys().map(|v| v.clone()));
   let r_vars : HashSet<String> = HashSet::from_iter(r_diffs.keys().map(|v| v.clone()));
-  let vars = l_vars.union(&r_vars).map(|v| v.clone()).collect::<HashSet<String>>();
+  let changed_vars = l_vars.union(&r_vars).map(|v| v.clone()).collect::<HashSet<String>>();
 
-  StatesSummary { l_vals, r_vals, l_diffs, r_diffs, vars }
+  StatesSummary { l_vals, r_vals, l_diffs, r_diffs, changed_vars }
 }
 
 fn sa_score(expr: RecExpr<Eggroll>) -> f32 {
@@ -209,7 +209,8 @@ fn sa_score(expr: RecExpr<Eggroll>) -> f32 {
     for states in &rel_states {
       let mut matches = 0;
       let summary = summarize_states(states);
-      for var in &summary.vars {
+      if summary.changed_vars.len() == 0 { continue; }
+      for var in &summary.changed_vars {
         let left = summary.l_diffs.get(var);
         let right = summary.r_diffs.get(var);
         match (left, right) {
@@ -217,7 +218,7 @@ fn sa_score(expr: RecExpr<Eggroll>) -> f32 {
           _ => (),
         }
       }
-      match_sum += (matches as f32) / (summary.vars.len() as f32);
+      match_sum += (matches as f32) / (summary.changed_vars.len() as f32);
     }
     1.0 - ((match_sum as f32) / (rel_states.len() as f32))
   };
@@ -228,10 +229,11 @@ fn sa_score(expr: RecExpr<Eggroll>) -> f32 {
     if head_states.len() == 0 { continue }
 
     let summary = summarize_states(head_states);
+    if summary.changed_vars.len() == 0 { continue; }
 
     let mut matching = 0;
     let mut similar = 0;
-    for var in &summary.vars {
+    for var in &summary.changed_vars {
       let left = summary.l_diffs.get(var);
       let right = summary.r_diffs.get(var);
       match (left, right) {
@@ -252,8 +254,8 @@ fn sa_score(expr: RecExpr<Eggroll>) -> f32 {
         },
       }
     }
-    matching_sum += (matching as f32) / (summary.vars.len() as f32);
-    similarity_sum += (similar as f32) / (summary.vars.len() as f32);
+    matching_sum += (matching as f32) / (summary.changed_vars.len() as f32);
+    similarity_sum += (similar as f32) / (summary.changed_vars.len() as f32);
   }
   let score_matching = 1.0 - (matching_sum / loop_heads.len() as f32);
   let score_similarity = 1.0 - (similarity_sum / loop_heads.len() as f32);

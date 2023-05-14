@@ -177,6 +177,7 @@ fn main() {
           (sum as f32) / (num_rels as f32) / (trace.len() as f32)
         };
 
+        let mut matching_sum : f32 = 0.0;
         let mut similarity_sum : f32 = 0.0;
         for head_states in &loop_heads {
           if head_states.len() == 0 { continue }
@@ -228,7 +229,8 @@ fn main() {
           let r_keys : HashSet<&String> = HashSet::from_iter(r_diffs.keys());
           let keys = l_keys.union(&r_keys).collect::<HashSet<&&String>>();
 
-          let mut matching : f32 = 0.0;
+          let mut matching = 0;
+          let mut similar = 0;
           for var in &keys {
             let left = l_diffs.get(**var);
             let right = r_diffs.get(**var);
@@ -241,20 +243,22 @@ fn main() {
                   .collect::<Vec<(i32, i32)>>();
                 let homogeneous = ratios.iter()
                   .all(|(d,m)| *d == ratios[0].0 && *m == ratios[0].1);
-                //if homogeneous { matching += 1; }
                 if l_vals.get(**var) == r_vals.get(**var) {
-                  matching += 1.0;
-                } else if homogeneous {
-                  matching += 0.5;
+                  matching += 1;
+                }
+                if homogeneous {
+                  similar += 1;
                 }
               },
             }
           }
-          similarity_sum += (matching as f32) / (keys.len() as f32);
+          matching_sum += (matching as f32) / (keys.len() as f32);
+          similarity_sum += (similar as f32) / (keys.len() as f32);
         }
+        let score_matching = 1.0 - (matching_sum / loop_heads.len() as f32);
         let score_similarity = 1.0 - (similarity_sum / loop_heads.len() as f32);
 
-        (0.5 * score_rel_size) + (0.5 * score_similarity)
+        (0.5 * score_rel_size) + (0.25 * score_similarity) + (0.25 * score_matching)
       })
     },
   };

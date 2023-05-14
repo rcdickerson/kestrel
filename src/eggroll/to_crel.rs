@@ -180,10 +180,14 @@ fn expect_statement(sexp: &Sexp) -> Statement {
         Statement::Relation{lhs, rhs}
       },
       Sexp::Atom(Atom::S(s)) if s == "|>" => {
-        expect_statement(&sexps[1])
+        let lhs = Box::new(Statement::None);
+        let rhs = Box::new(expect_statement(&sexps[1]));
+        Statement::Relation{lhs, rhs}
       },
       Sexp::Atom(Atom::S(s)) if s == "<|" => {
-        expect_statement(&sexps[1])
+        let lhs = Box::new(expect_statement(&sexps[1]));
+        let rhs = Box::new(Statement::None);
+        Statement::Relation{lhs, rhs}
       },
       Sexp::Atom(Atom::S(s)) if s == "declaration" => {
         Statement::Compound(vec!(BlockItem::Declaration(expect_declaration(sexp))))

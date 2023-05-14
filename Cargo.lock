@@ -169,6 +169,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "crustal"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "813db5df7b3f55178c952ed26b57caaae17758bbfae3f23431f23d91178e79e5"
+
+[[package]]
 name = "egg"
 version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -304,6 +310,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "coin_cbc",
+ "crustal",
  "egg",
  "lang-c",
  "log",

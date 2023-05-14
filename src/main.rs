@@ -183,6 +183,87 @@ fn summarize_states(states: &Vec<crel::trace::State>) -> StatesSummary {
   StatesSummary { l_vals, r_vals, l_diffs, r_diffs, vars }
 }
 
+fn sa_score(expr: RecExpr<Eggroll>) -> f32 {
+  let crel = eggroll::to_crel::eggroll_to_crel(&expr.to_string());
+  let body = extract_fundefs(&crel).1
+    .get(&"main".to_string())
+    .expect("Missing main function")
+    .body.clone();
+  //        let trace = crel::trace::run(&body, crel::trace::state(vec!(("l_n", 5), ("r_n", 5))), 100);
+  let trace = crel::trace::run(&body, crel::trace::state(vec!(("l_x", 5), ("r_x", 5))), 100);
+  let loop_heads = crel::trace::loop_heads(&trace);
+  let rel_states = crel::trace::relation_states(&trace);
+
+  let num_rels = rel_states.len() as i32;
+  let score_rel_size = if num_rels == 0 {
+    1.0
+  } else {
+    let sum : usize = rel_states.iter().map(|v| v.len()).sum();
+    (sum as f32) / (num_rels as f32) / (trace.len() as f32)
+  };
+
+  let score_rel_update_match = if num_rels == 0 {
+    1.0
+  } else {
+    let mut match_sum : f32 = 0.0;
+    for states in &rel_states {
+      let mut matches = 0;
+      let summary = summarize_states(states);
+      for var in &summary.vars {
+        let left = summary.l_diffs.get(var);
+        let right = summary.r_diffs.get(var);
+        match (left, right) {
+          (Some(_), Some(_)) => matches += 1,
+          _ => (),
+        }
+      }
+      match_sum += (matches as f32) / (summary.vars.len() as f32);
+    }
+    1.0 - ((match_sum as f32) / (rel_states.len() as f32))
+  };
+
+  let mut matching_sum : f32 = 0.0;
+  let mut similarity_sum : f32 = 0.0;
+  for head_states in &loop_heads {
+    if head_states.len() == 0 { continue }
+
+    let summary = summarize_states(head_states);
+
+    let mut matching = 0;
+    let mut similar = 0;
+    for var in &summary.vars {
+      let left = summary.l_diffs.get(var);
+      let right = summary.r_diffs.get(var);
+      match (left, right) {
+        (None, _) => continue,
+        (_, None) => continue,
+        (Some(left), Some(right)) => {
+          let ratios = left.iter().zip(right)
+            .map(|(l,r)| (l / r, l % r))
+            .collect::<Vec<(i32, i32)>>();
+          let homogeneous = ratios.iter()
+            .all(|(d,m)| *d == ratios[0].0 && *m == ratios[0].1);
+          if summary.l_vals.get(var) == summary.r_vals.get(var) {
+            matching += 1;
+          }
+          if homogeneous {
+            similar += 1;
+          }
+        },
+      }
+    }
+    matching_sum += (matching as f32) / (summary.vars.len() as f32);
+    similarity_sum += (similar as f32) / (summary.vars.len() as f32);
+  }
+  let score_matching = 1.0 - (matching_sum / loop_heads.len() as f32);
+  let score_similarity = 1.0 - (similarity_sum / loop_heads.len() as f32);
+
+  (0.25 * score_rel_size)
+    + (0.25 * score_rel_update_match)
+    + (0.25 * score_similarity)
+    + (0.25 * score_matching)
+}
+
 fn main() {
   let args = Args::parse();
 
@@ -217,86 +298,7 @@ fn main() {
     },
     ExtractorArg::SA => {
       let annealer = Annealer::new(&runner.egraph);
-      annealer.find_best(runner.roots[0], |expr| {
-        let crel = eggroll::to_crel::eggroll_to_crel(&expr.to_string());
-        let body = extract_fundefs(&crel).1
-          .get(&"main".to_string())
-          .expect("Missing main function")
-          .body.clone();
-//        let trace = crel::trace::run(&body, crel::trace::state(vec!(("l_n", 5), ("r_n", 5))), 100);
-        let trace = crel::trace::run(&body, crel::trace::state(vec!(("l_x", 5), ("r_x", 5))), 100);
-        let loop_heads = crel::trace::loop_heads(&trace);
-        let rel_states = crel::trace::relation_states(&trace);
-
-        let num_rels = rel_states.len() as i32;
-        let score_rel_size = if num_rels == 0 {
-          1.0
-        } else {
-          let sum : usize = rel_states.iter().map(|v| v.len()).sum();
-          (sum as f32) / (num_rels as f32) / (trace.len() as f32)
-        };
-
-        let score_rel_update_match = if num_rels == 0 {
-          1.0
-        } else {
-          let mut match_sum : f32 = 0.0;
-          for states in &rel_states {
-            let mut matches = 0;
-            let summary = summarize_states(states);
-            for var in &summary.vars {
-              let left = summary.l_diffs.get(var);
-              let right = summary.r_diffs.get(var);
-              match (left, right) {
-                (Some(_), Some(_)) => matches += 1,
-                _ => (),
-              }
-            }
-            match_sum += (matches as f32) / (summary.vars.len() as f32);
-          }
-          1.0 - ((match_sum as f32) / (rel_states.len() as f32))
-        };
-
-        let mut matching_sum : f32 = 0.0;
-        let mut similarity_sum : f32 = 0.0;
-        for head_states in &loop_heads {
-          if head_states.len() == 0 { continue }
-
-          let summary = summarize_states(head_states);
-
-          let mut matching = 0;
-          let mut similar = 0;
-          for var in &summary.vars {
-            let left = summary.l_diffs.get(var);
-            let right = summary.r_diffs.get(var);
-            match (left, right) {
-              (None, _) => continue,
-              (_, None) => continue,
-              (Some(left), Some(right)) => {
-                let ratios = left.iter().zip(right)
-                  .map(|(l,r)| (l / r, l % r))
-                  .collect::<Vec<(i32, i32)>>();
-                let homogeneous = ratios.iter()
-                  .all(|(d,m)| *d == ratios[0].0 && *m == ratios[0].1);
-                if summary.l_vals.get(var) == summary.r_vals.get(var) {
-                  matching += 1;
-                }
-                if homogeneous {
-                  similar += 1;
-                }
-              },
-            }
-          }
-          matching_sum += (matching as f32) / (summary.vars.len() as f32);
-          similarity_sum += (similar as f32) / (summary.vars.len() as f32);
-        }
-        let score_matching = 1.0 - (matching_sum / loop_heads.len() as f32);
-        let score_similarity = 1.0 - (similarity_sum / loop_heads.len() as f32);
-
-        (0.25 * score_rel_size)
-          + (0.25 * score_rel_update_match)
-          + (0.25 * score_similarity)
-          + (0.25 * score_matching)
-      })
+      annealer.find_best(runner.roots[0], sa_score)
     },
   };
   println!("\nAligned Eggroll:\n{}", aligned_eggroll.pretty(80));

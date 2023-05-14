@@ -124,6 +124,65 @@ impl MapVars for FunDef {
   }
 }
 
+struct StatesSummary {
+  l_vals: HashMap<String, Vec<i32>>,
+  r_vals: HashMap<String, Vec<i32>>,
+  l_diffs: HashMap<String, Vec<i32>>,
+  r_diffs: HashMap<String, Vec<i32>>,
+  vars: HashSet<String>,
+}
+
+fn summarize_states(states: &Vec<crel::trace::State>) -> StatesSummary {
+  let mut l_vals : HashMap<String, Vec<i32>> = HashMap::new();
+  let mut r_vals : HashMap<String, Vec<i32>> = HashMap::new();
+  for state in states {
+    for (exec_var, val) in state {
+      let(exec, var) = (&exec_var[..1], &exec_var[2..]);
+      match exec {
+        "l" => {
+          let mut seq = match l_vals.get(var) {
+            None => Vec::new(),
+            Some(seq) => seq.clone(),
+          };
+          seq.push(val.clone());
+          l_vals.insert(var.to_string(), seq);
+        },
+        "r" => {
+          let mut seq = match r_vals.get(var) {
+            None => Vec::new(),
+            Some(seq) => seq.clone(),
+          };
+          seq.push(val.clone());
+          r_vals.insert(var.to_string(), seq);
+        },
+        _ => continue,
+      }
+    }
+  }
+
+  let mut l_diffs = HashMap::new();
+  for (k,v) in &l_vals {
+    let diffs = v.windows(2).map(|w| w[1] - w[0]).collect::<Vec<i32>>();
+    if diffs.len() > 0 && !diffs.iter().all(|i| *i == 0) {
+      l_diffs.insert(k.clone(), diffs);
+    }
+  }
+
+  let mut r_diffs = HashMap::new();
+  for (k,v) in &r_vals {
+    let diffs = v.windows(2).map(|w| w[1] - w[0]).collect::<Vec<i32>>();
+    if diffs.len() > 0 && !diffs.iter().all(|i| *i == 0) {
+      r_diffs.insert(k.clone(), diffs);
+    }
+  }
+
+  let l_vars : HashSet<String> = HashSet::from_iter(l_diffs.keys().map(|v| v.clone()));
+  let r_vars : HashSet<String> = HashSet::from_iter(r_diffs.keys().map(|v| v.clone()));
+  let vars = l_vars.union(&r_vars).map(|v| v.clone()).collect::<HashSet<String>>();
+
+  StatesSummary { l_vals, r_vals, l_diffs, r_diffs, vars }
+}
+
 fn main() {
   let args = Args::parse();
 
@@ -177,63 +236,38 @@ fn main() {
           (sum as f32) / (num_rels as f32) / (trace.len() as f32)
         };
 
+        let score_rel_update_match = if num_rels == 0 {
+          1.0
+        } else {
+          let mut match_sum : f32 = 0.0;
+          for states in &rel_states {
+            let mut matches = 0;
+            let summary = summarize_states(states);
+            for var in &summary.vars {
+              let left = summary.l_diffs.get(var);
+              let right = summary.r_diffs.get(var);
+              match (left, right) {
+                (Some(_), Some(_)) => matches += 1,
+                _ => (),
+              }
+            }
+            match_sum += (matches as f32) / (summary.vars.len() as f32);
+          }
+          1.0 - ((match_sum as f32) / (rel_states.len() as f32))
+        };
+
         let mut matching_sum : f32 = 0.0;
         let mut similarity_sum : f32 = 0.0;
         for head_states in &loop_heads {
           if head_states.len() == 0 { continue }
 
-          let mut l_vals : HashMap<String, Vec<i32>> = HashMap::new();
-          let mut r_vals : HashMap<String, Vec<i32>> = HashMap::new();
-          for head_state in head_states {
-            for (exec_var, val) in head_state {
-              let(exec, var) = (&exec_var[..1], &exec_var[2..]);
-              match exec {
-                "l" => {
-                  let mut seq = match l_vals.get(var) {
-                    None => Vec::new(),
-                    Some(seq) => seq.clone(),
-                  };
-                  seq.push(val.clone());
-                  l_vals.insert(var.to_string(), seq);
-                },
-                "r" => {
-                  let mut seq = match r_vals.get(var) {
-                    None => Vec::new(),
-                    Some(seq) => seq.clone(),
-                  };
-                  seq.push(val.clone());
-                  r_vals.insert(var.to_string(), seq);
-                },
-                _ => continue,
-              }
-            }
-          }
-
-          let mut l_diffs = HashMap::new();
-          for (k,v) in &l_vals {
-            let diffs = v.windows(2).map(|w| w[1] - w[0]).collect::<Vec<i32>>();
-            if diffs.len() > 0 && !diffs.iter().all(|i| *i == 0) {
-              l_diffs.insert(k.clone(), diffs);
-            }
-          }
-
-          let mut r_diffs = HashMap::new();
-          for (k,v) in &r_vals {
-            let diffs = v.windows(2).map(|w| w[1] - w[0]).collect::<Vec<i32>>();
-            if diffs.len() > 0 && !diffs.iter().all(|i| *i == 0) {
-              r_diffs.insert(k.clone(), diffs);
-            }
-          }
-
-          let l_keys : HashSet<&String> = HashSet::from_iter(l_diffs.keys());
-          let r_keys : HashSet<&String> = HashSet::from_iter(r_diffs.keys());
-          let keys = l_keys.union(&r_keys).collect::<HashSet<&&String>>();
+          let summary = summarize_states(head_states);
 
           let mut matching = 0;
           let mut similar = 0;
-          for var in &keys {
-            let left = l_diffs.get(**var);
-            let right = r_diffs.get(**var);
+          for var in &summary.vars {
+            let left = summary.l_diffs.get(var);
+            let right = summary.r_diffs.get(var);
             match (left, right) {
               (None, _) => continue,
               (_, None) => continue,
@@ -243,7 +277,7 @@ fn main() {
                   .collect::<Vec<(i32, i32)>>();
                 let homogeneous = ratios.iter()
                   .all(|(d,m)| *d == ratios[0].0 && *m == ratios[0].1);
-                if l_vals.get(**var) == r_vals.get(**var) {
+                if summary.l_vals.get(var) == summary.r_vals.get(var) {
                   matching += 1;
                 }
                 if homogeneous {
@@ -252,13 +286,16 @@ fn main() {
               },
             }
           }
-          matching_sum += (matching as f32) / (keys.len() as f32);
-          similarity_sum += (similar as f32) / (keys.len() as f32);
+          matching_sum += (matching as f32) / (summary.vars.len() as f32);
+          similarity_sum += (similar as f32) / (summary.vars.len() as f32);
         }
         let score_matching = 1.0 - (matching_sum / loop_heads.len() as f32);
         let score_similarity = 1.0 - (similarity_sum / loop_heads.len() as f32);
 
-        (0.5 * score_rel_size) + (0.25 * score_similarity) + (0.25 * score_matching)
+        (0.25 * score_rel_size)
+          + (0.25 * score_rel_update_match)
+          + (0.25 * score_similarity)
+          + (0.25 * score_matching)
       })
     },
   };

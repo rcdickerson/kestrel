@@ -277,8 +277,8 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
       }
     },
     Statement::While{condition, body} => {
-      eval_expression(condition, exec);
       exec.push_tag(Tag::LoopStart);
+      eval_expression(condition, exec);
       while exec.result_true() {
         match body {
           None => (),

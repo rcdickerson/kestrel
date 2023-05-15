@@ -245,9 +245,10 @@ fn expect_statement(sexp: &Sexp) -> Statement {
           op: BinaryOp::And,
         };
 
-        let mut body1 = expect_statement(&sexps[5]);
+        let body1 = expect_statement(&sexps[5]);
+        let mut body1_rel = body1.clone();
         let mut repeats1 = vec!(body1.clone());
-        for _i in [1..left_iters] {
+        while (repeats1.len() as i64) < left_iters {
           let next_iter = Statement::If {
             condition: Box::new(cond1.clone()),
             then: Box::new(body1.clone()),
@@ -255,16 +256,17 @@ fn expect_statement(sexp: &Sexp) -> Statement {
           };
           repeats1.push(next_iter);
         }
-        if repeats1.len() > 1 {
+        if left_iters > 1 {
           let items = repeats1.iter()
             .map(|s| BlockItem::Statement(s.clone()))
             .collect();
-          body1 = Statement::Compound(items);
+          body1_rel = Statement::Compound(items);
         }
 
-        let mut body2 = expect_statement(&sexps[6]);
-        let mut repeats2 = Vec::new();
-        for _i in [1..right_iters] {
+        let body2 = expect_statement(&sexps[6]);
+        let mut body2_rel = body2.clone();
+        let mut repeats2 = vec!(body2.clone());
+        while (repeats2.len() as i64) < right_iters {
           let next_iter = Statement::If {
             condition: Box::new(cond2.clone()),
             then: Box::new(body2.clone()),
@@ -272,16 +274,16 @@ fn expect_statement(sexp: &Sexp) -> Statement {
           };
           repeats2.push(next_iter);
         }
-        if repeats2.len() > 1 {
+        if right_iters > 1 {
           let items = repeats2.iter()
             .map(|s| BlockItem::Statement(s.clone()))
             .collect();
-          body2 = Statement::Compound(items);
+          body2_rel = Statement::Compound(items);
         }
 
         let bodies = Statement::Relation {
-          lhs: Box::new(body1.clone()),
-          rhs: Box::new(body2.clone()),
+          lhs: Box::new(body1_rel),
+          rhs: Box::new(body2_rel),
         };
 
         let stmts = vec! [

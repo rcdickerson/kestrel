@@ -1,29 +1,23 @@
 use crate::shanty::Function;
+use crate::shanty::Include;
 use crate::shanty::Statement;
 use crate::shanty::Variable;
+use crate::shanty::Writer;
 
 #[derive(Clone, Debug)]
 pub struct Source {
-  includes: Vec<String>,
   items: Vec<Item>,
-}
-
-#[derive(Clone, Debug)]
-enum Item {
-  Statement(Statement),
-  Function(Function),
 }
 
 impl Source {
   pub fn new() -> Self {
     Source {
-      includes: Vec::new(),
       items: Vec::new(),
     }
   }
 
   pub fn include(&mut self, include: &str) -> &Self {
-    self.includes.push(include.to_string());
+    self.items.push(Item::Include(Include::new(&include.to_string())));
     self
   }
 
@@ -40,9 +34,30 @@ impl Source {
 
 impl ToString for Source {
   fn to_string(&self) -> String {
-    // self.includes.iter()
-    //   .map(|inc| format!("#include \"{}\"\n", inc))
-    //   .collect()
-    format!("{:?}", self)
+    let mut writer = Writer::new();
+    for item in &self.items {
+      item.emit(&mut writer);
+    }
+    writer.to_string()
+  }
+}
+
+#[derive(Clone, Debug)]
+enum Item {
+  Function(Function),
+  Include(Include),
+  Statement(Statement),
+}
+
+impl Item {
+  fn emit(&self, writer: &mut Writer) {
+    match self {
+      Item::Function(fun) => {
+        writer.new_line();
+        fun.emit(writer)
+      },
+      Item::Include(include) => include.emit(writer),
+      Item::Statement(stmt) => stmt.emit(writer),
+    }
   }
 }

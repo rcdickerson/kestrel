@@ -1,6 +1,7 @@
 pub mod ast;
 pub mod bblock;
 pub mod collect_vars;
+pub mod count_loops;
 pub mod map_vars;
 pub mod parser;
 pub mod to_c;

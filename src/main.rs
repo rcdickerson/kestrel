@@ -7,7 +7,7 @@ mod spec;
 
 use clap::{Parser, ValueEnum};
 use crate::annealer::*;
-use crate::crel::{ast::*, bblock::*};
+use crate::crel::{ast::*, bblock::*, count_loops::*};
 use crate::eggroll::ast::*;
 use crate::eggroll::cost_functions::*;
 use crate::eggroll::milp_extractor::*;
@@ -261,10 +261,15 @@ fn sa_score(expr: RecExpr<Eggroll>) -> f32 {
   let score_matching = 1.0 - (matching_sum / loop_heads.len() as f32);
   let score_similarity = 1.0 - (similarity_sum / loop_heads.len() as f32);
 
-  (0.25 * score_rel_size)
-    + (0.25 * score_rel_update_match)
-    + (0.25 * score_similarity)
-    + (0.25 * score_matching)
+  let num_executed_loops = crel::trace::count_executed_loops(&trace);
+  let num_loops = crel.count_loops();
+  let score_loop_execs = (num_executed_loops as f32) / (num_loops as f32);
+
+  (0.2 * score_rel_size)
+    + (0.2 * score_rel_update_match)
+    + (0.2 * score_similarity)
+    + (0.2 * score_matching)
+    + (0.2 * score_loop_execs)
 }
 
 fn main() {

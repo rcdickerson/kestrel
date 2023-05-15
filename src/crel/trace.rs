@@ -223,6 +223,27 @@ pub fn relation_states(trace: &Trace) -> Vec<Vec<State>> {
   all_rels
 }
 
+pub fn count_executed_loops(trace: &Trace) -> usize {
+  let mut run_loop_count = 0;
+  let mut loop_start_without_state = false;
+  for item in trace {
+    match item {
+      TraceItem::State(_) => if loop_start_without_state {
+        run_loop_count += 1;
+        loop_start_without_state = false;
+      },
+      TraceItem::Tag(Tag::LoopStart) => {
+        loop_start_without_state = true;
+      },
+      TraceItem::Tag(Tag::LoopEnd) => {
+        loop_start_without_state = false;
+      },
+      _ => (),
+    }
+  }
+  run_loop_count
+}
+
 pub fn run(stmt: &Statement, state: State, max_trace: usize) -> Trace {
   let mut exec = Execution::new(max_trace);
   exec.set_state(state);

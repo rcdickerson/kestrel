@@ -2,6 +2,7 @@ mod annealer;
 mod crel;
 mod eggroll;
 mod names;
+mod shanty;
 mod spec;
 
 use clap::{Parser, ValueEnum};

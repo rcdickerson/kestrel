@@ -1,171 +1,236 @@
 use crate::crel::ast::*;
+use crate::shanty as C;
 
 impl CRel {
   pub fn to_c(&self) -> String {
-    crel_to_c(self)
+    let mut source = C::Source::new();
+    source.include("seahorn/seahorn.h");
+    crel_to_c(self, &mut source);
+    source.to_string()
   }
 }
 
-fn crel_to_c(crel: &CRel) -> String {
+fn crel_to_c(crel: &CRel, source: &mut C::Source) {
   match crel {
     CRel::Declaration{specifiers, declarators} => {
-      let spec_c = declaration_specifiers_to_c(specifiers);
-      let dec_c = init_declarators_to_c(declarators);
-      format!("{} {}", spec_c, dec_c)
+      source.declare_variable(&var_to_c(specifiers, declarators));
     },
     CRel::FunctionDefinition{specifiers, name, params, body} => {
-      let spec_c = declaration_specifiers_to_c(specifiers);
-      let name_c = declarator_to_c(name);
-      let args_c = params.iter()
-        .map(declaration_to_c)
-        .collect::<Vec<String>>()
-        .join(", ");
-      let body_c = statement_to_c(body);
-      format!("{} {}({}) {{\n{}\n}}", spec_c, name_c, args_c, body_c)
+      source.push_function(&fun_to_c(specifiers, name, params, body));
     },
     CRel::Seq(seq) => {
-      format!("{};", seq.iter().map(crel_to_c).collect::<Vec<String>>().join(";\n"))
+      for crel in seq { crel_to_c(crel, source) }
     }
   }
 }
 
-fn expression_to_c(expr: &Expression) -> String {
-  match expr {
-    Expression::Identifier{name} => name.clone(),
-    Expression::ConstInt(i) => i.to_string(),
-    Expression::StringLiteral(s) => s.clone(),
-    Expression::Call{ callee, args } => {
-      let callee_c = expression_to_c(callee);
-      let args_c = args.iter()
-        .map(expression_to_c)
-        .collect::<Vec<String>>()
-        .join(", ");
-      format!("{}({})", callee_c, args_c)
-    },
-    Expression::Unop{ expr, op } => match op {
-      UnaryOp::Minus => format!("-({})", expression_to_c(expr)),
-      UnaryOp::Not => format!("!({})", expression_to_c(expr)),
-    },
-    Expression::Binop{ lhs, rhs, op } => match op {
-      BinaryOp::Add       => format!("({}) + ({})", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::And       => format!("({}) && ({})", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Assign    => format!("({}) = ({})", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Sub       => format!("({}) - ({})", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Div       => format!("({}) / ({})", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Equals    => format!("({}) == ({})", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Gt        => format!("({}) > ({})", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Gte       => format!("({}) >= ({})", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Index     => format!("{}[{}]", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Lt        => format!("({}) < ({})", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Lte       => format!("({}) <= ({})", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Mod       => format!("({}) % ({})", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Mul       => format!("({}) * ({})", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::NotEquals => format!("({}) != ({})", expression_to_c(lhs), expression_to_c(rhs)),
-      BinaryOp::Or        => format!("({}) || ({})", expression_to_c(lhs), expression_to_c(rhs)),
-    },
-    Expression::Statement(stmt) => statement_to_c(stmt),
-  }
-}
-
-fn statement_to_c(stmt: &Statement) -> String {
-  match stmt {
-    Statement::BasicBlock(items) => {
-      format!("{};", items.iter().map(block_item_to_c).collect::<Vec<String>>().join(";\n"))
-    },
-    Statement::Break => "break".to_string(),
-    Statement::Compound(items) => {
-      format!("{};", items.iter().map(block_item_to_c).collect::<Vec<String>>().join(";\n"))
-    },
-    Statement::Expression(expr) => expression_to_c(expr),
-    Statement::If{condition, then, els} => match els {
-      None => format!("if( {} ) {{\n{}\n}}",
-                      expression_to_c(condition),
-                      statement_to_c(then)),
-      Some(ebranch) => format!("if( {} ) {{\n{}\n}} else {{\n{}\n}}",
-                               expression_to_c(condition),
-                               statement_to_c(then),
-                               statement_to_c(ebranch))
-    },
-    Statement::None => "".to_string(),
-    Statement::Relation{ lhs, rhs } => {
-      format!("{}\n{}", statement_to_c(lhs), statement_to_c(rhs))
-    }
-    Statement::Return(expr) => match expr {
-      None => "return".to_string(),
-      Some(ret) => format!("return {}", expression_to_c(ret)),
-    },
-    Statement::While{condition, body} => {
-      match body {
-        None => format!("while ({})",  expression_to_c(condition)),
-        Some(stmt) => format!("while ({}) {{\n{}\n}}",
-                              expression_to_c(condition),
-                              statement_to_c(stmt)),
+fn var_to_c(specifiers: &Vec<DeclarationSpecifier>, declarators: &Vec<InitDeclarator>) -> C::Variable {
+  let mut var_name = None;
+  let mut var_ty = None;
+  let mut var_val = None;
+  let mut var_extern = false;
+  for spec in specifiers {
+    match spec {
+      DeclarationSpecifier::StorageClass(sc_spec) => {
+        match sc_spec {
+          StorageClassSpecifier::Extern => var_extern = true,
+        }
+      },
+      DeclarationSpecifier::TypeSpecifier(ts) => {
+        var_ty = Some(type_to_c(ts));
       }
     }
   }
+  for decl in declarators {
+    match &decl.declarator {
+      Declarator::Identifier{name} => var_name = Some(name),
+    }
+    match &decl.expression {
+      None => (),
+      Some(expr) => {
+        var_val = Some(expression_to_c(&expr));
+      }
+    }
+  }
+  let mut var = C::Variable::new(
+    var_name.expect("Variable declaration has no name"),
+    var_ty.expect("Variable declaration has no type"));
+  var.set_extern(var_extern);
+  match var_val {
+    None => (),
+    Some(expr) => { var.set_value(&expr); },
+  }
+  var
 }
 
-fn block_item_to_c(item: &BlockItem) -> String {
+fn fun_to_c(specifiers: &Vec<DeclarationSpecifier>,
+            name: &Declarator,
+            params: &Vec<Declaration>,
+            body: &Statement) -> C::Function {
+
+  let name = match name {
+    Declarator::Identifier{name} => name,
+  };
+
+  let mut fun_ty = C::Type::Void;
+  let mut fun_extern = false;
+  for spec in specifiers {
+    match spec {
+      DeclarationSpecifier::StorageClass(sc_spec) => {
+        match sc_spec {
+          StorageClassSpecifier::Extern => fun_extern = true,
+        }
+      },
+      DeclarationSpecifier::TypeSpecifier(ts) => {
+        fun_ty = type_to_c(ts);
+      }
+    }
+  }
+
+  let mut fun = C::Function::new(name, fun_ty);
+  for param in params.iter().map(decl_to_param) {
+    fun.push_param(&param);
+  }
+  fun.set_extern(fun_extern);
+  fun.set_body(&statement_to_c(body));
+  fun
+}
+
+fn decl_to_param(decl: &Declaration) -> C::FunctionParameter {
+  let mut param_name = None;
+  let mut param_ty = None;
+  for spec in &decl.specifiers {
+    match spec {
+      DeclarationSpecifier::StorageClass(sc_spec) => {
+        match sc_spec {
+          StorageClassSpecifier::Extern => panic!("Cannot have an extern param")
+        }
+      },
+      DeclarationSpecifier::TypeSpecifier(ts) => {
+        param_ty = Some(type_to_c(&ts));
+      }
+    }
+  }
+  for decl in &decl.declarators {
+    match &decl.declarator {
+      Declarator::Identifier{name} => param_name = Some(name),
+    }
+    match &decl.expression {
+      None => (),
+      Some(_) => panic!("Cannot give param a value"),
+    }
+  }
+  C::FunctionParameter::new(
+    param_name.expect("Parameter has no name"),
+    param_ty.expect("Parameter has no type"))
+}
+
+fn expression_to_c(expr: &Expression) -> C::Expression {
+  match expr {
+    Expression::Identifier{name} => C::Expression::Identifier {
+      name: name.clone(),
+    },
+    Expression::ConstInt(i) => C::Expression::ConstInt(*i),
+    Expression::StringLiteral(s) => C::Expression::StringLiteral(s.clone()),
+    Expression::Call{ callee, args } => {
+      C::Expression::FnCall {
+        name: Box::new(expression_to_c(callee)),
+        args: args.iter()
+          .map(expression_to_c)
+          .collect::<Vec<C::Expression>>(),
+      }
+    },
+    Expression::Unop{ expr, op } => {
+      let expr = Box::new(expression_to_c(expr));
+      let op = match op {
+        UnaryOp::Minus => "-".to_string(),
+        UnaryOp::Not   => "!".to_string(),
+      };
+      C::Expression::UnOp{expr, op}
+    },
+    Expression::Binop{ lhs, rhs, op } => {
+      let lhs = Box::new(expression_to_c(lhs));
+      let rhs = Box::new(expression_to_c(rhs));
+      match op {
+        BinaryOp::Add       => C::Expression::BinOp{lhs, rhs, op: "+".to_string()},
+        BinaryOp::And       => C::Expression::BinOp{lhs, rhs, op: "&&".to_string()},
+        BinaryOp::Assign    => C::Expression::BinOp{lhs, rhs, op: "=".to_string()},
+        BinaryOp::Sub       => C::Expression::BinOp{lhs, rhs, op: "-".to_string()},
+        BinaryOp::Div       => C::Expression::BinOp{lhs, rhs, op: "/".to_string()},
+        BinaryOp::Equals    => C::Expression::BinOp{lhs, rhs, op: "==".to_string()},
+        BinaryOp::Gt        => C::Expression::BinOp{lhs, rhs, op: ">".to_string()},
+        BinaryOp::Gte       => C::Expression::BinOp{lhs, rhs, op: ">=".to_string()},
+        BinaryOp::Index     => C::Expression::ArrayIndex{expr: lhs, index: rhs},
+        BinaryOp::Lt        => C::Expression::BinOp{lhs, rhs, op: "<".to_string()},
+        BinaryOp::Lte       => C::Expression::BinOp{lhs, rhs, op: "<=".to_string()},
+        BinaryOp::Mod       => C::Expression::BinOp{lhs, rhs, op: "%".to_string()},
+        BinaryOp::Mul       => C::Expression::BinOp{lhs, rhs, op: "*".to_string()},
+        BinaryOp::NotEquals => C::Expression::BinOp{lhs, rhs, op: "!=".to_string()},
+        BinaryOp::Or        => C::Expression::BinOp{lhs, rhs, op: "||".to_string()},
+      }
+    },
+    Expression::Statement(stmt) => {
+      C::Expression::Statement(Box::new(statement_to_c(stmt)))
+    },
+  }
+}
+
+fn statement_to_c(stmt: &Statement) -> C::Statement {
+  match stmt {
+    Statement::BasicBlock(items) => {
+      C::Statement::Seq(items.iter().map(block_item_to_c).collect())
+    },
+    Statement::Break => C::Statement::Break,
+    Statement::Compound(items) => {
+      C::Statement::Seq(items.iter().map(block_item_to_c).collect())
+    },
+    Statement::Expression(expr) => {
+      C::Statement::Expression(Box::new(expression_to_c(expr)))
+    },
+    Statement::If{condition, then, els} => {
+      C::Statement::If {
+        condition: Box::new(expression_to_c(condition)),
+        then: Box::new(statement_to_c(then)),
+        els: match els {
+          None => None,
+          Some(stmt) => Some(Box::new(statement_to_c(stmt))),
+        }
+      }
+    },
+    Statement::None => C::Statement::Seq(Vec::new()),
+    Statement::Relation{ lhs, rhs } => {
+      C::Statement::Seq(vec!(statement_to_c(lhs), statement_to_c(rhs)))
+    }
+    Statement::Return(expr) => match expr {
+      None => { C::Statement::Return(None) },
+      Some(ret) => { C::Statement::Return(Some(Box::new(expression_to_c(ret)))) },
+    },
+    Statement::While{condition, body} => {
+      let condition = Box::new(expression_to_c(condition));
+      let body = match body {
+        None => None,
+        Some(stmt) => { Some(Box::new(statement_to_c(stmt))) }
+      };
+      C::Statement::While{condition, body}
+    }
+  }
+}
+
+fn block_item_to_c(item: &BlockItem) -> C::Statement {
   match item {
-    BlockItem::Declaration(dec) => declaration_to_c(dec),
-    BlockItem::Statement(stmt)  => statement_to_c(stmt),
+    BlockItem::Declaration(dec) => {
+      C::Statement::Variable(var_to_c(&dec.specifiers, &dec.declarators))
+    },
+    BlockItem::Statement(stmt) => statement_to_c(stmt),
   }
 }
 
-fn declaration_specifiers_to_c(specs: &Vec<DeclarationSpecifier>) -> String {
-  specs.iter()
-    .map(declaration_specifier_to_c)
-    .collect::<Vec<String>>()
-    .join(" ")
-}
-
-fn declaration_specifier_to_c(spec: &DeclarationSpecifier) -> String {
-  match spec {
-    DeclarationSpecifier::StorageClass(scs) => storage_class_specifier_to_c(scs),
-    DeclarationSpecifier::TypeSpecifier(ty) => type_to_c(ty),
-  }
-}
-
-fn type_to_c(ty: &Type) -> String {
+fn type_to_c(ty: &Type) -> C::Type {
   match ty {
-    Type::Bool   => "bool".to_string(),
-    Type::Double => "double".to_string(),
-    Type::Float  => "float".to_string(),
-    Type::Int    => "int".to_string(),
-    Type::Void   => "void".to_string(),
+    Type::Bool   => C::Type::Bool,
+    Type::Double => C::Type::Double,
+    Type::Float  => C::Type::Float,
+    Type::Int    => C::Type::Int,
+    Type::Void   => C::Type::Void,
   }
-}
-
-fn storage_class_specifier_to_c(scs: &StorageClassSpecifier) -> String {
-  match scs {
-    StorageClassSpecifier::Extern => "extern".to_string(),
-  }
-}
-
-fn init_declarators_to_c(decs: &Vec<InitDeclarator>) -> String {
-  decs.iter()
-    .map(init_declarator_to_c)
-    .collect::<Vec<String>>()
-    .join(" ")
-}
-
-fn init_declarator_to_c(dec: &InitDeclarator) -> String {
-  match &dec.expression {
-    None => declarator_to_c(&dec.declarator),
-    Some(expr) => format!("{} = {}",
-                          declarator_to_c(&dec.declarator),
-                          expression_to_c(&expr)),
-  }
-}
-
-fn declarator_to_c(dec: &Declarator) -> String {
-  match dec {
-    Declarator::Identifier{name} => name.clone()
-  }
-}
-
-fn declaration_to_c(dec: &Declaration) -> String {
-  let specs_c = declaration_specifiers_to_c(&dec.specifiers);
-  let decs_c = init_declarators_to_c(&dec.declarators);
-  format!("{} {}", specs_c, decs_c)
 }

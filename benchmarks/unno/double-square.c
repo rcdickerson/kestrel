@@ -5,26 +5,23 @@
  * post:  left.y == right.y;
  */
 
-void left(int x, int h) {
+void left(int x) {
   int z = 0;
   int y = 0;
-  if(h) { z = 2*x; }
-  else { z = x; }
+  z = 2*x;
   while (z>0) {
     z = z - 1;
     y = y+x;
   }
-  if(!h) { y = 2*y; }
 }
 
-void right(int x, int h) {
+void right(int x) {
   int z = 0;
   int y = 0;
-  if(h) { z = 2*x; }
-  else { z = x; }
+  z = x;
   while (z>0) {
     z = z - 1;
     y = y+x;
   }
-  if(!h) { y = 2*y; }
+  y = 2*y;
 }

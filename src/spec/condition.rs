@@ -3,6 +3,7 @@ pub enum CondExpr {
   Variable(CondId),
   True,
   False,
+  Int(i32),
   Eq{ lhs: Box<CondExpr>, rhs: Box<CondExpr> },
   Neq{ lhs: Box<CondExpr>, rhs: Box<CondExpr> },
   Lt{ lhs: Box<CondExpr>, rhs: Box<CondExpr> },

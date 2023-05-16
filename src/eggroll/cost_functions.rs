@@ -119,8 +119,9 @@ pub fn sa_score(expr: RecExpr<Eggroll>) -> f32 {
     .get(&"main".to_string())
     .expect("Missing main function")
     .body.clone();
-  let trace = run(&body, state(vec!(("l_n", 5), ("r_n", 5))), 100);
-  //let trace = crel::trace::run(&body, crel::trace::state(vec!(("l_x", 5), ("r_x", 5))), 100);
+//  let trace = run(&body, state(vec!(("l_n", 5), ("r_n", 5))), 100);
+//  let trace = run(&body, state(vec!(("l_x", 5), ("r_x", 5))), 100);
+  let trace = run(&body, state(vec!(("l_low", 5), ("r_low", 5), ("l_h", 3), ("r_h", 4))), 100);
   let loop_heads = trace.loop_heads();
   let rel_states = trace.relation_states();
 

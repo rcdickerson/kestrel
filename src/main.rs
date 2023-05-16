@@ -7,15 +7,12 @@ mod spec;
 
 use clap::{Parser, ValueEnum};
 use crate::annealer::*;
-use crate::crel::{ast::*, bblock::*, count_loops::*};
-use crate::eggroll::ast::*;
+use crate::crel::{ast::*, blockify::*};
 use crate::eggroll::cost_functions::*;
 use crate::eggroll::milp_extractor::*;
 use crate::names::*;
 use crate::spec::{KestrelSpec, parser::parse_spec};
 use egg::*;
-use std::collections::HashMap;
-use std::collections::HashSet;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
@@ -52,9 +49,11 @@ enum ExtractorArg {
 }
 
 fn build_unaligned_crel(spec: &KestrelSpec, crel: &CRel) -> CRel {
-  let (crel, fundefs) = extract_fundefs(crel);
-  let left_fun = fundefs.get(&spec.left).expect(format!("Function not found: {}", spec.left).as_str());
-  let right_fun = fundefs.get(&spec.right).expect(format!("Function not found: {}", spec.right).as_str());
+  let (crel, fundefs) = crel::fundef::extract_fundefs(crel);
+  let left_fun = fundefs.get(&spec.left)
+    .expect(format!("Function not found: {}", spec.left).as_str());
+  let right_fun = fundefs.get(&spec.right)
+    .expect(format!("Function not found: {}", spec.right).as_str());
 
   let left_fun = left_fun.map_vars(&|s: String| {
     format!("l_{}", s)
@@ -83,198 +82,8 @@ fn build_unaligned_crel(spec: &KestrelSpec, crel: &CRel) -> CRel {
   }
 }
 
-fn extract_fundefs(crel: &CRel) -> (Option<CRel>, HashMap<String, FunDef>) {
-  match crel {
-    CRel::Declaration{ specifiers: _, declarators: _ } => {
-      (Some(crel.clone()), HashMap::new())
-    },
-    CRel::FunctionDefinition{ specifiers: _, name, params: _, body } => {
-      let name = match name {
-        Declarator::Identifier{name} => name.clone(),
-      };
-      let mut map = HashMap::new();
-      map.insert(name, FunDef{
-        body: *body.clone(),
-      });
-      (None, map)
-    },
-    CRel::Seq(crels) => {
-      let (crels, defs): (Vec<_>, Vec<_>) = crels.iter()
-        .map(|c| extract_fundefs(c))
-        .unzip();
-      let crels: Vec<_> = crels.iter().flatten().map(|c| (*c).clone()).collect();
-      let mut def_union = HashMap::new();
-      for def in defs {
-        def_union.extend(def);
-      }
-      ( if crels.len() > 0 { Some(CRel::Seq(crels)) } else { None }, def_union )
-    },
-  }
-}
-
-#[derive(Clone, Debug)]
-struct FunDef {
-  // TODO: Params, initialized to arbitrary values.
-  body: Statement,
-}
-impl MapVars for FunDef {
-  fn map_vars<F>(&self, f: &F) -> Self
-    where F: Fn(String) -> String
-  {
-    FunDef{body: self.body.map_vars(f)}
-  }
-}
-
-struct StatesSummary {
-  l_vals: HashMap<String, Vec<i32>>,
-  r_vals: HashMap<String, Vec<i32>>,
-  l_diffs: HashMap<String, Vec<i32>>,
-  r_diffs: HashMap<String, Vec<i32>>,
-  changed_vars: HashSet<String>,
-}
-
-fn summarize_states(states: &Vec<crel::trace::State>) -> StatesSummary {
-  let mut l_vals : HashMap<String, Vec<i32>> = HashMap::new();
-  let mut r_vals : HashMap<String, Vec<i32>> = HashMap::new();
-  for state in states {
-    for (exec_var, val) in state {
-      let(exec, var) = (&exec_var[..1], &exec_var[2..]);
-      match exec {
-        "l" => {
-          let mut seq = match l_vals.get(var) {
-            None => Vec::new(),
-            Some(seq) => seq.clone(),
-          };
-          seq.push(val.clone());
-          l_vals.insert(var.to_string(), seq);
-        },
-        "r" => {
-          let mut seq = match r_vals.get(var) {
-            None => Vec::new(),
-            Some(seq) => seq.clone(),
-          };
-          seq.push(val.clone());
-          r_vals.insert(var.to_string(), seq);
-        },
-        _ => continue,
-      }
-    }
-  }
-
-  let mut l_diffs = HashMap::new();
-  for (k,v) in &l_vals {
-    let diffs = v.windows(2).map(|w| w[1] - w[0]).collect::<Vec<i32>>();
-    if diffs.len() > 0 && !diffs.iter().all(|i| *i == 0) {
-      l_diffs.insert(k.clone(), diffs);
-    }
-  }
-
-  let mut r_diffs = HashMap::new();
-  for (k,v) in &r_vals {
-    let diffs = v.windows(2).map(|w| w[1] - w[0]).collect::<Vec<i32>>();
-    if diffs.len() > 0 && !diffs.iter().all(|i| *i == 0) {
-      r_diffs.insert(k.clone(), diffs);
-    }
-  }
-
-  let l_vars : HashSet<String> = HashSet::from_iter(l_diffs.keys().map(|v| v.clone()));
-  let r_vars : HashSet<String> = HashSet::from_iter(r_diffs.keys().map(|v| v.clone()));
-  let changed_vars = l_vars.union(&r_vars).map(|v| v.clone()).collect::<HashSet<String>>();
-
-  StatesSummary { l_vals, r_vals, l_diffs, r_diffs, changed_vars }
-}
-
-fn sa_score(expr: RecExpr<Eggroll>) -> f32 {
-  let crel = eggroll::to_crel::eggroll_to_crel(&expr.to_string());
-  let body = extract_fundefs(&crel).1
-    .get(&"main".to_string())
-    .expect("Missing main function")
-    .body.clone();
-  //        let trace = crel::trace::run(&body, crel::trace::state(vec!(("l_n", 5), ("r_n", 5))), 100);
-  let trace = crel::trace::run(&body, crel::trace::state(vec!(("l_x", 5), ("r_x", 5))), 100);
-  let loop_heads = crel::trace::loop_heads(&trace);
-  let rel_states = crel::trace::relation_states(&trace);
-
-  let num_rels = rel_states.len() as i32;
-  let score_rel_size = if num_rels == 0 {
-    1.0
-  } else {
-    let sum : usize = rel_states.iter().map(|v| v.len()).sum();
-    (sum as f32) / (num_rels as f32) / (trace.len() as f32)
-  };
-
-  let score_rel_update_match = if num_rels == 0 {
-    1.0
-  } else {
-    let mut match_sum : f32 = 0.0;
-    for states in &rel_states {
-      let mut matches = 0;
-      let summary = summarize_states(states);
-      if summary.changed_vars.len() == 0 { continue; }
-      for var in &summary.changed_vars {
-        let left = summary.l_diffs.get(var);
-        let right = summary.r_diffs.get(var);
-        match (left, right) {
-          (Some(_), Some(_)) => matches += 1,
-          _ => (),
-        }
-      }
-      match_sum += (matches as f32) / (summary.changed_vars.len() as f32);
-    }
-    1.0 - ((match_sum as f32) / (rel_states.len() as f32))
-  };
-
-  let mut matching_sum : f32 = 0.0;
-  let mut similarity_sum : f32 = 0.0;
-  for head_states in &loop_heads {
-    if head_states.len() == 0 { continue }
-
-    let summary = summarize_states(head_states);
-    if summary.changed_vars.len() == 0 { continue; }
-
-    let mut matching = 0;
-    let mut similar = 0;
-    for var in &summary.changed_vars {
-      let left = summary.l_diffs.get(var);
-      let right = summary.r_diffs.get(var);
-      match (left, right) {
-        (None, _) => continue,
-        (_, None) => continue,
-        (Some(left), Some(right)) => {
-          let ratios = left.iter().zip(right)
-            .map(|(l,r)| (l / r, l % r))
-            .collect::<Vec<(i32, i32)>>();
-          let homogeneous = ratios.iter()
-            .all(|(d,m)| *d == ratios[0].0 && *m == ratios[0].1);
-          if summary.l_vals.get(var) == summary.r_vals.get(var) {
-            matching += 1;
-          }
-          if homogeneous {
-            similar += 1;
-          }
-        },
-      }
-    }
-    matching_sum += (matching as f32) / (summary.changed_vars.len() as f32);
-    similarity_sum += (similar as f32) / (summary.changed_vars.len() as f32);
-  }
-  let score_matching = 1.0 - (matching_sum / loop_heads.len() as f32);
-  let score_similarity = 1.0 - (similarity_sum / loop_heads.len() as f32);
-
-  let num_executed_loops = crel::trace::count_executed_loops(&trace);
-  let num_loops = crel.count_loops();
-  let score_loop_execs = (num_executed_loops as f32) / (num_loops as f32);
-
-  (0.2 * score_rel_size)
-    + (0.2 * score_rel_update_match)
-    + (0.2 * score_similarity)
-    + (0.2 * score_matching)
-    + (0.2 * score_loop_execs)
-}
-
 fn main() {
   let args = Args::parse();
-
   let spec = parse_spec(&args.input).unwrap();
 
   let crel = crel::parser::parse_c_file(args.input);
@@ -296,7 +105,7 @@ fn main() {
 
   let aligned_eggroll = match args.extractor {
     ExtractorArg::CountLoops => {
-      let extractor = Extractor::new(&runner.egraph, CountLoops);
+      let extractor = Extractor::new(&runner.egraph, LocalCountLoops);
       let (_, best) = extractor.find_best(runner.roots[0]);
       best
     },
@@ -306,7 +115,7 @@ fn main() {
     },
     ExtractorArg::SA => {
       let annealer = Annealer::new(&runner.egraph);
-      annealer.find_best(runner.roots[0], sa_score)
+      annealer.find_best(runner.roots[0], crate::eggroll::cost_functions::sa_score)
     },
   };
   println!("\nAligned Eggroll:\n{}", aligned_eggroll.pretty(80));

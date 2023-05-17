@@ -1,12 +1,4 @@
-use std::collections::HashMap;
-
-pub type State = HashMap<String, i32>;
-
-pub fn state(mapping: Vec<(&str, i32)>) -> State {
-  let mut st = HashMap::new();
-  for (name, val) in mapping { st.insert(name.to_string(), val); }
-  st
-}
+use crate::crel::state::*;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Tag {

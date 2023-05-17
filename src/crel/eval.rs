@@ -1,4 +1,5 @@
 use crate::crel::ast::*;
+use crate::crel::state::*;
 use crate::crel::trace::*;
 use std::collections::HashMap;
 

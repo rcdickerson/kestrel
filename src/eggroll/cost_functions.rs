@@ -1,6 +1,8 @@
 use crate::crel::count_loops::*;
+use crate::crel::ast::CRel;
 use crate::crel::eval::*;
-use crate::crel::trace::{State, state};
+use crate::crel::state::State;
+use crate::crel::trace::Trace;
 use crate::eggroll::ast::*;
 use egg::*;
 use std::cmp::Ordering;
@@ -113,27 +115,22 @@ fn summarize_states(states: &Vec<State>) -> StatesSummary {
   StatesSummary { l_vals, r_vals, l_diffs, r_diffs, changed_vars }
 }
 
-pub fn sa_score(expr: RecExpr<Eggroll>) -> f32 {
-  let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string());
-  let body = crate::crel::fundef::extract_fundefs(&crel).1
-    .get(&"main".to_string())
-    .expect("Missing main function")
-    .body.clone();
-//  let trace = run(&body, state(vec!(("l_n", 5), ("r_n", 5))), 100);
-//  let trace = run(&body, state(vec!(("l_x", 5), ("r_x", 5))), 100);
-  let trace = run(&body, state(vec!(("l_low", 5), ("r_low", 5), ("l_h", 3), ("r_h", 4))), 100);
-  let loop_heads = trace.loop_heads();
+/// Average number of state changes in a relation as a percentage of
+/// total trace length.
+fn score_avg_rel_size(trace: &Trace) -> f32 {
   let rel_states = trace.relation_states();
-
-  let num_rels = rel_states.len() as i32;
-  let score_rel_size = if num_rels == 0 {
-    1.0
-  } else {
-    let sum : usize = rel_states.iter().map(|v| v.len()).sum();
+  let num_rels = rel_states.len();
+  if num_rels == 0 { 1.0 } else {
+    let sum = rel_states.iter().map(|v| v.len()).sum::<usize>();
     (sum as f32) / (num_rels as f32) / (trace.len() as f32)
-  };
+  }
+}
 
-  let score_rel_update_match = if num_rels == 0 {
+/// Average percent of updated variables per relation whose values
+/// changed by the same value.
+fn score_rel_update_match(trace: &Trace) -> f32 {
+  let rel_states = trace.relation_states();
+  if rel_states.len() == 0 {
     1.0
   } else {
     let mut match_sum : f32 = 0.0;
@@ -152,7 +149,11 @@ pub fn sa_score(expr: RecExpr<Eggroll>) -> f32 {
       match_sum += (matches as f32) / (summary.changed_vars.len() as f32);
     }
     1.0 - ((match_sum as f32) / (rel_states.len() as f32))
-  };
+  }
+}
+
+fn score_loop_similarity(trace: &Trace) -> (f32, f32) {
+  let loop_heads = trace.loop_heads();
 
   let mut matching_sum : f32 = 0.0;
   let mut similarity_sum : f32 = 0.0;
@@ -188,16 +189,40 @@ pub fn sa_score(expr: RecExpr<Eggroll>) -> f32 {
     matching_sum += (matching as f32) / (summary.changed_vars.len() as f32);
     similarity_sum += (similar as f32) / (summary.changed_vars.len() as f32);
   }
-  let score_matching = 1.0 - (matching_sum / loop_heads.len() as f32);
-  let score_similarity = 1.0 - (similarity_sum / loop_heads.len() as f32);
+  if loop_heads.len() == 0 { (0.0, 0.0) } else {
+    let score_matching = 1.0 - (matching_sum / loop_heads.len() as f32);
+    let score_similarity = 1.0 - (similarity_sum / loop_heads.len() as f32);
+    (score_matching, score_similarity)
+  }
+}
 
+fn score_loop_executions(program: &CRel, trace: &Trace) -> f32 {
   let num_executed_loops = trace.count_executed_loops();
-  let num_loops = crel.count_loops();
-  let score_loop_execs = (num_executed_loops as f32) / (num_loops as f32);
+  let num_loops = program.count_loops();
+  if num_loops == 0 { 0.0 } else {
+    (num_executed_loops as f32) / (num_loops as f32)
+  }
+}
 
-  (0.2 * score_rel_size)
-    + (0.2 * score_rel_update_match)
-    + (0.2 * score_similarity)
-    + (0.2 * score_matching)
-    + (0.2 * score_loop_execs)
+pub fn sa_score(trace_states: &Vec<State>, expr: RecExpr<Eggroll>) -> f32 {
+  let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string());
+  let body = crate::crel::fundef::extract_fundefs(&crel).1
+    .get(&"main".to_string())
+    .expect("Missing main function")
+    .body.clone();
+
+  let score_state = |state: &State| -> f32 {
+    let trace = run(&body, state.clone(), 100);
+    let rel_size = score_avg_rel_size(&trace);
+    let update_match = score_rel_update_match(&trace);
+    let (loop_matching, loop_similarity) = score_loop_similarity(&trace);
+    let loop_execs = score_loop_executions(&crel, &trace);
+    (0.2 * rel_size)
+      + (0.2 * update_match)
+      + (0.2 * loop_matching)
+      + (0.2 * loop_similarity)
+      + (0.2 * loop_execs)
+  };
+
+  trace_states.iter().map(score_state).sum::<f32>() / (trace_states.len() as f32)
 }

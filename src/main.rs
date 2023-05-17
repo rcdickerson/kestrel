@@ -7,7 +7,7 @@ mod spec;
 
 use clap::{Parser, ValueEnum};
 use crate::annealer::*;
-use crate::crel::{ast::*, blockify::*};
+use crate::crel::{ast::*, blockify::*, state::*};
 use crate::eggroll::cost_functions::*;
 use crate::eggroll::milp_extractor::*;
 use crate::names::*;
@@ -115,7 +115,10 @@ fn main() {
     },
     ExtractorArg::SA => {
       let annealer = Annealer::new(&runner.egraph);
-      annealer.find_best(runner.roots[0], crate::eggroll::cost_functions::sa_score)
+      let trace_states = rand_states_satisfying(3, &spec.pre);
+      annealer.find_best(runner.roots[0], |expr| {
+        crate::eggroll::cost_functions::sa_score(&trace_states, expr)
+      })
     },
   };
   println!("\nAligned Eggroll:\n{}", aligned_eggroll.pretty(80));

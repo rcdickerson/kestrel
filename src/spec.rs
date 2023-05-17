@@ -5,8 +5,8 @@ use crate::spec::condition::*;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct KestrelSpec {
-  pub pre: CondExpr,
+  pub pre: CondBExpr,
   pub left: String,
   pub right: String,
-  pub post: CondExpr,
+  pub post: CondBExpr,
 }

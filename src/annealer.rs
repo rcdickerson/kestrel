@@ -26,7 +26,7 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
     let mut best = selection.program(root);
     let mut best_score = score;
 
-    let max_k = 1000;
+    let max_k = 10000;
 
     for k in 0..max_k {
       let mut selections = selection.selections.iter()
@@ -43,10 +43,12 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
         best_score = n_score;
       }
       let transition = if n_score <= score { true } else {
-        println!("score: {}", score);
-        println!("n score: {}", n_score);
-        println!("temp: {}", temp);
+        println!("--------------------------------------");
         println!("Transitioning with probability: {}", ((score - n_score) as f32 / temp).exp());
+        println!("temp: {}", temp);
+        println!("best: {}", best_score);
+        println!("current: {}", score);
+        println!("neighbor: {}", n_score);
         ((score - n_score) as f32 / temp).exp() > rng.gen()
       };
       if transition {
@@ -61,12 +63,23 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Debug)]
 struct Selection<'a, L: Language, N: Analysis<L>> {
   egraph: &'a EGraph<L, N>,
   options: HashMap<egg::Id, usize>,
   selections: HashMap<egg::Id, usize>,
 }
+
+impl <'a, L: Language, N: Analysis<L>> Clone for Selection<'a, L, N> {
+  fn clone(&self) -> Selection<'a, L, N> {
+    Selection {
+      egraph: self.egraph,
+      options: self.options.clone(),
+      selections: self.selections.clone(),
+    }
+  }
+}
+
 impl<'a, L: Language, N: Analysis<L>> Selection<'a, L, N> {
 
   fn random(egraph: &'a EGraph<L, N>) -> Self {

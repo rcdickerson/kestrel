@@ -32,20 +32,20 @@ fn label(label: &str) -> impl Fn(&str) -> IResult<&str, ()> + '_ {
   }
 }
 
-fn cond_true(i: &str) -> IResult<&str, CondExpr> {
+fn cond_true(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _) = multispace0(i)?;
   let(i, _) = tag("true")(i)?;
-  Ok((i, CondExpr::True))
+  Ok((i, CondBExpr::True))
 }
 
-fn cond_false(i: &str) -> IResult<&str, CondExpr> {
+fn cond_false(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _) = multispace0(i)?;
   let(i, _) = tag("false")(i)?;
-  Ok((i, CondExpr::False))
+  Ok((i, CondBExpr::False))
 }
 
-fn cond_binop_a<'a, C>(op: &'a str, constr: &'a C) -> impl Fn(&str) -> IResult<&str, CondExpr> + 'a
-  where C: Fn(Box<CondExpr>, Box<CondExpr>) -> CondExpr
+fn cond_binop_a<'a, C>(op: &'a str, constr: &'a C) -> impl Fn(&str) -> IResult<&str, CondBExpr> + 'a
+  where C: Fn(CondAExpr, CondAExpr) -> CondBExpr
 {
   move |i: &str| {
     let (i, _)   = multispace0(i)?;
@@ -54,15 +54,12 @@ fn cond_binop_a<'a, C>(op: &'a str, constr: &'a C) -> impl Fn(&str) -> IResult<&
     let (i, _)   = tag(op)(i)?;
     let (i, _)   = multispace0(i)?;
     let (i, rhs) = cond_aexpr(i)?;
-    Ok((i, constr(
-      Box::new(lhs),
-      Box::new(rhs),
-    )))
+    Ok((i, constr(lhs, rhs)))
   }
 }
 
-fn cond_binop_b<'a, C>(op: &'a str, constr: &'a C) -> impl Fn(&str) -> IResult<&str, CondExpr> + 'a
-  where C: Fn(Box<CondExpr>, Box<CondExpr>) -> CondExpr
+fn cond_binop_b<'a, C>(op: &'a str, constr: &'a C) -> impl Fn(&str) -> IResult<&str, CondBExpr> + 'a
+  where C: Fn(Box<CondBExpr>, Box<CondBExpr>) -> CondBExpr
 {
   move |i: &str| {
     let (i, _)   = multispace0(i)?;
@@ -79,66 +76,45 @@ fn cond_binop_b<'a, C>(op: &'a str, constr: &'a C) -> impl Fn(&str) -> IResult<&
 }
 
 
-fn cond_eq(i: &str) -> IResult<&str, CondExpr> {
-  cond_binop_a("==", &|lhs, rhs| CondExpr::Eq{lhs, rhs})(i)
+fn cond_eq(i: &str) -> IResult<&str, CondBExpr> {
+  cond_binop_a("==", &|lhs, rhs| CondBExpr::Eq{lhs, rhs})(i)
 }
 
-fn cond_neq(i: &str) -> IResult<&str, CondExpr> {
-  cond_binop_a("!=", &|lhs, rhs| CondExpr::Neq{lhs, rhs})(i)
+fn cond_neq(i: &str) -> IResult<&str, CondBExpr> {
+  cond_binop_a("!=", &|lhs, rhs| CondBExpr::Neq{lhs, rhs})(i)
 }
 
-fn cond_lt(i: &str) -> IResult<&str, CondExpr> {
-  cond_binop_a("<", &|lhs, rhs| CondExpr::Lt{lhs, rhs})(i)
+fn cond_lt(i: &str) -> IResult<&str, CondBExpr> {
+  cond_binop_a("<", &|lhs, rhs| CondBExpr::Lt{lhs, rhs})(i)
 }
 
-fn cond_lte(i: &str) -> IResult<&str, CondExpr> {
-  cond_binop_a("<=", &|lhs, rhs| CondExpr::Lte{lhs, rhs})(i)
+fn cond_lte(i: &str) -> IResult<&str, CondBExpr> {
+  cond_binop_a("<=", &|lhs, rhs| CondBExpr::Lte{lhs, rhs})(i)
 }
 
-fn cond_gt(i: &str) -> IResult<&str, CondExpr> {
-  cond_binop_a(">", &|lhs, rhs| CondExpr::Gt{lhs, rhs})(i)}
+fn cond_gt(i: &str) -> IResult<&str, CondBExpr> {
+  cond_binop_a(">", &|lhs, rhs| CondBExpr::Gt{lhs, rhs})(i)}
 
-fn cond_gte(i: &str) -> IResult<&str, CondExpr> {
-  cond_binop_a(">=", &|lhs, rhs| CondExpr::Gte{lhs, rhs})(i)
+fn cond_gte(i: &str) -> IResult<&str, CondBExpr> {
+  cond_binop_a(">=", &|lhs, rhs| CondBExpr::Gte{lhs, rhs})(i)
 }
 
-fn cond_and(i: &str) -> IResult<&str, CondExpr> {
-  cond_binop_b("&&", &|lhs, rhs| CondExpr::And{lhs, rhs})(i)
+fn cond_and(i: &str) -> IResult<&str, CondBExpr> {
+  cond_binop_b("&&", &|lhs, rhs| CondBExpr::And{lhs, rhs})(i)
 }
 
-fn cond_or(i: &str) -> IResult<&str, CondExpr> {
-  cond_binop_b("||", &|lhs, rhs| CondExpr::Or{lhs, rhs})(i)
+fn cond_or(i: &str) -> IResult<&str, CondBExpr> {
+  cond_binop_b("||", &|lhs, rhs| CondBExpr::Or{lhs, rhs})(i)
 }
 
-fn cond_not(i: &str) -> IResult<&str, CondExpr> {
+fn cond_not(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _)    = multispace0(i)?;
   let (i, _)    = tag("!")(i)?;
   let (i, expr) = cond_bexpr(i)?;
-  Ok((i, CondExpr::Not(Box::new(expr))))
+  Ok((i, CondBExpr::Not(Box::new(expr))))
 }
 
-fn cond_fun(i: &str) -> IResult<&str, CondExpr> {
-  let (i, _)    = multispace0(i)?;
-  let (i, name) = c_id(i)?;
-  Ok((i, CondExpr::Fun{name: name.to_string()}))
-}
-
-fn cond_var(i: &str) -> IResult<&str, CondExpr> {
-  let (i, _)  = multispace0(i)?;
-  let (i, id) = cond_id(i)?;
-  Ok((i, CondExpr::Variable(id)))
-}
-
-fn cond_aexpr(i: &str) -> IResult<&str, CondExpr> {
-  let (i, _) = multispace0(i)?;
-  alt((
-    cond_int,
-    cond_var,
-    cond_fun,
-  ))(i)
-}
-
-fn cond_bexpr_lhs(i: &str) -> IResult<&str, CondExpr> {
+fn cond_bexpr_lhs(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _) = multispace0(i)?;
   alt((
     cond_true,
@@ -150,12 +126,10 @@ fn cond_bexpr_lhs(i: &str) -> IResult<&str, CondExpr> {
     cond_gte,
     cond_lt,
     cond_gt,
-    cond_var,
-    cond_fun,
   ))(i)
 }
 
-fn cond_bexpr(i: &str) -> IResult<&str, CondExpr> {
+fn cond_bexpr(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _) = multispace0(i)?;
   alt((
     cond_true,
@@ -169,15 +143,27 @@ fn cond_bexpr(i: &str) -> IResult<&str, CondExpr> {
     cond_gte,
     cond_lt,
     cond_gt,
-    cond_var,
-    cond_fun
   ))(i)
 }
 
-fn cond_int(i: &str) -> IResult<&str, CondExpr> {
+fn cond_int(i: &str) -> IResult<&str, CondAExpr> {
   let (i, _) = multispace0(i)?;
   let (i, n) = i32(i)?;
-  Ok((i, CondExpr::Int(n)))
+  Ok((i, CondAExpr::Int(n)))
+}
+
+fn cond_var(i: &str) -> IResult<&str, CondAExpr> {
+  let (i, _)  = multispace0(i)?;
+  let (i, id) = cond_id(i)?;
+  Ok((i, CondAExpr::Variable(id)))
+}
+
+fn cond_aexpr(i: &str) -> IResult<&str, CondAExpr> {
+  let (i, _) = multispace0(i)?;
+  alt((
+    cond_int,
+    cond_var,
+  ))(i)
 }
 
 fn cond_id(i: &str) -> IResult<&str, CondId> {
@@ -209,7 +195,7 @@ fn semi(i: &str) -> IResult<&str, ()> {
   Ok((i, ()))
 }
 
-fn pre(i: &str) -> IResult<&str, CondExpr> {
+fn pre(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _)   = opt_asterisks(i)?;
   let (i, _)   = label("pre")(i)?;
   let (i, pre) = cond_bexpr(i)?;
@@ -235,7 +221,7 @@ fn right(i: &str) -> IResult<&str, String> {
   Ok((i, right.to_string()))
 }
 
-fn post(i: &str) -> IResult<&str, CondExpr> {
+fn post(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _)    = opt_asterisks(i)?;
   let (i, _)    = label("post")(i)?;
   let (i, post) = cond_bexpr(i)?;
@@ -290,21 +276,21 @@ mod test {
         */";
     let newlines = Regex::new(r"\n+").unwrap();
     let input = newlines.replace_all(input, " ");
-    let expected_pre = CondExpr::Eq {
-      lhs: Box::new(CondExpr::Variable(CondId{
+    let expected_pre = CondBExpr::Eq {
+      lhs: CondAExpr::Variable(CondId{
         exec: "1".to_string(),
-        name: "N".to_string() })),
-      rhs: Box::new(CondExpr::Variable(CondId{
+        name: "N".to_string() }),
+      rhs: CondAExpr::Variable(CondId{
         exec: "2".to_string(),
-        name: "N".to_string() })),
+        name: "N".to_string() }),
     };
-    let expected_post = CondExpr::Eq {
-      lhs: Box::new(CondExpr::Variable(CondId {
+    let expected_post = CondBExpr::Eq {
+      lhs: CondAExpr::Variable(CondId {
         exec: "1".to_string(),
-        name: "x".to_string() })),
-      rhs: Box::new(CondExpr::Variable(CondId {
+        name: "x".to_string() }),
+      rhs: CondAExpr::Variable(CondId {
         exec: "2".to_string(),
-        name: "x".to_string() })),
+        name: "x".to_string() }),
     };
     let expected = KestrelSpec {
       pre: expected_pre,

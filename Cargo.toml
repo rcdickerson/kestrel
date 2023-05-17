@@ -2,6 +2,7 @@
 name = "kestrel"
 version = "0.1.0"
 edition = "2021"
+default-run = "kestrel"
 
 [dependencies]
 clap = { version = "4.2.1", features = ["derive"] }

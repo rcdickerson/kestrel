@@ -1,17 +1,10 @@
-mod annealer;
-mod crel;
-mod eggroll;
-mod names;
-mod shanty;
-mod spec;
-
 use clap::{Parser, ValueEnum};
-use crate::annealer::*;
-use crate::crel::{ast::*, blockify::*, state::*};
-use crate::eggroll::cost_functions::*;
-use crate::eggroll::milp_extractor::*;
-use crate::names::*;
-use crate::spec::{KestrelSpec, parser::parse_spec};
+use kestrel::annealer::*;
+use kestrel::crel::{ast::*, blockify::*, state::*};
+use kestrel::eggroll::cost_functions::*;
+use kestrel::eggroll::milp_extractor::*;
+use kestrel::names::*;
+use kestrel::spec::{KestrelSpec, parser::parse_spec};
 use egg::*;
 use std::fs::File;
 use std::io::prelude::*;
@@ -49,7 +42,7 @@ enum ExtractorArg {
 }
 
 fn build_unaligned_crel(spec: &KestrelSpec, crel: &CRel) -> CRel {
-  let (crel, fundefs) = crel::fundef::extract_fundefs(crel);
+  let (crel, fundefs) = kestrel::crel::fundef::extract_fundefs(crel);
   let left_fun = fundefs.get(&spec.left)
     .expect(format!("Function not found: {}", spec.left).as_str());
   let right_fun = fundefs.get(&spec.right)
@@ -86,7 +79,7 @@ fn main() {
   let args = Args::parse();
   let spec = parse_spec(&args.input).unwrap();
 
-  let crel = crel::parser::parse_c_file(args.input);
+  let crel = kestrel::crel::parser::parse_c_file(args.input);
   println!("CRel:\n{:?}", crel);
 
   let unaligned_crel = build_unaligned_crel(&spec, &crel);
@@ -97,7 +90,7 @@ fn main() {
 
   let runner = Runner::default()
     .with_expr(&unaligned_eggroll.parse().unwrap())
-    .run(&eggroll::rewrite::make_rules());
+    .run(&kestrel::eggroll::rewrite::make_rules());
 
   if args.dot {
     write_dot(runner.egraph.dot().to_string());
@@ -117,13 +110,13 @@ fn main() {
       let annealer = Annealer::new(&runner.egraph);
       let trace_states = rand_states_satisfying(3, &spec.pre);
       annealer.find_best(runner.roots[0], |expr| {
-        crate::eggroll::cost_functions::sa_score(&trace_states, expr)
+        kestrel::eggroll::cost_functions::sa_score(&trace_states, expr)
       })
     },
   };
   println!("\nAligned Eggroll:\n{}", aligned_eggroll.pretty(80));
 
-  let aligned_crel = eggroll::to_crel::eggroll_to_crel(&aligned_eggroll.to_string());
+  let aligned_crel = kestrel::eggroll::to_crel::eggroll_to_crel(&aligned_eggroll.to_string());
   println!("\nAligned CRel:\n{:?}", aligned_crel);
 
   println!("\nC:\n{}", aligned_crel.to_c());

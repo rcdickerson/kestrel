@@ -40,6 +40,15 @@ enum ExtractorArg {
   SA,
 }
 
+fn write_file(contents: &String, location: &str) {
+  let path = Path::new(location);
+  let mut dot_file = match File::create(&path) {
+    Err(_) => panic!("Could not create file: {}", location),
+    Ok(f)  => f,
+  };
+  dot_file.write_all(contents.as_bytes()).expect("Unable to write file.")
+}
+
 fn main() {
   let args = Args::parse();
   let spec = parse_spec(&args.input).unwrap();
@@ -58,7 +67,7 @@ fn main() {
     .run(&kestrel::eggroll::rewrite::make_rules());
 
   if args.dot {
-    write_dot(runner.egraph.dot().to_string());
+    write_file(&runner.egraph.dot().to_string(), "egraph.dot");
   }
 
   let aligned_eggroll = match args.extractor {
@@ -85,13 +94,4 @@ fn main() {
   println!("\nAligned CRel:\n{:?}", aligned_crel);
 
   println!("\nC:\n{}", aligned_crel.to_c());
-}
-
-fn write_dot(dot: String) {
-  let dot_path = Path::new("egraph.dot");
-  let mut dot_file = match File::create(&dot_path) {
-    Err(_) => panic!("Could not create dot file."),
-    Ok(f)  => f,
-  };
-  dot_file.write_all(dot.as_bytes()).expect("Unable to write dot file.")
 }

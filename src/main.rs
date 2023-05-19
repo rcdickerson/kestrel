@@ -73,7 +73,7 @@ fn main() {
     },
     ExtractorArg::SA => {
       let annealer = Annealer::new(&runner.egraph);
-      let trace_states = rand_states_satisfying(3, &spec.pre);
+      let trace_states = rand_states_satisfying(10, &spec.pre);
       annealer.find_best(runner.roots[0], |expr| {
         kestrel::eggroll::cost_functions::sa_score(&trace_states, expr)
       })

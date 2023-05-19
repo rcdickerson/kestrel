@@ -18,7 +18,7 @@ pub enum TraceItem {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Trace {
-  items: Vec<TraceItem>,
+  pub items: Vec<TraceItem>,
 }
 
 impl Trace {

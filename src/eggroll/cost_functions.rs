@@ -256,7 +256,7 @@ pub fn sa_score(trace_states: &Vec<State>, expr: RecExpr<Eggroll>) -> f32 {
     .body.clone();
 
   let score_state = |state: &State| -> f32 {
-    let trace = run(&body, state.clone(), 100);
+    let trace = run(&body, state.clone(), 10000);
     SAScore::score_trace(&crel, &trace).total()
   };
 

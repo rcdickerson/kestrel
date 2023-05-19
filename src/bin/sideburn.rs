@@ -1,6 +1,6 @@
 use clap::{Parser, ValueEnum};
 use egg::*;
-use kestrel::crel::{ast::*, state::*};
+use kestrel::crel::{ast::*, state::*, trace::*};
 use kestrel::eggroll::{ast::*, cost_functions::*, to_crel::*};
 use kestrel::spec::{KestrelSpec, parser::parse_spec};
 use regex::Regex;
@@ -77,6 +77,13 @@ impl Input {
   }
 }
 
+fn print_trace(trace: &Trace) {
+  println!("Trace:");
+  for item in &trace.items {
+    println!("  {:?}", item);
+  }
+}
+
 fn main() {
   let args = Args::parse();
   let input = match args.input_mode {
@@ -95,7 +102,9 @@ fn main() {
     SideburnMode::PrintSA => {
       input.print_eggroll();
       let state = &rand_states_satisfying(1, &input.spec.pre)[0];
-      let trace = kestrel::crel::eval::run(&input.main_body(), state.clone(), 100);
+      println!("State: {:?}", state);
+      let trace = kestrel::crel::eval::run(&input.main_body(), state.clone(), 10000);
+      print_trace(&trace);
       SAScore::score_trace(&input.crel, &trace).print();
     },
   }

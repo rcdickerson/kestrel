@@ -204,6 +204,50 @@ fn score_loop_executions(program: &CRel, trace: &Trace) -> f32 {
   }
 }
 
+pub struct SAScore {
+  pub relation_size: f32,
+  pub update_matching: f32,
+  pub loop_matching: f32,
+  pub loop_similarity: f32,
+  pub loop_executions: f32,
+}
+
+impl SAScore {
+
+  pub fn score_trace(program: &CRel, trace: &Trace) -> Self {
+    let relation_size = score_avg_rel_size(&trace);
+    let update_matching = score_rel_update_match(&trace);
+    let (loop_matching, loop_similarity) = score_loop_similarity(&trace);
+    let loop_executions = score_loop_executions(&program, &trace);
+    SAScore {
+      relation_size,
+      update_matching,
+      loop_matching,
+      loop_similarity,
+      loop_executions,
+    }
+  }
+
+  pub fn total(&self) -> f32 {
+    (0.2 * self.relation_size)
+      + (0.2 * self.update_matching)
+      + (0.2 * self.loop_matching)
+      + (0.2 * self.loop_similarity)
+      + (0.2 * self.loop_executions)
+  }
+
+  pub fn print(&self) {
+    println!("SA Score:");
+    println!("  Relation Size:     {}", self.relation_size);
+    println!("  Relation Matching: {}", self.update_matching);
+    println!("  Loop Matching:     {}", self.loop_matching);
+    println!("  Loop Similarity:   {}", self.loop_similarity);
+    println!("  Loop Executions:   {}", self.loop_executions);
+    println!("  ====================");
+    println!("  Total: {}", self.total());
+  }
+}
+
 pub fn sa_score(trace_states: &Vec<State>, expr: RecExpr<Eggroll>) -> f32 {
   let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string());
   let body = crate::crel::fundef::extract_fundefs(&crel).1
@@ -213,15 +257,7 @@ pub fn sa_score(trace_states: &Vec<State>, expr: RecExpr<Eggroll>) -> f32 {
 
   let score_state = |state: &State| -> f32 {
     let trace = run(&body, state.clone(), 100);
-    let rel_size = score_avg_rel_size(&trace);
-    let update_match = score_rel_update_match(&trace);
-    let (loop_matching, loop_similarity) = score_loop_similarity(&trace);
-    let loop_execs = score_loop_executions(&crel, &trace);
-    (0.2 * rel_size)
-      + (0.2 * update_match)
-      + (0.2 * loop_matching)
-      + (0.2 * loop_similarity)
-      + (0.2 * loop_execs)
+    SAScore::score_trace(&crel, &trace).total()
   };
 
   trace_states.iter().map(score_state).sum::<f32>() / (trace_states.len() as f32)

@@ -1,10 +1,9 @@
 use clap::{Parser, ValueEnum};
 use kestrel::annealer::*;
-use kestrel::crel::{ast::*, blockify::*, state::*};
+use kestrel::crel::state::*;
 use kestrel::eggroll::cost_functions::*;
 use kestrel::eggroll::milp_extractor::*;
-use kestrel::names::*;
-use kestrel::spec::{KestrelSpec, parser::parse_spec};
+use kestrel::spec::parser::parse_spec;
 use egg::*;
 use std::fs::File;
 use std::io::prelude::*;
@@ -41,48 +40,14 @@ enum ExtractorArg {
   SA,
 }
 
-fn build_unaligned_crel(spec: &KestrelSpec, crel: &CRel) -> CRel {
-  let (crel, fundefs) = kestrel::crel::fundef::extract_fundefs(crel);
-  let left_fun = fundefs.get(&spec.left)
-    .expect(format!("Function not found: {}", spec.left).as_str());
-  let right_fun = fundefs.get(&spec.right)
-    .expect(format!("Function not found: {}", spec.right).as_str());
-
-  let left_fun = left_fun.map_vars(&|s: String| {
-    format!("l_{}", s)
-  });
-  let right_fun = right_fun.map_vars(&|s: String| {
-    format!("r_{}", s)
-  });
-
-  let new_main = CRel::FunctionDefinition {
-    specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
-    name: Declarator::Identifier{ name: "main".to_string() },
-    params: vec!(),
-    body: Box::new(Statement::Relation {
-      lhs: Box::new(left_fun.body.blockify()),
-      rhs: Box::new(right_fun.body.blockify()),
-    }),
-  };
-
-  match crel {
-    None => new_main,
-    Some(CRel::Seq(crels)) => {
-      crels.clone().push(new_main);
-      CRel::Seq(crels)
-    },
-    Some(crel) => CRel::Seq(vec!{crel, new_main})
-  }
-}
-
 fn main() {
   let args = Args::parse();
   let spec = parse_spec(&args.input).unwrap();
 
-  let crel = kestrel::crel::parser::parse_c_file(args.input);
+  let crel = kestrel::crel::parser::parse_c_file(&args.input);
   println!("CRel:\n{:?}", crel);
 
-  let unaligned_crel = build_unaligned_crel(&spec, &crel);
+  let unaligned_crel = spec.build_unaligned_crel(&crel);
   println!("\nUnaliged CRel:\n{:?}", unaligned_crel);
 
   let unaligned_eggroll = unaligned_crel.to_eggroll();

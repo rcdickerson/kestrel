@@ -4,7 +4,7 @@ use lang_c::driver::{Config, parse};
 use lang_c::span::Node;
 
 /// Read the given C file and parse it into the CRel IR.
-pub fn parse_c_file(input_file: String) -> CRel {
+pub fn parse_c_file(input_file: &String) -> CRel {
   let config = Config::with_clang();
   let ast = match parse(&config, input_file) {
     Err(msg) => panic!("{}", msg),

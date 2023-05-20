@@ -248,7 +248,7 @@ impl SAScore {
   }
 }
 
-pub fn sa_score(trace_states: &Vec<State>, expr: RecExpr<Eggroll>) -> f32 {
+pub fn sa_score(trace_states: &Vec<State>, trace_fuel: usize, expr: RecExpr<Eggroll>) -> f32 {
   let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string());
   let body = crate::crel::fundef::extract_fundefs(&crel).1
     .get(&"main".to_string())
@@ -256,7 +256,7 @@ pub fn sa_score(trace_states: &Vec<State>, expr: RecExpr<Eggroll>) -> f32 {
     .body.clone();
 
   let score_state = |state: &State| -> f32 {
-    let trace = run(&body, state.clone(), 10000);
+    let trace = run(&body, state.clone(), trace_fuel);
     SAScore::score_trace(&crel, &trace).total()
   };
 

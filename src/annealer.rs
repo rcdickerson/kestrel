@@ -12,7 +12,7 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
     Annealer{egraph}
   }
 
-  pub fn find_best<F>(&self, root: egg::Id, fitness: F) -> RecExpr<L>
+  pub fn find_best<F>(&self, max_iterations: usize, root: egg::Id, fitness: F) -> RecExpr<L>
     where F: Fn(RecExpr<L>) -> f32
   {
     println!("Starting simulated annealing...");
@@ -26,16 +26,14 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
     let mut best = selection.program(root);
     let mut best_score = score;
 
-    let max_k = 1000;
-
-    for k in 0..max_k {
+    for k in 0..max_iterations {
       let mut selections = selection.selections.iter()
         .map( |(k, v)| (k.clone(), v.clone()))
         .collect::<Vec<(egg::Id, usize)>>();
       selections.sort();
       seen_selections.insert(selections);
 
-      let temp = 1.0 - (k as f32) / ((1 + max_k) as f32);
+      let temp = 1.0 - (k as f32) / ((1 + max_iterations) as f32);
       let neighbor = selection.neighbor();
       let n_score = fitness(neighbor.program(root));
       if n_score < best_score {

@@ -1,1 +1,11 @@
 /target
+*.DS_Store
+*.lia.cache
+*.aux
+*.glob
+*.vo
+*.vok
+*.vos
+/theory/IMP/Denotational.v
+/theory/CoqMakefile.conf
+/theory/Makefile.conf

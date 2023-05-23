@@ -1,4 +1,6 @@
+use crate::crel::ast::*;
 use crate::spec::condition::*;
+use crate::crel::eval::run;
 use rand::Rng;
 use std::collections::HashMap;
 
@@ -118,6 +120,35 @@ impl State {
       },
       CondAExpr::Int(i) => *i,
     }
+  }
+
+  pub fn with_declarations(&self, decls: &Vec<InitDeclarator>, trace_fuel: usize) -> Self {
+    let mut state = self.clone();
+    for decl in decls {
+      match &decl.declarator {
+        Declarator::Array{name, size: Some(size_expr)} => {
+          let stmt = Statement::Expression(Box::new(size_expr.clone()));
+          let size = run(&stmt, state.clone(), trace_fuel).result_int();
+          state.put_array(name.clone(), size as usize);
+        },
+        _ => (),
+      }
+      if decl.expression.is_none() { continue; }
+      let lhs = match &decl.declarator {
+        Declarator::Identifier{name} => Some(Expression::Identifier{name: name.clone()}),
+        Declarator::Array{name, size:_} => Some(Expression::Identifier{name: name.clone()}),
+        Declarator::Function{name:_, params:_} => None,
+        Declarator::Pointer(_) => panic!("Unsupported: pointer initialization"),
+      };
+      if lhs.is_none() { continue; }
+      let initialization = Statement::Expression(Box::new(Expression::Binop {
+        lhs: Box::new(lhs.unwrap()),
+        rhs: Box::new(decl.expression.clone().unwrap()),
+        op: BinaryOp::Assign,
+      }));
+      state = run(&initialization, self.clone(), trace_fuel).current_state();
+    }
+    state
   }
 }
 

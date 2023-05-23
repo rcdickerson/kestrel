@@ -102,23 +102,8 @@ fn main() {
     },
     SideburnMode::PrintSA => {
       input.print_eggroll();
-      let mut state = rand_states_satisfying(1, &input.spec.pre)[0].clone();
-      for decl in &input.global_declarations {
-        if decl.expression.is_none() { continue; }
-        let lhs = match &decl.declarator {
-          Declarator::Identifier{name} => Some(Expression::Identifier{name: name.clone()}),
-          Declarator::Array{name, size:_} => Some(Expression::Identifier{name: name.clone()}),
-          Declarator::Function{name:_, params:_} => None,
-          Declarator::Pointer(_) => panic!("Unsupported: pointer initialization"),
-        };
-        if lhs.is_none() { continue; }
-        let initialization = Statement::Expression(Box::new(Expression::Binop {
-          lhs: Box::new(lhs.unwrap()),
-          rhs: Box::new(decl.expression.clone().unwrap()),
-          op: BinaryOp::Assign,
-        }));
-        state = kestrel::crel::eval::run(&initialization, state, 1000).current_state();
-      }
+      let state = rand_states_satisfying(1, &input.spec.pre)[0].clone()
+        .with_declarations(&input.global_declarations, 10000);
       println!("State: {:?}", state);
       let trace = kestrel::crel::eval::run(&input.main_body(), state.clone(), 10000).trace;
       print_trace(&trace);

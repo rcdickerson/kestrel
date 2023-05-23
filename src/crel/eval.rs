@@ -5,7 +5,11 @@ use crate::crel::trace::*;
 #[derive(Clone, Debug, PartialEq)]
 pub enum Result {
   Int(i32),
-  Identifier(String, Option<i32>),
+  Identifier {
+    name: String,
+    index: Option<usize>,
+    value: Option<i32>
+  },
   Return(i32),
   Break,
   None,
@@ -46,7 +50,7 @@ impl Execution {
     self.current_state = Some(state);
   }
 
-  fn update_state(&mut self, id: String, value: i32) {
+  fn update_state(&mut self, id: String, index: Option<usize>, value: i32) {
     if self.trace.len() >= self.max_trace {
       self.result = Result::OutOfFuel;
       return;
@@ -55,7 +59,10 @@ impl Execution {
       None => State::new(),
       Some(state) => state.clone(),
     };
-    new_state.put(id, value);
+    match index {
+      None => new_state.put(id, value),
+      Some(index) => new_state.put_indexed(id, index, value),
+    };
     self.trace.push_state(new_state.clone());
     self.current_state = Some(new_state);
   }
@@ -95,10 +102,24 @@ impl Execution {
   fn set_identifier(&mut self, id: String) {
     if self.result == Result::OutOfFuel { return }
     let value = match self.current_state().get(&id) {
-      None => None,
-      Some(val) => Some(val.int()),
+      Some(StateValue::Int(i)) => Some(*i),
+      _ => None,
     };
-    self.result = Result::Identifier(id, value);
+    self.result = Result::Identifier{name: id, index: None, value};
+  }
+
+  fn set_array_index(&mut self, id: String, index: usize) {
+    if self.result == Result::OutOfFuel { return }
+    let value = match self.current_state().get(&id) {
+      None => panic!("Array not found: {}", id),
+      Some(StateValue::Array(arr)) => arr[index].int(),
+      _ => panic!("Not an array: {}", id),
+    };
+    self.result = Result::Identifier {
+      name: id,
+      index: Some(index),
+      value: Some(value)
+    };
   }
 
   fn clear_break(&mut self) {
@@ -111,7 +132,7 @@ impl Execution {
   fn result_true(&self) -> bool {
     match self.result {
       Result::Int(val) => val != 0,
-      Result::Identifier(_, Some(val)) => val != 0,
+      Result::Identifier{name:_, index:_, value: Some(val)} => val != 0,
       _ => false,
     }
   }
@@ -119,23 +140,23 @@ impl Execution {
   fn result_false(&self) -> bool {
     match self.result {
       Result::Int(val) => val == 0,
-      Result::Identifier(_, Some(val)) => val == 0,
+      Result::Identifier{name:_, index:_, value: Some(val)} => val == 0,
       _ => false,
     }
   }
 
-  fn result_int(&self) -> i32 {
+  pub fn result_int(&self) -> i32 {
     match self.result {
       Result::Int(i) => i,
-      Result::Identifier(_, Some(val)) => val,
+      Result::Identifier{name:_, index:_, value: Some(val)} => val,
       Result::OutOfFuel => 0,
       _ => panic!("Result not an int: {:?}", self.result),
     }
   }
 
-  fn result_identifier(&self) -> String {
+  fn result_identifier(&self) -> (String, Option<usize>) {
     match self.result.clone() {
-      Result::Identifier(id, _) => id,
+      Result::Identifier{name, index, value:_} => (name, index),
       _ => panic!("Result not an identifier: {:?}", self.result),
     }
   }
@@ -243,7 +264,8 @@ fn eval_expression(expr: &Expression, exec: &mut Execution) {
     },
     Expression::StringLiteral(_) => (),
     Expression::Call{callee: _, args: _} => {
-      panic!("Function calls unimplemented")
+      ()
+      // panic!("Function calls unimplemented")
     },
     Expression::Unop {expr, op} => eval_unop(expr, op, exec),
     Expression::Binop {lhs, rhs, op} => eval_binop(lhs, rhs, op, exec),
@@ -284,10 +306,10 @@ fn eval_binop(lhs: &Expression, rhs: &Expression, op: &BinaryOp, exec: &mut Exec
       }
     },
     BinaryOp::Assign => {
-      let id = exec.result_identifier();
+      let (id, index) = exec.result_identifier();
       eval_expression(rhs, exec);
       if exec.ended() { return; }
-      exec.update_state(id, exec.result_int());
+      exec.update_state(id, index, exec.result_int());
     },
     BinaryOp::Sub => {
       let lhs_val = exec.result_int();
@@ -319,7 +341,12 @@ fn eval_binop(lhs: &Expression, rhs: &Expression, op: &BinaryOp, exec: &mut Exec
       if exec.ended() { return; }
       exec.set_bool(lhs_val >= exec.result_int());
     },
-    BinaryOp::Index => panic!("unsupported"),
+    BinaryOp::Index => {
+      let (id, _) = exec.result_identifier(); // TODO: matrices.
+      eval_expression(rhs, exec);
+      if exec.ended() { return; }
+      exec.set_array_index(id, exec.result_int() as usize);
+    }
     BinaryOp::Lt => {
       let lhs_val = exec.result_int();
       eval_expression(rhs, exec);
@@ -380,11 +407,11 @@ fn eval_declaration(decl: &Declaration, exec: &mut Execution) {
   for init_decl in &decl.declarators {
     let name = find_name(&init_decl.declarator);
     match &init_decl.expression {
-      None => exec.update_state(name.clone(), 0),
+      None => exec.update_state(name.clone(), None, 0), // TODO: arrays
       Some(expr) => {
         eval_expression(&expr, exec);
         if exec.ended() { return; }
-        exec.update_state(name.clone(), exec.result_int())
+        exec.update_state(name.clone(), None, exec.result_int()) // TODO: arrays
       }
     }
   }

@@ -91,26 +91,7 @@ fn main() {
 
       let annealer = Annealer::new(&runner.egraph);
       let trace_states = rand_states_satisfying(num_trace_states, &spec.pre).iter()
-        .map(|state| {
-          let mut state = state.clone();
-          for decl in &global_decls {
-            if decl.expression.is_none() { continue; }
-            let lhs = match &decl.declarator {
-              Declarator::Identifier{name} => Some(Expression::Identifier{name: name.clone()}),
-              Declarator::Array{name, size:_} => Some(Expression::Identifier{name: name.clone()}),
-              Declarator::Function{name:_, params:_} => None,
-              Declarator::Pointer(_) => panic!("Unsupported: pointer initialization"),
-            };
-            if lhs.is_none() { continue; }
-            let initialization = Statement::Expression(Box::new(Expression::Binop {
-              lhs: Box::new(lhs.unwrap()),
-              rhs: Box::new(decl.expression.clone().unwrap()),
-              op: BinaryOp::Assign,
-            }));
-            state = kestrel::crel::eval::run(&initialization, state, trace_fuel).current_state();
-          }
-          state
-        })
+        .map(|state| state.with_declarations(&global_decls, trace_fuel))
         .collect();
       annealer.find_best(max_iterations, runner.roots[0], |expr| {
         kestrel::eggroll::cost_functions::sa_score(&trace_states, trace_fuel, expr)

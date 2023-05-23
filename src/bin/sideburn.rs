@@ -41,6 +41,7 @@ struct Args {
 struct Input {
   spec: KestrelSpec,
   crel: CRel,
+  global_declarations: Vec<InitDeclarator>,
   eggroll: RecExpr<Eggroll>,
 }
 
@@ -49,10 +50,10 @@ impl Input {
   fn read_c_file(input_file: &String) -> Self {
     let spec = parse_spec(input_file).unwrap();
     let raw_crel = kestrel::crel::parser::parse_c_file(input_file);
-    let crel = spec.build_unaligned_crel(&raw_crel);
+    let (global_declarations, crel) = spec.build_unaligned_crel(&raw_crel);
     let eggroll_str = crel.to_eggroll();
     let eggroll = eggroll_str.parse().unwrap();
-    Input{spec, crel, eggroll}
+    Input{spec, crel, global_declarations, eggroll}
   }
 
   fn read_eggroll_file(spec_file: &String, eggroll_file: &String) -> Self {
@@ -62,7 +63,7 @@ impl Input {
     let eggroll_str = newlines.replace_all(eggroll_raw_str.as_str(), " ").to_string();
     let eggroll = eggroll_str.parse().unwrap();
     let crel = eggroll_to_crel(&eggroll_str);
-    Input{spec, crel, eggroll}
+    Input{spec, crel, global_declarations: Vec::new(), eggroll}
   }
 
   fn main_body(&self) -> Statement {
@@ -101,9 +102,25 @@ fn main() {
     },
     SideburnMode::PrintSA => {
       input.print_eggroll();
-      let state = &rand_states_satisfying(1, &input.spec.pre)[0];
+      let mut state = rand_states_satisfying(1, &input.spec.pre)[0].clone();
+      for decl in &input.global_declarations {
+        if decl.expression.is_none() { continue; }
+        let lhs = match &decl.declarator {
+          Declarator::Identifier{name} => Some(Expression::Identifier{name: name.clone()}),
+          Declarator::Array{name, size:_} => Some(Expression::Identifier{name: name.clone()}),
+          Declarator::Function{name:_, params:_} => None,
+          Declarator::Pointer(_) => panic!("Unsupported: pointer initialization"),
+        };
+        if lhs.is_none() { continue; }
+        let initialization = Statement::Expression(Box::new(Expression::Binop {
+          lhs: Box::new(lhs.unwrap()),
+          rhs: Box::new(decl.expression.clone().unwrap()),
+          op: BinaryOp::Assign,
+        }));
+        state = kestrel::crel::eval::run(&initialization, state, 1000).current_state();
+      }
       println!("State: {:?}", state);
-      let trace = kestrel::crel::eval::run(&input.main_body(), state.clone(), 10000);
+      let trace = kestrel::crel::eval::run(&input.main_body(), state.clone(), 10000).trace;
       print_trace(&trace);
       SAScore::score_trace(&input.crel, &trace).print();
     },

@@ -68,7 +68,7 @@ fn summarize_states(states: &Vec<State>) -> StatesSummary {
   let mut l_vals : HashMap<String, Vec<i32>> = HashMap::new();
   let mut r_vals : HashMap<String, Vec<i32>> = HashMap::new();
   for state in states {
-    for (exec_var, val) in state {
+    for (exec_var, val) in &state.map {
       let(exec, var) = (&exec_var[..1], &exec_var[2..]);
       match exec {
         "l" => {
@@ -76,7 +76,7 @@ fn summarize_states(states: &Vec<State>) -> StatesSummary {
             None => Vec::new(),
             Some(seq) => seq.clone(),
           };
-          seq.push(val.clone());
+          seq.push(val.int());
           l_vals.insert(var.to_string(), seq);
         },
         "r" => {
@@ -84,7 +84,7 @@ fn summarize_states(states: &Vec<State>) -> StatesSummary {
             None => Vec::new(),
             Some(seq) => seq.clone(),
           };
-          seq.push(val.clone());
+          seq.push(val.int());
           r_vals.insert(var.to_string(), seq);
         },
         _ => continue,
@@ -256,8 +256,8 @@ pub fn sa_score(trace_states: &Vec<State>, trace_fuel: usize, expr: RecExpr<Eggr
     .body.clone();
 
   let score_state = |state: &State| -> f32 {
-    let trace = run(&body, state.clone(), trace_fuel);
-    SAScore::score_trace(&crel, &trace).total()
+    let exec = run(&body, state.clone(), trace_fuel);
+    SAScore::score_trace(&crel, &exec.trace).total()
   };
 
   trace_states.iter().map(score_state).sum::<f32>() / (trace_states.len() as f32)

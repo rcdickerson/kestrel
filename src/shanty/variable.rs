@@ -5,7 +5,7 @@ use crate::shanty::Writer;
 
 #[derive(Clone, Debug)]
 pub struct Variable {
-  name: String,
+  name: Option<String>,
   ty: Type,
   value: Option<Expression>,
   is_array: bool,
@@ -18,9 +18,9 @@ pub struct Variable {
 }
 
 impl Variable {
-  pub fn new(name: &str, typ: Type) -> Self {
+  pub fn new(typ: Type) -> Self {
     Variable {
-      name: name.to_string(),
+      name: None,
       ty: typ,
       value: None,
       is_array: false,
@@ -31,6 +31,11 @@ impl Variable {
       is_const: false,
       is_pointer: false,
     }
+  }
+
+  pub fn set_name(&mut self, name: String) -> &Self {
+    self.name = Some(name);
+    self
   }
 
   pub fn set_value(&mut self, value: &Expression) -> &Self {
@@ -86,7 +91,7 @@ impl Variable {
     } else {
       writer.write(" ");
     }
-    writer.write(&self.name);
+    writer.write(self.name.as_ref().unwrap_or(&"".to_string()));
     if self.is_array {
       writer.write("[");
       self.array_size.as_ref().map(|size| {

@@ -128,7 +128,9 @@ impl CollectVars for ParameterDeclaration {
     let mut vars : Vec<HashSet<String>> = self.specifiers.iter()
       .map(|spec| spec.vars())
       .collect();
-    vars.push(self.declarator.vars());
+    if self.declarator.is_some() {
+      vars.push(self.declarator.as_ref().unwrap().vars());
+    }
     union_all(vars)
   }
 }

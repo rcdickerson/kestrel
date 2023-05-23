@@ -102,7 +102,7 @@ pub struct Declaration {
 #[derive(Clone, Debug, PartialEq)]
 pub struct ParameterDeclaration {
   pub specifiers: Vec<DeclarationSpecifier>,
-  pub declarator: Declarator,
+  pub declarator: Option<Declarator>,
 }
 
 #[derive(Clone, Debug, PartialEq)]

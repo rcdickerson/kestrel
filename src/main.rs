@@ -1,5 +1,6 @@
 use clap::{Parser, ValueEnum};
 use kestrel::annealer::*;
+use kestrel::crel::ast::*;
 use kestrel::crel::state::*;
 use kestrel::eggroll::cost_functions::*;
 use kestrel::eggroll::milp_extractor::*;
@@ -56,7 +57,7 @@ fn main() {
   let crel = kestrel::crel::parser::parse_c_file(&args.input);
   println!("CRel:\n{:?}", crel);
 
-  let unaligned_crel = spec.build_unaligned_crel(&crel);
+  let (global_decls, unaligned_crel) = spec.build_unaligned_crel(&crel);
   println!("\nUnaliged CRel:\n{:?}", unaligned_crel);
 
   let unaligned_c = unaligned_crel.to_c();
@@ -89,7 +90,28 @@ fn main() {
       let trace_fuel = 10000;
 
       let annealer = Annealer::new(&runner.egraph);
-      let trace_states = rand_states_satisfying(num_trace_states, &spec.pre);
+      let trace_states = rand_states_satisfying(num_trace_states, &spec.pre).iter()
+        .map(|state| {
+          let mut state = state.clone();
+          for decl in &global_decls {
+            if decl.expression.is_none() { continue; }
+            let lhs = match &decl.declarator {
+              Declarator::Identifier{name} => Some(Expression::Identifier{name: name.clone()}),
+              Declarator::Array{name, size:_} => Some(Expression::Identifier{name: name.clone()}),
+              Declarator::Function{name:_, params:_} => None,
+              Declarator::Pointer(_) => panic!("Unsupported: pointer initialization"),
+            };
+            if lhs.is_none() { continue; }
+            let initialization = Statement::Expression(Box::new(Expression::Binop {
+              lhs: Box::new(lhs.unwrap()),
+              rhs: Box::new(decl.expression.clone().unwrap()),
+              op: BinaryOp::Assign,
+            }));
+            state = kestrel::crel::eval::run(&initialization, state, trace_fuel).current_state();
+          }
+          state
+        })
+        .collect();
       annealer.find_best(max_iterations, runner.roots[0], |expr| {
         kestrel::eggroll::cost_functions::sa_score(&trace_states, trace_fuel, expr)
       })

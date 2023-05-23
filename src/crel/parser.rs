@@ -154,8 +154,8 @@ fn trans_parameter_declaration(decl: &Node<c::ParameterDeclaration>) -> Paramete
     .map(trans_declaration_specifier)
     .collect();
   let declarator = match &decl.node.declarator {
-    None => panic!("Unsupported: parameter declaration without declarator."),
-    Some(decl) => trans_declarator(&decl),
+    None => None,
+    Some(decl) => Some(trans_declarator(&decl)),
   };
   ParameterDeclaration{specifiers, declarator}
 }

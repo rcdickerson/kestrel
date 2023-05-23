@@ -15,10 +15,10 @@ impl MapVars for FunDef {
   }
 }
 
-pub fn extract_fundefs(crel: &CRel) -> (Option<CRel>, HashMap<String, FunDef>) {
+pub fn extract_fundefs(crel: &CRel) -> (Vec<InitDeclarator>, HashMap<String, FunDef>) {
   match crel {
-    CRel::Declaration{ specifiers: _, declarators: _ } => {
-      (Some(crel.clone()), HashMap::new())
+    CRel::Declaration{specifiers: _, declarators} => {
+      (declarators.clone(), HashMap::new())
     },
     CRel::FunctionDefinition{specifiers: _, name, params: _, body} => {
       let name = match name {
@@ -35,18 +35,18 @@ pub fn extract_fundefs(crel: &CRel) -> (Option<CRel>, HashMap<String, FunDef>) {
       map.insert(name, FunDef{
         body: *body.clone(),
       });
-      (None, map)
+      (Vec::new(), map)
     },
     CRel::Seq(crels) => {
-      let (crels, defs): (Vec<_>, Vec<_>) = crels.iter()
+      let (decls, defs): (Vec<_>, Vec<_>) = crels.iter()
         .map(|c| extract_fundefs(c))
         .unzip();
-      let crels: Vec<_> = crels.iter().flatten().map(|c| (*c).clone()).collect();
+      let decls: Vec<_> = decls.iter().flatten().map(|c| (*c).clone()).collect();
       let mut def_union = HashMap::new();
       for def in defs {
         def_union.extend(def);
       }
-      ( if crels.len() > 0 { Some(CRel::Seq(crels)) } else { None }, def_union )
+      (decls, def_union)
     },
   }
 }

@@ -474,7 +474,9 @@ fn expect_param_declaration(sexp: &Sexp) -> ParameterDeclaration {
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "declaration" => {
         let specifiers = expect_specifiers(&sexps[1]);
-        let declarator = expect_declarator(&sexps[2]);
+        let declarator = if *&sexps.len() > 2 {
+          Some(expect_declarator(&sexps[2]))
+        } else { None };
         ParameterDeclaration{specifiers, declarator}
       },
       _ => panic!("Expected declaration, got: {}", sexp),

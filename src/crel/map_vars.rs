@@ -130,7 +130,7 @@ impl MapVars for ParameterDeclaration {
   {
     ParameterDeclaration {
       specifiers: self.specifiers.clone(),
-      declarator: self.declarator.map_vars(f),
+      declarator: self.declarator.as_ref().map(|decl| decl.map_vars(f)),
     }
   }
 }

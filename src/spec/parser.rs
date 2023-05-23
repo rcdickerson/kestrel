@@ -269,27 +269,27 @@ mod test {
   fn test_spec_comment() {
     let input =
       "/* @KESTREL
-        * pre:   1.N == 2.N;
+        * pre:   left.N == right.N;
         * left:  fun;
         * right: fun;
-        * post:  1.x == 2.x;
+        * post:  left.x == right.x;
         */";
     let newlines = Regex::new(r"\n+").unwrap();
     let input = newlines.replace_all(input, " ");
     let expected_pre = CondBExpr::Eq {
       lhs: CondAExpr::Variable(CondId{
-        exec: "1".to_string(),
+        exec: "left".to_string(),
         name: "N".to_string() }),
       rhs: CondAExpr::Variable(CondId{
-        exec: "2".to_string(),
+        exec: "right".to_string(),
         name: "N".to_string() }),
     };
     let expected_post = CondBExpr::Eq {
       lhs: CondAExpr::Variable(CondId {
-        exec: "1".to_string(),
+        exec: "left".to_string(),
         name: "x".to_string() }),
       rhs: CondAExpr::Variable(CondId {
-        exec: "2".to_string(),
+        exec: "right".to_string(),
         name: "x".to_string() }),
     };
     let expected = KestrelSpec {

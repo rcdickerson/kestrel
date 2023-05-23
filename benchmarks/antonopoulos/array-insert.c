@@ -1,5 +1,5 @@
 /* @KESTREL
- * pre: left.A == right.A;
+ * pre: true;
  * left: left;
  * right: right;
  * post: left.i == right.j;

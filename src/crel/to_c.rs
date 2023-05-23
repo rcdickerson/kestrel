@@ -104,7 +104,9 @@ fn param_decl_to_param(decl: &ParameterDeclaration) -> C::FunctionParameter {
   for spec in &decl.specifiers {
     builder.visit_specifier(spec);
   }
-  builder.visit_declarator(&decl.declarator);
+  if decl.declarator.as_ref().is_some() {
+    builder.visit_declarator(decl.declarator.as_ref().unwrap());
+  }
   builder.build_param()
 }
 
@@ -279,7 +281,7 @@ impl DeclarationBuilder {
   }
 
   fn visit_declarator(&mut self, decl: &Declarator) {
-    match decl {
+    match &decl {
       Declarator::Identifier{name} => {
         self.name = Some(name.clone());
       },
@@ -302,8 +304,8 @@ impl DeclarationBuilder {
 
   fn build_variable(&self) -> C::Variable {
     let mut var = C::Variable::new(
-      self.name.as_ref().expect("Variable declaration has no name"),
       self.ty.clone().expect("Variable declaration has no type"));
+    self.name.as_ref().map(|name| var.set_name(name.clone()));
     var.set_extern(self.is_extern);
     var.set_const(self.is_const);
     var.set_array(self.is_array);

@@ -1,7 +1,6 @@
 use crate::crel::ast::*;
 use crate::crel::state::*;
 use crate::crel::trace::*;
-use std::collections::HashMap;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Result {
@@ -15,7 +14,7 @@ pub enum Result {
 
 pub struct Execution {
   current_state: Option<State>,
-  trace: Trace,
+  pub trace: Trace,
   result: Result,
   max_trace: usize,
 }
@@ -28,6 +27,13 @@ impl Execution {
       trace: Trace::new(),
       result: Result::None,
       max_trace,
+    }
+  }
+
+  pub fn current_state(&self) -> State {
+    match &self.current_state {
+      None => panic!("No current state"),
+      Some(state) => state.clone(),
     }
   }
 
@@ -46,10 +52,10 @@ impl Execution {
       return;
     }
     let mut new_state = match &self.current_state {
-      None => HashMap::new(),
+      None => State::new(),
       Some(state) => state.clone(),
     };
-    new_state.insert(id, value);
+    new_state.put(id, value);
     self.trace.push_state(new_state.clone());
     self.current_state = Some(new_state);
   }
@@ -60,13 +66,6 @@ impl Execution {
       return;
     }
     self.trace.push_tag(tag);
-  }
-
-  fn current_state(&self) -> State {
-    match &self.current_state {
-      None => panic!("No current state"),
-      Some(state) => state.clone(),
-    }
   }
 
   fn set_break(&mut self) {
@@ -97,7 +96,7 @@ impl Execution {
     if self.result == Result::OutOfFuel { return }
     let value = match self.current_state().get(&id) {
       None => None,
-      Some(i) => Some(*i),
+      Some(val) => Some(val.int()),
     };
     self.result = Result::Identifier(id, value);
   }
@@ -151,11 +150,11 @@ impl Execution {
   }
 }
 
-pub fn run(stmt: &Statement, state: State, max_trace: usize) -> Trace {
+pub fn run(stmt: &Statement, state: State, max_trace: usize) -> Execution {
   let mut exec = Execution::new(max_trace);
   exec.set_state(state);
   eval_statement(stmt, &mut exec);
-  exec.trace
+  exec
 }
 
 fn eval_statement(stmt: &Statement, exec: &mut Execution) {
@@ -399,25 +398,25 @@ mod test {
   #[test]
   fn test_run_straightline() {
     let prog = parse_c_string(
-      "int main() {
+      "int main(void) {
          int x = 0;
          int y = 5;
          x = x + 1;
          y = x + y;
        }".to_string());
     let mut expected = Trace::new();
-    expected.push_state(HashMap::new());
+    expected.push_state(State::new());
     expected.push_state(state(vec!(("x", 0))));
     expected.push_state(state(vec!(("x", 0), ("y", 5))));
     expected.push_state(state(vec!(("x", 1), ("y", 5))));
     expected.push_state(state(vec!(("x", 1), ("y", 6))));
-    assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
+    assert_eq!(expected, run(&body(prog), State::new(), 100).trace);
   }
 
   #[test]
   fn test_run_conditional() {
     let prog = parse_c_string(
-      "int main() {
+      "int main(void) {
          int x = 0;
          int y = 0;
          if (x) {
@@ -432,18 +431,18 @@ mod test {
          }
        }".to_string());
     let mut expected = Trace::new();
-    expected.push_state(HashMap::new());
+    expected.push_state(State::new());
     expected.push_state(state(vec!(("x", 0))));
     expected.push_state(state(vec!(("x", 0),   ("y", 0))));
     expected.push_state(state(vec!(("x", 0),   ("y", 1))));
     expected.push_state(state(vec!(("x", 100), ("y", 1))));
-    assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
+    assert_eq!(expected, run(&body(prog), State::new(), 100).trace);
   }
 
   #[test]
   fn test_run_loop() {
     let prog = parse_c_string(
-      "int main() {
+      "int main(void) {
          int x = 0;
          int y = 5;
          while (x < y) {
@@ -453,7 +452,7 @@ mod test {
          int z = 100;
        }".to_string());
     let mut expected = Trace::new();
-    expected.push_state(HashMap::new());
+    expected.push_state(State::new());
     expected.push_state(state(vec!(("x", 0))));
     expected.push_state(state(vec!(("x", 0), ("y", 5))));
     expected.push_tag(Tag::LoopStart);
@@ -468,13 +467,13 @@ mod test {
     expected.push_state(state(vec!(("x", 3), ("y", 2))));
     expected.push_tag(Tag::LoopEnd);
     expected.push_state(state(vec!(("x", 3), ("y", 2), ("z", 100))));
-    assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
+    assert_eq!(expected, run(&body(prog), State::new(), 100).trace);
   }
 
   #[test]
   fn test_run_loop_break() {
     let prog = parse_c_string(
-      "int main() {
+      "int main(void) {
          int x = 0;
          int y = 5;
          while (x < y) {
@@ -485,7 +484,7 @@ mod test {
          int z = 100;
        }".to_string());
     let mut expected = Trace::new();
-    expected.push_state(HashMap::new());
+    expected.push_state(State::new());
     expected.push_state(state(vec!(("x", 0))));
     expected.push_state(state(vec!(("x", 0), ("y", 5))));
     expected.push_tag(Tag::LoopStart);
@@ -493,20 +492,20 @@ mod test {
     expected.push_state(state(vec!(("x", 1), ("y", 5))));
     expected.push_tag(Tag::LoopEnd);
     expected.push_state(state(vec!(("x", 1), ("y", 5), ("z", 100))));
-    assert_eq!(expected, run(&body(prog), HashMap::new(), 100));
+    assert_eq!(expected, run(&body(prog), State::new(), 100).trace);
   }
 
   #[test]
   fn test_run_loop_fuel() {
     let prog = parse_c_string(
-      "int main() {
+      "int main(void) {
          int x = 0;
          while (1) {
            x = x + 1;
          }
        }".to_string());
     let mut expected = Trace::new();
-    expected.push_state(HashMap::new());
+    expected.push_state(State::new());
     expected.push_state(state(vec!(("x", 0))));
     expected.push_tag(Tag::LoopStart);
     expected.push_tag(Tag::LoopHead);
@@ -515,7 +514,7 @@ mod test {
     expected.push_state(state(vec!(("x", 2))));
     expected.push_tag(Tag::LoopHead);
     expected.push_state(state(vec!(("x", 3))));
-    assert_eq!(expected, run(&body(prog), HashMap::new(), 9));
+    assert_eq!(expected, run(&body(prog), State::new(), 9).trace);
   }
 
   fn body(crel: CRel) -> Statement {

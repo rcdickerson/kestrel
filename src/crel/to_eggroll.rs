@@ -226,7 +226,10 @@ fn param_decl_to_eggroll(dec: &ParameterDeclaration) -> String {
     .map(declaration_specifier_to_eggroll)
     .collect::<Vec<String>>()
     .join(" ");
-  let dec_egg = declarator_to_eggroll(&dec.declarator);
+  let dec_egg = match &dec.declarator {
+    None => "".to_string(),
+    Some(decl) => declarator_to_eggroll(decl),
+  };
   format!("(declaration (specifiers {}) {})", specs_egg, dec_egg)
 }
 

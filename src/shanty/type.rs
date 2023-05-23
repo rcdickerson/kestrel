@@ -21,3 +21,8 @@ impl Type {
     writer.write(type_str);
   }
 }
+
+#[derive(Clone, Debug)]
+pub enum TypeQualifier {
+  Const,
+}

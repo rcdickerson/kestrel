@@ -52,9 +52,14 @@ define_language! {
     // Declarations
     "declaration" = Declaration([Id; 2]),
     "init-declarator" = InitDeclarators([Id; 2]),
+    "fun-declarator" = FunDeclarator([Id; 2]),
+    "sized-array" = SizedArray([Id; 2]),
+    "unsized-array" = UnsizedArray(Id),
+    "pointer" = Pointer(Id),
     "specifiers" = Specifiers(Box<[Id]>),
     "declarators" = Declarators(Box<[Id]>),
     "type" = Type(Id),
+    "type-qualifier" = TypeQualifier(Id),
     "storage-class" = StorageClass(Id),
 
     // Functions

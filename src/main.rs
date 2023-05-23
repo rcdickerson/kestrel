@@ -59,6 +59,9 @@ fn main() {
   let unaligned_crel = spec.build_unaligned_crel(&crel);
   println!("\nUnaliged CRel:\n{:?}", unaligned_crel);
 
+  let unaligned_c = unaligned_crel.to_c();
+  println!("\nUnaliged C:\n{}", unaligned_c);
+
   let unaligned_eggroll = unaligned_crel.to_eggroll();
   println!("\nUnaliged Eggroll:\n{:?}", unaligned_eggroll);
 

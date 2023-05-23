@@ -369,10 +369,17 @@ fn eval_block_item(item: &BlockItem, exec: &mut Execution) {
 }
 
 fn eval_declaration(decl: &Declaration, exec: &mut Execution) {
+  fn find_name(decl: &Declarator) -> String {
+    match decl {
+      Declarator::Identifier{name} => name.clone(),
+      Declarator::Array{name, size:_} => name.clone(),
+      Declarator::Function{name, params:_} => name.clone(),
+      Declarator::Pointer(decl) => find_name(decl),
+    }
+  }
+
   for init_decl in &decl.declarators {
-    let name = match &init_decl.declarator {
-      Declarator::Identifier{name} => name,
-    };
+    let name = find_name(&init_decl.declarator);
     match &init_decl.expression {
       None => exec.update_state(name.clone(), 0),
       Some(expr) => {

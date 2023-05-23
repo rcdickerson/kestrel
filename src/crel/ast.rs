@@ -68,6 +68,7 @@ pub struct InitDeclarator {
 pub enum DeclarationSpecifier {
   StorageClass(StorageClassSpecifier),
   TypeSpecifier(Type),
+  TypeQualifier(TypeQualifier),
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -80,14 +81,28 @@ pub enum Type {
 }
 
 #[derive(Clone, Debug, PartialEq)]
+pub enum TypeQualifier {
+  Const,
+}
+
+#[derive(Clone, Debug, PartialEq)]
 pub enum Declarator {
-  Identifier{ name: String },
+  Identifier{name: String},
+  Array{name: String, size: Option<Expression>},
+  Function{name: String, params: Vec<ParameterDeclaration>},
+  Pointer(Box<Declarator>),
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Declaration {
   pub specifiers: Vec<DeclarationSpecifier>,
   pub declarators: Vec<InitDeclarator>,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct ParameterDeclaration {
+  pub specifiers: Vec<DeclarationSpecifier>,
+  pub declarator: Declarator,
 }
 
 #[derive(Clone, Debug, PartialEq)]

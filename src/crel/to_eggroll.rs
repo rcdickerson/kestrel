@@ -31,11 +31,13 @@ pub fn crel_to_eggroll(crel: &CRel) -> String {
     },
     CRel::Seq(crels) => {
       match crels.len() {
-        0 => "".to_string(),
+        0 => "()".to_string(),
         1 => crel_to_eggroll(&crels[0]),
-        _ => format!("(seq {} {})",
-                     crel_to_eggroll(&crels[0]),
-                     crel_to_eggroll(&CRel::Seq(crels[1..].to_vec())))
+        _ => {
+          let first = crel_to_eggroll(&crels[0]);
+          let rest = crel_to_eggroll(&CRel::Seq(crels[1..].to_vec()));
+          format!("(seq {} {})", first, rest)
+        }
       }
     },
   }
@@ -141,14 +143,38 @@ fn statement_to_eggroll(stmt: &Statement) -> String {
 
 fn declaration_specifier_to_eggroll(spec: &DeclarationSpecifier) -> String {
   match spec {
-    DeclarationSpecifier::StorageClass(scs) => format!("(storage-class {})", storage_class_specifier_to_eggroll(scs)),
-    DeclarationSpecifier::TypeSpecifier(ty) => format!("(type {})", type_to_eggroll(ty)),
+    DeclarationSpecifier::StorageClass(scs) => {
+      format!("(storage-class {})", storage_class_specifier_to_eggroll(scs))
+    }
+    DeclarationSpecifier::TypeSpecifier(ty) => {
+      format!("(type {})", type_to_eggroll(ty))
+    }
+    DeclarationSpecifier::TypeQualifier(tq) => {
+      format!("(type-qualifier {})", type_qualifier_to_eggroll(tq))
+    }
   }
 }
 
 fn declarator_to_eggroll(dec: &Declarator) -> String {
   match dec {
     Declarator::Identifier{name} => name.clone(),
+    Declarator::Array{name, size} => {
+      match &size {
+        None => format!("(unized-array {})", name.clone()),
+        Some(expr) => {
+          let size_egg = expression_to_eggroll(expr);
+          format!("(sized-array {} {})", name.clone(), size_egg)
+        }
+      }
+    },
+    Declarator::Function{name, params} => {
+      let params_egg = params.iter().map(param_decl_to_eggroll).collect::<Vec<String>>().join(" ");
+      format!("(fun-declarator {} (params {}))", name.clone(), params_egg)
+    },
+    Declarator::Pointer(decl) => {
+      let decl_egg = declarator_to_eggroll(decl);
+      format!("(pointer {})", decl_egg)
+    },
   }
 }
 
@@ -171,6 +197,12 @@ fn type_to_eggroll(ty: &Type) -> String {
   }
 }
 
+fn type_qualifier_to_eggroll(tq: &TypeQualifier) -> String {
+  match tq {
+    TypeQualifier::Const => "const".to_string(),
+  }
+}
+
 fn storage_class_specifier_to_eggroll(scs: &StorageClassSpecifier) -> String {
   match scs {
     StorageClassSpecifier::Extern => "extern".to_string(),
@@ -187,6 +219,15 @@ fn declaration_to_eggroll(dec: &Declaration) -> String {
     .collect::<Vec<String>>()
     .join(" ");
   format!("(declaration (specifiers {}) (declarators {}))", specs_egg, decs_egg)
+}
+
+fn param_decl_to_eggroll(dec: &ParameterDeclaration) -> String {
+  let specs_egg = &dec.specifiers.iter()
+    .map(declaration_specifier_to_eggroll)
+    .collect::<Vec<String>>()
+    .join(" ");
+  let dec_egg = declarator_to_eggroll(&dec.declarator);
+  format!("(declaration (specifiers {}) {})", specs_egg, dec_egg)
 }
 
 fn block_item_to_eggroll(item: &BlockItem) -> String {

@@ -103,7 +103,33 @@ impl CollectVars for Declarator {
   fn vars(&self) -> HashSet<String> {
     match self {
       Declarator::Identifier{name} => singleton(name.clone()),
+      Declarator::Array{name, size} => {
+        union_all(vec!(
+          singleton(name.clone()),
+          size.as_ref().map_or(HashSet::new(), |expr| expr.vars()),
+        ))
+      },
+      Declarator::Function{name, params} => {
+        let mut vars : Vec<HashSet<String>> = params.iter()
+          .map(|p| p.vars())
+          .collect();
+        vars.push(singleton(name.clone()));
+        union_all(vars)
+      },
+      Declarator::Pointer(decl) => {
+        decl.vars()
+      }
     }
+  }
+}
+
+impl CollectVars for ParameterDeclaration {
+  fn vars(&self) -> HashSet<String> {
+    let mut vars : Vec<HashSet<String>> = self.specifiers.iter()
+      .map(|spec| spec.vars())
+      .collect();
+    vars.push(self.declarator.vars());
+    union_all(vars)
   }
 }
 

@@ -16,4 +16,5 @@ pub use source::Source;
 pub use statement::Statement;
 pub use variable::Variable;
 pub use r#type::Type;
+pub use r#type::TypeQualifier;
 pub use writer::Writer;

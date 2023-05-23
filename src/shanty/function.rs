@@ -10,6 +10,7 @@ pub struct Function {
   parameters: Vec<FunctionParameter>,
   body: Option<Statement>,
   is_extern: bool,
+  is_const: bool,
 }
 
 impl Function {
@@ -21,6 +22,7 @@ impl Function {
       parameters: Vec::new(),
       body: None,
       is_extern: false,
+      is_const: false,
     }
   }
 
@@ -34,6 +36,11 @@ impl Function {
     self
   }
 
+  pub fn set_const(&mut self, is_const: bool) -> &Self {
+    self.is_const = is_const;
+    self
+  }
+
   pub fn set_body(&mut self, body: &Statement) -> &Self {
     self.body = Some(body.clone());
     self
@@ -42,6 +49,9 @@ impl Function {
   pub fn emit(&self, writer: &mut Writer) {
     if self.is_extern {
       writer.write("extern ");
+    }
+    if self.is_const {
+      writer.write("const ");
     }
     self.ty.emit(writer);
     writer.write(" ").write(&self.name).write("(");

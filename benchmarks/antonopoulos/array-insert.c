@@ -1,38 +1,38 @@
 /* @KESTREL
- * pre left.A == right.A
-    && left.A_len == length(left.A)
-    && right.A_len == length(right.A);
+ * pre: left.A == right.A;
  * left: left;
  * right: right;
- * post 1.i == 2.j;
+ * post: left.i == right.j;
  */
+
+const int A_SIZE = 10;
+int A_left[A_SIZE];
+int A_right[A_SIZE];
 
 extern int shiftArray(int* A, int idx, int amt);
 
-int left(int A[], int A_len, int val) {
+void left(int val) {
   int i = 0;
-  while( i < A_len && A[i] < val) {
+  while( i < A_SIZE && A_left[i] < val) {
     i = i + 1;
   }
-  int len = shiftArray(A, i, 1);
-  assume(len == A_len + 1); // spec of shiftArray
-  A[i] = val;
+  int len = shiftArray(A_left, i, 1);
+  assume(len == A_SIZE + 1); // spec of shiftArray
+  A_left[i] = val;
   while (i < len) {
     i = i + 1;
   }
-  return i;
 }
 
-int right(int A[], int A_len, int val) {
+void right(int val) {
   int j = 0;
-  while( j < A_len && A[j] < val) {
+  while( j < A_SIZE && A_right[j] < val) {
     j = j + 1;
   }
-  int len = shiftArray(A, j, 1);
-  assume(len == A_len+ 1); // spec of shiftArray
-  A[j] = val;
+  int len = shiftArray(A_right, j, 1);
+  assume(len == A_SIZE + 1); // spec of shiftArray
+  A_right[j] = val;
   while (j < len) {
     j = j + 1;
   }
-  return j;
 }

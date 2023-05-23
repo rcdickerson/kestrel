@@ -4,7 +4,7 @@ use std::collections::HashMap;
 
 #[derive(Clone, Debug)]
 pub struct FunDef {
-  // TODO: Params, initialized to arbitrary values.
+  // TODO: Params.
   pub body: Statement,
 }
 impl MapVars for FunDef {
@@ -20,9 +20,16 @@ pub fn extract_fundefs(crel: &CRel) -> (Option<CRel>, HashMap<String, FunDef>) {
     CRel::Declaration{ specifiers: _, declarators: _ } => {
       (Some(crel.clone()), HashMap::new())
     },
-    CRel::FunctionDefinition{ specifiers: _, name, params: _, body } => {
+    CRel::FunctionDefinition{specifiers: _, name, params: _, body} => {
       let name = match name {
         Declarator::Identifier{name} => name.clone(),
+        Declarator::Array{name:_, size:_} => {
+          panic!("Cannot have array declarator as function name")
+        },
+        Declarator::Function{name, params:_} => name.clone(),
+        Declarator::Pointer(_) => {
+          panic!("Unsupported: pointer declarator as function name")
+        }
       };
       let mut map = HashMap::new();
       map.insert(name, FunDef{

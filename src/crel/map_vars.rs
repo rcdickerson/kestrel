@@ -105,6 +105,32 @@ impl MapVars for Declarator {
       Declarator::Identifier{name} => {
         Declarator::Identifier{name: f(name.clone())}
       },
+      Declarator::Array{name, size} => {
+        Declarator::Array {
+          name: f(name.clone()),
+          size: size.as_ref().map(|expr| expr.map_vars(f)),
+        }
+      },
+      Declarator::Function{name, params} => {
+        Declarator::Function {
+          name: f(name.clone()),
+          params: params.iter().map(|decl| decl.map_vars(f)).collect(),
+        }
+      },
+      Declarator::Pointer(decl) => {
+        Declarator::Pointer(Box::new(decl.map_vars(f)))
+      },
+    }
+  }
+}
+
+impl MapVars for ParameterDeclaration {
+  fn map_vars<F>(&self, f: &F) -> Self
+    where F: Fn(String) -> String
+  {
+    ParameterDeclaration {
+      specifiers: self.specifiers.clone(),
+      declarator: self.declarator.map_vars(f),
     }
   }
 }

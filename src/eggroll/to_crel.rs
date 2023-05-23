@@ -325,10 +325,13 @@ fn expect_declaration_specifier(sexp: &Sexp) -> DeclarationSpecifier {
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "storage-class" => {
         DeclarationSpecifier::StorageClass(expect_storage_class_specifier(&sexps[1]))
-      },
+      }
       Sexp::Atom(Atom::S(s)) if s == "type" => {
         DeclarationSpecifier::TypeSpecifier(expect_type(&sexps[1]))
-      },
+      }
+      Sexp::Atom(Atom::S(s)) if s == "type-qualifier" => {
+        DeclarationSpecifier::TypeQualifier(expect_type_qualifier(&sexps[1]))
+      }
       _ => panic!("Expected declaration specifier, got: {}", sexp),
     },
     _ => panic!("Expected declaration specifier, got: {}", sexp),
@@ -346,6 +349,16 @@ fn expect_type(sexp: &Sexp) -> Type {
       _ => panic!("Unknown type: {}", ty),
     },
     _ => panic!("Expected type, got: {}", sexp)
+  }
+}
+
+fn expect_type_qualifier(sexp: &Sexp) -> TypeQualifier {
+  match &sexp {
+    Sexp::Atom(Atom::S(ty)) => match ty.as_str() {
+      "const" => TypeQualifier::Const,
+      _ => panic!("Unknown type qualifier: {}", ty),
+    },
+    _ => panic!("Expected type qualifier, got: {}", sexp)
   }
 }
 
@@ -379,7 +392,7 @@ fn expect_init_declarator(sexp: &Sexp) -> InitDeclarator {
       Sexp::Atom(Atom::S(s)) if s == "init-declarator" => {
         let declarator = expect_declarator(&sexps[1]);
         let expression = Some(expect_expression(&sexps[2]));
-        InitDeclarator{ declarator, expression }
+        InitDeclarator{declarator, expression}
       },
       _ => InitDeclarator{ declarator: expect_declarator(sexp), expression: None }
     },
@@ -389,7 +402,25 @@ fn expect_init_declarator(sexp: &Sexp) -> InitDeclarator {
 
 fn expect_declarator(sexp: &Sexp) -> Declarator {
   match &sexp {
-    Sexp::Atom(Atom::S(name)) => Declarator::Identifier{ name: name.clone() },
+    Sexp::Atom(Atom::S(name)) => Declarator::Identifier{name: name.clone()},
+    Sexp::List(sexps) => match &sexps[0] {
+      Sexp::Atom(Atom::S(s)) if s == "unsized-array" => {
+        Declarator::Array{name: expect_string(&sexps[1]), size: None}
+      },
+      Sexp::Atom(Atom::S(s)) if s == "sized-array" => {
+        let size = expect_expression(&sexps[2]);
+        Declarator::Array{name: expect_string(&sexps[1]), size: Some(size)}
+      },
+      Sexp::Atom(Atom::S(s)) if s == "fun-declarator" => {
+        let params = expect_param_decls(&sexps[2]);
+        Declarator::Function{name: expect_string(&sexps[1]), params}
+      },
+      Sexp::Atom(Atom::S(s)) if s == "pointer" => {
+        let decl = expect_declarator(&sexps[1]);
+        Declarator::Pointer(Box::new(decl))
+      },
+      _ => panic!("Expected declarator, got: {}", sexp),
+    }
     _ => panic!("Expected declarator, got: {}", sexp),
   }
 }
@@ -416,6 +447,35 @@ fn expect_declaration(sexp: &Sexp) -> Declaration {
         let specifiers = expect_specifiers(&sexps[1]);
         let declarators = expect_init_declarators(&sexps[2]);
         Declaration{specifiers, declarators}
+      },
+      _ => panic!("Expected declaration, got: {}", sexp),
+    },
+    _ => panic!("Expected params, got: {}", sexp),
+  }
+}
+
+fn expect_param_decls(sexp: &Sexp) -> Vec<ParameterDeclaration> {
+  match &sexp {
+    Sexp::Atom(Atom::S(s)) if s == "params" => Vec::new(),
+    Sexp::List(sexps) => match &sexps[0] {
+      Sexp::Atom(Atom::S(s)) if s == "params" => {
+        sexps[1..].iter()
+          .map(expect_param_declaration)
+          .collect()
+      },
+      _ => panic!("Expected params, got: {}", sexp),
+    },
+    _ => panic!("Expected params, got: {}", sexp),
+  }
+}
+
+fn expect_param_declaration(sexp: &Sexp) -> ParameterDeclaration {
+  match &sexp {
+    Sexp::List(sexps) => match &sexps[0] {
+      Sexp::Atom(Atom::S(s)) if s == "declaration" => {
+        let specifiers = expect_specifiers(&sexps[1]);
+        let declarator = expect_declarator(&sexps[2]);
+        ParameterDeclaration{specifiers, declarator}
       },
       _ => panic!("Expected declaration, got: {}", sexp),
     },

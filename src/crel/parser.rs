@@ -79,6 +79,10 @@ fn trans_declaration_specifier(decl_spec: &Node<c::DeclarationSpecifier>) -> Dec
       let crel_type = trans_type_specifier(ts.node.clone());
       DeclarationSpecifier::TypeSpecifier(crel_type)
     }
+    c::DeclarationSpecifier::TypeQualifier(ts) => {
+      let crel_qual = trans_type_qualifier(ts.node.clone());
+      DeclarationSpecifier::TypeQualifier(crel_qual)
+    }
     _ => panic!("Unsupported declaration specifier: {:?}", decl_spec),
   }
 }
@@ -91,10 +95,69 @@ fn trans_storage_class_specifier(sc_spec: &c::StorageClassSpecifier) -> StorageC
 }
 
 fn trans_declarator(decl: &Node<c::Declarator>) -> Declarator {
-  match &decl.node.kind.node {
-    c::DeclaratorKind::Identifier(id) => Declarator::Identifier{ name: id.node.name.clone() },
+  let name = match &decl.node.kind.node {
+    c::DeclaratorKind::Identifier(id) => id.node.name.clone(),
     _ => panic!("Unsupported declarator: {:?}", decl),
+  };
+  let mut is_array = false;
+  let mut array_size = None;
+  let mut is_function = false;
+  let mut function_params = None;
+  let mut is_pointer = false;
+  for derived in &decl.node.derived {
+    match &derived.node {
+      c::DerivedDeclarator::Array(array_decl) => match &array_decl.node.size {
+        c::ArraySize::Unknown => is_array = true,
+        c::ArraySize::VariableUnknown => is_array = true,
+        c::ArraySize::VariableExpression(expr) => {
+          is_array = true;
+          array_size = Some(trans_expression(&*expr));
+        },
+        c::ArraySize::StaticExpression(expr) => {
+          is_array = true;
+          array_size = Some(trans_expression(&*expr));
+        },
+      },
+      c::DerivedDeclarator::Function(fundecl) => {
+        is_function = true;
+        let params = fundecl.node.parameters.iter()
+          .map(trans_parameter_declaration)
+          .collect();
+        function_params = Some(params);
+      },
+      c::DerivedDeclarator::Pointer(_) => {
+        is_pointer = true;
+      },
+      _ => panic!("Unsupported derived declarator: {:?}", decl),
+    };
   }
+
+  let declarator = if is_array && is_function {
+    panic!("Multiple derived declarators (array and function) not supported")
+  } else if is_array {
+    Declarator::Array{name, size: array_size}
+  } else if is_function {
+    Declarator::Function{name, params: function_params.unwrap_or(Vec::new())}
+  } else {
+    Declarator::Identifier{name}
+  };
+
+  if is_pointer {
+    Declarator::Pointer(Box::new(declarator))
+  } else {
+    declarator
+  }
+}
+
+fn trans_parameter_declaration(decl: &Node<c::ParameterDeclaration>) -> ParameterDeclaration {
+  let specifiers = decl.node.specifiers.iter()
+    .map(trans_declaration_specifier)
+    .collect();
+  let declarator = match &decl.node.declarator {
+    None => panic!("Unsupported: parameter declaration without declarator."),
+    Some(decl) => trans_declarator(&decl),
+  };
+  ParameterDeclaration{specifiers, declarator}
 }
 
 fn trans_init_declarator(decl: &Node<c::InitDeclarator>) -> InitDeclarator {
@@ -104,7 +167,6 @@ fn trans_init_declarator(decl: &Node<c::InitDeclarator>) -> InitDeclarator {
     None => InitDeclarator{ declarator: dec, expression: None },
     Some(init) => InitDeclarator{ declarator: dec, expression: Some(init) },
   }
-
 }
 
 fn trans_initializer(initializer: &Option<Node<c::Initializer>>) -> Option<Expression> {
@@ -125,6 +187,13 @@ fn trans_type_specifier(type_spec: c::TypeSpecifier) -> Type {
     c::TypeSpecifier::Int    => Type::Int,
     c::TypeSpecifier::Void   => Type::Void,
     _ => panic!("Unsupported type specifier: {:?}", type_spec),
+  }
+}
+
+fn trans_type_qualifier(type_qual: c::TypeQualifier) -> TypeQualifier {
+  match type_qual {
+    c::TypeQualifier::Const => TypeQualifier::Const,
+    _ => panic!("Unsupported type qualifier: {:?}", type_qual),
   }
 }
 

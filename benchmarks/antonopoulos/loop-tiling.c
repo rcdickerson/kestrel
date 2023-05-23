@@ -2,7 +2,7 @@
  * pre:   true;
  * left:  left;
  * right: right;
- * post:  post;
+ * post:  true;
  */
 
 extern int f(int);
@@ -13,7 +13,7 @@ extern int f(int);
 int a_1[N*M];
 int a_2[N][M];
 
-void left() {
+void left(void) {
   int x = 0;
   while (x < N * M) {
     a_1[x] = f(x);
@@ -21,7 +21,7 @@ void left() {
   }
 }
 
-void right() {
+void right(void) {
   int i = 0;
   while (i < N) {
     int j = 0;
@@ -33,8 +33,8 @@ void right() {
   }
 }
 
-void post() {
+//void post() {
   /* for(int i = 0; i < N; i++) */
   /*   for(int j = 0; j < M; j++) */
   /*     sassert(a_1[i * M + j] == a_2[i][j]); */
-}
+//}

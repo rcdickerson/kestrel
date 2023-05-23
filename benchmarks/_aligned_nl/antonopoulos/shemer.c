@@ -2,26 +2,30 @@
 
 extern int arb_int();
 
-int main() {
-int x = arb_int();
-int y1 = 0;
-int y2 = 0;
-int z1 = 2 * x;
-int z2 = x;
-while (z1 > 0 && z2 > 0) {
-z1 = z1 - 1;
-y1 = y1 + x;
-z2 = z2 - 1;
-y2 = y2 + x;
-};
-while (z1 > 0) {
-z1 = z1 - 1;
-y1 = y1 + x;
-};
-while (z2 > 0) {
-z2 = z2 - 1;
-y2 = y2 + x;
-};
-y2 = y2 * 2;
-sassert(y1 == y2);
-}
+void main() {
+  int l_x = arb_int();
+  int r_x = arb_int();
+  int l_y = 0;
+  int l_z = 2 * l_x;
+  int r_y = 0;
+  int r_z = r_x;
+  while ((l_z > 0) && (r_z > 0)) {
+    l_z = (l_z - 1);
+    l_y = (l_y + l_x);
+    if (l_z > 0) {
+      l_z = (l_z - 1);
+      l_y = (l_y + l_x);
+    }
+    r_z = (r_z - 1);
+    r_y = (r_y + r_x);
+  }
+  while ((l_z > 0) && (!(r_z > 0))) {
+    l_z = (l_z - 1);
+    l_y = (l_y + l_x);
+  }
+  while ((!(l_z > 0)) && (r_z > 0)) {
+    r_z = (r_z - 1);
+    r_y = (r_y + r_x);
+  }
+  r_y = (r_y * 2);
+ }

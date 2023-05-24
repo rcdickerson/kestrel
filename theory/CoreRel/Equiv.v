@@ -46,7 +46,7 @@ Section Equiv.
    alignments are equivalent if their subterms are equivalent.
 
    The first step is to show this holds for individual alignments commands. *)
-
+  #[global]
   Add Parametric Morphism : ACBlock
     with signature com_eqv ==> com_eqv ==> align_eqv
       as block_eqv_cong.
@@ -59,6 +59,7 @@ Section Equiv.
       In_intro; eauto.
   Qed.
 
+  #[global]
   Add Parametric Morphism : ACSeq
     with signature align_eqv ==> align_eqv ==> align_eqv
       as ACSeq_eqv_cong.
@@ -71,6 +72,7 @@ Section Equiv.
       In_intro; eauto.
   Qed.
 
+  #[global]
   Add Parametric Morphism : ACIf
     with signature bexp_eqv ==> bexp_eqv ==> align_eqv ==> align_eqv ==> align_eqv
       as ACIf_eqv_cong.
@@ -91,6 +93,7 @@ Section Equiv.
       right; In_intro; intuition.
   Qed.
 
+  #[global]
   Add Parametric Morphism : ACWhile
     with signature bexp_eqv ==> bexp_eqv ==> align_eqv ==> align_eqv
       as ACWhile_eqv_cong.
@@ -195,19 +198,16 @@ Section Equiv.
       <{ whileR <|b1 | b2|> do r end  }> ==R <{ <|skip|skip|> }> .
   Proof.
     intros.
-    etransitivity.
-    - eapply ACWhile_eqv_cong; try eassumption; try reflexivity.
-      eapply bexp_eqv_refl.
-    - clear H.
-      intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
-        simpl in *; In_intro; subst; intuition eauto.
-      + apply LFP_fold in X_In; try apply while_body_monotone.
-        In_inversion.
-        * eauto.
-        * eauto.
-        *   unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
-            destruct x as ((?, ?), (?, ?)).
-            In_inversion.
+    rewrite H; clear H.
+    intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
+      simpl in *; In_intro; subst; intuition eauto.
+    + apply LFP_fold in X_In; try apply while_body_monotone.
+      In_inversion.
+      * eauto.
+      * eauto.
+      *   unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
+          destruct x as ((?, ?), (?, ?)).
+          In_inversion.
             -- simpl in *; left; left; In_intro; intuition.
             -- left; right; In_intro; intuition.
       + apply LFP_fold in X_In; try apply while_body_monotone.
@@ -232,51 +232,47 @@ Section Equiv.
         -- apply LFP_fold.
            ++ unfold Monotone, subseteq, set_subseteq_instance, rel_state; eauto.
            ++ In_intro.
-Qed.
-
+  Qed.
 
   Lemma whileR_false_R : forall b1 b2 r,
       bexp_eqv b2 <{false}> ->
       <{ whileR <|b1 | b2|> do r end  }> ==R <{ <|skip|skip|> }> .
   Proof.
     intros.
-    etransitivity.
-    - eapply ACWhile_eqv_cong; try eassumption; try reflexivity.
-      eapply bexp_eqv_refl.
-    - clear H.
-      intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
-        simpl in *; In_intro; subst; intuition eauto.
-      + apply LFP_fold in X_In; try apply while_body_monotone.
-        In_inversion.
-        * eauto.
-        * eauto.
-        *   unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
-            destruct x as ((?, ?), (?, ?)).
-            In_inversion.
-            -- simpl in *; left; left; In_intro; intuition.
-            -- left; right; In_intro; intuition.
-      + apply LFP_fold in X_In; try apply while_body_monotone.
-        In_inversion.
-        * eauto.
-        * eauto.
-        *   unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
-            destruct x as ((?, ?), (?, ?)).
-            In_inversion.
-            -- simpl in *; left; left; In_intro; intuition.
-            -- left; right; In_intro; intuition.
-      + eapply Ind with (F := fun rec st => st = ((st1', st2'), (st1', st2'))).
-        unfold FClosed, subseteq, set_subseteq_instance; simpl.
-        intros ((?, ?), (?, ?)) ?; In_inversion; injection H; intros; subst.
-        apply LFP_fold.
-        -- unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
-           destruct x as ((?, ?), (?, ?)).
-           In_inversion.
-           ++ simpl in *; left; left; In_intro; intuition.
-           ++ left; right; In_intro; intuition.
-        -- left; right; In_intro; intuition.
-        -- apply LFP_fold.
-           ++ unfold Monotone, subseteq, set_subseteq_instance, rel_state; eauto.
-           ++ In_intro.
+    rewrite H; clear H.
+    intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
+      simpl in *; In_intro; subst; intuition eauto.
+    + apply LFP_fold in X_In; try apply while_body_monotone.
+      In_inversion.
+      * eauto.
+      * eauto.
+      *   unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
+          destruct x as ((?, ?), (?, ?)).
+          In_inversion.
+          -- simpl in *; left; left; In_intro; intuition.
+          -- left; right; In_intro; intuition.
+    + apply LFP_fold in X_In; try apply while_body_monotone.
+      In_inversion.
+      * eauto.
+      * eauto.
+      *   unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
+          destruct x as ((?, ?), (?, ?)).
+          In_inversion.
+          -- simpl in *; left; left; In_intro; intuition.
+          -- left; right; In_intro; intuition.
+    + eapply Ind with (F := fun rec st => st = ((st1', st2'), (st1', st2'))).
+      unfold FClosed, subseteq, set_subseteq_instance; simpl.
+      intros ((?, ?), (?, ?)) ?; In_inversion; injection H; intros; subst.
+      apply LFP_fold.
+      -- unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
+         destruct x as ((?, ?), (?, ?)).
+         In_inversion.
+         ++ simpl in *; left; left; In_intro; intuition.
+         ++ left; right; In_intro; intuition.
+      -- left; right; In_intro; intuition.
+      -- apply LFP_fold.
+         ++ unfold Monotone, subseteq, set_subseteq_instance, rel_state; eauto.
+         ++ In_intro.
   Qed.
 
   Lemma whileR_false_L' : forall b1 b2 r st1 st2,

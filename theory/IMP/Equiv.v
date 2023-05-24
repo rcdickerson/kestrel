@@ -94,6 +94,7 @@ Lemma bexp_eqv_trans : forall (b1 b2 b3 : bexp),
     b1 ==B b2 -> b2 ==B b3 -> b1 ==B b3.
 Proof. intros; eapply Same_set_trans; eassumption. Qed.
 
+#[global]
 Add Parametric Relation : bexp bexp_eqv
     reflexivity proved by bexp_eqv_refl
     symmetry proved by bexp_eqv_sym
@@ -121,6 +122,7 @@ Qed.
     a1 ==A a1' ->
     a2 ==A a2' ->
     <{a1 = a2}> ==B <{a1' = a2'}>. *)
+#[global]
 Add Parametric Morphism : BEq
     with signature aexp_eqv ==> aexp_eqv ==> bexp_eqv
       as beq_eqv_cong.
@@ -143,6 +145,7 @@ Qed.
     a1 ==A a1' ->
     a2 ==A a2' ->
     <{a1 <= a2}> ==B <{a1' <= a2'}>. *)
+#[global]
 Add Parametric Morphism : BLe
     with signature aexp_eqv ==> aexp_eqv ==> bexp_eqv
       as ble_eqv_cong.
@@ -164,6 +167,7 @@ Qed.
 (* Lemma bnot_eqv_cong : forall b1 b1',
     b1 ==B b1' ->
     <{~ b1}> ==B <{~ b1'}>. *)
+#[global]
 Add Parametric Morphism : BNot
     with signature bexp_eqv ==> bexp_eqv
       as bnot_eqv_cong.
@@ -178,6 +182,7 @@ Qed.
     b1 ==B b1' ->
     b2 ==B b2' ->
     <{b1 && b2}> ==B <{b1' && b2'}>. *)
+#[global]
 Add Parametric Morphism : BAnd
     with signature bexp_eqv ==> bexp_eqv ==> bexp_eqv
       as band_eqv_cong.
@@ -230,6 +235,7 @@ Lemma seq_eq_cong : forall c1 c2 c1' c2',
     c1 ==C c1' ->
     c2 ==C c2' ->
     <{c1; c2}> ==C <{c1'; c2'}>. *)
+#[global]
 Add Parametric Morphism : CSeq
     with signature com_eqv ==> com_eqv ==> com_eqv
       as seq_eq_cong.
@@ -247,6 +253,7 @@ Qed.
     c1 ==C c1' ->
     c2 ==C c2' ->
     <{if b then c1 else c2 end}> ==C <{if b then c1' else c2' end}>. *)
+#[global]
 Add Parametric Morphism : CIf
     with signature bexp_eqv ==> com_eqv ==> com_eqv ==> com_eqv
       as if_eq_cong.
@@ -270,6 +277,7 @@ Qed.
 (* Lemma while_eq_cong : forall b c1 c1',
     c1 ==C c1' ->
     <{while b do c1 end}> ==C <{while b do c1' end}>. *)
+#[global]
 Add Parametric Morphism : CWhile
     with signature bexp_eqv ==> com_eqv ==> com_eqv
       as while_eq_cong.

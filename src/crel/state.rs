@@ -68,8 +68,12 @@ impl State {
     self.map.insert(name, StateValue::Int(value));
   }
 
-  pub fn put_array(&mut self, name: String, size: usize) {
-    self.map.insert(name, StateValue::Array(vec![StateValue::Int(0); size]));
+  pub fn put_array(&mut self, name: String, size: Option<usize>) {
+    let array_vec = match size {
+      None => Vec::new(),
+      Some(size) => vec![StateValue::Int(0); size],
+    };
+    self.map.insert(name, StateValue::Array(array_vec));
   }
 
   pub fn put_indexed(&mut self, name: String, index: usize, value: i32) {
@@ -122,18 +126,18 @@ impl State {
     }
   }
 
-  pub fn with_declarations(&self, decls: &Vec<InitDeclarator>, trace_fuel: usize) -> Self {
+  pub fn with_declarations(&self, decls: &Vec<Declaration>, trace_fuel: usize) -> Self {
     let mut state = self.clone();
     for decl in decls {
       match &decl.declarator {
         Declarator::Array{name, size: Some(size_expr)} => {
           let stmt = Statement::Expression(Box::new(size_expr.clone()));
           let size = run(&stmt, state.clone(), trace_fuel).result_int();
-          state.put_array(name.clone(), size as usize);
+          state.put_array(name.clone(), Some(size as usize));
         },
         _ => (),
       }
-      if decl.expression.is_none() { continue; }
+      if decl.initializer.is_none() { continue; }
       let lhs = match &decl.declarator {
         Declarator::Identifier{name} => Some(Expression::Identifier{name: name.clone()}),
         Declarator::Array{name, size:_} => Some(Expression::Identifier{name: name.clone()}),
@@ -143,7 +147,7 @@ impl State {
       if lhs.is_none() { continue; }
       let initialization = Statement::Expression(Box::new(Expression::Binop {
         lhs: Box::new(lhs.unwrap()),
-        rhs: Box::new(decl.expression.clone().unwrap()),
+        rhs: Box::new(decl.initializer.clone().unwrap()),
         op: BinaryOp::Assign,
       }));
       state = run(&initialization, self.clone(), trace_fuel).current_state();

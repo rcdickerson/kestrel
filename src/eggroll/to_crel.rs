@@ -13,15 +13,15 @@ fn expect_crel(sexp: &Sexp) -> CRel {
     Sexp::Atom(Atom::S(s)) if s.is_empty() => CRel::Seq(Vec::new()),
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "declaration" => {
-        let specifiers = expect_specifiers(&sexps[1]);
-        let declarators = expect_init_declarators(&sexps[2]);
-        CRel::Declaration{specifiers, declarators}
+        let declaration = expect_declaration(&sexps[1]);
+        CRel::Declaration(declaration)
       },
       Sexp::Atom(Atom::S(s)) if s == "fundef" => {
         let specifiers = expect_specifiers(&sexps[1]);
-        let declarator = expect_declarator(&sexps[2]);
-        let body = Box::new(expect_statement(&sexps[3]));
-        CRel::FunctionDefinition{specifiers, declarator, body}
+        let name = expect_string(&sexps[2]);
+        let params = expect_param_decls(&sexps[3]);
+        let body = Box::new(expect_statement(&sexps[4]));
+        CRel::FunctionDefinition{specifiers, name, params, body}
       },
       Sexp::Atom(Atom::S(s)) if s == "seq" => {
         let mut seq = vec!(expect_crel(&sexps[1]));
@@ -371,31 +371,32 @@ fn expect_storage_class_specifier(sexp: &Sexp) -> StorageClassSpecifier {
   }
 }
 
-fn expect_init_declarators(sexp: &Sexp) -> Vec<InitDeclarator> {
+fn expect_declaration(sexp: &Sexp) -> Declaration {
   match &sexp {
     Sexp::List(sexps) => match &sexps[0] {
-      Sexp::Atom(Atom::S(s)) if s == "declarators" => {
-        sexps[1..].iter()
-          .map(expect_init_declarator)
-          .collect()
+      Sexp::Atom(Atom::S(s)) if s == "declaration" => {
+        let specifiers = expect_specifiers(&sexps[1]);
+        let declarator = expect_declarator(&sexps[2]);
+        let initializer = expect_initializer(&sexps[3]);
+        Declaration{specifiers, declarator, initializer}
       },
-      _ => panic!("Expected declarators, got: {}", sexp),
+      _ => panic!("Expected declaration, got: {}", sexp),
     },
-    _ => panic!("Expected declarators, got: {}", sexp),
+    _ => panic!("Expected declaration, got: {}", sexp),
   }
 }
 
-fn expect_init_declarator(sexp: &Sexp) -> InitDeclarator {
+fn expect_initializer(sexp: &Sexp) -> Option<Expression> {
   match &sexp {
+    Sexp::Atom(Atom::S(s)) if s == "initializer" => None,
     Sexp::List(sexps) => match &sexps[0] {
-      Sexp::Atom(Atom::S(s)) if s == "init-declarator" => {
-        let declarator = expect_declarator(&sexps[1]);
-        let expression = Some(expect_expression(&sexps[2]));
-        InitDeclarator{declarator, expression}
+      Sexp::Atom(Atom::S(s)) if s == "initializer" => {
+        let expr = expect_expression(&sexps[1]);
+        Some(expr)
       },
-      _ => InitDeclarator{ declarator: expect_declarator(sexp), expression: None }
+      _ => panic!("Expected initializer, got: {}", sexp),
     },
-    _ => InitDeclarator{ declarator: expect_declarator(sexp), expression: None }
+    _ => panic!("Expected initializer, got: {}", sexp),
   }
 }
 
@@ -424,20 +425,6 @@ fn expect_declarator(sexp: &Sexp) -> Declarator {
   }
 }
 
-fn expect_declaration(sexp: &Sexp) -> Declaration {
-  match &sexp {
-    Sexp::List(sexps) => match &sexps[0] {
-      Sexp::Atom(Atom::S(s)) if s == "declaration" => {
-        let specifiers = expect_specifiers(&sexps[1]);
-        let declarators = expect_init_declarators(&sexps[2]);
-        Declaration{specifiers, declarators}
-      },
-      _ => panic!("Expected declaration, got: {}", sexp),
-    },
-    _ => panic!("Expected params, got: {}", sexp),
-  }
-}
-
 fn expect_param_decls(sexp: &Sexp) -> Vec<ParameterDeclaration> {
   match &sexp {
     Sexp::Atom(Atom::S(s)) if s == "params" => Vec::new(),
@@ -456,7 +443,7 @@ fn expect_param_decls(sexp: &Sexp) -> Vec<ParameterDeclaration> {
 fn expect_param_declaration(sexp: &Sexp) -> ParameterDeclaration {
   match &sexp {
     Sexp::List(sexps) => match &sexps[0] {
-      Sexp::Atom(Atom::S(s)) if s == "declaration" => {
+      Sexp::Atom(Atom::S(s)) if s == "param-declaration" => {
         let specifiers = expect_specifiers(&sexps[1]);
         let declarator = if *&sexps.len() > 2 {
           Some(expect_declarator(&sexps[2]))
@@ -488,9 +475,8 @@ fn expect_block_item(sexp: &Sexp) -> BlockItem {
   match &sexp {
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "declaration" => {
-        let specifiers = expect_specifiers(&sexps[1]);
-        let declarators = expect_init_declarators(&sexps[2]);
-        BlockItem::Declaration(Declaration{specifiers, declarators})
+        let declaration = expect_declaration(sexp);
+        BlockItem::Declaration(declaration)
       },
       _ => BlockItem::Statement(expect_statement(&sexp)),
     },

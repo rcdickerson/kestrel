@@ -18,18 +18,14 @@ impl MapVars for FunDef {
   }
 }
 
-pub fn extract_fundefs(crel: &CRel) -> (Vec<InitDeclarator>, HashMap<String, FunDef>) {
+pub fn extract_fundefs(crel: &CRel) -> (Vec<Declaration>, HashMap<String, FunDef>) {
   match crel {
-    CRel::Declaration{specifiers: _, declarators} => {
-      (declarators.clone(), HashMap::new())
+    CRel::Declaration(declaration) => {
+      (vec!(declaration.clone()), HashMap::new())
     },
-    CRel::FunctionDefinition{specifiers: _, declarator, body} => {
-      let (name, params) = match declarator {
-        Declarator::Function{name, params} => (name.clone(), params.clone()),
-        _ => panic!("Expected function declarator, got: {:?}", declarator),
-      };
+    CRel::FunctionDefinition{specifiers: _, name, params, body} => {
       let mut map = HashMap::new();
-      map.insert(name, FunDef{body: *body.clone(), params});
+      map.insert(name.clone(), FunDef{body: *body.clone(), params: params.clone()});
       (Vec::new(), map)
     },
     CRel::Seq(crels) => {

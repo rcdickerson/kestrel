@@ -14,11 +14,11 @@ impl CRel {
 
 fn crel_to_c(crel: &CRel, source: &mut C::Source) {
   match crel {
-    CRel::Declaration{specifiers, declarators} => {
-      source.declare_variable(&var_to_c(specifiers, declarators));
+    CRel::Declaration(decl) => {
+      source.declare_variable(&declaration_to_c(&decl));
     },
-    CRel::FunctionDefinition{specifiers, declarator, body} => {
-      source.push_function(&fun_to_c(specifiers, declarator, body));
+    CRel::FunctionDefinition{specifiers, name, params, body} => {
+      source.push_function(&fun_to_c(specifiers, name, params, body));
     },
     CRel::Seq(seq) => {
       for crel in seq { crel_to_c(crel, source) }
@@ -26,26 +26,16 @@ fn crel_to_c(crel: &CRel, source: &mut C::Source) {
   }
 }
 
-fn var_to_c(specifiers: &Vec<DeclarationSpecifier>, declarators: &Vec<InitDeclarator>) -> C::Variable {
+fn declaration_to_c(decl: &Declaration) -> C::Variable {
   let mut builder = DeclarationBuilder::new();
-  for spec in specifiers {
-    builder.visit_specifier(spec);
-  }
-  for decl in declarators {
-    builder.visit_init_declarator(decl);
-  }
+  builder.visit_init_declarator(decl);
   builder.build_variable()
 }
 
 fn fun_to_c(specifiers: &Vec<DeclarationSpecifier>,
-            declarator: &Declarator,
+            name: &String,
+            params: &Vec<ParameterDeclaration>,
             body: &Statement) -> C::Function {
-
-  let (name, params) = match declarator {
-    Declarator::Function{name, params} => (name.clone(), params.clone()),
-    _ => panic!("Expected function declarator, got: {:?}", declarator),
-  };
-
   let mut fun_ty = C::Type::Void;
   let mut fun_extern = false;
   let mut fun_const = false;
@@ -190,8 +180,8 @@ fn statement_to_c(stmt: &Statement) -> C::Statement {
 
 fn block_item_to_c(item: &BlockItem) -> C::Statement {
   match item {
-    BlockItem::Declaration(dec) => {
-      C::Statement::Variable(var_to_c(&dec.specifiers, &dec.declarators))
+    BlockItem::Declaration(decl) => {
+      C::Statement::Variable(declaration_to_c(&decl))
     },
     BlockItem::Statement(stmt) => statement_to_c(stmt),
   }
@@ -257,9 +247,10 @@ impl DeclarationBuilder {
     }
   }
 
-  fn visit_init_declarator(&mut self, decl: &InitDeclarator) {
+  fn visit_init_declarator(&mut self, decl: &Declaration) {
+    for spec in &decl.specifiers { self.visit_specifier(&spec); }
     self.visit_declarator(&decl.declarator);
-    match &decl.expression {
+    match &decl.initializer {
       None => (),
       Some(expr) => {
         self.val = Some(expression_to_c(&expr));

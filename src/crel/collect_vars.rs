@@ -5,16 +5,11 @@ use std::collections::HashSet;
 impl CollectVars for CRel {
   fn vars(&self) -> HashSet<String> {
     match self {
-      CRel::Declaration{specifiers, declarators} => {
+      CRel::Declaration(decl) => decl.vars(),
+      CRel::FunctionDefinition{specifiers:_, name, params, body} => {
         union_all(vec!(
-          all_vars(specifiers.clone()),
-          all_vars(declarators.clone()),
-        ))
-      },
-      CRel::FunctionDefinition{specifiers, declarator, body} => {
-        union_all(vec!(
-          all_vars(specifiers.clone()),
-          declarator.vars(),
+          singleton(name.clone()),
+          all_vars(params.clone()),
           body.vars(),
         ))
       },
@@ -81,20 +76,14 @@ impl CollectVars for Statement {
   }
 }
 
-impl CollectVars for InitDeclarator {
+impl CollectVars for Declaration {
   fn vars(&self) -> HashSet<String> {
-    match &self.expression {
+    match &self.initializer {
       None => self.declarator.vars(),
       Some(expr) => union_all(vec!(
         self.declarator.vars(),
         expr.vars()))
     }
-  }
-}
-
-impl CollectVars for DeclarationSpecifier {
-  fn vars(&self) -> HashSet<String> {
-    HashSet::new()
   }
 }
 
@@ -124,22 +113,10 @@ impl CollectVars for Declarator {
 
 impl CollectVars for ParameterDeclaration {
   fn vars(&self) -> HashSet<String> {
-    let mut vars : Vec<HashSet<String>> = self.specifiers.iter()
-      .map(|spec| spec.vars())
-      .collect();
-    if self.declarator.is_some() {
-      vars.push(self.declarator.as_ref().unwrap().vars());
+    match &self.declarator {
+      None => HashSet::new(),
+      Some(decl) => decl.vars(),
     }
-    union_all(vars)
-  }
-}
-
-impl CollectVars for Declaration {
-  fn vars(&self) -> HashSet<String> {
-    union_all(vec!(
-      all_vars(self.specifiers.clone()),
-      all_vars(self.declarators.clone()),
-    ))
   }
 }
 
@@ -160,13 +137,11 @@ mod test {
   fn test_collect_vars() {
     let prog = CRel::FunctionDefinition {
       specifiers: vec!(),
-      declarator: Declarator::Function {
-        name: "foo".to_string(),
-        params: vec!(ParameterDeclaration {
-          specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
-          declarator: Some(Declarator::Identifier{name: "w".to_string()}),
-        })
-      },
+      name: "foo".to_string(),
+      params: vec!(ParameterDeclaration {
+        specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
+        declarator: Some(Declarator::Identifier{name: "w".to_string()}),
+      }),
       body: Box::new(Statement::If{
         condition: Box::new(Expression::Binop {
           lhs: Box::new(Expression::Identifier{name: "x".to_string()}),

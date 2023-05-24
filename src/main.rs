@@ -99,7 +99,8 @@ fn main() {
   };
   println!("\nAligned Eggroll:\n{}", aligned_eggroll.pretty(80));
 
-  let aligned_crel = kestrel::eggroll::to_crel::eggroll_to_crel(&aligned_eggroll.to_string());
+  let aligned_crel_raw = kestrel::eggroll::to_crel::eggroll_to_crel(&aligned_eggroll.to_string());
+  let aligned_crel = spec.add_arb_inits(&aligned_crel_raw);
   println!("\nAligned CRel:\n{:?}", aligned_crel);
 
   println!("\nC:\n{}", aligned_crel.to_c());

@@ -50,21 +50,21 @@ define_language! {
     "while-lockstep" = WhileLockstep([Id; 6]),
 
     // Declarations
-    "declaration" = Declaration([Id; 2]),
-    "init-declarator" = InitDeclarators([Id; 2]),
+    "declaration" = Declaration([Id; 3]),
+    "param-declaration" = ParamDeclaration([Id; 2]),
+    "initializer" = Initializer(Id),
     "fun-declarator" = FunDeclarator([Id; 2]),
     "sized-array" = SizedArray([Id; 2]),
     "unsized-array" = UnsizedArray(Id),
     "pointer" = Pointer(Id),
     "specifiers" = Specifiers(Box<[Id]>),
-    "declarators" = Declarators(Box<[Id]>),
     "type" = Type(Id),
     "type-qualifier" = TypeQualifier(Id),
     "storage-class" = StorageClass(Id),
 
     // Functions
     "call"        = Call(Box<[Id]>),
-    "fundef"      = FunDef([Id; 3]),
+    "fundef"      = FunDef([Id; 4]),
     "args"        = Args(Box<[Id]>),
     "params"      = Params(Box<[Id]>),
     "return-none" = ReturnNone,

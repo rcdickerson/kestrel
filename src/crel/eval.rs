@@ -67,6 +67,20 @@ impl Execution {
     self.current_state = Some(new_state);
   }
 
+  fn initialize_array(&mut self, id: String, size: Option<usize>) {
+    if self.trace.len() >= self.max_trace {
+      self.result = Result::OutOfFuel;
+      return;
+    }
+    let mut new_state = match &self.current_state {
+      None => State::new(),
+      Some(state) => state.clone(),
+    };
+    new_state.put_array(id, size);
+    self.trace.push_state(new_state.clone());
+    self.current_state = Some(new_state);
+  }
+
   fn push_tag(&mut self, tag: Tag) {
     if self.trace.len() >= self.max_trace {
       self.result = Result::OutOfFuel;
@@ -265,7 +279,7 @@ fn eval_expression(expr: &Expression, exec: &mut Execution) {
     Expression::StringLiteral(_) => (),
     Expression::Call{callee: _, args: _} => {
       ()
-      // panic!("Function calls unimplemented")
+      //panic!("Function calls unimplemented")
     },
     Expression::Unop {expr, op} => eval_unop(expr, op, exec),
     Expression::Binop {lhs, rhs, op} => eval_binop(lhs, rhs, op, exec),
@@ -395,25 +409,36 @@ fn eval_block_item(item: &BlockItem, exec: &mut Execution) {
 }
 
 fn eval_declaration(decl: &Declaration, exec: &mut Execution) {
-  fn find_name(decl: &Declarator) -> String {
-    match decl {
-      Declarator::Identifier{name} => name.clone(),
-      Declarator::Array{name, size:_} => name.clone(),
-      Declarator::Function{name, params:_} => name.clone(),
-      Declarator::Pointer(decl) => find_name(decl),
-    }
-  }
-
-  for init_decl in &decl.declarators {
-    let name = find_name(&init_decl.declarator);
-    match &init_decl.expression {
-      None => exec.update_state(name.clone(), None, 0), // TODO: arrays
-      Some(expr) => {
+  match &decl.initializer {
+    None => match &decl.declarator {
+      Declarator::Identifier{name} => exec.update_state(name.clone(), None, 0),
+      Declarator::Array{name, size} => {
+        let size = size.as_ref().map(|size| {
+          eval_expression(&size, exec);
+          exec.result_int() as usize
+        });
+        if exec.ended() { return; }
+        exec.initialize_array(name.clone(), size)
+      },
+      Declarator::Function{name:_, params:_} => (),
+      Declarator::Pointer(_) => (),
+    },
+    Some(expr) => match &decl.declarator {
+      Declarator::Array{name:_, size:_} => {
+        panic!("Unsupported: initializer for array.");
+      }
+      Declarator::Identifier{name} => {
         eval_expression(&expr, exec);
         if exec.ended() { return; }
-        exec.update_state(name.clone(), None, exec.result_int()) // TODO: arrays
+        exec.update_state(name.clone(), None, exec.result_int());
       }
-    }
+      Declarator::Function{name:_, params:_} => {
+        panic!("Unsupported: initializer for function declaration.");
+      },
+      Declarator::Pointer(_) => {
+        panic!("Unsupported: initializer for pointer.");
+      },
+    },
   }
 }
 
@@ -546,7 +571,7 @@ mod test {
 
   fn body(crel: CRel) -> Statement {
     match crel {
-      CRel::FunctionDefinition{specifiers:_, declarator:_, body} => *body,
+      CRel::FunctionDefinition{specifiers:_, name:_, params:_, body} => *body,
       CRel::Seq(crels) if crels.len() > 0 => body(crels[0].clone()),
       _ => panic!("Expected function definition, got: {:?}", crel),
     }

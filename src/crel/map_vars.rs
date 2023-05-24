@@ -6,14 +6,12 @@ impl MapVars for CRel {
     where F: Fn(String) -> String
   {
     match self {
-      CRel::Declaration{specifiers, declarators} => CRel::Declaration {
-        specifiers: specifiers.clone(),
-        declarators: declarators.iter().map(|d| d.map_vars(f)).collect(),
-      },
-      CRel::FunctionDefinition{specifiers, declarator, body} =>
+      CRel::Declaration(decl) => CRel::Declaration(decl.map_vars(f)),
+      CRel::FunctionDefinition{specifiers, name, params, body} =>
         CRel::FunctionDefinition {
           specifiers: specifiers.clone(),
-          declarator: declarator.map_vars(f),
+          name: f(name.clone()),
+          params: params.iter().map(|param| param.map_vars(f)).collect(),
           body: Box::new(body.map_vars(f)),
         },
       CRel::Seq(crels) => {
@@ -134,27 +132,14 @@ impl MapVars for ParameterDeclaration {
   }
 }
 
-impl MapVars for InitDeclarator {
-  fn map_vars<F>(&self, f: &F) -> Self
-    where F: Fn(String) -> String
-  {
-    InitDeclarator {
-      declarator: self.declarator.map_vars(f),
-      expression: match &self.expression {
-        None => None,
-        Some(expr) => Some(expr.map_vars(f)),
-      }
-    }
-  }
-}
-
 impl MapVars for Declaration {
   fn map_vars<F>(&self, f: &F) -> Self
     where F: Fn(String) -> String
   {
     Declaration {
       specifiers: self.specifiers.clone(),
-      declarators: self.declarators.iter().map(|s| s.map_vars(f)).collect(),
+      declarator: self.declarator.map_vars(f),
+      initializer: self.initializer.as_ref().map(|expr| expr.map_vars(f)),
     }
   }
 }
@@ -178,13 +163,11 @@ mod test {
   fn test_map_vars() {
     let prog = CRel::FunctionDefinition {
       specifiers: vec!(),
-      declarator: Declarator::Function {
-        name: "foo".to_string(),
-        params: vec!(ParameterDeclaration {
-          specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
-          declarator: Some(Declarator::Identifier{name: "w".to_string()}),
-        })
-      },
+      name: "foo".to_string(),
+      params: vec!(ParameterDeclaration {
+        specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
+        declarator: Some(Declarator::Identifier{name: "w".to_string()}),
+      }),
       body: Box::new(Statement::If{
         condition: Box::new(Expression::Binop {
           lhs: Box::new(Expression::Identifier{name: "x".to_string()}),
@@ -212,13 +195,11 @@ mod test {
 
     let expected = CRel::FunctionDefinition {
       specifiers: vec!(),
-      declarator: Declarator::Function {
-        name: "foo".to_string(),
-        params: vec!(ParameterDeclaration {
-          specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
-          declarator: Some(Declarator::Identifier{name: "w2".to_string()}),
-        })
-      },
+      name: "foo".to_string(),
+      params: vec!(ParameterDeclaration {
+        specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
+        declarator: Some(Declarator::Identifier{name: "w2".to_string()}),
+      }),
       body: Box::new(Statement::If{
         condition: Box::new(Expression::Binop {
           lhs: Box::new(Expression::Identifier{name: "x2".to_string()}),

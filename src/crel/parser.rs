@@ -15,7 +15,7 @@ pub fn parse_c_file(input_file: &String) -> CRel {
     .collect())
 }
 
-  /// Read the given C string and parse it into the CRel IR.
+ /// Read the given C string and parse it into the CRel IR.
 #[cfg(test)]
 pub fn parse_c_string(input_str: String) -> CRel {
   let config = Config::with_clang();
@@ -32,37 +32,42 @@ pub fn parse_c_string(input_str: String) -> CRel {
 fn trans_external_declaration(ext_decl: Node<c::ExternalDeclaration>) -> CRel {
   match ext_decl.node {
     c::ExternalDeclaration::Declaration(decl) => {
-      let specifiers = decl.node.specifiers.iter()
-        .map(trans_declaration_specifier)
+      let declarations = trans_declaration(&decl).iter()
+        .map(|decl| CRel::Declaration(decl.clone()))
         .collect();
-      let declarators = decl.node.declarators.iter()
-        .map(trans_init_declarator)
-        .collect();
-      CRel::Declaration{specifiers, declarators}
-    }
-    c::ExternalDeclaration::FunctionDefinition(node) => trans_function_definition(node),
+      CRel::Seq(declarations)
+    },
+    c::ExternalDeclaration::FunctionDefinition(node) => {
+      trans_function_definition(&node)
+    },
     _ => panic!("Unsupported external declaration: {:?}", ext_decl),
   }
 }
 
-fn trans_declaration(decl: &Node<c::Declaration>) -> Declaration {
-  let specifiers = decl.node.specifiers.iter()
+fn trans_declaration(decl: &Node<c::Declaration>) -> Vec<Declaration> {
+ let specifiers: Vec<DeclarationSpecifier> = decl.node.specifiers.iter()
     .map(trans_declaration_specifier)
-    .collect::<Vec<DeclarationSpecifier>>();
-  let declarators = decl.node.declarators.iter()
+    .collect();
+  decl.node.declarators.iter()
     .map(trans_init_declarator)
-    .collect::<Vec<InitDeclarator>>();
-  Declaration{specifiers: specifiers, declarators: declarators}
+    .map(|(declarator, initializer)| {
+      Declaration{specifiers: specifiers.clone(), declarator, initializer}
+    }).collect()
 }
 
-fn trans_function_definition(def: Node<c::FunctionDefinition>) -> CRel {
+fn trans_function_definition(def: &Node<c::FunctionDefinition>) -> CRel {
   let specifiers = def.node.specifiers.iter()
     .map(trans_declaration_specifier)
     .collect::<Vec<DeclarationSpecifier>>();
   let declarator = trans_declarator(&def.node.declarator);
+  let (name, params) = declarator.expect_function();
   let body = trans_statement(&def.node.statement);
-
-  CRel::FunctionDefinition{specifiers, declarator, body: Box::new(body)}
+  CRel::FunctionDefinition {
+    specifiers,
+    name: name.clone(),
+    params: params.clone(),
+    body: Box::new(body)
+  }
 }
 
 fn trans_declaration_specifier(decl_spec: &Node<c::DeclarationSpecifier>) -> DeclarationSpecifier {
@@ -156,13 +161,10 @@ fn trans_parameter_declaration(decl: &Node<c::ParameterDeclaration>) -> Paramete
   ParameterDeclaration{specifiers, declarator}
 }
 
-fn trans_init_declarator(decl: &Node<c::InitDeclarator>) -> InitDeclarator {
+fn trans_init_declarator(decl: &Node<c::InitDeclarator>) -> (Declarator, Option<Expression>) {
   let dec = trans_declarator(&decl.node.declarator);
   let init = trans_initializer(&decl.node.initializer);
-  match init {
-    None => InitDeclarator{ declarator: dec, expression: None },
-    Some(init) => InitDeclarator{ declarator: dec, expression: Some(init) },
-  }
+  (dec, init)
 }
 
 fn trans_initializer(initializer: &Option<Node<c::Initializer>>) -> Option<Expression> {
@@ -196,7 +198,9 @@ fn trans_type_qualifier(type_qual: c::TypeQualifier) -> TypeQualifier {
 fn trans_statement(stmt: &Node<c::Statement>) -> Statement {
   match &stmt.node {
     c::Statement::Break => Statement::Break,
-    c::Statement::Compound(items) => Statement::Compound(items.iter().map(trans_block_item).collect()),
+    c::Statement::Compound(items) => {
+      Statement::Compound(items.iter().flat_map(trans_block_item).collect())
+    },
     c::Statement::Expression(expr) => match expr {
       None => Statement::None,
       Some(expr) => Statement::Expression(Box::new(trans_expression(&*expr))),
@@ -279,10 +283,16 @@ fn trans_constant(cnst: &Node<c::Constant>) -> Expression {
   }
 }
 
-fn trans_block_item(item: &Node<c::BlockItem>) -> BlockItem {
+fn trans_block_item(item: &Node<c::BlockItem>) -> Vec<BlockItem> {
   match &item.node {
-    c::BlockItem::Declaration(node) => BlockItem::Declaration(trans_declaration(&node)),
-    c::BlockItem::Statement(node) => BlockItem::Statement(trans_statement(&node)),
+    c::BlockItem::Declaration(node) => {
+      trans_declaration(&node).iter().map(|decl| {
+        BlockItem::Declaration(decl.clone())
+      }).collect()
+    },
+    c::BlockItem::Statement(node) => {
+      vec!(BlockItem::Statement(trans_statement(&node)))
+    },
     _ => panic!("Unsupported block item: {:?}", item.node),
   }
 }

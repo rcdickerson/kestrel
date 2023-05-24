@@ -7,11 +7,12 @@ pub trait Blockify {
 impl Blockify for CRel {
   fn blockify(&self) -> Self {
     match self {
-      CRel::Declaration{specifiers:_, declarators:_} => self.clone(),
-      CRel::FunctionDefinition{specifiers, declarator, body} => {
+      CRel::Declaration(_) => self.clone(),
+      CRel::FunctionDefinition{specifiers, name, params, body} => {
         CRel::FunctionDefinition{
           specifiers: specifiers.clone(),
-          declarator: declarator.clone(),
+          name: name.clone(),
+          params: params.clone(),
           body: Box::new(body.blockify()),
         }
       },

@@ -8,25 +8,18 @@ impl CRel {
 
 pub fn crel_to_eggroll(crel: &CRel) -> String {
   match crel {
-    CRel::Declaration{specifiers, declarators} => {
-      let spec_c = specifiers.iter()
-        .map(declaration_specifier_to_eggroll)
-        .collect::<Vec<String>>()
-        .join(" ");
-      let dec_c = declarators.iter()
-        .map(init_declarator_to_eggroll)
-        .collect::<Vec<String>>()
-        .join(" ");
-      format!("(declaration (specifiers {}) (declarators {}))", spec_c, dec_c)
-    },
-    CRel::FunctionDefinition{specifiers, declarator, body} => {
+    CRel::Declaration(decl) => declaration_to_eggroll(decl),
+    CRel::FunctionDefinition{specifiers, name, params, body} => {
       let specs_egg = specifiers.iter()
         .map(declaration_specifier_to_eggroll)
         .collect::<Vec<String>>()
         .join(" ");
-      let declarator_egg = declarator_to_eggroll(declarator);
+      let params_egg = params.iter()
+        .map(param_decl_to_eggroll)
+        .collect::<Vec<String>>()
+        .join(" ");
       let body_egg = statement_to_eggroll(body);
-      format!("(fundef (specifiers {}) {} {})", specs_egg, declarator_egg, body_egg)
+      format!("(fundef (specifiers {}) {} (params {}) {})", specs_egg, name, params_egg, body_egg)
     },
     CRel::Seq(crels) => {
       match crels.len() {
@@ -177,13 +170,16 @@ fn declarator_to_eggroll(dec: &Declarator) -> String {
   }
 }
 
-fn init_declarator_to_eggroll(dec: &InitDeclarator) -> String {
-  match &dec.expression {
-    None => declarator_to_eggroll(&dec.declarator),
-    Some(expr) => format!("(init-declarator {} {})",
-                          declarator_to_eggroll(&dec.declarator),
-                          expression_to_eggroll(&expr)),
-  }
+fn declaration_to_eggroll(decl: &Declaration) -> String {
+  let specs_egg = decl.specifiers.iter()
+    .map(declaration_specifier_to_eggroll)
+    .collect::<Vec<String>>()
+    .join(" ");
+  let decl_egg = declarator_to_eggroll(&decl.declarator);
+  let init_egg = decl.initializer.as_ref()
+    .map_or("".to_string(), |expr| expression_to_eggroll(&expr));
+  format!("(declaration (specifiers {}) {} (initializer {}))",
+          specs_egg, decl_egg, init_egg)
 }
 
 fn type_to_eggroll(ty: &Type) -> String {
@@ -208,18 +204,6 @@ fn storage_class_specifier_to_eggroll(scs: &StorageClassSpecifier) -> String {
   }
 }
 
-fn declaration_to_eggroll(dec: &Declaration) -> String {
-  let specs_egg = &dec.specifiers.iter()
-    .map(declaration_specifier_to_eggroll)
-    .collect::<Vec<String>>()
-    .join(" ");
-  let decs_egg = &dec.declarators.iter()
-    .map(init_declarator_to_eggroll)
-    .collect::<Vec<String>>()
-    .join(" ");
-  format!("(declaration (specifiers {}) (declarators {}))", specs_egg, decs_egg)
-}
-
 fn param_decl_to_eggroll(dec: &ParameterDeclaration) -> String {
   let specs_egg = &dec.specifiers.iter()
     .map(declaration_specifier_to_eggroll)
@@ -229,7 +213,7 @@ fn param_decl_to_eggroll(dec: &ParameterDeclaration) -> String {
     None => "".to_string(),
     Some(decl) => declarator_to_eggroll(decl),
   };
-  format!("(declaration (specifiers {}) {})", specs_egg, dec_egg)
+  format!("(param-declaration (specifiers {}) {})", specs_egg, dec_egg)
 }
 
 fn block_item_to_eggroll(item: &BlockItem) -> String {

@@ -7,8 +7,8 @@ pub trait CountLoops {
 impl CountLoops for CRel {
   fn count_loops(&self) -> usize {
     match self {
-      CRel::Declaration{specifiers:_, declarators:_} => 0,
-      CRel::FunctionDefinition{specifiers:_, declarator:_, body} => {
+      CRel::Declaration(_) => 0,
+      CRel::FunctionDefinition{specifiers:_, name:_, params:_, body} => {
         body.count_loops()
       },
       CRel::Seq(crels) => crels.iter().map(|c| c.count_loops()).sum(),
@@ -58,9 +58,9 @@ impl CountLoops for Statement {
   }
 }
 
-impl CountLoops for InitDeclarator {
+impl CountLoops for Declaration {
   fn count_loops(&self) -> usize {
-    match &self.expression {
+    match &self.initializer {
       None => 0,
       Some(expr) => expr.count_loops(),
     }
@@ -72,10 +72,6 @@ impl CountLoops for DeclarationSpecifier {
 }
 
 impl CountLoops for Declarator {
-  fn count_loops(&self) -> usize { 0 }
-}
-
-impl CountLoops for Declaration {
   fn count_loops(&self) -> usize { 0 }
 }
 

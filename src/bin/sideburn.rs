@@ -41,7 +41,7 @@ struct Args {
 struct Input {
   spec: KestrelSpec,
   crel: CRel,
-  global_declarations: Vec<InitDeclarator>,
+  global_declarations: Vec<Declaration>,
   eggroll: RecExpr<Eggroll>,
 }
 

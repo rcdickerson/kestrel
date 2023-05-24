@@ -546,7 +546,7 @@ mod test {
 
   fn body(crel: CRel) -> Statement {
     match crel {
-      CRel::FunctionDefinition{specifiers:_, name:_, params:_, body} => *body,
+      CRel::FunctionDefinition{specifiers:_, declarator:_, body} => *body,
       CRel::Seq(crels) if crels.len() > 0 => body(crels[0].clone()),
       _ => panic!("Expected function definition, got: {:?}", crel),
     }

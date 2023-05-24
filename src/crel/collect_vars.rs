@@ -11,11 +11,10 @@ impl CollectVars for CRel {
           all_vars(declarators.clone()),
         ))
       },
-      CRel::FunctionDefinition{specifiers, name, params, body} => {
+      CRel::FunctionDefinition{specifiers, declarator, body} => {
         union_all(vec!(
           all_vars(specifiers.clone()),
-          name.vars(),
-          all_vars(params.clone()),
+          declarator.vars(),
           body.vars(),
         ))
       },
@@ -161,14 +160,13 @@ mod test {
   fn test_collect_vars() {
     let prog = CRel::FunctionDefinition {
       specifiers: vec!(),
-      name: Declarator::Identifier{name: "foo".to_string()},
-      params: vec!(Declaration {
-        specifiers: vec!(),
-        declarators: vec!(InitDeclarator {
-          declarator: Declarator::Identifier{name: "w".to_string()},
-          expression: None,
-        }),
-      }),
+      declarator: Declarator::Function {
+        name: "foo".to_string(),
+        params: vec!(ParameterDeclaration {
+          specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
+          declarator: Some(Declarator::Identifier{name: "w".to_string()}),
+        })
+      },
       body: Box::new(Statement::If{
         condition: Box::new(Expression::Binop {
           lhs: Box::new(Expression::Identifier{name: "x".to_string()}),

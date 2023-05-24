@@ -6,8 +6,7 @@ pub enum CRel {
   },
   FunctionDefinition {
     specifiers: Vec<DeclarationSpecifier>,
-    name: Declarator,
-    params: Vec<Declaration>,
+    declarator: Declarator,
     body: Box<Statement>,
   },
   Seq(Vec<CRel>),

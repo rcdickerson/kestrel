@@ -8,7 +8,7 @@ impl CountLoops for CRel {
   fn count_loops(&self) -> usize {
     match self {
       CRel::Declaration{specifiers:_, declarators:_} => 0,
-      CRel::FunctionDefinition{specifiers:_, name:_, params:_, body} => {
+      CRel::FunctionDefinition{specifiers:_, declarator:_, body} => {
         body.count_loops()
       },
       CRel::Seq(crels) => crels.iter().map(|c| c.count_loops()).sum(),

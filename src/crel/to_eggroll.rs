@@ -19,15 +19,14 @@ pub fn crel_to_eggroll(crel: &CRel) -> String {
         .join(" ");
       format!("(declaration (specifiers {}) (declarators {}))", spec_c, dec_c)
     },
-    CRel::FunctionDefinition{specifiers, name, params, body} => {
+    CRel::FunctionDefinition{specifiers, declarator, body} => {
       let specs_egg = specifiers.iter()
         .map(declaration_specifier_to_eggroll)
         .collect::<Vec<String>>()
         .join(" ");
-      let name_egg = declarator_to_eggroll(name);
-      let args_egg = params.iter().map(declaration_to_eggroll).collect::<Vec<String>>().join(" ");
+      let declarator_egg = declarator_to_eggroll(declarator);
       let body_egg = statement_to_eggroll(body);
-      format!("(fundef (specifiers {}) {} (params {}) (body {}))", specs_egg, name_egg, args_egg, body_egg)
+      format!("(fundef (specifiers {}) {} {})", specs_egg, declarator_egg, body_egg)
     },
     CRel::Seq(crels) => {
       match crels.len() {

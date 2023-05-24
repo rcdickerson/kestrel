@@ -10,11 +10,10 @@ impl MapVars for CRel {
         specifiers: specifiers.clone(),
         declarators: declarators.iter().map(|d| d.map_vars(f)).collect(),
       },
-      CRel::FunctionDefinition{specifiers, name, params, body} =>
+      CRel::FunctionDefinition{specifiers, declarator, body} =>
         CRel::FunctionDefinition {
           specifiers: specifiers.clone(),
-          name: name.map_vars(f),
-          params: params.iter().map(|p| p.map_vars(f)).collect(),
+          declarator: declarator.map_vars(f),
           body: Box::new(body.map_vars(f)),
         },
       CRel::Seq(crels) => {
@@ -179,14 +178,13 @@ mod test {
   fn test_map_vars() {
     let prog = CRel::FunctionDefinition {
       specifiers: vec!(),
-      name: Declarator::Identifier{name: "foo".to_string()},
-      params: vec!(Declaration {
-        specifiers: vec!(),
-        declarators: vec!(InitDeclarator {
-          declarator: Declarator::Identifier{name: "w".to_string()},
-          expression: None,
-        }),
-      }),
+      declarator: Declarator::Function {
+        name: "foo".to_string(),
+        params: vec!(ParameterDeclaration {
+          specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
+          declarator: Some(Declarator::Identifier{name: "w".to_string()}),
+        })
+      },
       body: Box::new(Statement::If{
         condition: Box::new(Expression::Binop {
           lhs: Box::new(Expression::Identifier{name: "x".to_string()}),
@@ -214,14 +212,13 @@ mod test {
 
     let expected = CRel::FunctionDefinition {
       specifiers: vec!(),
-      name: Declarator::Identifier{name: "foo".to_string()},
-      params: vec!(Declaration {
-        specifiers: vec!(),
-        declarators: vec!(InitDeclarator {
-          declarator: Declarator::Identifier{name: "w2".to_string()},
-          expression: None,
-        }),
-      }),
+      declarator: Declarator::Function {
+        name: "foo".to_string(),
+        params: vec!(ParameterDeclaration {
+          specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
+          declarator: Some(Declarator::Identifier{name: "w2".to_string()}),
+        })
+      },
       body: Box::new(Statement::If{
         condition: Box::new(Expression::Binop {
           lhs: Box::new(Expression::Identifier{name: "x2".to_string()}),

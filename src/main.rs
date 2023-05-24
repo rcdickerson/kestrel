@@ -1,6 +1,5 @@
 use clap::{Parser, ValueEnum};
 use kestrel::annealer::*;
-use kestrel::crel::ast::*;
 use kestrel::crel::state::*;
 use kestrel::eggroll::cost_functions::*;
 use kestrel::eggroll::milp_extractor::*;

@@ -37,14 +37,40 @@ impl KestrelSpec {
       if globals.contains(&s) { s } else { format!("r_{}", s) }
     });
 
+    let mut params = left_fun.params.clone();
+    params.append(&mut right_fun.params.clone());
+    let call_arb_int = Expression::Call {
+      callee: Box::new(Expression::Identifier{name: "arb_int".to_string()}),
+      args: Vec::new(),
+    };
+    let arb_param_decls: Vec<Declaration> = params.iter()
+      .filter(|param| param.declarator.is_some())
+      .map(|param| {
+        Declaration {
+          specifiers: param.specifiers.clone(),
+          declarators: vec!(InitDeclarator {
+            declarator: param.declarator.as_ref().unwrap().clone(),
+            expression: Some(call_arb_int.clone())
+          }),
+        }
+      })
+      .collect();
+
+    let mut body_items: Vec<BlockItem> = arb_param_decls.iter()
+      .map(|decl| BlockItem::Declaration(decl.clone()))
+      .collect();
+    body_items.push(BlockItem::Statement(Statement::Relation {
+      lhs: Box::new(left_fun.body.blockify()),
+      rhs: Box::new(right_fun.body.blockify()),
+    }));
+
     let new_main = CRel::FunctionDefinition {
       specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
-      name: Declarator::Identifier{ name: "main".to_string() },
-      params: vec!(),
-      body: Box::new(Statement::Relation {
-        lhs: Box::new(left_fun.body.blockify()),
-        rhs: Box::new(right_fun.body.blockify()),
-      }),
+      declarator: Declarator::Function{
+        name: "main".to_string(),
+        params: Vec::new(),
+      },
+      body: Box::new(Statement::Compound(body_items)),
     };
 
     (decls, new_main)

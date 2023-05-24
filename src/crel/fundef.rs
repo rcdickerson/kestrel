@@ -4,14 +4,17 @@ use std::collections::HashMap;
 
 #[derive(Clone, Debug)]
 pub struct FunDef {
-  // TODO: Params.
   pub body: Statement,
+  pub params: Vec<ParameterDeclaration>,
 }
 impl MapVars for FunDef {
   fn map_vars<F>(&self, f: &F) -> Self
     where F: Fn(String) -> String
   {
-    FunDef{body: self.body.map_vars(f)}
+    FunDef {
+      body: self.body.map_vars(f),
+      params: self.params.iter().map(|p| p.map_vars(f)).collect(),
+    }
   }
 }
 
@@ -20,21 +23,13 @@ pub fn extract_fundefs(crel: &CRel) -> (Vec<InitDeclarator>, HashMap<String, Fun
     CRel::Declaration{specifiers: _, declarators} => {
       (declarators.clone(), HashMap::new())
     },
-    CRel::FunctionDefinition{specifiers: _, name, params: _, body} => {
-      let name = match name {
-        Declarator::Identifier{name} => name.clone(),
-        Declarator::Array{name:_, size:_} => {
-          panic!("Cannot have array declarator as function name")
-        },
-        Declarator::Function{name, params:_} => name.clone(),
-        Declarator::Pointer(_) => {
-          panic!("Unsupported: pointer declarator as function name")
-        }
+    CRel::FunctionDefinition{specifiers: _, declarator, body} => {
+      let (name, params) = match declarator {
+        Declarator::Function{name, params} => (name.clone(), params.clone()),
+        _ => panic!("Expected function declarator, got: {:?}", declarator),
       };
       let mut map = HashMap::new();
-      map.insert(name, FunDef{
-        body: *body.clone(),
-      });
+      map.insert(name, FunDef{body: *body.clone(), params});
       (Vec::new(), map)
     },
     CRel::Seq(crels) => {

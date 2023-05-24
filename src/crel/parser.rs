@@ -15,7 +15,6 @@ pub fn parse_c_file(input_file: &String) -> CRel {
     .collect())
 }
 
-
   /// Read the given C string and parse it into the CRel IR.
 #[cfg(test)]
 pub fn parse_c_string(input_str: String) -> CRel {
@@ -60,13 +59,10 @@ fn trans_function_definition(def: Node<c::FunctionDefinition>) -> CRel {
   let specifiers = def.node.specifiers.iter()
     .map(trans_declaration_specifier)
     .collect::<Vec<DeclarationSpecifier>>();
-  let name = trans_declarator(&def.node.declarator);
-  let params = def.node.declarations.iter()
-    .map(trans_declaration)
-    .collect::<Vec<Declaration>>();
+  let declarator = trans_declarator(&def.node.declarator);
   let body = trans_statement(&def.node.statement);
 
-  CRel::FunctionDefinition{ specifiers, name, params, body: Box::new(body) }
+  CRel::FunctionDefinition{specifiers, declarator, body: Box::new(body)}
 }
 
 fn trans_declaration_specifier(decl_spec: &Node<c::DeclarationSpecifier>) -> DeclarationSpecifier {

@@ -8,11 +8,10 @@ impl Blockify for CRel {
   fn blockify(&self) -> Self {
     match self {
       CRel::Declaration{specifiers:_, declarators:_} => self.clone(),
-      CRel::FunctionDefinition{specifiers, name, params, body} => {
+      CRel::FunctionDefinition{specifiers, declarator, body} => {
         CRel::FunctionDefinition{
           specifiers: specifiers.clone(),
-          name: name.clone(),
-          params: params.clone(),
+          declarator: declarator.clone(),
           body: Box::new(body.blockify()),
         }
       },

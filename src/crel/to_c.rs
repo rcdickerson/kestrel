@@ -5,6 +5,8 @@ impl CRel {
   pub fn to_c(&self) -> String {
     let mut source = C::Source::new();
     source.include("seahorn/seahorn.h");
+    source.push_function(C::Function::new("arb_int", C::Type::Int)
+                         .set_extern(true));
     crel_to_c(self, &mut source);
     source.to_string()
   }
@@ -15,8 +17,8 @@ fn crel_to_c(crel: &CRel, source: &mut C::Source) {
     CRel::Declaration{specifiers, declarators} => {
       source.declare_variable(&var_to_c(specifiers, declarators));
     },
-    CRel::FunctionDefinition{specifiers, name, params, body} => {
-      source.push_function(&fun_to_c(specifiers, name, params, body));
+    CRel::FunctionDefinition{specifiers, declarator, body} => {
+      source.push_function(&fun_to_c(specifiers, declarator, body));
     },
     CRel::Seq(seq) => {
       for crel in seq { crel_to_c(crel, source) }
@@ -36,21 +38,12 @@ fn var_to_c(specifiers: &Vec<DeclarationSpecifier>, declarators: &Vec<InitDeclar
 }
 
 fn fun_to_c(specifiers: &Vec<DeclarationSpecifier>,
-            name: &Declarator,
-            params: &Vec<Declaration>,
+            declarator: &Declarator,
             body: &Statement) -> C::Function {
 
-  let name = match name {
-    Declarator::Identifier{name} => name,
-    Declarator::Array{name:_, size:_} => {
-      panic!("Cannot have array declarator as function name")
-    },
-    Declarator::Function{name:_, params:_} => {
-      panic!("Cannot have function declarator as function name")
-    },
-    Declarator::Pointer(_) => {
-      panic!("Unsupported: pointer declarator as function name")
-    },
+  let (name, params) = match declarator {
+    Declarator::Function{name, params} => (name.clone(), params.clone()),
+    _ => panic!("Expected function declarator, got: {:?}", declarator),
   };
 
   let mut fun_ty = C::Type::Void;
@@ -74,7 +67,7 @@ fn fun_to_c(specifiers: &Vec<DeclarationSpecifier>,
     }
   }
 
-  let mut fun = C::Function::new(name, fun_ty);
+  let mut fun = C::Function::new(&name, fun_ty);
   for param in params.iter().map(decl_to_param) {
     fun.push_param(&param);
   }
@@ -84,18 +77,12 @@ fn fun_to_c(specifiers: &Vec<DeclarationSpecifier>,
   fun
 }
 
-fn decl_to_param(decl: &Declaration) -> C::FunctionParameter {
+fn decl_to_param(decl: &ParameterDeclaration) -> C::FunctionParameter {
   let mut builder = DeclarationBuilder::new();
   for spec in &decl.specifiers {
     builder.visit_specifier(spec);
   }
-  for decl in &decl.declarators {
-    builder.visit_declarator(&decl.declarator);
-    match &decl.expression {
-      None => (),
-      Some(_) => panic!("Cannot initialize function parameter with a value"),
-    }
-  }
+  decl.declarator.as_ref().map(|decl| builder.visit_declarator(&decl));
   builder.build_param()
 }
 

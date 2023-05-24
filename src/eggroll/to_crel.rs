@@ -19,10 +19,9 @@ fn expect_crel(sexp: &Sexp) -> CRel {
       },
       Sexp::Atom(Atom::S(s)) if s == "fundef" => {
         let specifiers = expect_specifiers(&sexps[1]);
-        let name = expect_declarator(&sexps[2]);
-        let params = expect_params(&sexps[3]);
-        let body = Box::new(expect_body(&sexps[4]));
-        CRel::FunctionDefinition{specifiers, name, params, body}
+        let declarator = expect_declarator(&sexps[2]);
+        let body = Box::new(expect_statement(&sexps[3]));
+        CRel::FunctionDefinition{specifiers, declarator, body}
       },
       Sexp::Atom(Atom::S(s)) if s == "seq" => {
         let mut seq = vec!(expect_crel(&sexps[1]));
@@ -425,21 +424,6 @@ fn expect_declarator(sexp: &Sexp) -> Declarator {
   }
 }
 
-fn expect_params(sexp: &Sexp) -> Vec<Declaration> {
-  match &sexp {
-    Sexp::Atom(Atom::S(s)) if s == "params" => Vec::new(),
-    Sexp::List(sexps) => match &sexps[0] {
-      Sexp::Atom(Atom::S(s)) if s == "params" => {
-        sexps[1..].iter()
-          .map(expect_declaration)
-          .collect()
-      },
-      _ => panic!("Expected params, got: {}", sexp),
-    },
-    _ => panic!("Expected params, got: {}", sexp),
-  }
-}
-
 fn expect_declaration(sexp: &Sexp) -> Declaration {
   match &sexp {
     Sexp::List(sexps) => match &sexps[0] {
@@ -497,25 +481,6 @@ fn expect_args(sexp: &Sexp) -> Vec<Expression> {
       _ => panic!("Expected args, got: {}", sexp),
     },
     _ => panic!("Expected args, got: {}", sexp),
-  }
-}
-
-fn expect_body(sexp: &Sexp) -> Statement {
-  match &sexp {
-    Sexp::List(sexps) => match &sexps[0] {
-      Sexp::Atom(Atom::S(s)) if s == "body" => {
-        if sexps.len() < 1 {
-          Statement::None
-        } else {
-          expect_statement(&sexps[1])
-        }
-      },
-      _ => panic!("Expected body, got: {}", sexp),
-    },
-    Sexp::Atom(Atom::S(s)) if s == "body" => {
-      Statement::None
-    }
-    _ => panic!("Expected body, got: {}", sexp),
   }
 }
 

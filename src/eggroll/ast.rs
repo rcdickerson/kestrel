@@ -64,10 +64,9 @@ define_language! {
 
     // Functions
     "call"        = Call(Box<[Id]>),
-    "fundef"      = FunDef([Id; 4]),
+    "fundef"      = FunDef([Id; 3]),
     "args"        = Args(Box<[Id]>),
     "params"      = Params(Box<[Id]>),
-    "body"        = Body(Id),
     "return-none" = ReturnNone,
     "return"      = Return(Id),
 

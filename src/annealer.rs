@@ -39,14 +39,15 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
       if n_score < best_score {
         best = neighbor.program(root);
         best_score = n_score;
+        println!("Score {} at temperature {}", best_score, temp);
       }
       let transition = if n_score <= score { true } else {
-        println!("--------------------------------------");
-        println!("Transitioning with probability: {}", ((score - n_score) as f32 / temp).exp());
-        println!("temp: {}", temp);
-        println!("best: {}", best_score);
-        println!("current: {}", score);
-        println!("neighbor: {}", n_score);
+        // println!("--------------------------------------");
+        // println!("Transitioning with probability: {}", ((score - n_score) as f32 / temp).exp());
+        // println!("temp: {}", temp);
+        // println!("best: {}", best_score);
+        // println!("current: {}", score);
+        // println!("neighbor: {}", n_score);
         ((score - n_score) as f32 / temp).exp() > rng.gen()
       };
       if transition {

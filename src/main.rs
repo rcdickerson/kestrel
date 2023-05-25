@@ -16,6 +16,10 @@ struct Args {
   #[arg(short, long)]
   input: String,
 
+  /// Output file.
+  #[arg(short, long)]
+  output: Option<String>,
+
   /// Output a dot file representation of the e-graph.
   #[arg(short, long)]
   dot: bool,
@@ -54,22 +58,26 @@ fn main() {
   let spec = parse_spec(&args.input).unwrap();
 
   let crel = kestrel::crel::parser::parse_c_file(&args.input);
-  println!("CRel:\n{:?}", crel);
+  // println!("CRel:\n{:?}", crel);
 
   let (global_decls, unaligned_crel) = spec.build_unaligned_crel(&crel);
-  println!("\nUnaliged CRel:\n{:?}", unaligned_crel);
+  // println!("\nUnaliged CRel:\n{:?}", unaligned_crel);
 
   let unaligned_c = unaligned_crel.to_c();
-  println!("\nUnaliged C:\n{}", unaligned_c);
+  println!("\nUnaligned Product Program");
+  println!("--------------------------");
+  println!("{}", unaligned_c);
+  println!("--------------------------");
 
   let unaligned_eggroll = unaligned_crel.to_eggroll();
-  println!("\nUnaliged Eggroll:\n{:?}", unaligned_eggroll);
+  // println!("\nUnaliged Eggroll:\n{:?}", unaligned_eggroll);
 
   let runner = Runner::default()
     .with_expr(&unaligned_eggroll.parse().unwrap())
     .run(&kestrel::eggroll::rewrite::make_rules());
 
   if args.dot {
+    println!("Writing dot file to egraph.dot");
     write_file(&runner.egraph.dot().to_string(), "egraph.dot");
   }
 
@@ -97,11 +105,30 @@ fn main() {
       })
     },
   };
-  println!("\nAligned Eggroll:\n{}", aligned_eggroll.pretty(80));
+  println!("Computed alignment.");
+
+  println!("\nAligned Eggroll");
+  println!("--------------------------");
+  println!("{}", aligned_eggroll.pretty(80));
+  println!("--------------------------");
 
   let aligned_crel_raw = kestrel::eggroll::to_crel::eggroll_to_crel(&aligned_eggroll.to_string());
   let aligned_crel = spec.add_arb_inits(&aligned_crel_raw);
-  println!("\nAligned CRel:\n{:?}", aligned_crel);
+  // println!("\nAligned CRel:\n{:?}", aligned_crel);
 
-  println!("\nC:\n{}", aligned_crel.to_c());
+  let aligned_c = aligned_crel.to_c();
+  println!("\nAligned Product Program");
+  println!("--------------------------");
+  println!("{}", aligned_c);
+  println!("--------------------------");
+
+  args.output.map(|path| {
+    println!("Writing output to {}...", path);
+    let mut file = File::create(&path)
+      .expect(format!("Error creating file: {}", path).as_ref());
+    match file.write_all(aligned_c.as_bytes()) {
+      Ok(_) => println!("Done"),
+      Err(err) => panic!("Error writing output file: {}", err),
+    }
+  });
 }

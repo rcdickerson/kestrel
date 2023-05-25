@@ -17,6 +17,5 @@ pub fn make_rules() -> Vec<Rewrite<Eggroll, ()>> {
                                  "(while-lockstep 2 1 ?e1 ?e2 ?c1 ?c2)"),
     rewrite!("while-lockstep12"; "(<|> (while ?e1 ?c1) (while ?e2 ?c2))" =>
                                  "(while-lockstep 1 2 ?e1 ?e2 ?c1 ?c2)"),
-
   ]
 }

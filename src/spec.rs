@@ -1,10 +1,11 @@
 pub mod condition;
 pub mod parser;
+pub mod to_crel;
 
 use crate::crel::ast::*;
 use crate::crel::blockify::*;
 use crate::names::*;
-use crate::spec::condition::*;
+use crate::spec::{condition::*, to_crel::*};
 use std::collections::HashSet;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -53,28 +54,19 @@ impl KestrelSpec {
     (decls, new_main)
   }
 
-  pub fn add_arb_inits(&self, crel: &CRel) -> CRel {
+  pub fn add_specs_to_main(&self, crel: &CRel) -> CRel {
     let (decls, fundefs) = crate::crel::fundef::extract_fundefs(crel);
     let main_fun = fundefs.get("main").expect("No main function found");
 
-    let call_arb_int = Expression::Call {
-      callee: Box::new(Expression::Identifier{name: "arb_int".to_string()}),
-      args: Vec::new(),
-    };
-    let arb_param_decls: Vec<Declaration> = main_fun.params.iter()
-      .filter(|param| param.declarator.is_some())
-      .map(|param| {
-        Declaration {
-          specifiers: param.specifiers.clone(),
-          declarator: param.declarator.as_ref().unwrap().clone(),
-          initializer: Some(call_arb_int.clone())
-          }
-        }).collect();
+    let mut arb_inits = self.build_arb_inits(&main_fun.params);
+    let preconds = self.build_preconds();
+    let postconds = self.build_postconds();
 
-    let mut body_items: Vec<BlockItem> = arb_param_decls.iter()
-      .map(|decl| BlockItem::Declaration(decl.clone()))
-      .collect();
+    let mut body_items: Vec<BlockItem> = Vec::new();
+    body_items.append(&mut arb_inits);
+    body_items.push(preconds);
     body_items.push(BlockItem::Statement(main_fun.body.clone()));
+    body_items.push(postconds);
     let new_body = Statement::Compound(body_items);
 
     let new_main = CRel::FunctionDefinition {
@@ -89,6 +81,44 @@ impl KestrelSpec {
       .collect();
     new_seq.push(new_main);
     CRel::Seq(new_seq)
+
+  }
+
+  fn build_arb_inits(&self, params: &Vec<ParameterDeclaration>) -> Vec<BlockItem> {
+    let call_arb_int = Expression::Call {
+      callee: Box::new(Expression::Identifier{name: "arb_int".to_string()}),
+      args: Vec::new(),
+    };
+    params.iter()
+      .filter(|param| param.declarator.is_some())
+      .map(|param| {
+        BlockItem::Declaration(
+          Declaration {
+            specifiers: param.specifiers.clone(),
+            declarator: param.declarator.as_ref().unwrap().clone(),
+            initializer: Some(call_arb_int.clone())
+          }
+        )
+      })
+      .collect()
+  }
+
+  fn build_preconds(&self) -> BlockItem {
+    let pre_expr = self.pre.to_crel();
+    let assume = Expression::Call {
+      callee: Box::new(Expression::Identifier{name: "assume".to_string()}),
+      args: vec!(pre_expr),
+    };
+    BlockItem::Statement(Statement::Expression(Box::new(assume)))
+  }
+
+  fn build_postconds(&self) -> BlockItem {
+    let post_expr = self.pre.to_crel();
+    let sassert = Expression::Call {
+      callee: Box::new(Expression::Identifier{name: "sassert".to_string()}),
+      args: vec!(post_expr),
+    };
+    BlockItem::Statement(Statement::Expression(Box::new(sassert)))
   }
 }
 

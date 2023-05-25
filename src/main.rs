@@ -42,6 +42,9 @@ enum ExtractorArg {
   /// Non-local extraction which optimizes an objective function via simulated
   /// annealing.
   SA,
+
+  /// Output the naive product program without doing any alignment.
+  Unaligned,
 }
 
 fn write_file(contents: &String, location: &str) {
@@ -82,9 +85,14 @@ fn main() {
   }
 
   let aligned_eggroll = match args.extractor {
+    ExtractorArg::Unaligned => {
+      println!("Treating naive product as final alignment.");
+      unaligned_eggroll.parse().unwrap()
+    },
     ExtractorArg::CountLoops => {
       let extractor = Extractor::new(&runner.egraph, LocalCountLoops);
       let (_, best) = extractor.find_best(runner.roots[0]);
+      println!("Computed alignment by local loop counting extraction.");
       best
     },
     ExtractorArg::MILP => {
@@ -105,7 +113,6 @@ fn main() {
       })
     },
   };
-  println!("Computed alignment.");
 
   println!("\nAligned Eggroll");
   println!("--------------------------");

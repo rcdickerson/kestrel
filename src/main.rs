@@ -58,7 +58,7 @@ fn write_file(contents: &String, location: &str) {
 
 /// The high-level KestRel workflow is:
 ///   1. Read in a C file and parse its @KESTREL spec.
-///   2. Convert the C into CRel. CRel is an IR which can represent C-like
+///   2. Convert the C into CRel. CRel is a C-like IR which can represent
 ///      relational control flow structures.
 ///   3. Convert the CRel into Eggroll, an s-expression based representation
 ///      of CRel defined in the way the Egg library expects languages.

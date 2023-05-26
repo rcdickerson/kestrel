@@ -1,3 +1,7 @@
+//! Sideburn is a utility executable to help diagnose problems
+//! and develop functionality in KestRel. The main KestRel executable
+//! is defined in src/main.rs.
+
 use clap::{Parser, ValueEnum};
 use egg::*;
 use kestrel::crel::{ast::*, state::*, trace::*};

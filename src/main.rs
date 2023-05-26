@@ -69,7 +69,8 @@ fn write_file(contents: &String, location: &str) {
 ///
 /// The reason we have two IRs (CRel and Eggroll) is to separate two orthogonal
 /// translation concerns: 1) converting non-relational programs into relational
-/// ones, and 2) packaging C-like programs into an Eggroll language definition.
+/// ones, and 2) packaging C-like programs into an Egg-compatible language
+/// definition.
 fn main() {
   let args = Args::parse();
   let spec = parse_spec(&args.input).unwrap();

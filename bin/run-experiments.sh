@@ -19,6 +19,7 @@ mkdir -p "$output_dir"
 echo "Storing logs in in $log_dir"
 mkdir -p "$log_dir"
 
+# Run KestRel.
 for file in $benchmark_dir/*.c
 do
   echo "$file..."

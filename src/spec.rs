@@ -81,7 +81,6 @@ impl KestrelSpec {
       .collect();
     new_seq.push(new_main);
     CRel::Seq(new_seq)
-
   }
 
   fn build_arb_inits(&self, params: &Vec<ParameterDeclaration>) -> Vec<BlockItem> {

@@ -56,15 +56,26 @@ fn write_file(contents: &String, location: &str) {
   dot_file.write_all(contents.as_bytes()).expect("Unable to write file.")
 }
 
+/// The high-level KestRel workflow is:
+///   1. Read in a C file and parse its @KESTREL spec.
+///   2. Convert the C into CRel. CRel is an IR which can represent C-like
+///      relational control flow structures.
+///   3. Convert the CRel into Eggroll, an s-expression based representation
+///      of CRel defined in the way the Egg library expects languages.
+///   4. Hand the Eggroll off to Egg and ask Egg to perform equality saturation.
+///   5. Extract an aligned program using the technique requested by the user.
+///   6. Convert the extracted Eggroll back to CRel, and then into a C product
+///      program.
+///
+/// The reason we have two IRs (CRel and Eggroll) is to separate two orthogonal
+/// translation concerns: 1) converting non-relational programs into relational
+/// ones, and 2) packaging C-like programs into an Eggroll language definition.
 fn main() {
   let args = Args::parse();
   let spec = parse_spec(&args.input).unwrap();
 
   let crel = kestrel::crel::parser::parse_c_file(&args.input);
-  // println!("CRel:\n{:?}", crel);
-
   let (global_decls, unaligned_crel) = spec.build_unaligned_crel(&crel);
-  // println!("\nUnaliged CRel:\n{:?}", unaligned_crel);
 
   let unaligned_c = unaligned_crel.to_c();
   println!("\nUnaligned Product Program");
@@ -73,14 +84,12 @@ fn main() {
   println!("--------------------------");
 
   let unaligned_eggroll = unaligned_crel.to_eggroll();
-  // println!("\nUnaliged Eggroll:\n{:?}", unaligned_eggroll);
-
   let runner = Runner::default()
     .with_expr(&unaligned_eggroll.parse().unwrap())
     .run(&kestrel::eggroll::rewrite::make_rules());
 
   if args.dot {
-    println!("Writing dot file to egraph.dot");
+    println!("Writing egraph structure to egraph.dot");
     write_file(&runner.egraph.dot().to_string(), "egraph.dot");
   }
 
@@ -92,7 +101,7 @@ fn main() {
     ExtractorArg::CountLoops => {
       let extractor = Extractor::new(&runner.egraph, LocalCountLoops);
       let (_, best) = extractor.find_best(runner.roots[0]);
-      println!("Computed alignment by local loop counting extraction.");
+      println!("Computed alignment by local loop counting.");
       best
     },
     ExtractorArg::MILP => {
@@ -119,11 +128,11 @@ fn main() {
   println!("{}", aligned_eggroll.pretty(80));
   println!("--------------------------");
 
-  let aligned_crel_raw = kestrel::eggroll::to_crel::eggroll_to_crel(&aligned_eggroll.to_string());
-  let aligned_crel = spec.add_specs_to_main(&aligned_crel_raw);
-  // println!("\nAligned CRel:\n{:?}", aligned_crel);
-
+  let aligned_crel_no_specs =
+    kestrel::eggroll::to_crel::eggroll_to_crel(&aligned_eggroll.to_string());
+  let aligned_crel = spec.add_specs_to_main(&aligned_crel_no_specs);
   let aligned_c = aligned_crel.to_c();
+
   println!("\nAligned Product Program");
   println!("--------------------------");
   println!("{}", aligned_c);

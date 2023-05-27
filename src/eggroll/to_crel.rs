@@ -41,10 +41,21 @@ fn expect_crel(sexp: &Sexp) -> CRel {
 fn expect_expression(sexp: &Sexp) -> Expression {
   match &sexp {
     Sexp::Atom(Atom::S(s)) if !s.is_empty() => Expression::Identifier{name: s.clone()},
-    Sexp::Atom(Atom::I(i)) => Expression::ConstInt(i32::try_from(i.clone()).unwrap()),
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "lit-string" => {
         Expression::StringLiteral(expect_string(&sexps[1]))
+      },
+      Sexp::Atom(Atom::S(s)) if s == "const-int" => {
+        match &sexps[1] {
+          Sexp::Atom(Atom::I(i)) => Expression::ConstInt(i32::try_from(i.clone()).unwrap()),
+          _ => panic!("Cannot convert to integer from {:?}", sexps[1]),
+        }
+      },
+      Sexp::Atom(Atom::S(s)) if s == "const-float" => {
+        match &sexps[1] {
+          Sexp::Atom(Atom::S(s)) => Expression::ConstFloat(s.parse().unwrap()),
+          _ => panic!("Cannot convert to integer from {:?}", sexps[1]),
+        }
       },
       Sexp::Atom(Atom::S(s)) if s == "neg" => {
         let expr = Box::new(expect_expression(&sexps[1]));

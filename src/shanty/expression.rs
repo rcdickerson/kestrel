@@ -5,6 +5,7 @@ use crate::shanty::Writer;
 pub enum Expression {
   ArrayIndex{expr: Box<Expression>, index: Box<Expression>},
   ConstInt(i32),
+  ConstFloat(f32),
   Identifier{name: String},
   FnCall{name: Box<Expression>, args: Vec<Expression>},
   StringLiteral(String),
@@ -25,6 +26,9 @@ impl Expression {
       },
       Expression::ConstInt(i) => {
         writer.write(&i.to_string());
+      },
+      Expression::ConstFloat(f) => {
+        writer.write(&f.to_string());
       },
       Expression::Identifier{name} => {
         writer.write(&name);

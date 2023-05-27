@@ -1,4 +1,5 @@
-use crate::crel::state::*;
+use crate::crel::eval::*;
+use std::collections::HashMap;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Tag {
@@ -10,10 +11,20 @@ pub enum Tag {
   RelationEnd,
 }
 
+pub type TraceState = HashMap<String, TraceStateValue>;
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum TraceStateValue {
+  Int(i32),
+  Float(f32),
+  IntArray(Vec<i32>),
+  FloatArray(Vec<f32>),
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum TraceItem {
   Tag(Tag),
-  State(State),
+  State(TraceState),
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -32,14 +43,38 @@ impl Trace {
   }
 
   pub fn push_state(&mut self, state: State) {
-    self.items.push(TraceItem::State(state));
+    let mut trace_state = HashMap::new();
+    for (name, _, _) in state.vars() {
+      let val = state.read_var(&name);
+      match val.len() {
+        1 => match val[0] {
+          HeapValue::Int(i) => {
+            trace_state.insert(name, TraceStateValue::Int(i));
+          },
+          HeapValue::Float(f) => {
+            trace_state.insert(name, TraceStateValue::Float(f));
+          },
+        },
+        _ => match val[0] {
+          HeapValue::Int(_) => {
+            let ivec = val.iter().map(|v| v.int()).collect();
+            trace_state.insert(name, TraceStateValue::IntArray(ivec));
+          },
+          HeapValue::Float(_) => {
+            let fvec = val.iter().map(|v| v.float()).collect();
+            trace_state.insert(name, TraceStateValue::FloatArray(fvec));
+          },
+        },
+      }
+    }
+    self.items.push(TraceItem::State(trace_state));
   }
 
   pub fn len(&self) -> usize {
     self.items.len()
   }
 
-  pub fn loop_heads(&self) -> Vec<Vec<State>> {
+  pub fn loop_heads(&self) -> Vec<Vec<TraceState>> {
     let mut all_heads = Vec::new();
     let mut current_heads = Vec::new();
     let mut current_state = None;
@@ -62,7 +97,7 @@ impl Trace {
     all_heads
   }
 
-  pub fn relation_states(&self) -> Vec<Vec<State>> {
+  pub fn relation_states(&self) -> Vec<Vec<TraceState>> {
     let mut all_rels = Vec::new();
     let mut current_rel = Vec::new();
     let mut current_state = None;

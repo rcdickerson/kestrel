@@ -1,11 +1,27 @@
 use std::collections::HashSet;
 
 #[derive(Clone, Debug, PartialEq)]
+pub enum KestrelCond {
+  ForLoop{index_var: String, bexp: CondBExpr},
+  BExpr(CondBExpr),
+}
+impl KestrelCond {
+  pub fn state_vars(&self) -> HashSet<String> {
+    match self {
+      KestrelCond::ForLoop{index_var:_, bexp} => bexp.state_vars(),
+      KestrelCond::BExpr(bexpr) => bexpr.state_vars(),
+    }
+  }
+}
+
+#[derive(Clone, Debug, PartialEq)]
 pub enum CondAExpr {
   Variable(CondId),
   Int(i32),
+  Float(f32),
+  Unop{aexp: Box<CondAExpr>, op: CondAUnop},
+  Binop{lhs: Box<CondAExpr>, rhs: Box<CondAExpr>, op: CondABinop},
 }
-
 impl CondAExpr {
   pub fn state_vars(&self) -> HashSet<String> {
     match self {
@@ -15,23 +31,38 @@ impl CondAExpr {
         set
       },
       CondAExpr::Int(_) => HashSet::new(),
+      CondAExpr::Float(_) => HashSet::new(),
+      CondAExpr::Unop{aexp, op:_} => aexp.state_vars(),
+      CondAExpr::Binop{lhs, rhs, op:_} => {
+        lhs.state_vars().union(&rhs.state_vars())
+          .map(|s| s.clone())
+          .collect()
+      },
     }
   }
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum CondAUnop {
+  Neg,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum CondABinop {
+  Add,
+  Sub,
+  Mul,
+  Div,
+  Mod,
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum CondBExpr {
   True,
   False,
-  Eq{lhs: CondAExpr, rhs: CondAExpr},
-  Neq{lhs: CondAExpr, rhs: CondAExpr},
-  Lt{lhs: CondAExpr, rhs: CondAExpr},
-  Lte{lhs: CondAExpr, rhs: CondAExpr},
-  Gt{lhs: CondAExpr, rhs: CondAExpr},
-  Gte{lhs: CondAExpr, rhs: CondAExpr},
-  And{lhs: Box<CondBExpr>, rhs: Box<CondBExpr>},
-  Or{lhs: Box<CondBExpr>, rhs: Box<CondBExpr>},
-  Not(Box<CondBExpr>),
+  Unop{bexp: Box<CondBExpr>, op: CondBUnop},
+  BinopA{lhs: CondAExpr, rhs: CondAExpr, op: CondBBinopA},
+  BinopB{lhs: Box<CondBExpr>, rhs: Box<CondBExpr>, op: CondBBinopB},
 }
 
 impl CondBExpr {
@@ -39,29 +70,40 @@ impl CondBExpr {
     match self {
       CondBExpr::True => HashSet::new(),
       CondBExpr::False => HashSet::new(),
-      CondBExpr::Eq{lhs, rhs} => binop_vars_a(lhs, rhs),
-      CondBExpr::Neq{lhs, rhs} => binop_vars_a(lhs, rhs),
-      CondBExpr::Lt{lhs, rhs} => binop_vars_a(lhs, rhs),
-      CondBExpr::Lte{lhs, rhs} => binop_vars_a(lhs, rhs),
-      CondBExpr::Gt{lhs, rhs} => binop_vars_a(lhs, rhs),
-      CondBExpr::Gte{lhs, rhs} => binop_vars_a(lhs, rhs),
-      CondBExpr::And{lhs, rhs} => binop_vars_b(lhs, rhs),
-      CondBExpr::Or{lhs, rhs} => binop_vars_b(lhs, rhs),
-      CondBExpr::Not(expr) => expr.state_vars(),
+      CondBExpr::Unop{bexp, op:_} => bexp.state_vars(),
+      CondBExpr::BinopA{lhs, rhs, op:_} => {
+        lhs.state_vars().union(&rhs.state_vars())
+          .map(|s| s.clone())
+          .collect()
+      },
+      CondBExpr::BinopB{lhs, rhs, op:_} => {
+        lhs.state_vars().union(&rhs.state_vars())
+          .map(|s| s.clone())
+          .collect()
+      },
     }
   }
 }
 
-fn binop_vars_a(expr1: &CondAExpr, expr2: &CondAExpr) -> HashSet<String> {
-  expr1.state_vars().union(&expr2.state_vars())
-    .map(|v| v.clone())
-    .collect::<HashSet<String>>()
+#[derive(Clone, Debug, PartialEq)]
+pub enum CondBUnop {
+  Not,
 }
 
-fn binop_vars_b(expr1: &CondBExpr, expr2: &CondBExpr) -> HashSet<String> {
-  expr1.state_vars().union(&expr2.state_vars())
-    .map(|v| v.clone())
-    .collect::<HashSet<String>>()
+#[derive(Clone, Debug, PartialEq)]
+pub enum CondBBinopA {
+  Eq,
+  Neq,
+  Lt,
+  Lte,
+  Gt,
+  Gte,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum CondBBinopB {
+  And,
+  Or,
 }
 
 #[derive(Clone, Debug, PartialEq)]

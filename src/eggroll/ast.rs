@@ -74,8 +74,10 @@ define_language! {
     "basic-block" = BasicBlock(Box<[Id]>),
 
     // Literals
-    ConstInt(i32),
+    "const-int"  = ConstInt(Id),
+    "const-float" = ConstFloat(Id),
     Identifier(Symbol),
+    RawString(String),
     "lit-string" = LitString(Id),
 
     // Relational Constructions

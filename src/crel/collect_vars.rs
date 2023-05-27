@@ -23,6 +23,7 @@ impl CollectVars for Expression {
     match self {
       Expression::Identifier{name} => singleton(name.clone()),
       Expression::ConstInt(_) => HashSet::new(),
+      Expression::ConstFloat(_) => HashSet::new(),
       Expression::StringLiteral(_) => HashSet::new(),
       Expression::Call{callee, args} => {
         union_all(vec!(

@@ -28,6 +28,7 @@ impl MapVars for Expression {
     match self {
       Expression::Identifier{name} => Expression::Identifier{name: f(name.clone())},
       Expression::ConstInt(i) => Expression::ConstInt(*i),
+      Expression::ConstFloat(f) => Expression::ConstFloat(*f),
       Expression::StringLiteral(s) => Expression::StringLiteral(s.clone()),
       Expression::Call{callee, args} => Expression::Call {
         callee: Box::new(callee.map_vars(f)),

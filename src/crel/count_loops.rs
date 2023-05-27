@@ -21,6 +21,7 @@ impl CountLoops for Expression {
     match self {
       Expression::Identifier{name:_} => 0,
       Expression::ConstInt(_) => 0,
+      Expression::ConstFloat(_) => 0,
       Expression::StringLiteral(_) => 0,
       Expression::Call{callee:_, args:_} => 0,
       Expression::Unop{expr, op: _} => expr.count_loops(),

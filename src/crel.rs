@@ -6,7 +6,5 @@ pub mod eval;
 pub mod fundef;
 pub mod map_vars;
 pub mod parser;
-pub mod state;
 pub mod to_c;
 pub mod to_eggroll;
-pub mod trace;

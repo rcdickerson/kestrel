@@ -1,193 +1,18 @@
+mod execution;
+mod state;
+mod trace;
+
+pub use execution::Execution;
+pub use state::{HeapLocation, HeapValue, State};
+pub use state::rand_states_satisfying;
+pub use trace::Tag;
+pub use trace::{Trace, TraceState, TraceStateValue};
+
 use crate::crel::ast::*;
-use crate::crel::state::*;
-use crate::crel::trace::*;
-
-#[derive(Clone, Debug, PartialEq)]
-pub enum Result {
-  Int(i32),
-  Identifier {
-    name: String,
-    index: Option<usize>,
-    value: Option<i32>
-  },
-  Return(i32),
-  Break,
-  None,
-  OutOfFuel,
-}
-
-pub struct Execution {
-  current_state: Option<State>,
-  pub trace: Trace,
-  result: Result,
-  max_trace: usize,
-}
-
-impl Execution {
-
-  fn new(max_trace: usize) -> Self {
-    Execution {
-      current_state: None,
-      trace: Trace::new(),
-      result: Result::None,
-      max_trace,
-    }
-  }
-
-  pub fn current_state(&self) -> State {
-    match &self.current_state {
-      None => panic!("No current state"),
-      Some(state) => state.clone(),
-    }
-  }
-
-  fn set_state(&mut self, state: State) {
-    if self.trace.len() >= self.max_trace {
-      self.result = Result::OutOfFuel;
-      return;
-    }
-    self.trace.push_state(state.clone());
-    self.current_state = Some(state);
-  }
-
-  fn update_state(&mut self, id: String, index: Option<usize>, value: i32) {
-    if self.trace.len() >= self.max_trace {
-      self.result = Result::OutOfFuel;
-      return;
-    }
-    let mut new_state = match &self.current_state {
-      None => State::new(),
-      Some(state) => state.clone(),
-    };
-    match index {
-      None => new_state.put(id, value),
-      Some(index) => new_state.put_indexed(id, index, value),
-    };
-    self.trace.push_state(new_state.clone());
-    self.current_state = Some(new_state);
-  }
-
-  fn initialize_array(&mut self, id: String, size: Option<usize>) {
-    if self.trace.len() >= self.max_trace {
-      self.result = Result::OutOfFuel;
-      return;
-    }
-    let mut new_state = match &self.current_state {
-      None => State::new(),
-      Some(state) => state.clone(),
-    };
-    new_state.put_array(id, size);
-    self.trace.push_state(new_state.clone());
-    self.current_state = Some(new_state);
-  }
-
-  fn push_tag(&mut self, tag: Tag) {
-    if self.trace.len() >= self.max_trace {
-      self.result = Result::OutOfFuel;
-      return;
-    }
-    self.trace.push_tag(tag);
-  }
-
-  fn set_break(&mut self) {
-    if self.result == Result::OutOfFuel { return }
-    self.result = Result::Break;
-  }
-
-  fn set_return(&mut self, value: i32) {
-    if self.result == Result::OutOfFuel { return }
-    self.result = Result::Return(value);
-  }
-
-  fn set_value(&mut self, value: i32) {
-    if self.result == Result::OutOfFuel { return }
-    self.result = Result::Int(value);
-  }
-
-  fn set_bool(&mut self, value: bool) {
-    if self.result == Result::OutOfFuel { return }
-    if value {
-      self.set_value(1)
-    } else {
-      self.set_value(0)
-    }
-  }
-
-  fn set_identifier(&mut self, id: String) {
-    if self.result == Result::OutOfFuel { return }
-    let value = match self.current_state().get(&id) {
-      Some(StateValue::Int(i)) => Some(*i),
-      _ => None,
-    };
-    self.result = Result::Identifier{name: id, index: None, value};
-  }
-
-  fn set_array_index(&mut self, id: String, index: usize) {
-    if self.result == Result::OutOfFuel { return }
-    let value = match self.current_state().get(&id) {
-      None => panic!("Array not found: {}", id),
-      Some(StateValue::Array(arr)) => arr[index].int(),
-      _ => panic!("Not an array: {}", id),
-    };
-    self.result = Result::Identifier {
-      name: id,
-      index: Some(index),
-      value: Some(value)
-    };
-  }
-
-  fn clear_break(&mut self) {
-    match self.result {
-      Result::Break => self.result = Result::None,
-      _ => ()
-    }
-  }
-
-  fn result_true(&self) -> bool {
-    match self.result {
-      Result::Int(val) => val != 0,
-      Result::Identifier{name:_, index:_, value: Some(val)} => val != 0,
-      _ => false,
-    }
-  }
-
-  fn result_false(&self) -> bool {
-    match self.result {
-      Result::Int(val) => val == 0,
-      Result::Identifier{name:_, index:_, value: Some(val)} => val == 0,
-      _ => false,
-    }
-  }
-
-  pub fn result_int(&self) -> i32 {
-    match self.result {
-      Result::Int(i) => i,
-      Result::Identifier{name:_, index:_, value: Some(val)} => val,
-      Result::OutOfFuel => 0,
-      _ => panic!("Result not an int: {:?}", self.result),
-    }
-  }
-
-  fn result_identifier(&self) -> (String, Option<usize>) {
-    match self.result.clone() {
-      Result::Identifier{name, index, value:_} => (name, index),
-      _ => panic!("Result not an identifier: {:?}", self.result),
-    }
-  }
-
-  fn ended(&self) -> bool {
-    match self.result {
-      Result::Return(_) => true,
-      Result::Break => true,
-      Result::OutOfFuel => true,
-      _ => false,
-    }
-  }
-}
 
 pub fn run(stmt: &Statement, state: State, max_trace: usize) -> Execution {
   let mut exec = Execution::new(max_trace);
-  exec.set_state(state);
+  exec.push_state(state);
   eval_statement(stmt, &mut exec);
   exec
 }
@@ -197,14 +22,14 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
     Statement::BasicBlock(items) => {
       for item in items {
         eval_block_item(item, exec);
-        if exec.ended() { break };
+        if exec.cf_break() { break };
       }
     },
-    Statement::Break => exec.set_break(),
+    Statement::Break => exec.set_break_flag(),
     Statement::Compound(items) => {
       for item in items {
         eval_block_item(item, exec);
-        if exec.ended() { break };
+        if exec.cf_break() { break };
       }
     },
     Statement::Expression(expr) => {
@@ -212,9 +37,9 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
     },
     Statement::If{condition, then, els} => {
       eval_expression(condition, exec);
-      if exec.result_true() {
+      if exec.value_is_true() {
         eval_statement(then, exec)
-      } else if exec.result_false() {
+      } else if exec.value_is_false() {
         match els {
           None => (),
           Some(stmt) => eval_statement(stmt, exec),
@@ -231,38 +56,27 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
     },
     Statement::Return(expr) => {
       match expr {
-        None => exec.set_return(0),
-        Some(expr) => {
-          eval_expression(expr, exec);
-          exec.set_return(exec.result_int());
-        }
+        None => exec.set_value(HeapValue::Int(0)),
+        Some(expr) => eval_expression(expr, exec),
       }
+      exec.set_return_flag();
     },
     Statement::While{condition, body} => {
       exec.push_tag(Tag::LoopStart);
       eval_expression(condition, exec);
-      while exec.result_true() {
+      while exec.value_is_true() {
         match body {
           None => (),
           Some(stmt) => {
             exec.push_tag(Tag::LoopHead);
-            if exec.ended() {
-              exec.clear_break();
-              break;
-            }
             eval_statement(stmt, exec);
-            if exec.ended() {
-              exec.clear_break();
-              break;
-            }
+            if exec.cf_break() { break; }
             eval_expression(condition, exec);
-            if exec.ended() {
-              exec.clear_break();
-              break;
-            }
+            if exec.cf_break() { break; }
           }
         }
       }
+      exec.clear_break_flag();
       exec.push_tag(Tag::LoopEnd);
     },
   }
@@ -271,14 +85,17 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
 fn eval_expression(expr: &Expression, exec: &mut Execution) {
   match expr {
     Expression::Identifier{name} => {
-      exec.set_identifier(name.clone());
+      exec.set_location_by_name(name);
+      exec.set_value_by_name(name);
     },
     Expression::ConstInt(i) => {
-      exec.set_value(*i);
+      exec.set_value(HeapValue::Int(*i));
+    },
+    Expression::ConstFloat(f) => {
+      exec.set_value(HeapValue::Float(*f));
     },
     Expression::StringLiteral(_) => (),
     Expression::Call{callee: _, args: _} => {
-      ()
       //panic!("Function calls unimplemented")
     },
     Expression::Unop {expr, op} => eval_unop(expr, op, exec),
@@ -291,12 +108,12 @@ fn eval_unop(expr: &Expression, op: &UnaryOp, exec: &mut Execution) {
   eval_expression(expr, exec);
   if exec.ended() { return; }
   match op {
-    UnaryOp::Minus => exec.set_value(-1 * exec.result_int()),
+    UnaryOp::Minus => exec.negate_value(),
     UnaryOp::Not => {
-      if exec.result_true() {
-        exec.set_value(0);
+      if exec.value_is_true() {
+        exec.set_value(HeapValue::Int(0));
       } else {
-        exec.set_value(1);
+        exec.set_value(HeapValue::Int(1));
       }
     },
   }
@@ -305,97 +122,87 @@ fn eval_unop(expr: &Expression, op: &UnaryOp, exec: &mut Execution) {
 fn eval_binop(lhs: &Expression, rhs: &Expression, op: &BinaryOp, exec: &mut Execution) {
   eval_expression(lhs, exec);
   if exec.ended() { return; }
+  let lhs_val = exec.current_value();
+
+  let arith_binop = |exec: &mut Execution, op_i: fn(i32, i32) -> i32, op_f: fn(f32, f32) -> f32| {
+    eval_expression(rhs, exec);
+    match lhs_val {
+      HeapValue::Int(lhs_i) => {
+        let rhs_i = exec.value_int();
+        exec.set_value(HeapValue::Int(op_i(lhs_i, rhs_i)));
+      },
+      HeapValue::Float(lhs_f) => {
+        let rhs_f = exec.value_float();
+        exec.set_value(HeapValue::Float(op_f(lhs_f, rhs_f)));
+      },
+    }
+  };
+
+  let bool_binop = |exec: &mut Execution, op_i: fn(i32, i32) -> bool, op_f: fn(f32, f32) -> bool| {
+    eval_expression(rhs, exec);
+    if exec.ended() { return; }
+    let result = match lhs_val {
+      HeapValue::Int(lhs_i) => {
+        let rhs_i = exec.value_int();
+        op_i(lhs_i, rhs_i)
+      },
+      HeapValue::Float(lhs_f) => {
+        let rhs_f = exec.value_float();
+        op_f(lhs_f, rhs_f)
+      },
+    };
+    let result_i = if result { 1 } else { 0 };
+    exec.set_value(HeapValue::Int(result_i));
+  };
+
   match op {
-    BinaryOp::Add => {
-      let lhs_val = exec.result_int();
-      eval_expression(rhs, exec);
-      if exec.ended() { return; }
-      exec.set_value(lhs_val + exec.result_int());
-    },
+    BinaryOp::Add => arith_binop(exec, |i1, i2| i1 + i2, |f1, f2| f1 + f2),
     BinaryOp::And => {
-      if exec.result_false() {
-        exec.set_value(0);
+      if exec.value_is_false() {
+        exec.set_value(HeapValue::Int(0));
       } else {
         eval_expression(rhs, exec);
+        if exec.value_is_false() {
+          exec.set_value(HeapValue::Int(0));
+        } else {
+          exec.set_value(HeapValue::Int(1));
+        }
       }
     },
     BinaryOp::Assign => {
-      let (id, index) = exec.result_identifier();
+      let loc = exec.current_location();
       eval_expression(rhs, exec);
-      if exec.ended() { return; }
-      exec.update_state(id, index, exec.result_int());
+      exec.push_update(&loc, exec.current_value());
     },
-    BinaryOp::Sub => {
-      let lhs_val = exec.result_int();
-      eval_expression(rhs, exec);
-      if exec.ended() { return; }
-      exec.set_value(lhs_val - exec.result_int());
-    },
-    BinaryOp::Div => {
-      let lhs_val = exec.result_int();
-      eval_expression(rhs, exec);
-      if exec.ended() { return; }
-      exec.set_value(lhs_val / exec.result_int());
-    },
-    BinaryOp::Equals => {
-      let lhs_val = exec.result_int();
-      eval_expression(rhs, exec);
-      if exec.ended() { return; }
-      exec.set_bool(lhs_val == exec.result_int());
-    },
-    BinaryOp::Gt => {
-      let lhs_val = exec.result_int();
-      eval_expression(rhs, exec);
-      if exec.ended() { return; }
-      exec.set_bool(lhs_val > exec.result_int());
-    },
-    BinaryOp::Gte => {
-      let lhs_val = exec.result_int();
-      eval_expression(rhs, exec);
-      if exec.ended() { return; }
-      exec.set_bool(lhs_val >= exec.result_int());
-    },
+    BinaryOp::Sub => arith_binop(exec, |i1, i2| i1 - i2, |f1, f2| f1 - f2),
+    BinaryOp::Div => arith_binop(exec, |i1, i2| i1 / i2, |f1, f2| f1 / f2),
+    BinaryOp::Equals => bool_binop(exec, |i1, i2| i1 == i2, |f1, f2| f1 == f2),
+    BinaryOp::Gt => bool_binop(exec, |i1, i2| i1 > i2, |f1, f2| f1 > f2),
+    BinaryOp::Gte => bool_binop(exec, |i1, i2| i1 >= i2, |f1, f2| f1 >= f2),
     BinaryOp::Index => {
-      let (id, _) = exec.result_identifier(); // TODO: matrices.
+      let loc = exec.current_location();
       eval_expression(rhs, exec);
-      if exec.ended() { return; }
-      exec.set_array_index(id, exec.result_int() as usize);
+      let indexed_loc = HeapLocation::Offset {
+        location: Box::new(loc),
+        offset: exec.value_int() as usize,
+      };
+      exec.set_location(indexed_loc);
     }
-    BinaryOp::Lt => {
-      let lhs_val = exec.result_int();
-      eval_expression(rhs, exec);
-      if exec.ended() { return; }
-      exec.set_bool(lhs_val < exec.result_int());
-    },
-    BinaryOp::Lte => {
-      let lhs_val = exec.result_int();
-      eval_expression(rhs, exec);
-      if exec.ended() { return; }
-      exec.set_bool(lhs_val <= exec.result_int());
-    },
-    BinaryOp::Mod => {
-      let lhs_val = exec.result_int();
-      eval_expression(rhs, exec);
-      if exec.ended() { return; }
-      exec.set_value(lhs_val % exec.result_int());
-    },
-    BinaryOp::Mul => {
-      let lhs_val = exec.result_int();
-      eval_expression(rhs, exec);
-      if exec.ended() { return; }
-      exec.set_value(lhs_val * exec.result_int());
-    },
-    BinaryOp::NotEquals => {
-      let lhs_val = exec.result_int();
-      eval_expression(rhs, exec);
-      if exec.ended() { return; }
-      exec.set_bool(lhs_val != exec.result_int());
-    },
+    BinaryOp::Lt => bool_binop(exec, |i1, i2| i1 < i2, |f1, f2| f1 < f2),
+    BinaryOp::Lte => bool_binop(exec, |i1, i2| i1 <= i2, |f1, f2| f1 <= f2),
+    BinaryOp::Mod => arith_binop(exec, |i1, i2| i1 % i2, |f1, f2| f1 % f2),
+    BinaryOp::Mul => arith_binop(exec, |i1, i2| i1 * i2, |f1, f2| f1 * f2),
+    BinaryOp::NotEquals => bool_binop(exec, |i1, i2| i1 != i2, |f1, f2| f1 != f2),
     BinaryOp::Or => {
-      if exec.result_true() {
-        exec.set_value(1);
+      if exec.value_is_true() {
+        exec.set_value(HeapValue::Int(1));
       } else {
         eval_expression(rhs, exec);
+        if exec.value_is_true() {
+          exec.set_value(HeapValue::Int(1));
+        } else {
+          exec.set_value(HeapValue::Int(0));
+        }
       }
     },
   }
@@ -411,14 +218,15 @@ fn eval_block_item(item: &BlockItem, exec: &mut Execution) {
 fn eval_declaration(decl: &Declaration, exec: &mut Execution) {
   match &decl.initializer {
     None => match &decl.declarator {
-      Declarator::Identifier{name} => exec.update_state(name.clone(), None, 0),
+      Declarator::Identifier{name} => {
+        exec.push_alloc(name.clone(), 1, HeapValue::Int(0));
+      },
       Declarator::Array{name, size} => {
-        let size = size.as_ref().map(|size| {
+        size.as_ref().map(|size| {
           eval_expression(&size, exec);
-          exec.result_int() as usize
+          let size = exec.value_int() as usize;
+          exec.push_alloc(name.clone(), size, HeapValue::Int(0));
         });
-        if exec.ended() { return; }
-        exec.initialize_array(name.clone(), size)
       },
       Declarator::Function{name:_, params:_} => (),
       Declarator::Pointer(_) => (),
@@ -429,8 +237,7 @@ fn eval_declaration(decl: &Declaration, exec: &mut Execution) {
       }
       Declarator::Identifier{name} => {
         eval_expression(&expr, exec);
-        if exec.ended() { return; }
-        exec.update_state(name.clone(), None, exec.result_int());
+        exec.push_update_by_name(&name, exec.current_value());
       }
       Declarator::Function{name:_, params:_} => {
         panic!("Unsupported: initializer for function declaration.");
@@ -567,6 +374,57 @@ mod test {
     expected.push_tag(Tag::LoopHead);
     expected.push_state(state(vec!(("x", 3))));
     assert_eq!(expected, run(&body(prog), State::new(), 9).trace);
+  }
+
+  #[test]
+  fn test_run_array() {
+    let prog = parse_c_string(
+      "int main(void) {
+         int x[3];
+         int i = 0;
+         while (i < 3) {
+           x[i] = i;
+           i = i + 1;
+         }
+       }".to_string());
+    let mut expected = Trace::new();
+    expected.push_state(State::new());
+    expected.push_state(arr_state(vec!(("x", vec!(0, 0, 0)))));
+    expected.push_state(arr_state(vec!(("x", vec!(0, 0, 0)), ("i", vec!(0)))));
+    expected.push_tag(Tag::LoopStart);
+    expected.push_tag(Tag::LoopHead);
+    expected.push_state(arr_state(vec!(("x", vec!(0, 0, 0)), ("i", vec!(0)))));
+    expected.push_state(arr_state(vec!(("x", vec!(0, 0, 0)), ("i", vec!(1)))));
+    expected.push_tag(Tag::LoopHead);
+    expected.push_state(arr_state(vec!(("x", vec!(0, 1, 0)), ("i", vec!(1)))));
+    expected.push_state(arr_state(vec!(("x", vec!(0, 1, 0)), ("i", vec!(2)))));
+    expected.push_tag(Tag::LoopHead);
+    expected.push_state(arr_state(vec!(("x", vec!(0, 1, 2)), ("i", vec!(2)))));
+    expected.push_state(arr_state(vec!(("x", vec!(0, 1, 2)), ("i", vec!(3)))));
+    expected.push_tag(Tag::LoopEnd);
+    assert_eq!(expected, run(&body(prog), State::new(), 100).trace);
+  }
+
+  pub fn state(mapping: Vec<(&str, i32)>) -> State {
+    let mut st = State::new();
+    for (name, val) in mapping {
+      let name = name.to_string();
+      st.alloc(&name, 1, HeapValue::Int(val));
+    }
+    st
+  }
+
+  pub fn arr_state(mapping: Vec<(&str, Vec<i32>)>) -> State {
+    let mut st = State::new();
+    for (name, val) in mapping {
+      let name = name.to_string();
+      let loc = st.alloc(&name, val.len(), HeapValue::Int(val[0]));
+      for i in 1..val.len() {
+        let loc = HeapLocation::Offset{location: Box::new(loc.clone()), offset: i};
+        st.store_loc(&loc, HeapValue::Int(val[i]));
+      }
+    }
+    st
   }
 
   fn body(crel: CRel) -> Statement {

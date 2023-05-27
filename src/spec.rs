@@ -10,10 +10,10 @@ use std::collections::HashSet;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct KestrelSpec {
-  pub pre: CondBExpr,
+  pub pre: KestrelCond,
   pub left: String,
   pub right: String,
-  pub post: CondBExpr,
+  pub post: KestrelCond,
 }
 
 impl KestrelSpec {

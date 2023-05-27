@@ -74,6 +74,7 @@ pub enum StorageClassSpecifier {
 pub enum Expression {
   Identifier{ name: String },
   ConstInt(i32),
+  ConstFloat(f32),
   StringLiteral(String),
   Call {
     callee: Box<Expression>,

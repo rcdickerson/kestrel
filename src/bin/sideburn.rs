@@ -4,7 +4,7 @@
 
 use clap::{Parser, ValueEnum};
 use egg::*;
-use kestrel::crel::{ast::*, state::*, trace::*};
+use kestrel::crel::{ast::*, eval::*};
 use kestrel::eggroll::{ast::*, cost_functions::*, to_crel::*};
 use kestrel::spec::{KestrelSpec, parser::parse_spec};
 use regex::Regex;

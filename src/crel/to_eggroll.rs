@@ -38,48 +38,42 @@ pub fn crel_to_eggroll(crel: &CRel) -> String {
 fn expression_to_eggroll(expr: &Expression) -> String {
   match expr {
     Expression::Identifier{name} => name.clone(),
-    Expression::ConstInt(i) => i.to_string(),
+    Expression::ConstInt(i) => format!("(const-int {})", i),
+    Expression::ConstFloat(f) => format!("(const-float {})", f),
     Expression::StringLiteral(s) => format!("(lit-string {})", s.clone()),
     Expression::Call{callee, args} => {
       let callee_egg = expression_to_eggroll(callee);
-      let args_egg = args.iter().map(expression_to_eggroll).collect::<Vec<String>>().join(" ");
+      let args_egg = args.iter()
+        .map(expression_to_eggroll)
+        .collect::<Vec<String>>()
+        .join(" ");
       format!("(call {} (args {}))", callee_egg, args_egg)
     },
-    Expression::Unop{ expr, op } => match op {
+    Expression::Unop{expr, op} => match op {
       UnaryOp::Minus => format!("(neg {})", expression_to_eggroll(expr)),
       UnaryOp::Not => format!("(not {})", expression_to_eggroll(expr)),
     },
-    Expression::Binop{ lhs, rhs, op } => match op {
-      BinaryOp::Add       => format!("(+ {} {})",
-                                     expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
-      BinaryOp::And       => format!("(&& {} {})",
-                                     expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
-      BinaryOp::Assign    => format!("(= {} {})",
-                                     expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
-      BinaryOp::Sub       => format!("(- {} {})",
-                                     expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
-      BinaryOp::Div       => format!("(/ {} {})",
-                                     expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
-      BinaryOp::Equals    => format!("(== {} {})",
-                                     expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
-      BinaryOp::Gt        => format!("(> {} {})",
-                                     expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
-      BinaryOp::Gte       => format!("(>= {} {})",
-                                     expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
-      BinaryOp::Index     => format!("(index {} {})",
-                                     expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
-      BinaryOp::Lt        => format!("(< {} {})",
-                                     expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
-      BinaryOp::Lte       => format!("(<= {} {})",
-                                     expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
-      BinaryOp::Mod       => format!("(mod {} {})",
-                                     expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
-      BinaryOp::Mul       => format!("(* {} {})",
-                                     expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
-      BinaryOp::NotEquals => format!("(!= {} {})",
-                                     expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
-      BinaryOp::Or        => format!("(|| {} {})",
-                                     expression_to_eggroll(lhs), expression_to_eggroll(rhs)),
+    Expression::Binop{lhs, rhs, op} => {
+      let lhs_egg = expression_to_eggroll(lhs);
+      let rhs_egg = expression_to_eggroll(rhs);
+      let op_egg = match op {
+        BinaryOp::Add       => "+",
+        BinaryOp::And       => "&&",
+        BinaryOp::Assign    => "=",
+        BinaryOp::Sub       => "-",
+        BinaryOp::Div       => "/",
+        BinaryOp::Equals    => "==",
+        BinaryOp::Gt        => ">",
+        BinaryOp::Gte       => ">=",
+        BinaryOp::Index     => "index",
+        BinaryOp::Lt        => "<",
+        BinaryOp::Lte       => "<=",
+        BinaryOp::Mod       => "mod",
+        BinaryOp::Mul       => "*",
+        BinaryOp::NotEquals => "!=",
+        BinaryOp::Or        => "||",
+      };
+      format!("({} {} {})", op_egg, lhs_egg, rhs_egg)
     },
     Expression::Statement(stmt) => statement_to_eggroll(stmt),
   }

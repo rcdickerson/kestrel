@@ -1,8 +1,6 @@
 use crate::crel::count_loops::*;
 use crate::crel::ast::CRel;
 use crate::crel::eval::*;
-use crate::crel::state::State;
-use crate::crel::trace::Trace;
 use crate::eggroll::ast::*;
 use egg::*;
 use std::cmp::Ordering;
@@ -64,11 +62,11 @@ struct StatesSummary {
   changed_vars: HashSet<String>,
 }
 
-fn summarize_states(states: &Vec<State>) -> StatesSummary {
+fn summarize_states(states: &Vec<TraceState>) -> StatesSummary {
   let mut l_vals : HashMap<String, Vec<i32>> = HashMap::new();
   let mut r_vals : HashMap<String, Vec<i32>> = HashMap::new();
   for state in states {
-    for (exec_var, val) in &state.map {
+    for (exec_var, val) in state.iter() {
       let(exec, var) = (&exec_var[..1], &exec_var[2..]);
       match exec {
         "l" => {
@@ -76,7 +74,10 @@ fn summarize_states(states: &Vec<State>) -> StatesSummary {
             None => Vec::new(),
             Some(seq) => seq.clone(),
           };
-          seq.push(val.int());
+          match val {
+            TraceStateValue::Int(i) => seq.push(*i),
+            _ => panic!("unimplemented"),
+          }
           l_vals.insert(var.to_string(), seq);
         },
         "r" => {
@@ -84,7 +85,10 @@ fn summarize_states(states: &Vec<State>) -> StatesSummary {
             None => Vec::new(),
             Some(seq) => seq.clone(),
           };
-          seq.push(val.int());
+          match val {
+            TraceStateValue::Int(i) => seq.push(*i),
+            _ => panic!("unimplemented"),
+          }
           r_vals.insert(var.to_string(), seq);
         },
         _ => continue,

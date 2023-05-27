@@ -59,7 +59,7 @@ fn cond_binop_a<'a>(op_str: &'a str, op: CondBBinopA) -> impl Fn(&str) -> IResul
 fn cond_binop_b<'a>(op_str: &'a str, op: CondBBinopB) -> impl Fn(&str) -> IResult<&str, CondBExpr> + 'a {
   move |i: &str| {
     let (i, _)   = multispace0(i)?;
-    let (i, lhs) = cond_bexpr(i)?;
+    let (i, lhs) = cond_bexpr_lhs(i)?;
     let (i, _)   = multispace0(i)?;
     let (i, _)   = tag(op_str)(i)?;
     let (i, _)   = multispace0(i)?;
@@ -221,45 +221,45 @@ pub fn parse_spec(input_file: &String) -> Result<KestrelSpec, String> {
   }
 }
 
-// #[cfg(test)]
-// mod test {
-//   use super::*;
+#[cfg(test)]
+mod test {
+  use super::*;
 
-//   #[test]
-//   fn test_spec_comment() {
-//     let input =
-//       "/* @KESTREL
-//         * pre:   left.N == right.N;
-//         * left:  fun;
-//         * right: fun;
-//         * post:  left.x == right.x;
-//         */";
-//     let newlines = Regex::new(r"\n+").unwrap();
-//     let input = newlines.replace_all(input, " ");
-//     let expected_pre = KestrelCond::BExpr(CondBExpr::BinopA {
-//       lhs: CondAExpr::Variable(CondId{
-//         exec: "left".to_string(),
-//         name: "N".to_string() }),
-//       rhs: CondAExpr::Variable(CondId{
-//         exec: "right".to_string(),
-//         name: "N".to_string() }),
-//       op: CondBBinopA::Eq,
-//     });
-//     let expected_post = KestrelCond::BExpr(CondBExpr::BinopA {
-//       lhs: CondAExpr::Variable(CondId {
-//         exec: "left".to_string(),
-//         name: "x".to_string() }),
-//       rhs: CondAExpr::Variable(CondId {
-//         exec: "right".to_string(),
-//         name: "x".to_string() }),
-//       op: CondBBinopA::Eq,
-//     });
-//     let expected = KestrelSpec {
-//       pre: expected_pre,
-//       left: "fun".to_string(),
-//       right: "fun".to_string(),
-//       post: expected_post,
-//     };
-//     assert_eq!(spec_comment(&input), Ok(("", expected)));
-//   }
-// }
+  #[test]
+  fn test_spec_comment() {
+    let input =
+      "/* @KESTREL
+        * pre:   left.N == right.N;
+        * left:  fun;
+        * right: fun;
+        * post:  left.x == right.x;
+        */";
+    let newlines = Regex::new(r"\n+").unwrap();
+    let input = newlines.replace_all(input, " ");
+    let expected_pre = KestrelCond::BExpr(CondBExpr::BinopA {
+      lhs: CondAExpr::Variable(CondId{
+        exec: "left".to_string(),
+        name: "N".to_string() }),
+      rhs: CondAExpr::Variable(CondId{
+        exec: "right".to_string(),
+        name: "N".to_string() }),
+      op: CondBBinopA::Eq,
+    });
+    let expected_post = KestrelCond::BExpr(CondBExpr::BinopA {
+      lhs: CondAExpr::Variable(CondId {
+        exec: "left".to_string(),
+        name: "x".to_string() }),
+      rhs: CondAExpr::Variable(CondId {
+        exec: "right".to_string(),
+        name: "x".to_string() }),
+      op: CondBBinopA::Eq,
+    });
+    let expected = KestrelSpec {
+      pre: expected_pre,
+      left: "fun".to_string(),
+      right: "fun".to_string(),
+      post: expected_post,
+    };
+    assert_eq!(spec_comment(&input), Ok(("", expected)));
+  }
+}

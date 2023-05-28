@@ -4,11 +4,12 @@ use nom::{
   bytes::complete::tag,
   character::complete::alpha1,
   character::complete::alphanumeric1,
-  character::complete::i32,
+  character::complete::{i32},
   character::complete::multispace0,
   combinator::recognize,
   multi::many0_count,
   multi::many1_count,
+  number::complete::float,
   sequence::delimited,
   sequence::pair,
   IResult,
@@ -32,107 +33,14 @@ fn label(label: &str) -> impl Fn(&str) -> IResult<&str, ()> + '_ {
   }
 }
 
-fn cond_true(i: &str) -> IResult<&str, CondBExpr> {
-  let (i, _) = multispace0(i)?;
-  let(i, _) = tag("true")(i)?;
-  Ok((i, CondBExpr::True))
+fn semi(i: &str) -> IResult<&str, ()> {
+  let (i, _)   = multispace0(i)?;
+  let (i, _)   = tag(";")(i)?;
+  Ok((i, ()))
 }
 
-fn cond_false(i: &str) -> IResult<&str, CondBExpr> {
-  let (i, _) = multispace0(i)?;
-  let(i, _) = tag("false")(i)?;
-  Ok((i, CondBExpr::False))
-}
 
-fn cond_binop_a<'a>(op_str: &'a str, op: CondBBinopA) -> impl Fn(&str) -> IResult<&str, CondBExpr> + 'a {
-  move |i: &str| {
-    let (i, _)   = multispace0(i)?;
-    let (i, lhs) = cond_aexpr(i)?;
-    let (i, _)   = multispace0(i)?;
-    let (i, _)   = tag(op_str)(i)?;
-    let (i, _)   = multispace0(i)?;
-    let (i, rhs) = cond_aexpr(i)?;
-    Ok((i, CondBExpr::BinopA{lhs, rhs, op: op.clone()}))
-  }
-}
-
-fn cond_binop_b<'a>(op_str: &'a str, op: CondBBinopB) -> impl Fn(&str) -> IResult<&str, CondBExpr> + 'a {
-  move |i: &str| {
-    let (i, _)   = multispace0(i)?;
-    let (i, lhs) = cond_bexpr_lhs(i)?;
-    let (i, _)   = multispace0(i)?;
-    let (i, _)   = tag(op_str)(i)?;
-    let (i, _)   = multispace0(i)?;
-    let (i, rhs) = cond_bexpr(i)?;
-    Ok((i, CondBExpr::BinopB{lhs: Box::new(lhs), rhs: Box::new(rhs) , op: op.clone()}))
-  }
-}
-
-fn cond_unop<'a>(op_str: &'a str, op: CondBUnop) -> impl Fn(&str) -> IResult<&str, CondBExpr> + 'a {
-  move |i: &str| {
-    let (i, _)    = multispace0(i)?;
-    let (i, _)    = tag(op_str)(i)?;
-    let (i, expr) = cond_bexpr(i)?;
-    Ok((i, CondBExpr::Unop{bexp: Box::new(expr), op: op.clone()}))
-  }
-}
-
-fn cond_bexpr_lhs(i: &str) -> IResult<&str, CondBExpr> {
-  let (i, _) = multispace0(i)?;
-  alt((
-    cond_true,
-    cond_false,
-    cond_unop("!", CondBUnop::Not),
-    cond_binop_a("==", CondBBinopA::Eq),
-    cond_binop_a("!=", CondBBinopA::Neq),
-    cond_binop_a("<", CondBBinopA::Lt),
-    cond_binop_a("<=", CondBBinopA::Lte),
-    cond_binop_a(">", CondBBinopA::Gt),
-    cond_binop_a(">=", CondBBinopA::Gte),
-  ))(i)
-}
-
-fn cond_bexpr(i: &str) -> IResult<&str, CondBExpr> {
-  let (i, _) = multispace0(i)?;
-  alt((
-    cond_binop_b("&&", CondBBinopB::And),
-    cond_binop_b("||", CondBBinopB::Or),
-    cond_bexpr_lhs,
-  ))(i)
-}
-
-fn cond_int(i: &str) -> IResult<&str, CondAExpr> {
-  let (i, _) = multispace0(i)?;
-  let (i, n) = i32(i)?;
-  Ok((i, CondAExpr::Int(n)))
-}
-
-fn cond_var(i: &str) -> IResult<&str, CondAExpr> {
-  let (i, _)  = multispace0(i)?;
-  let (i, id) = cond_id(i)?;
-  Ok((i, CondAExpr::Variable(id)))
-}
-
-fn cond_aexpr(i: &str) -> IResult<&str, CondAExpr> {
-  let (i, _) = multispace0(i)?;
-  alt((
-    cond_int,
-    cond_var,
-  ))(i)
-}
-
-fn kestrel_cond(i: &str) -> IResult<&str, KestrelCond> {
-  let (i, bexpr) = cond_bexpr(i)?;
-  Ok((i, KestrelCond::BExpr(bexpr)))
-}
-
-fn cond_id(i: &str) -> IResult<&str, CondId> {
-  let (i, exec) = exec_id(i)?;
-  let (i, _)    = tag(".")(i)?;
-  let (i, name) = c_id(i)?;
-  Ok((i, CondId { exec: exec.to_string(),
-                  name: name.to_string() }))
-}
+/* Identifiers */
 
 fn exec_id(i: &str) -> IResult<&str, &str> {
   let (i, _) = multispace0(i)?;
@@ -149,11 +57,226 @@ fn c_id(i: &str) -> IResult<&str, &str> {
   ))(i)
 }
 
-fn semi(i: &str) -> IResult<&str, ()> {
-  let (i, _)   = multispace0(i)?;
-  let (i, _)   = tag(";")(i)?;
-  Ok((i, ()))
+
+/* AExprs */
+
+fn aexp_int(i: &str) -> IResult<&str, CondAExpr> {
+  let (i, _) = multispace0(i)?;
+  let (i, n) = i32(i)?;
+  Ok((i, CondAExpr::Int(n)))
 }
+
+fn aexp_float(i: &str) -> IResult<&str, CondAExpr> {
+  let (i, _) = multispace0(i)?;
+  let (i, f) = float(i)?;
+  Ok((i, CondAExpr::Float(f)))
+}
+
+fn aexp_var(i: &str) -> IResult<&str, CondAExpr> {
+  let (i, _)  = multispace0(i)?;
+  let (i, id) = c_id(i)?;
+  Ok((i, CondAExpr::Var(id.to_string())))
+}
+
+fn aexp_qualified_var(i: &str) -> IResult<&str, CondAExpr> {
+  let (i, _)  = multispace0(i)?;
+  let (i, exec) = exec_id(i)?;
+  let (i, _)    = tag(".")(i)?;
+  let (i, name) = c_id(i)?;
+  Ok((i, CondAExpr::QualifiedVar {
+    exec: exec.to_string(),
+    name: name.to_string()}))
+}
+
+fn aexp_index(i: &str) -> IResult<&str, CondAExpr> {
+  let (i, _)     = multispace0(i)?;
+  let (i, id)    = alt((aexp_qualified_var, aexp_var))(i)?;
+  let (i, _)     = multispace0(i)?;
+  let (i, index) = delimited(tag("["), aexpr_no_float, tag("]"))(i)?;
+  Ok((i, CondAExpr::Binop {
+    lhs: Box::new(id),
+    rhs: Box::new(index),
+    op: CondABinop::Index,
+  }))
+}
+
+fn aexpr_binop<'a>(op_str: &'a str, op: CondABinop) -> impl Fn(&str) -> IResult<&str, CondAExpr> + 'a {
+  move |i: &str| {
+    let (i, _)   = multispace0(i)?;
+    let (i, lhs) = aexpr_lhs(i)?;
+    let (i, _)   = multispace0(i)?;
+    let (i, _)   = tag(op_str)(i)?;
+    let (i, _)   = multispace0(i)?;
+    let (i, rhs) = aexpr(i)?;
+    Ok((i, CondAExpr::Binop {
+      lhs: Box::new(lhs),
+      rhs: Box::new(rhs),
+      op: op.clone(),
+    }))
+  }
+}
+
+fn aexpr_lhs(i: &str) -> IResult<&str, CondAExpr> {
+  let (i, _) = multispace0(i)?;
+  alt((
+    aexp_float,
+    aexp_int,
+    aexp_index,
+    aexp_qualified_var,
+    aexp_var,
+    delimited(tag("("), aexpr, tag(")")),
+  ))(i)
+}
+
+fn aexpr(i: &str) -> IResult<&str, CondAExpr> {
+  let (i, _) = multispace0(i)?;
+  alt((
+    aexpr_binop("+", CondABinop::Add),
+    aexpr_binop("-", CondABinop::Sub),
+    aexpr_binop("*", CondABinop::Mul),
+    aexpr_binop("/", CondABinop::Div),
+    aexp_float,
+    aexp_int,
+    aexp_index,
+    aexp_qualified_var,
+    aexp_var,
+    delimited(tag("("), aexpr, tag(")")),
+  ))(i)
+}
+
+fn aexpr_no_float(i: &str) -> IResult<&str, CondAExpr> {
+  let (i, _) = multispace0(i)?;
+  alt((
+    aexpr_binop("+", CondABinop::Add),
+    aexpr_binop("-", CondABinop::Sub),
+    aexpr_binop("*", CondABinop::Mul),
+    aexpr_binop("/", CondABinop::Div),
+    aexpr_binop("%", CondABinop::Mod),
+    aexp_int,
+    aexp_index,
+    aexp_qualified_var,
+    aexp_var,
+    delimited(tag("("), aexpr_no_float, tag(")")),
+  ))(i)
+}
+
+
+/* BExprs */
+
+fn bexpr_true(i: &str) -> IResult<&str, CondBExpr> {
+  let (i, _) = multispace0(i)?;
+  let(i, _) = tag("true")(i)?;
+  Ok((i, CondBExpr::True))
+}
+
+fn bexpr_false(i: &str) -> IResult<&str, CondBExpr> {
+  let (i, _) = multispace0(i)?;
+  let(i, _) = tag("false")(i)?;
+  Ok((i, CondBExpr::False))
+}
+
+fn bexpr_binop_a<'a>(op_str: &'a str, op: CondBBinopA) -> impl Fn(&str) -> IResult<&str, CondBExpr> + 'a {
+  move |i: &str| {
+    let (i, _)   = multispace0(i)?;
+    let (i, lhs) = aexpr(i)?;
+    let (i, _)   = multispace0(i)?;
+    let (i, _)   = tag(op_str)(i)?;
+    let (i, _)   = multispace0(i)?;
+    let (i, rhs) = aexpr(i)?;
+    Ok((i, CondBExpr::BinopA{lhs, rhs, op: op.clone()}))
+  }
+}
+
+fn bexpr_binop_b<'a>(op_str: &'a str, op: CondBBinopB) -> impl Fn(&str) -> IResult<&str, CondBExpr> + 'a {
+  move |i: &str| {
+    let (i, _)   = multispace0(i)?;
+    let (i, lhs) = bexpr_lhs(i)?;
+    let (i, _)   = multispace0(i)?;
+    let (i, _)   = tag(op_str)(i)?;
+    let (i, _)   = multispace0(i)?;
+    let (i, rhs) = bexpr(i)?;
+    Ok((i, CondBExpr::BinopB{lhs: Box::new(lhs), rhs: Box::new(rhs) , op: op.clone()}))
+  }
+}
+
+fn bexpr_unop<'a>(op_str: &'a str, op: CondBUnop) -> impl Fn(&str) -> IResult<&str, CondBExpr> + 'a {
+  move |i: &str| {
+    let (i, _)    = multispace0(i)?;
+    let (i, _)    = tag(op_str)(i)?;
+    let (i, _)    = multispace0(i)?;
+    let (i, expr) = bexpr(i)?;
+    Ok((i, CondBExpr::Unop{bexp: Box::new(expr), op: op.clone()}))
+  }
+}
+
+fn bexpr_lhs(i: &str) -> IResult<&str, CondBExpr> {
+  let (i, _) = multispace0(i)?;
+  alt((
+    bexpr_true,
+    bexpr_false,
+    bexpr_unop("!", CondBUnop::Not),
+    bexpr_binop_a("==", CondBBinopA::Eq),
+    bexpr_binop_a("!=", CondBBinopA::Neq),
+    bexpr_binop_a("<", CondBBinopA::Lt),
+    bexpr_binop_a("<=", CondBBinopA::Lte),
+    bexpr_binop_a(">", CondBBinopA::Gt),
+    bexpr_binop_a(">=", CondBBinopA::Gte),
+    delimited(tag("("), bexpr, tag(")")),
+  ))(i)
+}
+
+fn bexpr(i: &str) -> IResult<&str, CondBExpr> {
+  let (i, _) = multispace0(i)?;
+  alt((
+    bexpr_binop_b("&&", CondBBinopB::And),
+    bexpr_binop_b("||", CondBBinopB::Or),
+    bexpr_lhs,
+    delimited(tag("("), bexpr, tag(")")),
+  ))(i)
+}
+
+
+/* KestrelConds */
+
+fn kcond_loop(i: &str) -> IResult<&str, KestrelCond> {
+  let (i, _)     = multispace0(i)?;
+  let (i, _)     = tag("for")(i)?;
+  let (i, _)     = multispace0(i)?;
+  let (i, var)   = c_id(i)?;
+  let (i, _)     = multispace0(i)?;
+  let (i, _)     = tag("in")(i)?;
+  let (i, _)     = multispace0(i)?;
+  let (i, _)     = tag("(")(i)?;
+  let (i, _)     = multispace0(i)?;
+  let (i, start) = aexpr_no_float(i)?;
+  let (i, _)     = multispace0(i)?;
+  let (i, _)     = tag("..")(i)?;
+  let (i, _)     = multispace0(i)?;
+  let (i, end)   = aexpr_no_float(i)?;
+  let (i, _)     = multispace0(i)?;
+  let (i, _)     = tag(")")(i)?;
+  let (i, _)     = multispace0(i)?;
+  let (i, _)     = tag("{")(i)?;
+  let (i, body)  = bexpr(i)?;
+  let (i, _)     = multispace0(i)?;
+  let (i, _)     = tag("}")(i)?;
+  Ok((i, KestrelCond::ForLoop{index_var: var.to_string(), start, end, body}))
+}
+
+fn kcond_bexpr(i: &str) -> IResult<&str, KestrelCond> {
+  let (i, bexpr) = bexpr(i)?;
+  Ok((i, KestrelCond::BExpr(bexpr)))
+}
+
+fn kestrel_cond(i: &str) -> IResult<&str, KestrelCond> {
+  alt((
+    kcond_bexpr,
+    kcond_loop,
+  ))(i)
+}
+
+
+/* Kestrel Specs */
 
 fn pre(i: &str) -> IResult<&str, KestrelCond> {
   let (i, _)   = opt_asterisks(i)?;
@@ -237,21 +360,25 @@ mod test {
     let newlines = Regex::new(r"\n+").unwrap();
     let input = newlines.replace_all(input, " ");
     let expected_pre = KestrelCond::BExpr(CondBExpr::BinopA {
-      lhs: CondAExpr::Variable(CondId{
+      lhs: CondAExpr::QualifiedVar{
         exec: "left".to_string(),
-        name: "N".to_string() }),
-      rhs: CondAExpr::Variable(CondId{
+        name: "N".to_string(),
+      },
+      rhs: CondAExpr::QualifiedVar{
         exec: "right".to_string(),
-        name: "N".to_string() }),
+        name: "N".to_string()
+      },
       op: CondBBinopA::Eq,
     });
     let expected_post = KestrelCond::BExpr(CondBExpr::BinopA {
-      lhs: CondAExpr::Variable(CondId {
+      lhs: CondAExpr::QualifiedVar {
         exec: "left".to_string(),
-        name: "x".to_string() }),
-      rhs: CondAExpr::Variable(CondId {
+        name: "x".to_string()
+      },
+      rhs: CondAExpr::QualifiedVar {
         exec: "right".to_string(),
-        name: "x".to_string() }),
+        name: "x".to_string()
+      },
       op: CondBBinopA::Eq,
     });
     let expected = KestrelSpec {
@@ -261,5 +388,112 @@ mod test {
       post: expected_post,
     };
     assert_eq!(spec_comment(&input), Ok(("", expected)));
+  }
+
+  #[test]
+  fn test_bexpr_and() {
+    let input = "a < b && x >= y";
+    let expected = CondBExpr::BinopB {
+      lhs: Box::new(CondBExpr::BinopA {
+        lhs: CondAExpr::Var("a".to_string()),
+        rhs: CondAExpr::Var("b".to_string()),
+        op: CondBBinopA:: Lt,
+      }),
+      rhs: Box::new(CondBExpr::BinopA {
+        lhs: CondAExpr::Var("x".to_string()),
+        rhs: CondAExpr::Var("y".to_string()),
+        op: CondBBinopA::Gte,
+      }),
+      op: CondBBinopB::And
+    };
+    assert_eq!(bexpr(&input), Ok(("", expected)));
+  }
+
+  #[test]
+  fn test_abinop_example1() {
+    let input = "a_1 - a_2";
+    let a_1 = CondAExpr::Var("a_1".to_string());
+    let a_2 = CondAExpr::Var("a_2".to_string());
+    let expected = CondAExpr::Binop {
+      lhs: Box::new(a_1),
+      rhs: Box::new(a_2),
+      op: CondABinop::Sub,
+    };
+    assert_eq!(aexpr(&input), Ok(("", expected)));
+  }
+
+  #[test]
+  fn test_bbinop_example1() {
+    let input = "a_1 - a_2 < epsilon";
+    let a_1 = CondAExpr::Var("a_1".to_string());
+    let a_2 = CondAExpr::Var("a_2".to_string());
+    let expected = CondBExpr::BinopA {
+      lhs: CondAExpr::Binop {
+        lhs: Box::new(a_1),
+        rhs: Box::new(a_2),
+        op: CondABinop::Sub,
+      },
+      rhs: CondAExpr::Var("epsilon".to_string()),
+      op: CondBBinopA:: Lt,
+    };
+    assert_eq!(bexpr(&input), Ok(("", expected)));
+  }
+
+  #[test]
+  fn test_bbinop_example2() {
+    let input = "(a_1 >= a_2 && a_1 - a_2 < epsilon)";
+    let a_1 = CondAExpr::Var("a_1".to_string());
+    let a_2 = CondAExpr::Var("a_2".to_string());
+    let expected = CondBExpr::BinopB {
+      lhs: Box::new(CondBExpr::BinopA {
+        lhs: a_1.clone(),
+        rhs: a_2.clone(),
+        op: CondBBinopA:: Gte,
+      }),
+      rhs: Box::new(CondBExpr::BinopA {
+        lhs: CondAExpr::Binop {
+          lhs: Box::new(a_1),
+          rhs: Box::new(a_2),
+          op: CondABinop::Sub,
+        },
+        rhs: CondAExpr::Var("epsilon".to_string()),
+        op: CondBBinopA:: Lt,
+      }),
+      op: CondBBinopB::And
+    };
+    assert_eq!(bexpr(&input), Ok(("", expected)));
+  }
+
+  #[test]
+  fn test_bbinop_example3() {
+    let input = "(a_1[i] >= a_2[i] && a_1[i] - a_2[i] < epsilon)";
+    let a_1_i = CondAExpr::Binop {
+      lhs: Box::new(CondAExpr::Var("a_1".to_string())),
+      rhs: Box::new(CondAExpr::Var("i".to_string())),
+      op: CondABinop::Index,
+    };
+    let a_2_i = CondAExpr::Binop {
+      lhs: Box::new(CondAExpr::Var("a_2".to_string())),
+      rhs: Box::new(CondAExpr::Var("i".to_string())),
+      op: CondABinop::Index,
+    };
+    let expected = CondBExpr::BinopB {
+      lhs: Box::new(CondBExpr::BinopA {
+        lhs: a_1_i.clone(),
+        rhs: a_2_i.clone(),
+        op: CondBBinopA:: Gte,
+      }),
+      rhs: Box::new(CondBExpr::BinopA {
+        lhs: CondAExpr::Binop {
+          lhs: Box::new(a_1_i),
+          rhs: Box::new(a_2_i),
+          op: CondABinop::Sub,
+        },
+        rhs: CondAExpr::Var("epsilon".to_string()),
+        op: CondBBinopA:: Lt,
+      }),
+      op: CondBBinopB::And
+    };
+    assert_eq!(bexpr(&input), Ok(("", expected)));
   }
 }

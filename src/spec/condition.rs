@@ -2,13 +2,18 @@ use std::collections::HashSet;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum KestrelCond {
-  ForLoop{index_var: String, bexp: CondBExpr},
+  ForLoop {
+    index_var: String,
+    start: CondAExpr,
+    end: CondAExpr,
+    body: CondBExpr
+  },
   BExpr(CondBExpr),
 }
 impl KestrelCond {
   pub fn state_vars(&self) -> HashSet<String> {
     match self {
-      KestrelCond::ForLoop{index_var:_, bexp} => bexp.state_vars(),
+      KestrelCond::ForLoop{index_var:_, start:_, end:_, body} => body.state_vars(),
       KestrelCond::BExpr(bexpr) => bexpr.state_vars(),
     }
   }
@@ -16,7 +21,8 @@ impl KestrelCond {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum CondAExpr {
-  Variable(CondId),
+  Var(String),
+  QualifiedVar{exec: String, name: String},
   Int(i32),
   Float(f32),
   Unop{aexp: Box<CondAExpr>, op: CondAUnop},
@@ -25,10 +31,12 @@ pub enum CondAExpr {
 impl CondAExpr {
   pub fn state_vars(&self) -> HashSet<String> {
     match self {
-      CondAExpr::Variable(id) => {
-        let mut set = HashSet::new();
-        set.insert(id.state_string());
-        set
+      CondAExpr::Var(name) => {
+        crate::names::singleton(name.clone())
+      },
+      CondAExpr::QualifiedVar{exec, name} => {
+        let state_var = qualified_state_var(exec, name);
+        crate::names::singleton(state_var)
       },
       CondAExpr::Int(_) => HashSet::new(),
       CondAExpr::Float(_) => HashSet::new(),
@@ -39,6 +47,14 @@ impl CondAExpr {
           .collect()
       },
     }
+  }
+}
+
+pub fn qualified_state_var(exec: &String, name: &String) -> String {
+  match exec.as_ref() {
+    "left" => format!("l_{}", name),
+    "right" => format!("r_{}", name),
+    _ => panic!("Unknown execution: {}", exec),
   }
 }
 
@@ -54,6 +70,7 @@ pub enum CondABinop {
   Mul,
   Div,
   Mod,
+  Index,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -104,26 +121,4 @@ pub enum CondBBinopA {
 pub enum CondBBinopB {
   And,
   Or,
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct CondId {
-  pub exec: String,
-  pub name: String,
-}
-
-impl CondId {
-  pub fn state_string(&self) -> String {
-    match self.exec.as_ref() {
-      "left" => format!("l_{}", self.name),
-      "right" => format!("r_{}", self.name),
-      _ => panic!("Unknown execution: {}", self.exec),
-    }
-  }
-}
-
-impl ToString for CondId {
-  fn to_string(&self) -> String {
-    format!("{}.{}", self.exec, self.name)
-  }
 }

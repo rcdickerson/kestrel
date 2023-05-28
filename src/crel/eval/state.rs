@@ -141,7 +141,7 @@ impl State {
 
   pub fn satisfies(&self, cond: &KestrelCond) -> bool {
     match cond {
-      KestrelCond::ForLoop{index_var:_, bexp:_} => panic!("Unsupported"),
+      KestrelCond::ForLoop{index_var:_, start:_, end:_, body:_} => panic!("Unsupported"),
       KestrelCond::BExpr(cond) => match cond {
         CondBExpr::True => true,
         CondBExpr::False => false,
@@ -171,14 +171,18 @@ impl State {
 
   fn clookup(&self, aexp: &CondAExpr) -> HeapValue {
     match aexp {
-      CondAExpr::Variable(id) => self.read_var(&id.state_string())[0].clone(),
+      CondAExpr::Var(id) => self.read_var(&id)[0].clone(),
+      CondAExpr::QualifiedVar{exec, name} => {
+        let var = qualified_state_var(exec, name);
+        self.read_var(&var)[0].clone()
+      },
       CondAExpr::Int(i) => HeapValue::Int(*i),
       CondAExpr::Float(f) => HeapValue::Float(*f),
       CondAExpr::Unop{aexp, op} => match op {
         CondAUnop::Neg => match self.clookup(aexp) {
           HeapValue::Int(i) => HeapValue::Int(-i),
           HeapValue::Float(f) => HeapValue::Float(-f),
-        }
+        },
       },
       _ => panic!("AExp does not correspond to a state value: {:?}", aexp),
     }

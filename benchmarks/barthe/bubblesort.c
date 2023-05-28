@@ -1,8 +1,14 @@
 /* @KESTREL
- * pre: for i in (1..N) { abs(a_1[i] - a_2[i]) < epsilon };
+ * pre: for i in (1..N) {
+     (a_1[i] >= a_2[i] && a_1[i] - a_2[i] < epsilon) ||
+     (a_2[i] >= a_1[i] && a_2[i] - a_1[i] < epsilon)
+   };
  * left: bubble_sort;
  * right: bubble_sort;
- * post: for i in (1..N) { abs(a_1[i] - a_2[i]) < epsilon };
+ * post: for i in (1..N) {
+     (a_1[i] >= a_2[i] && a_1[i] - a_2[i] < epsilon) ||
+     (a_2[i] >= a_1[i] && a_2[i] - a_1[i] < epsilon)
+   };
  */
 
 const int N = 10;

@@ -8,7 +8,7 @@ pub trait CondToCRel {
 impl CondToCRel for KestrelCond {
   fn to_crel(&self) -> crel::Expression {
     match self {
-      KestrelCond::ForLoop{index_var:_, bexp:_} => panic!("Unsupported"),
+      KestrelCond::ForLoop{index_var:_, start:_, end:_, body:_} => panic!("Unsupported"),
       KestrelCond::BExpr(bexpr) => bexpr.to_crel(),
     }
   }
@@ -17,8 +17,11 @@ impl CondToCRel for KestrelCond {
 impl CondToCRel for CondAExpr {
   fn to_crel(&self) -> crel::Expression {
     match self {
-      CondAExpr::Variable(id) => {
-        crel::Expression::Identifier{name:id.state_string()}
+      CondAExpr::Var(id) => {
+        crel::Expression::Identifier{name: id.clone()}
+      },
+      CondAExpr::QualifiedVar{exec, name} => {
+        crel::Expression::Identifier{name: qualified_state_var(exec, name)}
       },
       CondAExpr::Int(i) => {
         crel::Expression::ConstInt(*i)
@@ -27,11 +30,11 @@ impl CondToCRel for CondAExpr {
         crel::Expression::ConstFloat(*f)
       },
       CondAExpr::Unop{aexp, op} => {
-        crel::Expression::Unop {
-          expr: Box::new(aexp.to_crel()),
-          op: match op {
-            CondAUnop::Neg => crel::UnaryOp::Minus,
-          }
+        match op {
+          CondAUnop::Neg => crel::Expression::Unop {
+            expr: Box::new(aexp.to_crel()),
+            op: crel::UnaryOp::Minus,
+          },
         }
       },
       CondAExpr::Binop{lhs, rhs, op} => {
@@ -39,11 +42,12 @@ impl CondToCRel for CondAExpr {
           lhs: Box::new(lhs.to_crel()),
           rhs: Box::new(rhs.to_crel()),
           op: match op {
-            CondABinop::Add => crel::BinaryOp::Add,
-            CondABinop::Sub => crel::BinaryOp::Sub,
-            CondABinop::Mul => crel::BinaryOp::Mul,
-            CondABinop::Div => crel::BinaryOp::Div,
-            CondABinop::Mod => crel::BinaryOp::Mod,
+            CondABinop::Add   => crel::BinaryOp::Add,
+            CondABinop::Sub   => crel::BinaryOp::Sub,
+            CondABinop::Mul   => crel::BinaryOp::Mul,
+            CondABinop::Div   => crel::BinaryOp::Div,
+            CondABinop::Mod   => crel::BinaryOp::Mod,
+            CondABinop::Index => crel::BinaryOp::Index,
           }
         }
       },

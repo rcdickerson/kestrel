@@ -279,6 +279,7 @@ fn trans_constant(cnst: &Node<c::Constant>) -> Expression {
   match &cnst.node {
     // Making some assumptions about base / suffix of integer here.
     c::Constant::Integer(i) => Expression::ConstInt(i.number.parse().unwrap()),
+    c::Constant::Float(f) => Expression::ConstFloat(f.number.parse().unwrap()),
     _ => panic!("Unsupported constant: {:?}", cnst),
   }
 }

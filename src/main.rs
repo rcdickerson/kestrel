@@ -76,6 +76,11 @@ fn main() {
   let spec = parse_spec(&args.input).unwrap();
 
   let crel = kestrel::crel::parser::parse_c_file(&args.input);
+  // println!("\nCRel");
+  // println!("--------------------------");
+  // println!("{:?}", crel);
+  // println!("--------------------------");
+
   let (global_decls, unaligned_crel) = spec.build_unaligned_crel(&crel);
 
   let unaligned_c = unaligned_crel.to_c();
@@ -85,6 +90,11 @@ fn main() {
   println!("--------------------------");
 
   let unaligned_eggroll = unaligned_crel.to_eggroll();
+  // println!("\nUnaligned Eggroll");
+  // println!("--------------------------");
+  // println!("{:?}", unaligned_eggroll);
+  // println!("--------------------------");
+
   let runner = Runner::default()
     .with_expr(&unaligned_eggroll.parse().unwrap())
     .run(&kestrel::eggroll::rewrite::make_rules());

@@ -1,6 +1,6 @@
 use crate::shanty::Writer;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Type {
   Bool,
   Double,

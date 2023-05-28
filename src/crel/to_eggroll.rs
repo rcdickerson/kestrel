@@ -15,6 +15,7 @@ pub fn crel_to_eggroll(crel: &CRel) -> String {
         .collect::<Vec<String>>()
         .join(" ");
       let params_egg = params.iter()
+        .filter(|p| p.declarator.is_some())
         .map(param_decl_to_eggroll)
         .collect::<Vec<String>>()
         .join(" ");

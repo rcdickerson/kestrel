@@ -58,9 +58,11 @@ fn fun_to_c(specifiers: &Vec<DeclarationSpecifier>,
   }
 
   let mut fun = C::Function::new(&name, fun_ty);
-  for param in params.iter().map(decl_to_param) {
-    fun.push_param(&param);
-  }
+  for param in params.iter()
+    .filter(|param| param.declarator.is_some())
+    .map(decl_to_param) {
+      fun.push_param(&param);
+    }
   fun.set_extern(fun_extern);
   fun.set_const(fun_const);
   fun.set_body(&statement_to_c(body));

@@ -1,15 +1,61 @@
 use crate::crel::ast as crel;
 use crate::spec::condition::*;
 
+pub trait KCondToCRel {
+  fn to_crel(&self, kind: StatementKind) -> crel::Statement;
+}
+
 pub trait CondToCRel {
   fn to_crel(&self) -> crel::Expression;
 }
 
-impl CondToCRel for KestrelCond {
+pub enum StatementKind {
+  Assume,
+  Assert,
+}
+
+impl CondToCRel for StatementKind {
   fn to_crel(&self) -> crel::Expression {
     match self {
-      KestrelCond::ForLoop{index_var:_, start:_, end:_, body:_} => panic!("Unsupported"),
-      KestrelCond::BExpr(bexpr) => bexpr.to_crel(),
+      StatementKind::Assume => crel::Expression::Identifier{name: "assume".to_string()},
+      StatementKind::Assert => crel::Expression::Identifier{name: "sassert".to_string()},
+    }
+  }
+}
+
+impl KCondToCRel for KestrelCond {
+  fn to_crel(&self, kind: StatementKind) -> crel::Statement {
+    match self {
+      KestrelCond::BExpr(bexpr) => {
+        crel::Statement::Expression(Box::new(crel::Expression::Call {
+          callee: Box::new(kind.to_crel()),
+          args: vec!(bexpr.to_crel())
+        }))
+      },
+      KestrelCond::ForLoop{index_var, start, end, body} => {
+        let init_index = crel::Declaration {
+          specifiers: vec!(crel::DeclarationSpecifier::TypeSpecifier(crel::Type::Int)),
+          declarator: crel::Declarator::Identifier{name: index_var.clone()},
+          initializer: Some(start.to_crel()),
+        };
+        let wloop = crel::Statement::While {
+          condition: Box::new(crel::Expression::Binop {
+            lhs: Box::new(crel::Expression::Identifier{name: index_var.clone()}),
+            rhs: Box::new(end.to_crel()),
+            op: crel::BinaryOp::Lt,
+          }),
+          body: Some(Box::new(crel::Statement::Expression(Box::new(
+            crel::Expression::Call {
+              callee: Box::new(kind.to_crel()),
+              args: vec!(body.to_crel()),
+            }
+          )))),
+        };
+        crel::Statement::Compound(vec!(
+          crel::BlockItem::Declaration(init_index),
+          crel::BlockItem::Statement(wloop),
+        ))
+      },
     }
   }
 }

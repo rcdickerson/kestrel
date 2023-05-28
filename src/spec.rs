@@ -103,21 +103,13 @@ impl KestrelSpec {
   }
 
   fn build_preconds(&self) -> BlockItem {
-    let pre_expr = self.pre.to_crel();
-    let assume = Expression::Call {
-      callee: Box::new(Expression::Identifier{name: "assume".to_string()}),
-      args: vec!(pre_expr),
-    };
-    BlockItem::Statement(Statement::Expression(Box::new(assume)))
+    let assume = self.pre.to_crel(StatementKind::Assume);
+    BlockItem::Statement(assume)
   }
 
   fn build_postconds(&self) -> BlockItem {
-    let post_expr = self.pre.to_crel();
-    let sassert = Expression::Call {
-      callee: Box::new(Expression::Identifier{name: "sassert".to_string()}),
-      args: vec!(post_expr),
-    };
-    BlockItem::Statement(Statement::Expression(Box::new(sassert)))
+    let assert = self.pre.to_crel(StatementKind::Assert);
+    BlockItem::Statement(assert)
   }
 }
 

@@ -1,28 +1,24 @@
-//#include "seahorn/seahorn.h"
-//extern int havoc(void);
+/* @KESTREL
+ * pre: left.N == right.N;
+ * left: left;
+ * right: right;
+ * post: left.x == right.x;
+ */
 
-int main(void) {
-  int N = havoc();
-
-  rel_left();
-
-  int x_1 = 0;
-  int i_1 = 0;
-  while (i_1 <= N ) {
-    x_1 = x_1 + i_1;
-    i_1 = i_1 + 1;
+void left(int N) {
+  int x = 0;
+  int i = 0;
+  while (i <= N ) {
+    x = x + i;
+    i = i + 1;
   }
+}
 
-  rel_mid();
-
-  int x_2 = 0;
-  int i_2 = 1;
-  while (i_2 <= N ) {
-    x_2 = x_2 + i_2;
-    i_2 = i_2 + 1;
+void right(int N) {
+  int x = 0;
+  int i = 1;
+  while (i <= N ) {
+    x = x + i;
+    i = i + 1;
   }
-
-  rel_right();
-
-//  sassert(x_1 == x_2);
 }

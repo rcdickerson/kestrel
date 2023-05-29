@@ -1,26 +1,20 @@
-/* #include "seahorn/seahorn.h" */
+/* @KESTREL
+ * pre: for i in (0..N) { a_1[i] == a_2[i] && b_1[i] == b_2[i] && c_1[i] == c_2[i]
+                          && left.k == right.k && left.x == right.x };
+ * left: left;
+ * right: right;
+ * post: for i in (0..N) { a_1[i] == a_2[i] && b_1[i] == b_2[i] && c_1[i] == c_2[i] };
+ */
 
-// extern int havoc(void);
+const int N = 10;
+int a_1[N];
+int b_1[N];
+int c_1[N];
+int a_2[N];
+int b_2[N];
+int c_2[N];
 
-/* #define N 10 */
-/* int a_1[N]; */
-/* int b_1[N]; */
-/* int c_1[N]; */
-/* int a_2[N]; */
-/* int b_2[N]; */
-/* int c_2[N]; */
-
-int main(void) {
-
-//  for (int i = 0; i < N; i++) assume(a_1[i] == a_2[i]);
-//  for (int i = 0; i < N; i++) assume(b_1[i] == b_2[i]);
-//  for (int i = 0; i < N; i++) assume(c_1[i] == c_2[i]);
-
-  rel_left();
-
-  int k = havoc();
-  int x = havoc();
-
+void left(int k, int x) {
   int i = 0;
   while (i < N) {
     a_1[i] = a_1[i] + k;
@@ -31,9 +25,9 @@ int main(void) {
     }
     i = i + 1;
   }
+}
 
-  rel_mid();
-
+void right(int k, int x) {
   if (x < 7) {
     int j = 0;
     while (j < N) {
@@ -49,10 +43,4 @@ int main(void) {
       j = j + 1;
     }
   }
-
-  rel_right();
-
-//  for (int i = 0; i < N; i++) sassert(a_1[i] == a_2[i]);
-//  for (int i = 0; i < N; i++) sassert(b_1[i] == b_2[i]);
-//  for (int i = 0; i < N; i++) sassert(c_1[i] == c_2[i]);
 }

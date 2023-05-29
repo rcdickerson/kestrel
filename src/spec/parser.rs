@@ -496,4 +496,48 @@ mod test {
     };
     assert_eq!(bexpr(&input), Ok(("", expected)));
   }
+
+  #[test]
+  fn test_loop() {
+    let input = "for i in (0..5) { a_1[i] >= a_2[i] && b_1[i] < b_2[i] }";
+    let a_1_i = CondAExpr::Binop {
+      lhs: Box::new(CondAExpr::Var("a_1".to_string())),
+      rhs: Box::new(CondAExpr::Var("i".to_string())),
+      op: CondABinop::Index,
+    };
+    let a_2_i = CondAExpr::Binop {
+      lhs: Box::new(CondAExpr::Var("a_2".to_string())),
+      rhs: Box::new(CondAExpr::Var("i".to_string())),
+      op: CondABinop::Index,
+    };
+    let b_1_i = CondAExpr::Binop {
+      lhs: Box::new(CondAExpr::Var("b_1".to_string())),
+      rhs: Box::new(CondAExpr::Var("i".to_string())),
+      op: CondABinop::Index,
+    };
+    let b_2_i = CondAExpr::Binop {
+      lhs: Box::new(CondAExpr::Var("b_2".to_string())),
+      rhs: Box::new(CondAExpr::Var("i".to_string())),
+      op: CondABinop::Index,
+    };
+    let expected = KestrelCond::ForLoop {
+      index_var: "i".to_string(),
+      start: CondAExpr::Int(0),
+      end: CondAExpr::Int(5),
+      body: CondBExpr::BinopB {
+        lhs: Box::new(CondBExpr::BinopA {
+          lhs: a_1_i.clone(),
+          rhs: a_2_i.clone(),
+          op: CondBBinopA::Gte,
+        }),
+        rhs: Box::new(CondBExpr::BinopA {
+          lhs: b_1_i.clone(),
+          rhs: b_2_i.clone(),
+          op: CondBBinopA::Lt,
+        }),
+        op: CondBBinopB::And,
+      }
+    };
+    assert_eq!(kestrel_cond(&input), Ok(("", expected)));
+  }
 }

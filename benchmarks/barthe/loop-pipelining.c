@@ -1,28 +1,29 @@
-//#include "seahorn/seahorn.h"
-//extern int arb_int(void);
+/* @KESTREL
+ * pre: for i in (0..N) { a_1[i] == a_2[i] && b_1[i] == b_2[i] && c_1[i] == c_2[i] };
+ * left: left;
+ * right: right;
+ * post: for i in (0..N) { a_1[i] == a_2[i] && b_1[i] == b_2[i] && c_1[i] == c_2[i] };
+ */
 
-//#define N 10
-//int a[N];
-//int b[N];
-//int c[N];
-//int a_2[N];
-//int b_2[N];
-//int c_2[N];
+const int N = 10;
+int a_1[N];
+int b_1[N];
+int c_1[N];
+int a_2[N];
+int b_2[N];
+int c_2[N];
 
-int main(void) {
-
-  rel_left();
-
+void left(void) {
   int i = 0;
   while (i < N ) {
-    a[i] = a[i] + 1;
-    b[i] = b[i] + a[i];
-    c[i] = c[i] + b[i];
+    a_1[i] = a_1[i] + 1;
+    b_1[i] = b_1[i] + a_1[i];
+    c_1[i] = c_1[i] + b_1[i];
     i = i + 1;
   }
+}
 
-  rel_mid();
-
+void right(void) {
   int j = 0;
   a_2[0] = a_2[0] + 1;
   b_2[0] = b_2[0] + a_2[0];
@@ -37,10 +38,4 @@ int main(void) {
   c_2[j] = c_2[j] + b_2[j];
   b_2[j+1] = b_2[j+1] + a_2[j+1];
   c_2[j+1] = c_2[j+1] + b_2[j+1];
-
-  rel_right();
-
-//  for (int i = 0; i < N; i++) sassert(a[i] == a_2[i]);
-//  for (int i = 0; i < N; i++) sassert(b[i] == b_2[i]);
-//  for (int i = 0; i < N; i++) sassert(c[i] == c_2[i]);
 }

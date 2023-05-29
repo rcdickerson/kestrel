@@ -6,7 +6,7 @@ pub enum KestrelCond {
     index_var: String,
     start: CondAExpr,
     end: CondAExpr,
-    body: CondBExpr
+    body: Box<KestrelCond>,
   },
   BExpr(CondBExpr),
 }

@@ -148,7 +148,7 @@ impl State {
         for i in start..end {
           let mut with_idx = self.clone();
           with_idx.alloc(index_var, 1 as usize, HeapValue::Int(i));
-          if !with_idx.satisfies(&KestrelCond::BExpr(body.clone())) {return false;}
+          if !with_idx.satisfies(&body.clone()) {return false;}
         }
         true
       },

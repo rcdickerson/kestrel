@@ -8,6 +8,7 @@ use nom::{
   character::complete::multispace0,
   combinator::recognize,
   multi::many0_count,
+  multi::many1,
   multi::many1_count,
   number::complete::float,
   sequence::delimited,
@@ -89,15 +90,24 @@ fn aexp_qualified_var(i: &str) -> IResult<&str, CondAExpr> {
 }
 
 fn aexp_index(i: &str) -> IResult<&str, CondAExpr> {
-  let (i, _)     = multispace0(i)?;
-  let (i, id)    = alt((aexp_qualified_var, aexp_var))(i)?;
-  let (i, _)     = multispace0(i)?;
-  let (i, index) = delimited(tag("["), aexpr_no_float, tag("]"))(i)?;
-  Ok((i, CondAExpr::Binop {
+  let (i, _)       = multispace0(i)?;
+  let (i, id)      = alt((aexp_qualified_var,
+                          aexp_var))(i)?;
+  let (i, _)       = multispace0(i)?;
+  let (i, indices) = many1(delimited(tag("["), aexpr_no_float, tag("]")))(i)?;
+  let mut aexpr = CondAExpr::Binop {
     lhs: Box::new(id),
-    rhs: Box::new(index),
+    rhs: Box::new(indices[0].clone()),
     op: CondABinop::Index,
-  }))
+  };
+  for j in 1..indices.len() {
+    aexpr = CondAExpr::Binop {
+      lhs: Box::new(aexpr),
+      rhs: Box::new(indices[j].clone()),
+      op: CondABinop::Index,
+    }
+  }
+  Ok((i, aexpr))
 }
 
 fn aexpr_binop<'a>(op_str: &'a str, op: CondABinop) -> impl Fn(&str) -> IResult<&str, CondAExpr> + 'a {
@@ -257,10 +267,10 @@ fn kcond_loop(i: &str) -> IResult<&str, KestrelCond> {
   let (i, _)     = tag(")")(i)?;
   let (i, _)     = multispace0(i)?;
   let (i, _)     = tag("{")(i)?;
-  let (i, body)  = bexpr(i)?;
+  let (i, body)  = kestrel_cond(i)?;
   let (i, _)     = multispace0(i)?;
   let (i, _)     = tag("}")(i)?;
-  Ok((i, KestrelCond::ForLoop{index_var: var.to_string(), start, end, body}))
+  Ok((i, KestrelCond::ForLoop{index_var: var.to_string(), start, end, body: Box::new(body)}))
 }
 
 fn kcond_bexpr(i: &str) -> IResult<&str, KestrelCond> {
@@ -270,8 +280,8 @@ fn kcond_bexpr(i: &str) -> IResult<&str, KestrelCond> {
 
 fn kestrel_cond(i: &str) -> IResult<&str, KestrelCond> {
   alt((
-    kcond_bexpr,
     kcond_loop,
+    kcond_bexpr,
   ))(i)
 }
 
@@ -524,7 +534,7 @@ mod test {
       index_var: "i".to_string(),
       start: CondAExpr::Int(0),
       end: CondAExpr::Int(5),
-      body: CondBExpr::BinopB {
+      body: Box::new(KestrelCond::BExpr(CondBExpr::BinopB {
         lhs: Box::new(CondBExpr::BinopA {
           lhs: a_1_i.clone(),
           rhs: a_2_i.clone(),
@@ -536,8 +546,54 @@ mod test {
           op: CondBBinopA::Lt,
         }),
         op: CondBBinopB::And,
-      }
+      }))
     };
     assert_eq!(kestrel_cond(&input), Ok(("", expected)));
+  }
+
+  #[test]
+  fn test_nested_loop() {
+    let input = "for i in (0..5) { for j in (1..10) { a[i] == a[j] } }";
+    let a_i = CondAExpr::Binop {
+      lhs: Box::new(CondAExpr::Var("a".to_string())),
+      rhs: Box::new(CondAExpr::Var("i".to_string())),
+      op: CondABinop::Index,
+    };
+    let a_j = CondAExpr::Binop {
+      lhs: Box::new(CondAExpr::Var("a".to_string())),
+      rhs: Box::new(CondAExpr::Var("j".to_string())),
+      op: CondABinop::Index,
+    };
+    let expected = KestrelCond::ForLoop {
+      index_var: "i".to_string(),
+      start: CondAExpr::Int(0),
+      end: CondAExpr::Int(5),
+      body: Box::new(KestrelCond::ForLoop {
+        index_var: "j".to_string(),
+        start: CondAExpr::Int(1),
+        end: CondAExpr::Int(10),
+        body: Box::new(KestrelCond::BExpr(CondBExpr::BinopA {
+          lhs: a_i,
+          rhs: a_j,
+          op: CondBBinopA::Eq,
+        })),
+      }),
+    };
+    assert_eq!(kestrel_cond(&input), Ok(("", expected)));
+  }
+
+  #[test]
+  fn test_2d_index() {
+    let input = "a[i][j]";
+    let expected = CondAExpr::Binop {
+      lhs: Box::new(CondAExpr::Binop {
+        lhs: Box::new(CondAExpr::Var("a".to_string())),
+        rhs: Box::new(CondAExpr::Var("i".to_string())),
+        op: CondABinop::Index,
+      }),
+      rhs: Box::new(CondAExpr::Var("j".to_string())),
+      op: CondABinop::Index,
+    };
+    assert_eq!(aexpr(&input), Ok(("", expected)));
   }
 }

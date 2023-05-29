@@ -44,12 +44,19 @@ impl KCondToCRel for KestrelCond {
             rhs: Box::new(end.to_crel()),
             op: crel::BinaryOp::Lt,
           }),
-          body: Some(Box::new(crel::Statement::Expression(Box::new(
-            crel::Expression::Call {
-              callee: Box::new(kind.to_crel()),
-              args: vec!(body.to_crel()),
+          body: match &**body {
+            KestrelCond::ForLoop{index_var:_, start:_, end:_, body:_} => {
+              Some(Box::new(body.to_crel(kind)))
+            },
+            KestrelCond::BExpr(bexpr) => {
+              Some(Box::new(crel::Statement::Expression(Box::new(
+                crel::Expression::Call {
+                  callee: Box::new(kind.to_crel()),
+                  args: vec!(bexpr.to_crel()),
+                }
+              ))))
             }
-          )))),
+          },
         };
         crel::Statement::Compound(vec!(
           crel::BlockItem::Declaration(init_index),

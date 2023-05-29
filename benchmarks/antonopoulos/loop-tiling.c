@@ -2,13 +2,17 @@
  * pre:   true;
  * left:  left;
  * right: right;
- * post:  true;
+ * post:  for i in (0..N) {
+            for j in (0..M) {
+              a_1[i * M + j] == a_2[i][j]
+            }
+          };
  */
 
 extern int f(int);
 
-#define M 10
-#define N 10
+const int M = 10;
+const int N = 10;
 
 int a_1[N*M];
 int a_2[N][M];
@@ -32,9 +36,3 @@ void right(void) {
     i = i + 1;
   }
 }
-
-//void post() {
-  /* for(int i = 0; i < N; i++) */
-  /*   for(int j = 0; j < M; j++) */
-  /*     sassert(a_1[i * M + j] == a_2[i][j]); */
-//}

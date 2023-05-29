@@ -222,18 +222,19 @@ fn eval_declaration(decl: &Declaration, exec: &mut Execution) {
       Declarator::Identifier{name} => {
         exec.push_alloc(name.clone(), 1, HeapValue::Int(0));
       },
-      Declarator::Array{name, size} => {
-        size.as_ref().map(|size| {
+      Declarator::Array{name, sizes} => {
+        let mut alloc_size = 1;
+        for size in sizes {
           eval_expression(&size, exec);
-          let size = exec.value_int() as usize;
-          exec.push_alloc(name.clone(), size, HeapValue::Int(0));
-        });
+          alloc_size *= exec.value_int() as usize;
+        }
+        exec.push_alloc(name.clone(), alloc_size, HeapValue::Int(0));
       },
       Declarator::Function{name:_, params:_} => (),
       Declarator::Pointer(_) => (),
     },
     Some(expr) => match &decl.declarator {
-      Declarator::Array{name:_, size:_} => {
+      Declarator::Array{name:_, sizes:_} => {
         panic!("Unsupported: initializer for array.");
       }
       Declarator::Identifier{name} => {

@@ -416,11 +416,11 @@ fn expect_declarator(sexp: &Sexp) -> Declarator {
     Sexp::Atom(Atom::S(name)) => Declarator::Identifier{name: name.clone()},
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "unsized-array" => {
-        Declarator::Array{name: expect_string(&sexps[1]), size: None}
+        Declarator::Array{name: expect_string(&sexps[1]), sizes: Vec::new()}
       },
       Sexp::Atom(Atom::S(s)) if s == "sized-array" => {
-        let size = expect_expression(&sexps[2]);
-        Declarator::Array{name: expect_string(&sexps[1]), size: Some(size)}
+        let sizes = expect_array_sizes(&sexps[2]);
+        Declarator::Array{name: expect_string(&sexps[1]), sizes: sizes}
       },
       Sexp::Atom(Atom::S(s)) if s == "fun-declarator" => {
         let params = expect_param_decls(&sexps[2]);
@@ -433,6 +433,21 @@ fn expect_declarator(sexp: &Sexp) -> Declarator {
       _ => panic!("Expected declarator, got: {}", sexp),
     }
     _ => panic!("Expected declarator, got: {}", sexp),
+  }
+}
+
+fn expect_array_sizes(sexp: &Sexp) -> Vec<Expression> {
+ match &sexp {
+    Sexp::Atom(Atom::S(s)) if s == "array-sizes" => Vec::new(),
+    Sexp::List(sexps) => match &sexps[0] {
+      Sexp::Atom(Atom::S(s)) if s == "array-sizes" => {
+        sexps[1..].iter()
+          .map(expect_expression)
+          .collect()
+      },
+      _ => panic!("Expected array sizes, got: {}", sexp),
+    },
+    _ => panic!("Expected array sizes, got: {}", sexp),
   }
 }
 

@@ -101,7 +101,7 @@ fn trans_declarator(decl: &Node<c::Declarator>) -> Declarator {
     _ => panic!("Unsupported declarator: {:?}", decl),
   };
   let mut is_array = false;
-  let mut array_size = None;
+  let mut array_sizes = Vec::new();
   let mut is_function = false;
   let mut function_params = None;
   let mut is_pointer = false;
@@ -112,11 +112,11 @@ fn trans_declarator(decl: &Node<c::Declarator>) -> Declarator {
         c::ArraySize::VariableUnknown => is_array = true,
         c::ArraySize::VariableExpression(expr) => {
           is_array = true;
-          array_size = Some(trans_expression(&*expr));
+          array_sizes.push(trans_expression(&*expr));
         },
         c::ArraySize::StaticExpression(expr) => {
           is_array = true;
-          array_size = Some(trans_expression(&*expr));
+          array_sizes.push(trans_expression(&*expr));
         },
       },
       c::DerivedDeclarator::Function(fundecl) => {
@@ -136,7 +136,8 @@ fn trans_declarator(decl: &Node<c::Declarator>) -> Declarator {
   let declarator = if is_array && is_function {
     panic!("Multiple derived declarators (array and function) not supported")
   } else if is_array {
-    Declarator::Array{name, size: array_size}
+    println!("Array sizes: {:?}", array_sizes);
+    Declarator::Array{name, sizes: array_sizes}
   } else if is_function {
     Declarator::Function{name, params: function_params.unwrap_or(Vec::new())}
   } else {

@@ -145,12 +145,15 @@ fn declaration_specifier_to_eggroll(spec: &DeclarationSpecifier) -> String {
 fn declarator_to_eggroll(dec: &Declarator) -> String {
   match dec {
     Declarator::Identifier{name} => name.clone(),
-    Declarator::Array{name, size} => {
-      match &size {
-        None => format!("(unized-array {})", name.clone()),
-        Some(expr) => {
-          let size_egg = expression_to_eggroll(expr);
-          format!("(sized-array {} {})", name.clone(), size_egg)
+    Declarator::Array{name, sizes} => {
+      match sizes.len() {
+        0 => format!("(unsized-array {})", name.clone()),
+        _ => {
+          let size_egg = sizes.iter()
+            .map(expression_to_eggroll)
+            .collect::<Vec<String>>()
+            .join(" ");
+          format!("(sized-array {} (array-sizes {}))", name.clone(), size_egg)
         }
       }
     },

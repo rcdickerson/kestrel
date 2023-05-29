@@ -92,11 +92,12 @@ impl CollectVars for Declarator {
   fn vars(&self) -> HashSet<String> {
     match self {
       Declarator::Identifier{name} => singleton(name.clone()),
-      Declarator::Array{name, size} => {
-        union_all(vec!(
-          singleton(name.clone()),
-          size.as_ref().map_or(HashSet::new(), |expr| expr.vars()),
-        ))
+      Declarator::Array{name, sizes} => {
+        let mut vars = sizes.iter()
+          .map(|expr| expr.vars())
+          .collect::<Vec<HashSet<String>>>();
+        vars.push(singleton(name.clone()));
+        union_all(vars)
       },
       Declarator::Function{name, params} => {
         let mut vars : Vec<HashSet<String>> = params.iter()

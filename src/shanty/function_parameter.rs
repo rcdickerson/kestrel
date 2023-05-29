@@ -6,7 +6,7 @@ use crate::shanty::Writer;
 pub struct FunctionParameter {
   name: String,
   ty: Type,
-  array_size: Option<Expression>,
+  array_sizes: Vec<Expression>,
   is_array: bool,
   is_const: bool,
   is_pointer: bool,
@@ -18,7 +18,7 @@ impl FunctionParameter {
     FunctionParameter{
       name: name.to_string(),
       ty,
-      array_size: None,
+      array_sizes: Vec::new(),
       is_array: false,
       is_const: false,
       is_pointer: false,
@@ -35,8 +35,8 @@ impl FunctionParameter {
     self
   }
 
-  pub fn set_array_size(&mut self, size: &Expression) -> &Self {
-    self.array_size = Some(size.clone());
+  pub fn set_array_sizes(&mut self, sizes: &Vec<Expression>) -> &Self {
+    self.array_sizes = sizes.clone();
     self
   }
 
@@ -56,13 +56,15 @@ impl FunctionParameter {
       writer.write(" ");
     }
     writer.write(&self.name);
-    match &self.array_size {
-      None => (),
-      Some(expr) => {
-        writer.write("[");
-        expr.emit(writer, false);
-        writer.write("]");
+    if self.is_array {
+      writer.write("[");
+      let mut delimit = "";
+      for size in &self.array_sizes {
+        writer.write(delimit);
+        size.emit(writer, false);
+        delimit = "]["
       }
+      writer.write("]");
     }
   }
 }

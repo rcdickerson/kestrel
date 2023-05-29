@@ -207,7 +207,7 @@ struct DeclarationBuilder {
   ty: Option<C::Type>,
   val: Option<C::Expression>,
   is_array: bool,
-  array_size: Option<C::Expression>,
+  array_sizes: Vec<C::Expression>,
   is_extern: bool,
   is_function: bool,
   function_params: Option<Vec<C::FunctionParameter>>,
@@ -223,7 +223,7 @@ impl DeclarationBuilder {
       ty: None,
       val: None,
       is_array: false,
-      array_size: None,
+      array_sizes: Vec::new(),
       is_extern: false,
       is_function: false,
       function_params: None,
@@ -266,10 +266,10 @@ impl DeclarationBuilder {
       Declarator::Identifier{name} => {
         self.name = Some(name.clone());
       },
-      Declarator::Array{name, size} => {
+      Declarator::Array{name, sizes} => {
         self.name = Some(name.clone());
         self.is_array = true;
-        self.array_size = size.as_ref().map(|expr| expression_to_c(&expr));
+        self.array_sizes = sizes.iter().map(|expr| expression_to_c(&expr)).collect();
       },
       Declarator::Function{name, params} => {
         self.name = Some(name.clone());
@@ -290,7 +290,7 @@ impl DeclarationBuilder {
     var.set_extern(self.is_extern);
     var.set_const(self.is_const);
     var.set_array(self.is_array);
-    self.array_size.as_ref().map(|expr| var.set_array_size(&expr));
+    var.set_array_sizes(&self.array_sizes);
     var.set_function(self.is_function);
     self.function_params.as_ref().map(|params| var.set_function_params(params.clone()));
     self.val.as_ref().map(|expr| var.set_value(&expr));
@@ -309,7 +309,7 @@ impl DeclarationBuilder {
     param.set_array(self.is_array);
     param.set_const(self.is_const);
     param.set_pointer(self.is_pointer);
-    self.array_size.as_ref().map(|size| param.set_array_size(&size));
+    param.set_array_sizes(&self.array_sizes);
     param
   }
 }

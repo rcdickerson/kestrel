@@ -220,17 +220,20 @@ impl State {
     let mut state = self.clone();
     match &decl.declarator {
       Declarator::Identifier{name} => { state.alloc(&name, 1, HeapValue::Int(0)); },
-      Declarator::Array{name, size: Some(size_expr)} => {
-        let stmt = Statement::Expression(Box::new(size_expr.clone()));
-        let size = run(&stmt, state.clone(), fuel).value_int();
-        state.alloc(&name, size as usize, HeapValue::Int(0));
+      Declarator::Array{name, sizes} if sizes.len() > 0 => {
+        let mut alloc_size = 1;
+        for size_expr in sizes {
+          let stmt = Statement::Expression(Box::new(size_expr.clone()));
+          alloc_size *= run(&stmt, state.clone(), fuel).value_int();
+        }
+        state.alloc(&name, alloc_size as usize, HeapValue::Int(0));
       },
       _ => ()
     }
     if decl.initializer.is_none() {return state;}
     let lhs = match &decl.declarator {
       Declarator::Identifier{name} => Some(Expression::Identifier{name: name.clone()}),
-      Declarator::Array{name, size:_} => Some(Expression::Identifier{name: name.clone()}),
+      Declarator::Array{name, sizes:_} => Some(Expression::Identifier{name: name.clone()}),
       Declarator::Function{name:_, params:_} => None,
       Declarator::Pointer(_) => panic!("Unsupported: pointer initialization"),
     };
@@ -275,13 +278,17 @@ fn rand_state<'a, I>(vars: I, decls: Option<&Vec<Declaration>>, fuel: usize) -> 
           None => {
             let alloc = match &decl.declarator {
               Declarator::Identifier{name} => Some((name.clone(), 1, state.clone())),
-              Declarator::Array{name, size} => size.as_ref().map(|size| {
-                let size_stmt = Statement::Expression(Box::new(size.clone()));
-                let size_eval = run(&size_stmt, state.clone(), 1000);
-                let state = size_eval.current_state.clone();
-                let alloc_size = size_eval.value_int();
-                (name.clone(), alloc_size, state)
-              }),
+              Declarator::Array{name, sizes} => {
+                let mut alloc_size = 1;
+                let mut state = state.clone();
+                for size in sizes {
+                  let size_stmt = Statement::Expression(Box::new(size.clone()));
+                  let size_eval = run(&size_stmt, state.clone(), 1000);
+                  state = size_eval.current_state.clone();
+                  alloc_size *= size_eval.value_int();
+                }
+                Some((name.clone(), alloc_size, state))
+              },
               Declarator::Function{name:_, params:_} => None,
               Declarator::Pointer(_) => panic!("Unsupported: pointer initialization"),
             };

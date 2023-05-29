@@ -15,7 +15,7 @@ pub enum CRel {
 #[derive(Clone, Debug, PartialEq)]
 pub enum Declarator {
   Identifier{name: String},
-  Array{name: String, size: Option<Expression>},
+  Array{name: String, sizes: Vec<Expression>},
   Function{name: String, params: Vec<ParameterDeclaration>},
   Pointer(Box<Declarator>),
 }

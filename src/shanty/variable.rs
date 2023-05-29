@@ -9,7 +9,7 @@ pub struct Variable {
   ty: Type,
   value: Option<Expression>,
   is_array: bool,
-  array_size: Option<Expression>,
+  array_sizes: Vec<Expression>,
   is_extern: bool,
   is_function: bool,
   function_params: Option<Vec<FunctionParameter>>,
@@ -24,7 +24,7 @@ impl Variable {
       ty: typ,
       value: None,
       is_array: false,
-      array_size: None,
+      array_sizes: Vec::new(),
       is_extern: false,
       is_function: false,
       function_params: None,
@@ -48,8 +48,8 @@ impl Variable {
     self
   }
 
-  pub fn set_array_size(&mut self, size: &Expression) -> &Self {
-    self.array_size = Some(size.clone());
+  pub fn set_array_sizes(&mut self, sizes: &Vec<Expression>) -> &Self {
+    self.array_sizes = sizes.clone();
     self
   }
 
@@ -94,9 +94,12 @@ impl Variable {
     writer.write(self.name.as_ref().unwrap_or(&"".to_string()));
     if self.is_array {
       writer.write("[");
-      self.array_size.as_ref().map(|size| {
-        size.emit(writer, false)
-      });
+      let mut delimit = "";
+      for size in &self.array_sizes {
+        writer.write(delimit);
+        size.emit(writer, false);
+        delimit = "]["
+      }
       writer.write("]");
     }
     if self.is_function {

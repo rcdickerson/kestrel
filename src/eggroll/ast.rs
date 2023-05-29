@@ -55,6 +55,7 @@ define_language! {
     "initializer" = Initializer(Id),
     "fun-declarator" = FunDeclarator([Id; 2]),
     "sized-array" = SizedArray([Id; 2]),
+    "array-sizes" = ArraySizes(Box<[Id]>),
     "unsized-array" = UnsizedArray(Id),
     "pointer" = Pointer(Id),
     "specifiers" = Specifiers(Box<[Id]>),

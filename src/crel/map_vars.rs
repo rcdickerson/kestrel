@@ -103,10 +103,10 @@ impl MapVars for Declarator {
       Declarator::Identifier{name} => {
         Declarator::Identifier{name: f(name.clone())}
       },
-      Declarator::Array{name, size} => {
+      Declarator::Array{name, sizes} => {
         Declarator::Array {
           name: f(name.clone()),
-          size: size.as_ref().map(|expr| expr.map_vars(f)),
+          sizes: sizes.iter().map(|expr| expr.map_vars(f)).collect(),
         }
       },
       Declarator::Function{name, params} => {

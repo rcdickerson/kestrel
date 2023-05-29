@@ -36,16 +36,22 @@ impl Execution {
   }
 
   pub fn push_alloc(&mut self, name: String, size: usize, value: HeapValue) -> HeapLocation {
-    let mut new_state = self.current_state.clone();
-    let loc = new_state.alloc(&name, size, value);
-    self.push_state(new_state);
+    let loc = self.current_state.alloc(&name, size, value);
+    if self.trace.len() >= self.max_trace_size {
+      self.flag_out_of_fuel = true;
+      return loc;
+    }
+    self.trace.push_state(self.current_state.clone());
     loc
   }
 
   pub fn push_update(&mut self, location: &HeapLocation, value: HeapValue) {
-    let mut new_state = self.current_state.clone();
-    new_state.store_loc(location, value);
-    self.push_state(new_state);
+    self.current_state.store_loc(location, value);
+    if self.trace.len() >= self.max_trace_size {
+      self.flag_out_of_fuel = true;
+      return;
+    }
+    self.trace.push_state(self.current_state.clone());
   }
 
   pub fn push_update_by_name(&mut self, name: &String, value: HeapValue) {

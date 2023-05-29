@@ -136,7 +136,6 @@ fn trans_declarator(decl: &Node<c::Declarator>) -> Declarator {
   let declarator = if is_array && is_function {
     panic!("Multiple derived declarators (array and function) not supported")
   } else if is_array {
-    println!("Array sizes: {:?}", array_sizes);
     Declarator::Array{name, sizes: array_sizes}
   } else if is_function {
     Declarator::Function{name, params: function_params.unwrap_or(Vec::new())}

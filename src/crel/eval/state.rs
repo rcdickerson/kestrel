@@ -1,5 +1,6 @@
 use crate::crel::ast::*;
 use crate::spec::condition::*;
+use crate::spec::to_crel::*;
 use crate::crel::eval::run;
 use rand::Rng;
 use std::collections::HashMap;
@@ -141,20 +142,27 @@ impl State {
 
   pub fn satisfies(&self, cond: &KestrelCond) -> bool {
     match cond {
-      KestrelCond::ForLoop{index_var:_, start:_, end:_, body:_} => panic!("Unsupported"),
+      KestrelCond::ForLoop{index_var, start, end, body} => {
+        let start = self.clookup(start).int();
+        let end = self.clookup(end).int();
+        for i in start..end {
+          let mut with_idx = self.clone();
+          with_idx.alloc(index_var, 1 as usize, HeapValue::Int(i));
+          if !with_idx.satisfies(&KestrelCond::BExpr(body.clone())) {return false;}
+        }
+        true
+      },
       KestrelCond::BExpr(cond) => match cond {
         CondBExpr::True => true,
         CondBExpr::False => false,
         CondBExpr::Unop{bexp, op} => match op {
           CondBUnop::Not => !self.satisfies(&KestrelCond::BExpr(bexp.as_ref().clone()))
         },
-        CondBExpr::BinopA{lhs, rhs, op} => match op {
-          CondBBinopA::Eq  => self.clookup(lhs) == self.clookup(rhs),
-          CondBBinopA::Neq => self.clookup(lhs) != self.clookup(rhs),
-          CondBBinopA::Lt  => self.clookup(lhs) <  self.clookup(rhs),
-          CondBBinopA::Lte => self.clookup(lhs) <= self.clookup(rhs),
-          CondBBinopA::Gt  => self.clookup(lhs) >  self.clookup(rhs),
-          CondBBinopA::Gte => self.clookup(lhs) >= self.clookup(rhs),
+        CondBExpr::BinopA{lhs:_, rhs:_, op:_} => {
+          let crel = cond.to_crel();
+          let stmt = Statement::Expression(Box::new(crel));
+          let result = run(&stmt, self.clone(), 1000).value_int();
+          if result == 0 { false } else { true }
         },
         CondBExpr::BinopB{lhs, rhs, op} => {
           let lhs = &KestrelCond::BExpr(lhs.as_ref().clone());
@@ -184,45 +192,66 @@ impl State {
           HeapValue::Float(f) => HeapValue::Float(-f),
         },
       },
+      CondAExpr::Binop{lhs, rhs, op: CondABinop::Index} => {
+        let var = match lhs.as_ref() {
+          CondAExpr::Var(v) => v.clone(),
+          CondAExpr::QualifiedVar{exec, name} => qualified_state_var(exec, name),
+          _ => panic!("Unsupported indexee: {:?}", lhs)
+        };
+        let loc = self.lookup_loc(&var.clone()).unwrap();
+        let index = self.clookup(rhs);
+        let indexed_loc = HeapLocation::Offset {
+          location: Box::new(loc.clone()),
+          offset: index.int() as usize,
+        };
+        self.read_loc(&indexed_loc)
+      },
       _ => panic!("AExp does not correspond to a state value: {:?}", aexp),
     }
   }
 
-  pub fn with_declarations(&self, decls: &Vec<Declaration>, trace_fuel: usize) -> Self {
+  pub fn with_declarations(&self, decls: &Vec<Declaration>, fuel: usize) -> Self {
     let mut state = self.clone();
-    for decl in decls {
-      match &decl.declarator {
-        Declarator::Array{name, size: Some(size_expr)} => {
-          let stmt = Statement::Expression(Box::new(size_expr.clone()));
-          let size = run(&stmt, state.clone(), trace_fuel).value_int();
-          state.alloc(&name, size as usize, HeapValue::Int(0));
-        },
-        _ => ()
-      }
-      if decl.initializer.is_none() { continue; }
-      let lhs = match &decl.declarator {
-        Declarator::Identifier{name} => Some(Expression::Identifier{name: name.clone()}),
-        Declarator::Array{name, size:_} => Some(Expression::Identifier{name: name.clone()}),
-        Declarator::Function{name:_, params:_} => None,
-        Declarator::Pointer(_) => panic!("Unsupported: pointer initialization"),
-      };
-      if lhs.is_none() { continue; }
-      let initialization = Statement::Expression(Box::new(Expression::Binop {
-        lhs: Box::new(lhs.unwrap()),
-        rhs: Box::new(decl.initializer.clone().unwrap()),
-        op: BinaryOp::Assign,
-      }));
-      state = run(&initialization, self.clone(), trace_fuel).current_state;
-    }
+    for decl in decls { state = state.alloc_from_decl(&decl, fuel); }
     state
+  }
+
+  fn alloc_from_decl(&self, decl: &Declaration, fuel: usize) -> Self {
+    let mut state = self.clone();
+    match &decl.declarator {
+      Declarator::Identifier{name} => { state.alloc(&name, 1, HeapValue::Int(0)); },
+      Declarator::Array{name, size: Some(size_expr)} => {
+        let stmt = Statement::Expression(Box::new(size_expr.clone()));
+        let size = run(&stmt, state.clone(), fuel).value_int();
+        state.alloc(&name, size as usize, HeapValue::Int(0));
+      },
+      _ => ()
+    }
+    if decl.initializer.is_none() {return state;}
+    let lhs = match &decl.declarator {
+      Declarator::Identifier{name} => Some(Expression::Identifier{name: name.clone()}),
+      Declarator::Array{name, size:_} => Some(Expression::Identifier{name: name.clone()}),
+      Declarator::Function{name:_, params:_} => None,
+      Declarator::Pointer(_) => panic!("Unsupported: pointer initialization"),
+    };
+    if lhs.is_none() { return self.clone(); }
+    let initialization = Statement::Expression(Box::new(Expression::Binop {
+      lhs: Box::new(lhs.unwrap()),
+      rhs: Box::new(decl.initializer.clone().unwrap()),
+      op: BinaryOp::Assign,
+    }));
+    run(&initialization, state.clone(), fuel).current_state
   }
 }
 
-pub fn rand_states_satisfying(num: usize, cond: &KestrelCond) -> Vec<State> {
+pub fn rand_states_satisfying(num: usize,
+                              cond: &KestrelCond,
+                              decls: Option<&Vec<Declaration>>,
+                              fuel: usize) -> Vec<State> {
   let mut states = Vec::new();
   let vars = cond.state_vars();
   while states.len() < num {
-    let state = rand_state(vars.iter());
+    let state = rand_state(vars.iter(), decls, fuel);
     if state.satisfies(&cond) {
       states.push(state);
     }
@@ -230,13 +259,57 @@ pub fn rand_states_satisfying(num: usize, cond: &KestrelCond) -> Vec<State> {
   states
 }
 
-fn rand_state<'a, I>(vars: I) -> State
+fn rand_state<'a, I>(vars: I, decls: Option<&Vec<Declaration>>, fuel: usize) -> State
   where I: Iterator<Item = &'a String>
 {
   let mut state = State::new();
-  let mut rng = rand::thread_rng();
   for var in vars {
-    state.alloc(&var, 1, HeapValue::Int(rng.gen_range(0..10)));
+    state.alloc(&var, 1, rand_val(Type::Int));
   }
-  state
+  match decls {
+    None => state,
+    Some(decls) => {
+      for decl in decls {
+        state = match decl.initializer {
+          Some(_) => { state.alloc_from_decl(&decl, fuel) }
+          None => {
+            let alloc = match &decl.declarator {
+              Declarator::Identifier{name} => Some((name.clone(), 1, state.clone())),
+              Declarator::Array{name, size} => size.as_ref().map(|size| {
+                let size_stmt = Statement::Expression(Box::new(size.clone()));
+                let size_eval = run(&size_stmt, state.clone(), 1000);
+                let state = size_eval.current_state.clone();
+                let alloc_size = size_eval.value_int();
+                (name.clone(), alloc_size, state)
+              }),
+              Declarator::Function{name:_, params:_} => None,
+              Declarator::Pointer(_) => panic!("Unsupported: pointer initialization"),
+            };
+            if alloc.is_none() { continue; }
+            let (name, alloc_size, mut state) = alloc.unwrap();
+            let ty = decl.get_type().unwrap();
+            let base_loc = state.alloc(&name, alloc_size as usize, HeapValue::Int(0));
+            for i in 0..alloc_size {
+              let loc = HeapLocation::Offset {
+                location: Box::new(base_loc.clone()),
+                offset: i as usize,
+              };
+              state.store_loc(&loc, rand_val(ty.clone()));
+            }
+            state
+          },
+        }
+      }
+      state
+    }
+  }
+}
+
+fn rand_val(ty: Type) -> HeapValue {
+  let mut rng = rand::thread_rng();
+  match ty {
+    Type::Int => HeapValue::Int(rng.gen_range(0..10)),
+    Type::Float => HeapValue::Float(rng.gen::<f32>() * 10.0),
+    _ => panic!("Unsupported: randomly generated {:?}", ty),
+  }
 }

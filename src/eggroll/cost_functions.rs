@@ -67,6 +67,8 @@ fn summarize_states(states: &Vec<TraceState>) -> StatesSummary {
   let mut r_vals : HashMap<String, Vec<i32>> = HashMap::new();
   for state in states {
     for (exec_var, val) in state.iter() {
+      if exec_var.len() < 3 { continue; }
+
       let(exec, var) = (&exec_var[..1], &exec_var[2..]);
       match exec {
         "l" => {

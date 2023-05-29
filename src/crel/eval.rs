@@ -186,7 +186,8 @@ fn eval_binop(lhs: &Expression, rhs: &Expression, op: &BinaryOp, exec: &mut Exec
         location: Box::new(loc),
         offset: exec.value_int() as usize,
       };
-      exec.set_location(indexed_loc);
+      exec.set_location(indexed_loc.clone());
+      exec.set_value(exec.current_state.read_loc(&indexed_loc));
     }
     BinaryOp::Lt => bool_binop(exec, |i1, i2| i1 < i2, |f1, f2| f1 < f2),
     BinaryOp::Lte => bool_binop(exec, |i1, i2| i1 <= i2, |f1, f2| f1 <= f2),

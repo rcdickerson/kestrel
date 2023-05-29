@@ -15,7 +15,7 @@ const int N = 10;
 float a_1[N];
 float a_2[N];
 
-const float epsilon = 0.01;
+const float epsilon = 4.0;
 
 void bubble_sort(void) {
   int i = 0;

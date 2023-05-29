@@ -35,6 +35,20 @@ pub struct Declaration {
   pub initializer: Option<Expression>
 }
 
+impl Declaration {
+  pub fn get_type(&self) -> Option<Type> {
+    for spec in &self.specifiers {
+      match spec {
+        DeclarationSpecifier::TypeSpecifier(ty) => {
+          return Some(ty.clone());
+        },
+        _ => { continue; },
+      }
+    }
+    None
+  }
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct ParameterDeclaration {
   pub specifiers: Vec<DeclarationSpecifier>,

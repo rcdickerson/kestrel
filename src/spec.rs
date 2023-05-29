@@ -108,7 +108,7 @@ impl KestrelSpec {
   }
 
   fn build_postconds(&self) -> BlockItem {
-    let assert = self.pre.to_crel(StatementKind::Assert);
+    let assert = self.post.to_crel(StatementKind::Assert);
     BlockItem::Statement(assert)
   }
 }

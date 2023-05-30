@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# First argument: benchmark location
-benchmark_dir=$1
+# First argument: benchmark group
+benchmark_group=$1
+benchmark_dir="./benchmarks/$benchmark_group"
 
 # Second argument: extraction technique.
 technique=$2
@@ -12,8 +13,8 @@ kestrel_exec=./target/release/kestrel
 
 # Make the output and log directories
 output_base_dir="./results"
-output_dir="$output_base_dir/$technique"
-log_dir="$output_base_dir/log/$technique"
+output_dir="$output_base_dir/$benchmark_group/$technique"
+log_dir="$output_base_dir/alignment_log/$benchmark_group/$technique"
 echo "Storing results in $output_dir"
 mkdir -p "$output_dir"
 echo "Storing logs in in $log_dir"

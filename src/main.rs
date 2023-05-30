@@ -140,7 +140,7 @@ fn main() {
 
   let aligned_crel_no_specs =
     kestrel::eggroll::to_crel::eggroll_to_crel(&aligned_eggroll.to_string());
-  let aligned_crel = spec.add_specs_to_main(&aligned_crel_no_specs);
+  let aligned_crel = spec.add_specs_to_main(&aligned_crel_no_specs, global_decls);
   let aligned_c = aligned_crel.to_c();
 
   println!("\nAligned Product Program");

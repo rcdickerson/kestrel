@@ -283,6 +283,16 @@ fn kcond_loop(i: &str) -> IResult<&str, KestrelCond> {
   Ok((i, KestrelCond::ForLoop{index_var: var.to_string(), start, end, body: Box::new(body)}))
 }
 
+fn kcond_and(i: &str) -> IResult<&str, KestrelCond> {
+  let (i, _)   = multispace0(i)?;
+  let (i, lhs) = alt((kcond_loop, kcond_bexpr))(i)?;
+  let (i, _)   = multispace0(i)?;
+  let (i, _)   = tag("&&")(i)?;
+  let (i, _)   = multispace0(i)?;
+  let (i, rhs) = kestrel_cond(i)?;
+  Ok((i, KestrelCond::And{lhs: Box::new(lhs), rhs: Box::new(rhs)}))
+}
+
 fn kcond_bexpr(i: &str) -> IResult<&str, KestrelCond> {
   let (i, bexpr) = bexpr(i)?;
   Ok((i, KestrelCond::BExpr(bexpr)))
@@ -290,6 +300,7 @@ fn kcond_bexpr(i: &str) -> IResult<&str, KestrelCond> {
 
 fn kestrel_cond(i: &str) -> IResult<&str, KestrelCond> {
   alt((
+    kcond_and,
     kcond_loop,
     kcond_bexpr,
   ))(i)

@@ -54,8 +54,8 @@ impl KestrelSpec {
     (decls, new_main)
   }
 
-  pub fn add_specs_to_main(&self, crel: &CRel) -> CRel {
-    let (decls, fundefs) = crate::crel::fundef::extract_fundefs(crel);
+  pub fn add_specs_to_main(&self, crel: &CRel, global_decls: Vec<Declaration>) -> CRel {
+    let (_, fundefs) = crate::crel::fundef::extract_fundefs(crel);
     let main_fun = fundefs.get("main").expect("No main function found");
 
     let mut arb_inits = self.build_arb_inits(&main_fun.params);
@@ -76,7 +76,7 @@ impl KestrelSpec {
       body: Box::new(new_body),
     };
 
-    let mut new_seq: Vec<CRel> = decls.iter()
+    let mut new_seq: Vec<CRel> = global_decls.iter()
       .map(|decl| CRel::Declaration(decl.clone()))
       .collect();
     new_seq.push(new_main);

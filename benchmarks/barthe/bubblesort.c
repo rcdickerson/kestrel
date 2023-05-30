@@ -1,13 +1,13 @@
 /* @KESTREL
- * pre: for i in (1..N) {
-     (a_1[i] >= a_2[i] && a_1[i] - a_2[i] < epsilon) ||
-     (a_2[i] >= a_1[i] && a_2[i] - a_1[i] < epsilon)
+ * pre: for _i in (1..N) {
+     (a_1[_i] >= a_2[_i] && a_1[_i] - a_2[_i] < epsilon) ||
+     (a_2[_i] >= a_1[_i] && a_2[_i] - a_1[_i] < epsilon)
    };
  * left: bubble_sort;
  * right: bubble_sort;
- * post: for i in (1..N) {
-     (a_1[i] >= a_2[i] && a_1[i] - a_2[i] < epsilon) ||
-     (a_2[i] >= a_1[i] && a_2[i] - a_1[i] < epsilon)
+ * post: for _j in (1..N) {
+     (a_1[i] >= a_2[_j] && a_1[_j] - a_2[_j] < epsilon) ||
+     (a_2[i] >= a_1[_j] && a_2[_j] - a_1[_j] < epsilon)
    };
  */
 

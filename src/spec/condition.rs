@@ -9,12 +9,18 @@ pub enum KestrelCond {
     body: Box<KestrelCond>,
   },
   BExpr(CondBExpr),
+  And {
+    lhs: Box<KestrelCond>,
+    rhs: Box<KestrelCond>,
+  },
 }
 impl KestrelCond {
   pub fn state_vars(&self) -> HashSet<String> {
     match self {
       KestrelCond::ForLoop{index_var:_, start:_, end:_, body} => body.state_vars(),
       KestrelCond::BExpr(bexpr) => bexpr.state_vars(),
+      KestrelCond::And{lhs, rhs} => crate::names::union_all(
+        vec!(lhs.state_vars(), rhs.state_vars())),
     }
   }
 }

@@ -184,7 +184,9 @@ impl State {
             CondBBinopB::Or  => self.satisfies(lhs) || self.satisfies(rhs),
           }
         }
-
+      },
+      KestrelCond::And{lhs, rhs} => {
+        self.satisfies(lhs) && self.satisfies(rhs)
       },
     }
   }

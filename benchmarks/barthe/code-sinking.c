@@ -1,8 +1,8 @@
 /* @KESTREL
- * pre: for i in (0..N) { a_1[i] == a_2[i] };
+ * pre: for _i in (0..N) { a_1[_i] == a_2[_i] };
  * left: left;
  * right: right;
- * post: for i in (0..N) { a_1[i] == a_2[i] };
+ * post: for _j in (0..N) { a_1[_j] == a_2[_j] };
  */
 
 const int N = 10;

@@ -4,15 +4,18 @@ use nom::{
   bytes::complete::tag,
   character::complete::alpha1,
   character::complete::alphanumeric1,
+  character::complete::digit1,
   character::complete::{i32},
   character::complete::multispace0,
   combinator::recognize,
+  error::{Error, ErrorKind},
   multi::many0_count,
   multi::many1,
   multi::many1_count,
   number::complete::float,
   sequence::delimited,
   sequence::pair,
+  Err,
   IResult,
 };
 use regex::Regex;
@@ -64,7 +67,14 @@ fn c_id(i: &str) -> IResult<&str, &str> {
 fn aexp_int(i: &str) -> IResult<&str, CondAExpr> {
   let (i, _) = multispace0(i)?;
   let (i, n) = i32(i)?;
-  Ok((i, CondAExpr::Int(n)))
+  match dot_num(i) {
+    Err(_) => Ok((i, CondAExpr::Int(n))),
+    Ok(_) => Err(Err::Error(Error{input: i, code: ErrorKind::IsNot})),
+  }
+}
+fn dot_num(i: &str) -> IResult<&str, ()> {
+  let (i, _) = pair(tag("."), digit1)(i)?;
+  Ok((i, ()))
 }
 
 fn aexp_float(i: &str) -> IResult<&str, CondAExpr> {
@@ -129,8 +139,8 @@ fn aexpr_binop<'a>(op_str: &'a str, op: CondABinop) -> impl Fn(&str) -> IResult<
 fn aexpr_lhs(i: &str) -> IResult<&str, CondAExpr> {
   let (i, _) = multispace0(i)?;
   alt((
-    aexp_float,
     aexp_int,
+    aexp_float,
     aexp_index,
     aexp_qualified_var,
     aexp_var,
@@ -145,8 +155,8 @@ fn aexpr(i: &str) -> IResult<&str, CondAExpr> {
     aexpr_binop("-", CondABinop::Sub),
     aexpr_binop("*", CondABinop::Mul),
     aexpr_binop("/", CondABinop::Div),
-    aexp_float,
     aexp_int,
+    aexp_float,
     aexp_index,
     aexp_qualified_var,
     aexp_var,

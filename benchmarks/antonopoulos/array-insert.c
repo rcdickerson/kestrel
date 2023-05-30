@@ -17,7 +17,6 @@ void left(int val) {
     i = i + 1;
   }
   // int len = shiftArray(A_left, i, 1);
-  // assume(len == A_SIZE + 1);
   int len = A_SIZE + 1; // spec of shiftArray
   A_left[i] = val;
   while (i < len) {
@@ -31,7 +30,6 @@ void right(int val) {
     j = j + 1;
   }
   // int len = shiftArray(A_left, i, 1);
-  // assume(len == A_SIZE + 1);
   int len = A_SIZE + 1; // spec of shiftArray
   A_right[j] = val;
   while (j < len) {

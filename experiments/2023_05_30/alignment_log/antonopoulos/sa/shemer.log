@@ -1,0 +1,104 @@
+
+Unaligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main(int l_x, int r_x) {
+  int l_y = 0;
+  int l_z = 2 * l_x;
+  while (l_z > 0) {
+    l_z = (l_z - 1);
+    l_y = (l_y + l_x);
+  }
+  int r_y = 0;
+  int r_z = r_x;
+  while (r_z > 0) {
+    r_z = (r_z - 1);
+    r_y = (r_y + r_x);
+  }
+  r_y = (r_y * 2);
+ }
+
+--------------------------
+Starting simulated annealing...
+Score 0.78817666 at temperature 0.8463074
+Score 0.78642595 at temperature 0.7944112
+Score 0.61335516 at temperature 0.79241514
+Simulated annealing complete.
+Saw 488 configurations
+Best score: 0.61335516
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_x)
+    (param-declaration (specifiers (type int)) r_x))
+  (seq
+    (seq
+      (<|
+        (basic-block
+          (declaration (specifiers (type int)) l_y (initializer (const-int 0)))
+          (declaration (specifiers (type int)) l_z (initializer (* (const-int 2) l_x)))))
+      (|>
+        (basic-block
+          (declaration (specifiers (type int)) r_y (initializer (const-int 0)))
+          (declaration (specifiers (type int)) r_z (initializer r_x)))))
+    (seq
+      (while-lockstep
+        2
+        1
+        (> l_z (const-int 0))
+        (> r_z (const-int 0))
+        (basic-block (= l_z (- l_z (const-int 1))) (= l_y (+ l_y l_x)))
+        (basic-block (= r_z (- r_z (const-int 1))) (= r_y (+ r_y r_x))))
+      (|> (basic-block (= r_y (* r_y (const-int 2))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main() {
+  int l_x = arb_int();
+  int r_x = arb_int();
+  assume(l_x == r_x);
+  int l_y = 0;
+  int l_z = 2 * l_x;
+  int r_y = 0;
+  int r_z = r_x;
+  while ((l_z > 0) && (r_z > 0)) {
+    l_z = (l_z - 1);
+    l_y = (l_y + l_x);
+    if (l_z > 0) {
+      l_z = (l_z - 1);
+      l_y = (l_y + l_x);
+    }
+    r_z = (r_z - 1);
+    r_y = (r_y + r_x);
+  }
+  while ((l_z > 0) && (!(r_z > 0))) {
+    l_z = (l_z - 1);
+    l_y = (l_y + l_x);
+  }
+  while ((!(l_z > 0)) && (r_z > 0)) {
+    r_z = (r_z - 1);
+    r_y = (r_y + r_x);
+  }
+  r_y = (r_y * 2);
+  sassert(l_x == r_x);
+ }
+
+--------------------------
+Writing output to ./results/antonopoulos/sa/shemer.c...
+Done
+
+real	0m0.335s
+user	0m0.304s
+sys	0m0.012s

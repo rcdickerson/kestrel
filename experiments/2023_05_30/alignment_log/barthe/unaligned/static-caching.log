@@ -1,0 +1,188 @@
+
+Unaligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main() {
+  int l_i = 0;
+  while (l_i < (N - M)) {
+    s_1[l_i] = 0;
+    int l_k = 0;
+    while (l_k <= (M - 1)) {
+      int l_l = 0;
+      while (l_l <= (L - 1)) {
+        s_1[l_i] = (s_1[l_i] + a[l_i + l_k][l_l]);
+        l_l = (l_l + 1);
+      }
+    }
+  }
+  s_2[0] = 0;
+  int r_k = 0;
+  while (r_k <= (M - 1)) {
+    b[r_k] = 0;
+    int r_l = 0;
+    while (r_l <= (L - 1)) {
+      b[r_k] = (b[r_k] + a[r_k][r_l]);
+      r_l = (r_l + 1);
+    }
+    s_2[0] = (s_2[0] + b[r_k]);
+    r_k = (r_k + 1);
+  }
+  int r_i = 1;
+  while (r_i <= (N - M)) {
+    b[(r_i + M) - 1] = 0;
+    int r_l = 0;
+    while (r_l <= (L - 1)) {
+      b[(r_i + M) - 1] = (b[(r_i + M) - 1] + a[(r_i + M) - 1][r_l]);
+      r_l = (r_l + 1);
+    }
+    int r_z = b[(r_i + M) - 1] - b[r_i - 1];
+    s_2[r_i] = (s_2[r_i - 1] + r_z);
+    r_i = (r_i + 1);
+  }
+ }
+
+--------------------------
+Treating naive product as final alignment.
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  params
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_i (initializer (const-int 0))))
+      (while
+        (< l_i (- N M))
+        (seq
+          (basic-block
+            (= (index s_1 l_i) (const-int 0))
+            (declaration (specifiers (type int)) l_k (initializer (const-int 0))))
+          (while
+            (<= l_k (- M (const-int 1)))
+            (seq
+              (basic-block
+                (declaration (specifiers (type int)) l_l (initializer (const-int 0))))
+              (while
+                (<= l_l (- L (const-int 1)))
+                (basic-block
+                  (= (index s_1 l_i) (+ (index s_1 l_i) (index (index a (+ l_i l_k)) l_l)))
+                  (= l_l (+ l_l (const-int 1))))))))))
+    (seq
+      (basic-block
+        (= (index s_2 (const-int 0)) (const-int 0))
+        (declaration (specifiers (type int)) r_k (initializer (const-int 0))))
+      (seq
+        (while
+          (<= r_k (- M (const-int 1)))
+          (seq
+            (basic-block
+              (= (index b r_k) (const-int 0))
+              (declaration (specifiers (type int)) r_l (initializer (const-int 0))))
+            (seq
+              (while
+                (<= r_l (- L (const-int 1)))
+                (basic-block
+                  (= (index b r_k) (+ (index b r_k) (index (index a r_k) r_l)))
+                  (= r_l (+ r_l (const-int 1)))))
+              (basic-block
+                (= (index s_2 (const-int 0)) (+ (index s_2 (const-int 0)) (index b r_k)))
+                (= r_k (+ r_k (const-int 1)))))))
+        (seq
+          (basic-block
+            (declaration (specifiers (type int)) r_i (initializer (const-int 1))))
+          (while
+            (<= r_i (- N M))
+            (seq
+              (basic-block
+                (= (index b (- (+ r_i M) (const-int 1))) (const-int 0))
+                (declaration (specifiers (type int)) r_l (initializer (const-int 0))))
+              (seq
+                (while
+                  (<= r_l (- L (const-int 1)))
+                  (basic-block
+                    (=
+                      (index b (- (+ r_i M) (const-int 1)))
+                      (+
+                        (index b (- (+ r_i M) (const-int 1)))
+                        (index (index a (- (+ r_i M) (const-int 1))) r_l)))
+                    (= r_l (+ r_l (const-int 1)))))
+                (basic-block
+                  (declaration
+                    (specifiers (type int))
+                    r_z
+                    (initializer
+                      (- (index b (- (+ r_i M) (const-int 1))) (index b (- r_i (const-int 1))))))
+                  (= (index s_2 r_i) (+ (index s_2 (- r_i (const-int 1))) r_z))
+                  (= r_i (+ r_i (const-int 1))))))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+const int M = 5;
+const int N = 10;
+const int L = 10;
+int a[N][L];
+int b[N];
+int s_1[(N - M) + 1];
+int s_2[(N - M) + 1];
+
+void main() {
+  assume(1);
+  int l_i = 0;
+  while (l_i < (N - M)) {
+    s_1[l_i] = 0;
+    int l_k = 0;
+    while (l_k <= (M - 1)) {
+      int l_l = 0;
+      while (l_l <= (L - 1)) {
+        s_1[l_i] = (s_1[l_i] + a[l_i + l_k][l_l]);
+        l_l = (l_l + 1);
+      }
+    }
+  }
+  s_2[0] = 0;
+  int r_k = 0;
+  while (r_k <= (M - 1)) {
+    b[r_k] = 0;
+    int r_l = 0;
+    while (r_l <= (L - 1)) {
+      b[r_k] = (b[r_k] + a[r_k][r_l]);
+      r_l = (r_l + 1);
+    }
+    s_2[0] = (s_2[0] + b[r_k]);
+    r_k = (r_k + 1);
+  }
+  int r_i = 1;
+  while (r_i <= (N - M)) {
+    b[(r_i + M) - 1] = 0;
+    int r_l = 0;
+    while (r_l <= (L - 1)) {
+      b[(r_i + M) - 1] = (b[(r_i + M) - 1] + a[(r_i + M) - 1][r_l]);
+      r_l = (r_l + 1);
+    }
+    int r_z = b[(r_i + M) - 1] - b[r_i - 1];
+    s_2[r_i] = (s_2[r_i - 1] + r_z);
+    r_i = (r_i + 1);
+  }
+  int i = 0;
+  while (i < (N - (M + 1))) {
+    sassert(s_1[i] == s_2[i]);
+  }
+ }
+
+--------------------------
+Writing output to ./results/barthe/unaligned/static-caching.c...
+Done
+
+real	0m0.030s
+user	0m0.026s
+sys	0m0.004s

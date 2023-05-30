@@ -18,6 +18,6 @@ for file in $input_dir/*.c
 do
   echo "$file..."
   file_basename=$(basename $file .c)
-  (time timeout 10m sea pf -m64 $file) > "$log_dir/$file_basename".log 2>&1
+  (time timeout 5m sea pf -m64 $file) > "$log_dir/$file_basename".log 2>&1
 done
 echo "Done"

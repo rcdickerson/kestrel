@@ -1,0 +1,120 @@
+
+Unaligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main(int l_B, int l_C, int l_N, int l_x, int r_B, int r_C, int r_N, int r_x) {
+  int l_i = 0;
+  int l_j = 0;
+  while (l_i < l_N) {
+    l_j = ((l_i * l_B) + l_C);
+    l_x = (l_x + l_j);
+    l_i = (l_i + 1);
+  }
+  int r_i = 0;
+  int r_j = r_C;
+  while (r_i < r_N) {
+    r_x = (r_x + r_j);
+    r_j = (r_j + r_B);
+    r_i = (r_i + 1);
+  }
+ }
+
+--------------------------
+Starting simulated annealing...
+Score 0.80845416 at temperature 1
+Score 0.7001699 at temperature 0.8722555
+Score 0.6032939 at temperature 0.85429144
+Simulated annealing complete.
+Saw 480 configurations
+Best score: 0.6032939
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_B)
+    (param-declaration (specifiers (type int)) l_C)
+    (param-declaration (specifiers (type int)) l_N)
+    (param-declaration (specifiers (type int)) l_x)
+    (param-declaration (specifiers (type int)) r_B)
+    (param-declaration (specifiers (type int)) r_C)
+    (param-declaration (specifiers (type int)) r_N)
+    (param-declaration (specifiers (type int)) r_x))
+  (seq
+    (seq
+      (<|
+        (basic-block
+          (declaration (specifiers (type int)) l_i (initializer (const-int 0)))
+          (declaration (specifiers (type int)) l_j (initializer (const-int 0)))))
+      (|>
+        (basic-block
+          (declaration (specifiers (type int)) r_i (initializer (const-int 0)))
+          (declaration (specifiers (type int)) r_j (initializer r_C)))))
+    (while-lockstep
+      1
+      1
+      (< l_i l_N)
+      (< r_i r_N)
+      (basic-block
+        (= l_j (+ (* l_i l_B) l_C))
+        (= l_x (+ l_x l_j))
+        (= l_i (+ l_i (const-int 1))))
+      (basic-block
+        (= r_x (+ r_x r_j))
+        (= r_j (+ r_j r_B))
+        (= r_i (+ r_i (const-int 1)))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main() {
+  int l_B = arb_int();
+  int l_C = arb_int();
+  int l_N = arb_int();
+  int l_x = arb_int();
+  int r_B = arb_int();
+  int r_C = arb_int();
+  int r_N = arb_int();
+  int r_x = arb_int();
+  assume((l_B == r_B) && ((l_C == r_C) && ((l_N == r_N) && (l_x == r_x))));
+  int l_i = 0;
+  int l_j = 0;
+  int r_i = 0;
+  int r_j = r_C;
+  while ((l_i < l_N) && (r_i < r_N)) {
+    l_j = ((l_i * l_B) + l_C);
+    l_x = (l_x + l_j);
+    l_i = (l_i + 1);
+    r_x = (r_x + r_j);
+    r_j = (r_j + r_B);
+    r_i = (r_i + 1);
+  }
+  while ((l_i < l_N) && (!(r_i < r_N))) {
+    l_j = ((l_i * l_B) + l_C);
+    l_x = (l_x + l_j);
+    l_i = (l_i + 1);
+  }
+  while ((!(l_i < l_N)) && (r_i < r_N)) {
+    r_x = (r_x + r_j);
+    r_j = (r_j + r_B);
+    r_i = (r_i + 1);
+  }
+  sassert(l_x == r_x);
+ }
+
+--------------------------
+Writing output to ./results/barthe/sa/strength-reduction.c...
+Done
+
+real	0m0.556s
+user	0m0.535s
+sys	0m0.000s

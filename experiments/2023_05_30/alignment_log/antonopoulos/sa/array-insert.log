@@ -1,0 +1,137 @@
+
+Unaligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main(int l_val, int r_val) {
+  int l_i = 0;
+  while ((l_i < A_SIZE) && (A_left[l_i] < l_val)) {
+    l_i = (l_i + 1);
+  }
+  int l_len = A_SIZE + 1;
+  A_left[l_i] = l_val;
+  while (l_i < l_len) {
+    l_i = (l_i + 1);
+  }
+  int r_j = 0;
+  while ((r_j < A_SIZE) && (A_right[r_j] < r_val)) {
+    r_j = (r_j + 1);
+  }
+  int r_len = A_SIZE + 1;
+  A_right[r_j] = r_val;
+  while (r_j < r_len) {
+    r_j = (r_j + 1);
+  }
+ }
+
+--------------------------
+Starting simulated annealing...
+Score 0.7544444 at temperature 0.9241517
+Score 0.724439 at temperature 0.9201597
+Score 0.7236356 at temperature 0.4491018
+Simulated annealing complete.
+Saw 496 configurations
+Best score: 0.7236356
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_val)
+    (param-declaration (specifiers (type int)) r_val))
+  (seq
+    (seq
+      (|>
+        (basic-block
+          (declaration (specifiers (type int)) r_j (initializer (const-int 0)))))
+      (seq
+        (|>
+          (while
+            (&& (< r_j A_SIZE) (< (index A_right r_j) r_val))
+            (basic-block (= r_j (+ r_j (const-int 1))))))
+        (<|
+          (basic-block
+            (declaration (specifiers (type int)) l_i (initializer (const-int 0)))))))
+    (seq
+      (seq
+        (|>
+          (basic-block
+            (declaration
+              (specifiers (type int))
+              r_len
+              (initializer (+ A_SIZE (const-int 1))))
+            (= (index A_right r_j) r_val)))
+        (seq
+          (<|
+            (while
+              (&& (< l_i A_SIZE) (< (index A_left l_i) l_val))
+              (basic-block (= l_i (+ l_i (const-int 1))))))
+          (<|
+            (basic-block
+              (declaration
+                (specifiers (type int))
+                l_len
+                (initializer (+ A_SIZE (const-int 1))))
+              (= (index A_left l_i) l_val)))))
+      (while-lockstep
+        1
+        2
+        (< l_i l_len)
+        (< r_j r_len)
+        (basic-block (= l_i (+ l_i (const-int 1))))
+        (basic-block (= r_j (+ r_j (const-int 1))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+const int A_SIZE = 10;
+int A_left[A_SIZE + 1];
+int A_right[A_SIZE + 1];
+extern int shiftArray(int* A, int idx, int amt);
+
+void main() {
+  int l_val = arb_int();
+  int r_val = arb_int();
+  assume((l_val > 0) && (r_val > 0));
+  int r_j = 0;
+  while ((r_j < A_SIZE) && (A_right[r_j] < r_val)) {
+    r_j = (r_j + 1);
+  }
+  int l_i = 0;
+  int r_len = A_SIZE + 1;
+  A_right[r_j] = r_val;
+  while ((l_i < A_SIZE) && (A_left[l_i] < l_val)) {
+    l_i = (l_i + 1);
+  }
+  int l_len = A_SIZE + 1;
+  A_left[l_i] = l_val;
+  while ((l_i < l_len) && (r_j < r_len)) {
+    l_i = (l_i + 1);
+    r_j = (r_j + 1);
+    if (r_j < r_len) {
+      r_j = (r_j + 1);
+    }
+  }
+  while ((l_i < l_len) && (!(r_j < r_len))) {
+    l_i = (l_i + 1);
+  }
+  while ((!(l_i < l_len)) && (r_j < r_len)) {
+    r_j = (r_j + 1);
+  }
+  sassert(l_i == r_j);
+ }
+
+--------------------------
+Writing output to ./results/antonopoulos/sa/array-insert.c...
+Done
+
+real	0m0.737s
+user	0m0.705s
+sys	0m0.010s

@@ -179,7 +179,7 @@ fn score_loop_similarity(trace: &Trace) -> (f32, f32) {
         (_, None) => continue,
         (Some(left), Some(right)) => {
           let ratios = left.iter().zip(right)
-            .map(|(l,r)| (l / r, l % r))
+            .map(|(l,r)| if *r == 0 { (*l, 0) } else { (l / r, l % r) })
             .collect::<Vec<(i32, i32)>>();
           let homogeneous = ratios.iter()
             .all(|(d,m)| *d == ratios[0].0 && *m == ratios[0].1);
@@ -192,8 +192,10 @@ fn score_loop_similarity(trace: &Trace) -> (f32, f32) {
         },
       }
     }
-    matching_sum += (matching as f32) / (summary.changed_vars.len() as f32);
-    similarity_sum += (similar as f32) / (summary.changed_vars.len() as f32);
+    if summary.changed_vars.len() != 0 {
+      matching_sum += (matching as f32) / (summary.changed_vars.len() as f32);
+      similarity_sum += (similar as f32) / (summary.changed_vars.len() as f32);
+    }
   }
   if loop_heads.len() == 0 { (0.0, 0.0) } else {
     let score_matching = 1.0 - (matching_sum / loop_heads.len() as f32);

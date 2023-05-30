@@ -1,4 +1,5 @@
 use crate::crel::eval::*;
+use crate::crel::eval::state::VarRead;
 
 pub struct Execution {
   pub current_state: State,
@@ -31,7 +32,6 @@ impl Execution {
       self.flag_out_of_fuel = true;
       return;
     }
-    self.trace.push_state(state.clone());
     self.current_state = state;
   }
 
@@ -41,7 +41,6 @@ impl Execution {
       self.flag_out_of_fuel = true;
       return loc;
     }
-    self.trace.push_state(self.current_state.clone());
     loc
   }
 
@@ -51,7 +50,6 @@ impl Execution {
       self.flag_out_of_fuel = true;
       return;
     }
-    self.trace.push_state(self.current_state.clone());
   }
 
   pub fn push_update_by_name(&mut self, name: &String, value: HeapValue) {
@@ -66,7 +64,7 @@ impl Execution {
       self.flag_out_of_fuel = true;
       return;
     }
-    self.trace.push_tag(tag);
+    self.trace.push_state(tag, &self.current_state);
   }
 
   pub fn set_break_flag(&mut self) {
@@ -107,7 +105,10 @@ impl Execution {
   }
 
   pub fn set_value_by_name(&mut self, name: &String) {
-    self.reg_value = self.current_state.read_var(name)[0].clone();
+    self.reg_value = match self.current_state.read_var(name) {
+      VarRead::Value(val) => val,
+      VarRead::Array(arr) => arr[0].clone(),
+    }
   }
 
   pub fn current_value(&self) -> HeapValue {

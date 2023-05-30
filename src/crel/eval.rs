@@ -265,13 +265,13 @@ mod test {
          x = x + 1;
          y = x + y;
        }".to_string());
-    let mut expected = Trace::new();
-    expected.push_state(State::new());
-    expected.push_state(state(vec!(("x", 0))));
-    expected.push_state(state(vec!(("x", 0), ("y", 5))));
-    expected.push_state(state(vec!(("x", 1), ("y", 5))));
-    expected.push_state(state(vec!(("x", 1), ("y", 6))));
-    assert_eq!(expected, run(&body(prog), State::new(), 100).trace);
+    // let mut expected = Trace::new();
+    // expected.push_state(&State::new());
+    // expected.push_state(&state(vec!(("x", 0))));
+    // expected.push_state(&state(vec!(("x", 0), ("y", 5))));
+    // expected.push_state(&state(vec!(("x", 1), ("y", 5))));
+    // expected.push_state(&state(vec!(("x", 1), ("y", 6))));
+    assert_eq!(Trace::new(), run(&body(prog), State::new(), 100).trace);
   }
 
   #[test]
@@ -291,13 +291,13 @@ mod test {
            x = 5;
          }
        }".to_string());
-    let mut expected = Trace::new();
-    expected.push_state(State::new());
-    expected.push_state(state(vec!(("x", 0))));
-    expected.push_state(state(vec!(("x", 0),   ("y", 0))));
-    expected.push_state(state(vec!(("x", 0),   ("y", 1))));
-    expected.push_state(state(vec!(("x", 100), ("y", 1))));
-    assert_eq!(expected, run(&body(prog), State::new(), 100).trace);
+    // let mut expected = Trace::new();
+    // expected.push_state(&State::new());
+    // expected.push_state(&state(vec!(("x", 0))));
+    // expected.push_state(&state(vec!(("x", 0),   ("y", 0))));
+    // expected.push_state(&state(vec!(("x", 0),   ("y", 1))));
+    // expected.push_state(&state(vec!(("x", 100), ("y", 1))));
+    assert_eq!(Trace::new(), run(&body(prog), State::new(), 100).trace);
   }
 
   #[test]
@@ -313,21 +313,11 @@ mod test {
          int z = 100;
        }".to_string());
     let mut expected = Trace::new();
-    expected.push_state(State::new());
-    expected.push_state(state(vec!(("x", 0))));
-    expected.push_state(state(vec!(("x", 0), ("y", 5))));
-    expected.push_tag(Tag::LoopStart);
-    expected.push_tag(Tag::LoopHead);
-    expected.push_state(state(vec!(("x", 1), ("y", 5))));
-    expected.push_state(state(vec!(("x", 1), ("y", 4))));
-    expected.push_tag(Tag::LoopHead);
-    expected.push_state(state(vec!(("x", 2), ("y", 4))));
-    expected.push_state(state(vec!(("x", 2), ("y", 3))));
-    expected.push_tag(Tag::LoopHead);
-    expected.push_state(state(vec!(("x", 3), ("y", 3))));
-    expected.push_state(state(vec!(("x", 3), ("y", 2))));
-    expected.push_tag(Tag::LoopEnd);
-    expected.push_state(state(vec!(("x", 3), ("y", 2), ("z", 100))));
+    expected.push_state(Tag::LoopStart, &state(vec!(("x", 0), ("y", 5))));
+    expected.push_state(Tag::LoopHead, &state(vec!(("x", 0), ("y", 5))));
+    expected.push_state(Tag::LoopHead, &state(vec!(("x", 1), ("y", 4))));
+    expected.push_state(Tag::LoopHead, &state(vec!(("x", 2), ("y", 3))));
+    expected.push_state(Tag::LoopEnd, &state(vec!(("x", 3), ("y", 2))));
     assert_eq!(expected, run(&body(prog), State::new(), 100).trace);
   }
 
@@ -345,14 +335,9 @@ mod test {
          int z = 100;
        }".to_string());
     let mut expected = Trace::new();
-    expected.push_state(State::new());
-    expected.push_state(state(vec!(("x", 0))));
-    expected.push_state(state(vec!(("x", 0), ("y", 5))));
-    expected.push_tag(Tag::LoopStart);
-    expected.push_tag(Tag::LoopHead);
-    expected.push_state(state(vec!(("x", 1), ("y", 5))));
-    expected.push_tag(Tag::LoopEnd);
-    expected.push_state(state(vec!(("x", 1), ("y", 5), ("z", 100))));
+    expected.push_state(Tag::LoopStart, &state(vec!(("x", 0), ("y", 5))));
+    expected.push_state(Tag::LoopHead, &state(vec!(("x", 0), ("y", 5))));
+    expected.push_state(Tag::LoopEnd, &state(vec!(("x", 1), ("y", 5))));
     assert_eq!(expected, run(&body(prog), State::new(), 100).trace);
   }
 
@@ -366,16 +351,12 @@ mod test {
          }
        }".to_string());
     let mut expected = Trace::new();
-    expected.push_state(State::new());
-    expected.push_state(state(vec!(("x", 0))));
-    expected.push_tag(Tag::LoopStart);
-    expected.push_tag(Tag::LoopHead);
-    expected.push_state(state(vec!(("x", 1))));
-    expected.push_tag(Tag::LoopHead);
-    expected.push_state(state(vec!(("x", 2))));
-    expected.push_tag(Tag::LoopHead);
-    expected.push_state(state(vec!(("x", 3))));
-    assert_eq!(expected, run(&body(prog), State::new(), 9).trace);
+    expected.push_state(Tag::LoopStart, &state(vec!(("x", 0))));
+    expected.push_state(Tag::LoopHead, &state(vec!(("x", 0))));
+    expected.push_state(Tag::LoopHead, &state(vec!(("x", 1))));
+    expected.push_state(Tag::LoopHead, &state(vec!(("x", 2))));
+    expected.push_state(Tag::LoopHead, &state(vec!(("x", 3))));
+    assert_eq!(expected, run(&body(prog), State::new(), 5).trace);
   }
 
   #[test]
@@ -390,20 +371,11 @@ mod test {
          }
        }".to_string());
     let mut expected = Trace::new();
-    expected.push_state(State::new());
-    expected.push_state(arr_state(vec!(("x", vec!(0, 0, 0)))));
-    expected.push_state(arr_state(vec!(("x", vec!(0, 0, 0)), ("i", vec!(0)))));
-    expected.push_tag(Tag::LoopStart);
-    expected.push_tag(Tag::LoopHead);
-    expected.push_state(arr_state(vec!(("x", vec!(0, 0, 0)), ("i", vec!(0)))));
-    expected.push_state(arr_state(vec!(("x", vec!(0, 0, 0)), ("i", vec!(1)))));
-    expected.push_tag(Tag::LoopHead);
-    expected.push_state(arr_state(vec!(("x", vec!(0, 1, 0)), ("i", vec!(1)))));
-    expected.push_state(arr_state(vec!(("x", vec!(0, 1, 0)), ("i", vec!(2)))));
-    expected.push_tag(Tag::LoopHead);
-    expected.push_state(arr_state(vec!(("x", vec!(0, 1, 2)), ("i", vec!(2)))));
-    expected.push_state(arr_state(vec!(("x", vec!(0, 1, 2)), ("i", vec!(3)))));
-    expected.push_tag(Tag::LoopEnd);
+    expected.push_state(Tag::LoopStart, &arr_state(vec!(("x", vec!(0, 0, 0)), ("i", vec!(0)))));
+    expected.push_state(Tag::LoopHead, &arr_state(vec!(("x", vec!(0, 0, 0)), ("i", vec!(0)))));
+    expected.push_state(Tag::LoopHead, &arr_state(vec!(("x", vec!(0, 0, 0)), ("i", vec!(1)))));
+    expected.push_state(Tag::LoopHead, &arr_state(vec!(("x", vec!(0, 1, 0)), ("i", vec!(2)))));
+    expected.push_state(Tag::LoopEnd, &arr_state(vec!(("x", vec!(0, 1, 2)), ("i", vec!(3)))));
     assert_eq!(expected, run(&body(prog), State::new(), 100).trace);
   }
 

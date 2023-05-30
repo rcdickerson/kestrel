@@ -1,4 +1,5 @@
 use crate::crel::eval::*;
+use crate::crel::eval::state::VarRead;
 use std::collections::HashMap;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -17,14 +18,13 @@ pub type TraceState = HashMap<String, TraceStateValue>;
 pub enum TraceStateValue {
   Int(i32),
   Float(f32),
-  IntArray(Vec<i32>),
-  FloatArray(Vec<f32>),
+  Array(Vec<HeapValue>),
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub enum TraceItem {
-  Tag(Tag),
-  State(TraceState),
+pub struct TraceItem {
+  tag: Tag,
+  state: TraceState,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -38,16 +38,12 @@ impl Trace {
     Trace { items: Vec::new() }
   }
 
-  pub fn push_tag(&mut self, tag: Tag) {
-    self.items.push(TraceItem::Tag(tag));
-  }
-
-  pub fn push_state(&mut self, state: State) {
+  pub fn push_state(&mut self, tag: Tag, state: &State) {
     let mut trace_state = HashMap::new();
     for (name, _, _) in state.vars() {
-      let val = state.read_var(&name);
-      match val.len() {
-        1 => match val[0] {
+      let read = state.read_var(&name);
+      match read {
+        VarRead::Value(val) => match val {
           HeapValue::Int(i) => {
             trace_state.insert(name, TraceStateValue::Int(i));
           },
@@ -55,39 +51,27 @@ impl Trace {
             trace_state.insert(name, TraceStateValue::Float(f));
           },
         },
-        _ => match val[0] {
-          HeapValue::Int(_) => {
-            let ivec = val.iter().map(|v| v.int()).collect();
-            trace_state.insert(name, TraceStateValue::IntArray(ivec));
-          },
-          HeapValue::Float(_) => {
-            let fvec = val.iter().map(|v| v.float()).collect();
-            trace_state.insert(name, TraceStateValue::FloatArray(fvec));
-          },
+        VarRead::Array(val) => {
+          trace_state.insert(name, TraceStateValue::Array(val.to_vec()));
         },
       }
     }
-    self.items.push(TraceItem::State(trace_state));
+    self.items.push(TraceItem{tag, state: trace_state});
   }
 
   pub fn len(&self) -> usize {
     self.items.len()
   }
 
-  pub fn loop_heads(&self) -> Vec<Vec<TraceState>> {
+  pub fn loop_heads(&self) -> Vec<Vec<&TraceState>> {
     let mut all_heads = Vec::new();
     let mut current_heads = Vec::new();
-    let mut current_state = None;
     for item in &self.items {
       match item {
-        TraceItem::State(state) => {
-         current_state = Some(state)
+        TraceItem{tag: Tag::LoopHead, state} => {
+          current_heads.push(state);
         },
-        TraceItem::Tag(Tag::LoopHead) => {
-          let head_state = current_state.expect("Loop head before first state").clone();
-          current_heads.push(head_state);
-        },
-        TraceItem::Tag(Tag::LoopEnd) => {
+        TraceItem{tag: Tag::LoopEnd, state:_} => {
           all_heads.push(current_heads);
           current_heads = Vec::new();
         },
@@ -97,23 +81,15 @@ impl Trace {
     all_heads
   }
 
-  pub fn relation_states(&self) -> Vec<Vec<TraceState>> {
+  pub fn relation_states(&self) -> Vec<Vec<&TraceState>> {
     let mut all_rels = Vec::new();
     let mut current_rel = Vec::new();
-    let mut current_state = None;
     for item in &self.items {
       match item {
-        TraceItem::State(state) => {
-          current_state = Some(state);
-          if current_rel.len() > 0 {
-            current_rel.push(state.clone());
-          }
+        TraceItem{tag: Tag::RelationStart, state} => {
+          current_rel.push(state);
         },
-        TraceItem::Tag(Tag::RelationStart) => {
-          let state = current_state.expect("Relation start before first state");
-          current_rel.push(state.clone());
-        },
-        TraceItem::Tag(Tag::RelationEnd) => {
+        TraceItem{tag: Tag::RelationEnd, state:_} => {
           all_rels.push(current_rel);
           current_rel = Vec::new();
         },
@@ -124,23 +100,23 @@ impl Trace {
   }
 
   pub fn count_executed_loops(&self) -> usize {
-    let mut run_loop_count = 0;
-    let mut loop_start_without_state = false;
+    let mut count = 0;
+    let mut count_next_head = false;
     for item in &self.items {
       match item {
-        TraceItem::State(_) => if loop_start_without_state {
-          run_loop_count += 1;
-          loop_start_without_state = false;
+        TraceItem{tag: Tag::LoopStart, state:_} => {
+          count_next_head = true;
         },
-        TraceItem::Tag(Tag::LoopStart) => {
-          loop_start_without_state = true;
+        TraceItem{tag: Tag::LoopHead, state:_} => {
+          if count_next_head { count += 1; }
+          count_next_head = false;
         },
-        TraceItem::Tag(Tag::LoopEnd) => {
-          loop_start_without_state = false;
+        TraceItem{tag: Tag::LoopEnd, state:_} => {
+          count_next_head = false;
         },
         _ => (),
       }
     }
-    run_loop_count
+    count
   }
 }

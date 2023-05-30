@@ -31,6 +31,20 @@ pub enum HeapValue {
   Float(f32),
 }
 
+#[derive(Clone, Debug)]
+pub enum VarRead<'a> {
+  Value(HeapValue),
+  Array(&'a[HeapValue]),
+}
+impl<'a> VarRead<'a> {
+  fn int(&self) -> i32 {
+    match self {
+      VarRead::Value(HeapValue::Int(i)) => *i,
+      _ => panic!("Expected int, found: {:?}", self),
+    }
+  }
+}
+
 impl PartialEq for HeapValue {
   fn eq(&self, other: &Self) -> bool {
     match (self, other) {
@@ -117,17 +131,15 @@ impl State {
     self.heap[location.to_index()].clone()
   }
 
-  pub fn read_var(&self, var: &String) -> Vec<HeapValue> {
+  pub fn read_var(&self, var: &String) -> VarRead {
     let (loc, size) = self.vars.get(var).unwrap();
-    let mut vals = Vec::new();
-    for i in 0..*size {
-      let loc = HeapLocation::Offset {
-        location: Box::new(loc.clone()),
-        offset: i
-      };
-      vals.push(self.read_loc(&loc));
+    match size {
+      1 => VarRead::Value(self.read_loc(&loc)),
+      _ => {
+        let heap_loc = loc.to_index();
+        VarRead::Array(&self.heap[heap_loc..heap_loc + size])
+      }
     }
-    vals
   }
 
   pub fn vars(&self) -> Vec<(String, HeapLocation, usize)> {
@@ -177,19 +189,20 @@ impl State {
     }
   }
 
-  fn clookup(&self, aexp: &CondAExpr) -> HeapValue {
+  fn clookup(&self, aexp: &CondAExpr) -> VarRead {
     match aexp {
-      CondAExpr::Var(id) => self.read_var(&id)[0].clone(),
+      CondAExpr::Var(id) => self.read_var(&id),
       CondAExpr::QualifiedVar{exec, name} => {
         let var = qualified_state_var(exec, name);
-        self.read_var(&var)[0].clone()
+        self.read_var(&var)
       },
-      CondAExpr::Int(i) => HeapValue::Int(*i),
-      CondAExpr::Float(f) => HeapValue::Float(*f),
+      CondAExpr::Int(i) => VarRead::Value(HeapValue::Int(*i)),
+      CondAExpr::Float(f) => VarRead::Value(HeapValue::Float(*f)),
       CondAExpr::Unop{aexp, op} => match op {
         CondAUnop::Neg => match self.clookup(aexp) {
-          HeapValue::Int(i) => HeapValue::Int(-i),
-          HeapValue::Float(f) => HeapValue::Float(-f),
+          VarRead::Value(HeapValue::Int(i)) => VarRead::Value(HeapValue::Int(-i)),
+          VarRead::Value(HeapValue::Float(f)) => VarRead::Value(HeapValue::Float(-f)),
+          _ => panic!("Cannot lookup value for {:?}", aexp),
         },
       },
       CondAExpr::Binop{lhs, rhs, op: CondABinop::Index} => {
@@ -199,12 +212,15 @@ impl State {
           _ => panic!("Unsupported indexee: {:?}", lhs)
         };
         let loc = self.lookup_loc(&var.clone()).unwrap();
-        let index = self.clookup(rhs);
+        let index = match self.clookup(rhs) {
+          VarRead::Value(HeapValue::Int(i)) => i,
+          _ => panic!("Unsupported index value: {:?}", rhs),
+        };
         let indexed_loc = HeapLocation::Offset {
           location: Box::new(loc.clone()),
-          offset: index.int() as usize,
+          offset: index as usize,
         };
-        self.read_loc(&indexed_loc)
+        VarRead::Value(self.read_loc(&indexed_loc))
       },
       _ => panic!("AExp does not correspond to a state value: {:?}", aexp),
     }

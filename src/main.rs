@@ -121,7 +121,7 @@ fn main() {
       extractor.solve(runner.roots[0])
     },
     ExtractorArg::SA => {
-      let max_iterations = 3000;
+      let max_iterations = 500;
       let num_trace_states = 10;
       let trace_fuel = 10000;
 

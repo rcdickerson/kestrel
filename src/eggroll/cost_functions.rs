@@ -62,7 +62,7 @@ struct StatesSummary {
   changed_vars: HashSet<String>,
 }
 
-fn summarize_states(states: &Vec<TraceState>) -> StatesSummary {
+fn summarize_states(states: &Vec<&TraceState>) -> StatesSummary {
   let mut l_vals : HashMap<String, Vec<i32>> = HashMap::new();
   let mut r_vals : HashMap<String, Vec<i32>> = HashMap::new();
   for state in states {

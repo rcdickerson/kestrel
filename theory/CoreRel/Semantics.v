@@ -120,28 +120,24 @@ Fixpoint denote_algn_com (r : algn_com) : algn_com_dom :=
 
   | <{ ifR <| b1 | b2 |> then r1 else r2 end }> =>
       {{ ((stL, stR), (stL', stR')) |
-             (true, stL) ∈ denote_B b1
+          (   (true, stL) ∈ denote_B b1
           /\ (true, stR) ∈ (denote_B b2)
-          /\ ((stL, stR), (stL', stR')) ∈ [[r1]]R }}
-   ∪ {{ ((stL, stR), (stL', stR')) |
-             (false, stL) ∈ (denote_B b1)
-             /\ ((stL, stR), (stL', stR')) ∈ [[r2]]R }}
-   ∪ {{ ((stL, stR), (stL', stR')) |
-             (false, stR) ∈ (denote_B b2)
+          /\ ((stL, stR), (stL', stR')) ∈ [[r1]]R)
+      \/ ((false, stL) ∈ (denote_B b1)
+             /\ ((stL, stR), (stL', stR')) ∈ [[r2]]R)
+          \/ (false, stR) ∈ (denote_B b2)
              /\ ((stL, stR), (stL', stR')) ∈ [[r2]]R }}
 
   | <{ whileR <| b1 | b2 |> do r end }> =>
       LFP (fun (phi : algn_com_dom) =>
              {{ ((stL, stR), (stL', stR')) |
-                ((false, stL) ∈ denote_B b1 /\ stL' = stL /\ stR' = stR) }}
-           ∪ {{ ((stL, stR), (stL', stR')) |
-                ((false, stR) ∈ denote_B b2 /\ stL' = stL /\ stR' = stR) }}
-           ∪ {{ ((stL, stR), (stL', stR')) |
-                (true, stL) ∈ denote_B b1 /\
-                (true, stR) ∈ denote_B b2 /\
-                exists stL'' stR'',
-                ((stL, stR), (stL'', stR'')) ∈ [[r]]R /\
-                  ((stL'', stR''), (stL', stR')) ∈ phi }})
+                ((false, stL) ∈ denote_B b1 /\ stL' = stL /\ stR' = stR)
+                \/ ((false, stR) ∈ denote_B b2 /\ stL' = stL /\ stR' = stR)
+                \/(true, stL) ∈ denote_B b1 /\
+                    (true, stR) ∈ denote_B b2 /\
+                    exists stL'' stR'',
+                      ((stL, stR), (stL'', stR'')) ∈ [[r]]R /\
+                        ((stL'', stR''), (stL', stR')) ∈ phi }})
   end
 where "'[[' r ']]R'" := (denote_algn_com r) : denote_scope.
 
@@ -151,29 +147,26 @@ where "'[[' r ']]R'" := (denote_algn_com r) : denote_scope.
 
 (* To show that LFP is a proper fixed point in subsequent proofs, we
    need to show that if is applied to a monotone function. *)
+
 Lemma while_body_monotone :
   forall b1 b2 r,
     Monotone
       (fun (phi : algn_com_dom) =>
              {{ ((stL, stR), (stL', stR')) |
-                ((false, stL) ∈ denote_B b1 /\ stL' = stL /\ stR' = stR) }}
-           ∪ {{ ((stL, stR), (stL', stR')) |
-                ((false, stR) ∈ denote_B b2 /\ stL' = stL /\ stR' = stR) }}
-           ∪ {{ ((stL, stR), (stL', stR')) |
-                (true, stL) ∈ denote_B b1 /\
-                (true, stR) ∈ denote_B b2 /\
-                exists stL'' stR'',
-                ((stL, stR), (stL'', stR'')) ∈ [[r]]R /\
-                  ((stL'', stR''), (stL', stR')) ∈ phi }}).
+                (((false, stL) ∈ denote_B b1 /\ stL' = stL /\ stR' = stR))
+                \/ (((false, stR) ∈ denote_B b2 /\ stL' = stL /\ stR' = stR))
+                \/ (true, stL) ∈ denote_B b1 /\
+                     (true, stR) ∈ denote_B b2 /\
+                     exists stL'' stR'',
+                       ((stL, stR), (stL'', stR'')) ∈ [[r]]R /\
+                         ((stL'', stR''), (stL', stR')) ∈ phi }}).
 Proof.
-  unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
-  In_inversion; destruct x0, x1.
-  - left; left; In_intro; intuition.
-  - left; right; In_intro; intuition.
-  - right; In_intro; intuition.
-    destruct H3 as [? [? ?] ]; intuition.
-    eexists _, _; split; try eassumption.
-    eapply H; eauto.
+  unfold Monotone, subseteq, set_subseteq_instance, rel_state.
+  intros ? ? ? ? ? ? ((st1, st2), (st1', st2')) ?.
+  In_inversion; In_intro.
+  - firstorder.
+  - firstorder.
+  - firstorder.
 Qed.
 
 (* Now, soundness: *)
@@ -186,38 +179,35 @@ Proof.
     try destruct rst as [stL stR];
     try destruct rst' as [stL' stR'];
     try destruct rst'' as [stL'' stR''];
-    simpl in *; try solve [econstructor]; unfold In.
+    simpl in *; try solve [econstructor].
   - (* EAC_Block *)
-    split; eapply BigStep_Denotational_Sound; eauto.
+    In_intro; eapply BigStep_Denotational_Sound; eauto.
   - (* E_ACSeq *)
-    eexists _, _; intuition eauto.
+    In_intro; eauto.
   - (* E_ACIfTrue *)
-    left; left; subst; repeat split; try eassumption.
-    rewrite <- H; eapply Denotational_B_BigStep_Sound.
-    rewrite <- H0; eapply Denotational_B_BigStep_Sound.
+    left; In_intro; intuition.
+    + rewrite <- H; eapply Denotational_B_BigStep_Sound.
+    + rewrite <- H0; eapply Denotational_B_BigStep_Sound.
   - (* E_ACIfFalseL *)
-    left; right; subst; split; try eassumption.
+    right; left. intuition.
     rewrite <- H; eapply Denotational_B_BigStep_Sound.
   - (* E_ACIfFalseR *)
-    right; subst; split; try eassumption.
+    right; right. intuition.
     rewrite <- H; eapply Denotational_B_BigStep_Sound.
   - (* E_ACWhileTrue *)
     apply LFP_unfold.
     apply while_body_monotone.
-    right.
-    In_inversion. In_intro. intuition.
+    right; right; intuition.
     + rewrite <- H; apply Denotational_B_BigStep_Sound.
     + rewrite <- H0; apply Denotational_B_BigStep_Sound.
     + eexists _, _; intuition eauto.
   - (* E_ACWhileFalseL *)
     apply LFP_unfold; try apply while_body_monotone.
-    left; left.
-    In_intro. intuition.
+    left; intuition.
     rewrite <- H; apply Denotational_B_BigStep_Sound.
   - (* E_ACWhileFalseR *)
       apply LFP_unfold; try apply while_body_monotone.
-      left; right.
-      In_intro. intuition.
+      right; left. intuition.
       rewrite <- H; apply Denotational_B_BigStep_Sound.
 Qed.
 
@@ -243,12 +233,11 @@ Proof.
     revert IHr.
     pattern (stL, stR, (stL', stR')).
     eapply Ind; try eassumption; clear.
-    intros[ [stL stR] [stL' stR'] ] ?.
-    In_intro.
+    intros[ [stL stR] [stL' stR'] ] ? ?.
     simpl; In_inversion; intros.
-    + subst; eapply E_ACWhileFalseL.
+    + compute in H0, H1. subst; eapply E_ACWhileFalseL.
       erewrite BigStep_B_Denotational_Adequate; try reflexivity; assumption.
-    + subst; eapply E_ACWhileFalseR.
+    + simpl in *; compute in H0, H1; subst. eapply E_ACWhileFalseR.
       erewrite BigStep_B_Denotational_Adequate; try reflexivity; assumption.
     + eapply E_ACWhileTrue.
       * erewrite BigStep_B_Denotational_Adequate; try reflexivity; assumption.

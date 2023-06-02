@@ -45,7 +45,20 @@ impl KCondToCRel for KestrelCond {
             rhs: Box::new(end.to_crel()),
             op: crel::BinaryOp::Lt,
           }),
-          body: Some(Box::new(body.to_crel(kind))),
+          body: Some(Box::new(crel::Statement::Compound(vec!(
+            crel::BlockItem::Statement(body.to_crel(kind)),
+            crel::BlockItem::Statement(crel::Statement::Expression(Box::new(
+              crel::Expression::Binop {
+                lhs: Box::new(crel::Expression::Identifier{name: index_var.clone()}),
+                rhs: Box::new(crel::Expression::Binop {
+                  lhs: Box::new(crel::Expression::Identifier{name: index_var.clone()}),
+                  rhs: Box::new(crel::Expression::ConstInt(1)),
+                  op: crel::BinaryOp::Add,
+                }),
+                op: crel::BinaryOp::Assign,
+              }
+            )))
+          )))),
         };
         crel::Statement::Compound(vec!(
           crel::BlockItem::Declaration(init_index),

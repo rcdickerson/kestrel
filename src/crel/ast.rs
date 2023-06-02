@@ -67,7 +67,6 @@ impl ParameterDeclaration {
   }
 }
 
-
 #[derive(Clone, Debug, PartialEq)]
 pub enum DeclarationSpecifier {
   StorageClass(StorageClassSpecifier),

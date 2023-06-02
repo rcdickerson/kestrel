@@ -134,17 +134,27 @@ impl Trace {
   pub fn count_executed_loops(&self) -> usize {
     let mut count = 0;
     let mut count_next_head = false;
+    let mut nest_count = 0;
+    let mut iteration_count: Vec<usize> = Vec::new();
     for item in &self.items {
       match item {
         TraceItem{tag: Tag::LoopStart, state:_} => {
-          count_next_head = true;
+          count_next_head = (nest_count == 0) || (iteration_count[nest_count - 1] == 1);
+          nest_count += 1;
+          if iteration_count.len() < nest_count {
+            iteration_count.push(0);
+          } else {
+            iteration_count[nest_count - 1] = 0;
+          }
         },
         TraceItem{tag: Tag::LoopHead, state:_} => {
           if count_next_head { count += 1; }
           count_next_head = false;
+          iteration_count[nest_count - 1] += 1;
         },
         TraceItem{tag: Tag::LoopEnd, state:_} => {
           count_next_head = false;
+          nest_count -= 1;
         },
         _ => (),
       }

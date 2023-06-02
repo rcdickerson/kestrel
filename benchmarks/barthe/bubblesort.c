@@ -15,7 +15,21 @@ const int N = 10;
 float a_1[N];
 float a_2[N];
 
-const float epsilon = 4.0;
+const float epsilon = 0.01;
+
+void _generator(float _arr[N]) {
+  int _ai = 0;
+  while (_ai < N) {
+    if (_ai % 2 == 0) {
+      a_1[_ai] = _arr[_ai] + 0.001;
+      a_2[_ai] = _arr[_ai];
+    } else {
+      a_1[_ai] = _arr[_ai];
+      a_2[_ai] = _arr[_ai] + 0.001;
+    }
+    _ai = _ai + 1;
+  }
+}
 
 void bubble_sort(void) {
   int i = 0;

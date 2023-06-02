@@ -547,7 +547,6 @@ mod test {
     // The second loop updates two variables.
     //   - No variables change exactly => 1 change score
     //   - One variable is updated on both sides => 0.5 LR score
-    //
     // Averages: (0.75, 0.375)
     let expected = (0.75, 0.375);
     assert_eq!(score_loop_head_similarity(&summaries), expected);

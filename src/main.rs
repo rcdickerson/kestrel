@@ -121,12 +121,15 @@ fn main() {
       extractor.solve(runner.roots[0])
     },
     ExtractorArg::SA => {
-      let max_iterations = 500;
+      let max_iterations = 3000;
       let num_trace_states = 10;
       let trace_fuel = 10000;
 
+      let (_, fundefs) = kestrel::crel::fundef::extract_fundefs(&crel);
+      let generator = fundefs.get(&"_generator".to_string());
+      let trace_states = rand_states_satisfying(num_trace_states, &spec.pre, Some(&global_decls), generator, 1000);
+
       let annealer = Annealer::new(&runner.egraph);
-      let trace_states = rand_states_satisfying(num_trace_states, &spec.pre, Some(&global_decls), 1000);
       annealer.find_best(max_iterations, runner.roots[0], |expr| {
         sa_score(&trace_states, trace_fuel, expr)
       })

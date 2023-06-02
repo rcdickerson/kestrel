@@ -34,7 +34,6 @@ pub struct Declaration {
   pub declarator: Declarator,
   pub initializer: Option<Expression>
 }
-
 impl Declaration {
   pub fn get_type(&self) -> Option<Type> {
     for spec in &self.specifiers {
@@ -54,6 +53,20 @@ pub struct ParameterDeclaration {
   pub specifiers: Vec<DeclarationSpecifier>,
   pub declarator: Option<Declarator>,
 }
+impl ParameterDeclaration {
+  pub fn get_type(&self) -> Option<Type> {
+    for spec in &self.specifiers {
+      match spec {
+        DeclarationSpecifier::TypeSpecifier(ty) => {
+          return Some(ty.clone());
+        },
+        _ => { continue; },
+      }
+    }
+    None
+  }
+}
+
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum DeclarationSpecifier {

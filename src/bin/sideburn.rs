@@ -108,7 +108,7 @@ fn main() {
     },
     SideburnMode::PrintSA => {
       input.print_eggroll();
-      let state = rand_states_satisfying(1, &input.spec.pre, Some(&input.global_declarations), 1000)[0].clone();
+      let state = rand_states_satisfying(1, &input.spec.pre, Some(&input.global_declarations), None, 1000)[0].clone();
       println!("State: {:?}", state);
       let trace = kestrel::crel::eval::run(&input.main_body(), state.clone(), 10000).trace;
       print_trace(&trace);

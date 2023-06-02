@@ -1,4 +1,5 @@
 use crate::crel::ast::*;
+use crate::crel::fundef::*;
 use crate::spec::condition::*;
 use crate::spec::to_crel::*;
 use crate::crel::eval::run;
@@ -230,13 +231,13 @@ impl State {
 
   pub fn with_declarations(&self, decls: &Vec<Declaration>, fuel: usize) -> Self {
     let mut state = self.clone();
-    for decl in decls { state = state.alloc_from_decl(&decl, fuel); }
+    for decl in decls { state = state.alloc_from_decl(&decl.declarator, &decl.initializer, fuel); }
     state
   }
 
-  fn alloc_from_decl(&self, decl: &Declaration, fuel: usize) -> Self {
+  fn alloc_from_decl(&self, declarator: &Declarator, initializer: &Option<Expression>, fuel: usize) -> Self {
     let mut state = self.clone();
-    match &decl.declarator {
+    match &declarator {
       Declarator::Identifier{name} => { state.alloc(&name, 1, HeapValue::Int(0)); },
       Declarator::Array{name, sizes} if sizes.len() > 0 => {
         let mut alloc_size = 1;
@@ -248,8 +249,8 @@ impl State {
       },
       _ => ()
     }
-    if decl.initializer.is_none() {return state;}
-    let lhs = match &decl.declarator {
+    if initializer.is_none() { return state; }
+    let lhs = match &declarator {
       Declarator::Identifier{name} => Some(Expression::Identifier{name: name.clone()}),
       Declarator::Array{name, sizes:_} => Some(Expression::Identifier{name: name.clone()}),
       Declarator::Function{name:_, params:_} => None,
@@ -258,21 +259,70 @@ impl State {
     if lhs.is_none() { return self.clone(); }
     let initialization = Statement::Expression(Box::new(Expression::Binop {
       lhs: Box::new(lhs.unwrap()),
-      rhs: Box::new(decl.initializer.clone().unwrap()),
+      rhs: Box::new(initializer.clone().unwrap()),
       op: BinaryOp::Assign,
     }));
     run(&initialization, state.clone(), fuel).current_state
+  }
+
+  fn randomize_declaration(&self,
+                           declarator: &Declarator,
+                           initializer: &Option<Expression>,
+                           ty: Type,
+                           fuel: usize) -> State {
+    match initializer {
+      Some(_) => { self.alloc_from_decl(declarator, initializer, fuel) }
+      None => {
+        let alloc = match &declarator {
+          Declarator::Identifier{name} => Some((name.clone(), 1, self.clone())),
+          Declarator::Array{name, sizes} => {
+            let mut alloc_size = 1;
+            let mut state = self.clone();
+            for size in sizes {
+              let size_stmt = Statement::Expression(Box::new(size.clone()));
+              let size_eval = run(&size_stmt, state.clone(), 1000);
+              state = size_eval.current_state.clone();
+              alloc_size *= size_eval.value_int();
+            }
+            Some((name.clone(), alloc_size, state))
+          },
+          Declarator::Function{name:_, params:_} => None,
+          Declarator::Pointer(_) => panic!("Unsupported: pointer initialization"),
+        };
+        if alloc.is_none() { return self.clone(); }
+        let (name, alloc_size, mut state) = alloc.unwrap();
+        let base_loc = state.alloc(&name, alloc_size as usize, HeapValue::Int(0));
+        for i in 0..alloc_size {
+          let loc = HeapLocation::Offset {
+            location: Box::new(base_loc.clone()),
+            offset: i as usize,
+          };
+          state.store_loc(&loc, rand_val(ty.clone()));
+        }
+        state
+      },
+    }
   }
 }
 
 pub fn rand_states_satisfying(num: usize,
                               cond: &KestrelCond,
                               decls: Option<&Vec<Declaration>>,
+                              generator: Option<&FunDef>,
                               fuel: usize) -> Vec<State> {
   let mut states = Vec::new();
   let vars = cond.state_vars();
   while states.len() < num {
-    let state = rand_state(vars.iter(), decls, fuel);
+    let mut state = rand_state(vars.iter(), decls, fuel);
+    if generator.is_some() {
+      let generator = generator.unwrap();
+      for decl in &generator.params {
+        if decl.declarator.is_none() { continue; }
+        let ty = decl.get_type().unwrap();
+        state = state.randomize_declaration(decl.declarator.as_ref().unwrap(), &None, ty, fuel);
+      }
+      state = run(&generator.body, state.clone(), fuel).current_state.clone();
+    }
     if state.satisfies(&cond) {
       states.push(state);
     }
@@ -291,39 +341,8 @@ fn rand_state<'a, I>(vars: I, decls: Option<&Vec<Declaration>>, fuel: usize) -> 
     None => state,
     Some(decls) => {
       for decl in decls {
-        state = match decl.initializer {
-          Some(_) => { state.alloc_from_decl(&decl, fuel) }
-          None => {
-            let alloc = match &decl.declarator {
-              Declarator::Identifier{name} => Some((name.clone(), 1, state.clone())),
-              Declarator::Array{name, sizes} => {
-                let mut alloc_size = 1;
-                let mut state = state.clone();
-                for size in sizes {
-                  let size_stmt = Statement::Expression(Box::new(size.clone()));
-                  let size_eval = run(&size_stmt, state.clone(), 1000);
-                  state = size_eval.current_state.clone();
-                  alloc_size *= size_eval.value_int();
-                }
-                Some((name.clone(), alloc_size, state))
-              },
-              Declarator::Function{name:_, params:_} => None,
-              Declarator::Pointer(_) => panic!("Unsupported: pointer initialization"),
-            };
-            if alloc.is_none() { continue; }
-            let (name, alloc_size, mut state) = alloc.unwrap();
-            let ty = decl.get_type().unwrap();
-            let base_loc = state.alloc(&name, alloc_size as usize, HeapValue::Int(0));
-            for i in 0..alloc_size {
-              let loc = HeapLocation::Offset {
-                location: Box::new(base_loc.clone()),
-                offset: i as usize,
-              };
-              state.store_loc(&loc, rand_val(ty.clone()));
-            }
-            state
-          },
-        }
+        let ty = decl.get_type().unwrap();
+        state = state.randomize_declaration(&decl.declarator, &decl.initializer, ty, fuel);
       }
       state
     }

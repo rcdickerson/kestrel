@@ -13,6 +13,19 @@ int a_2[N];
 int b_2[N];
 int c_2[N];
 
+void _generator(int _arr1[N], int _arr2[N], int _arr3[N]) {
+  int _ai = 0;
+  while (_ai < N) {
+    a_1[_ai] = _arr1[_ai];
+    a_2[_ai] = _arr1[_ai];
+    b_1[_ai] = _arr2[_ai];
+    b_2[_ai] = _arr2[_ai];
+    c_1[_ai] = _arr3[_ai];
+    c_2[_ai] = _arr3[_ai];
+    _ai = _ai + 1;
+  }
+}
+
 void left(void) {
   int i = 0;
   while (i < N ) {

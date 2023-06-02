@@ -248,22 +248,10 @@ Theorem aexp_eqv_unique :
     (n, st) ∈ ([[a ]]A) ->
     m = n.
 Proof.
-  induction a; simpl; intros.
-  - In_inversion. subst. reflexivity.
-  - In_inversion. subst. reflexivity.
-  - In_inversion. subst.
-    erewrite IHa1 with (m := x1) (n := x), IHa2 with (m := x0) (n := x2) by
-      eassumption.
-    reflexivity.
-  - In_inversion. subst.
-    erewrite IHa1 with (m := x1) (n := x), IHa2 with (m := x0) (n := x2) by
-      eassumption.
-    reflexivity.
-  - In_inversion. subst.
-    erewrite IHa1 with (m := x1) (n := x), IHa2 with (m := x0) (n := x2) by
-      eassumption.
-    reflexivity.
+  induction a; simpl; intros;
+    In_inversion; eauto; congruence.
 Qed.
+
 
 (* Secondly, there exists exactly one corresponding value for each
    state in the denotation of an expression. *)
@@ -271,18 +259,12 @@ Theorem denote_aexp_defined :
   forall (a : aexp) (st : state),
   exists n, (n, st) ∈ [[a]]A.
 Proof.
-  intros; induction a.
-  - exists n; In_intro; simpl; reflexivity.
-  - eexists (st !!! x); set_solver.
-  - destruct IHa1 as [n denote_a1].
-    destruct IHa2 as [m denote_a2].
-    exists (n + m); In_intro; simpl; eexists _, _; repeat split; assumption.
-  - destruct IHa1 as [n denote_a1].
-    destruct IHa2 as [m denote_a2].
-    exists (n - m); In_intro; simpl; eexists _, _; repeat split; assumption.
-  - destruct IHa1 as [n denote_a1].
-    destruct IHa2 as [m denote_a2].
-    exists (n * m); In_intro; simpl; eexists _, _; repeat split; assumption.
+  intros; induction a; destruct_ex.
+  - eexists _; set_solver.
+  - eexists _; set_solver.
+  - eexists _; simpl; In_intro; set_solver.
+  - eexists _; simpl; In_intro; set_solver.
+  - eexists _; simpl; In_intro; set_solver.
 Qed.
 
 (* ====== Denotational Semantics of Boolean Expressions ======= *)
@@ -400,7 +382,7 @@ Lemma while_body_monotone :
                       /\  (st'', st') ∈ phi) }}).
 Proof.
   unfold Monotone, subseteq, set_subseteq_instance; intros.
-  destruct x; In_inversion.
+  destruct x; unfold elem_of in *; In_inversion.
   - subst; left; split; try assumption; reflexivity.
   - right; eexists _; intuition; try eassumption.
     apply H; eassumption.
@@ -417,27 +399,23 @@ Lemma Denotational_A_BigStep_Sound :
     (aeval st a, st) ∈ [[a]]A.
 Proof.
   intros;
-  induction a; simpl; try solve [constructor]; unfold In;
-  eexists _, _; repeat split; try eassumption.
+    induction a; simpl; try solve [constructor]; In_intro;
+    repeat split; try eassumption.
 Qed.
 
 Lemma Denotational_B_BigStep_Sound :
   forall b st,
     (beval st b, st) ∈ [[b]]B.
 Proof.
-  induction b; simpl; intros; try solve [constructor]; unfold In.
-  - eexists (aeval st a1), (aeval st a2); intuition.
-    + apply Denotational_A_BigStep_Sound.
-    + apply Denotational_A_BigStep_Sound.
-    + rewrite H. apply PeanoNat.Nat.eqb_refl.
+  induction b; simpl; intros; In_inversion; In_intro; simpl; eauto;
+    try apply Denotational_A_BigStep_Sound.
+  - split; intros.
+    + rewrite H; eapply PeanoNat.Nat.eqb_refl.
     + eapply PeanoNat.Nat.eqb_eq; assumption.
-  - eexists (aeval st a1), (aeval st a2); intuition.
-    + apply Denotational_A_BigStep_Sound.
-    + apply Denotational_A_BigStep_Sound.
+  - split; intros.
     + apply Nat.leb_le; auto.
     + apply Nat.leb_le; auto.
-  - In_intro. rewrite Bool.negb_involutive. apply IHb.
-  - eexists _, _; intuition.
+  - rewrite negb_involutive; eapply IHb.
 Qed.
 
 Lemma BigStep_Denotational_Sound :
@@ -445,12 +423,10 @@ Lemma BigStep_Denotational_Sound :
     st =[c]=> st' -> (st, st') ∈ [[c]].
 Proof.
   intros.
-  induction H; simpl; try solve [econstructor]; unfold In.
+  induction H; simpl; try solve [econstructor]; In_intro;
+    try reflexivity; try eassumption.
   - (* E_Ass *)
-    eexists; split; try reflexivity.
     rewrite <- H; eapply Denotational_A_BigStep_Sound.
-  - (* E_Seq *)
-    eexists; split; try reflexivity; eassumption.
   - (* E_IfTrue *)
     left; subst; split; try eassumption.
     rewrite <- H; eapply Denotational_B_BigStep_Sound.
@@ -483,16 +459,10 @@ Lemma BigStep_A_Denotational_Adequate :
     -> v = aeval st a.
 Proof.
   induction a; simpl; intros st v H;
-    unfold In in H; try eassumption.
-  - destruct H as [v1 [v2 [denote_a1 [denote_a2 v_eq] ] ] ]; subst.
-    apply IHa1 in denote_a1; apply IHa2 in denote_a2.
-    subst; reflexivity.
-  - destruct H as [v1 [v2 [denote_a1 [denote_a2 v_eq] ] ] ]; subst.
-    apply IHa1 in denote_a1; apply IHa2 in denote_a2.
-    subst; reflexivity.
-  - destruct H as [v1 [v2 [denote_a1 [denote_a2 v_eq] ] ] ]; subst.
-    apply IHa1 in denote_a1; apply IHa2 in denote_a2.
-    subst; reflexivity.
+    try eassumption; In_inversion.
+  - erewrite <- IHa1, <- IHa2; eauto.
+  - erewrite <- IHa1, <- IHa2; eauto.
+  - erewrite <- IHa1, <- IHa2; eauto.
 Qed.
 
 Lemma BigStep_B_Denotational_Adequate :
@@ -500,18 +470,13 @@ Lemma BigStep_B_Denotational_Adequate :
     (v, st) ∈ [[b]]B
     -> beval st b = v.
 Proof.
-  induction b; intros st v H; In_inversion.
-  - rewrite H. reflexivity.
-  - rewrite H. reflexivity.
-  - destruct H as [v1 [v2 [denote_a1 [denote_a2 v_eq] ] ] ]; subst; simpl.
-    apply BigStep_A_Denotational_Adequate in denote_a1.
-    apply BigStep_A_Denotational_Adequate in denote_a2.
-    subst.
+  induction b; simpl; intros st v H; In_inversion; auto.
+  - apply BigStep_A_Denotational_Adequate in H.
+    apply BigStep_A_Denotational_Adequate in H0.
+    simpl in *; subst.
     destruct (Nat.eqb (aeval st a1) (aeval st a2)) eqn: ?; intuition.
-    + rewrite H; try reflexivity.
-      apply PeanoNat.Nat.eqb_eq.
-      assumption.
-    + apply PeanoNat.Nat.eqb_neq in Heqb.
+    + apply PeanoNat.Nat.eqb_eq in Heqb; rewrite Heqb in H1; firstorder.
+    + apply PeanoNat.Nat.eqb_neq in Heqb; firstorder.
       destruct v; eauto.
   (* Uncomment to account for larger set of boolean expressions in SF. *)
   (* - destruct H as [v1 [v2 [denote_a1 [denote_a2 v_eq] ] ] ]; subst; simpl.
@@ -537,10 +502,9 @@ Proof.
       apply Compare_dec.leb_complete in Heqb; lia.
     + destruct v; eauto; intuition.
       apply Compare_dec.leb_complete_conv in Heqb; lia. *)
-  - destruct H as [v1 [v2 [denote_a1 [denote_a2 v_eq] ] ] ]; subst; simpl.
-    apply BigStep_A_Denotational_Adequate in denote_a1.
-    apply BigStep_A_Denotational_Adequate in denote_a2.
-    subst. intuition.
+  - apply BigStep_A_Denotational_Adequate in H.
+    apply BigStep_A_Denotational_Adequate in H0.
+    simpl in *; subst. firstorder; simpl in *.
     destruct v; eauto; intuition.
     + apply Nat.leb_le; eauto.
     + apply leb_iff_conv.
@@ -551,10 +515,7 @@ Proof.
     simpl; rewrite IHb with (v := negb v).
     + apply Bool.negb_involutive.
     + apply H.
-  - simpl in *.
-    destruct H as [v1 [v2 [denote_b1 [denote_b2 v_eq] ] ] ]; subst; simpl.
-    erewrite IHb1, IHb2 by eassumption.
-    reflexivity.
+  - erewrite IHb1, IHb2 by eassumption; eauto.
 Qed.
 
 Lemma Denotational_BigStep_Adequate :
@@ -563,9 +524,9 @@ Lemma Denotational_BigStep_Adequate :
 Proof.
   induction c; simpl; intros st st' denote_c; In_inversion.
   - (* skip *)
-    subst; econstructor.
+    econstructor.
   - (* Assignment *)
-    subst; econstructor.
+    econstructor.
     erewrite BigStep_A_Denotational_Adequate; try reflexivity; assumption.
   - (* Sequence *)
     subst; econstructor.
@@ -579,7 +540,7 @@ Proof.
       erewrite BigStep_B_Denotational_Adequate; try reflexivity; assumption.
       apply IHc2; eassumption.
   - apply LFP_unfold in denote_c; try apply while_body_monotone.
-    In_inversion.
+    unfold elem_of in *; In_inversion.
     + rewrite H0; econstructor.
       erewrite BigStep_B_Denotational_Adequate; try reflexivity; assumption.
     + eapply E_WhileTrue.

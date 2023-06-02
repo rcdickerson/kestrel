@@ -32,7 +32,7 @@ Section Equiv.
 (* Two aithmetic expressions are semantically equivalent if their denotation is
    the same set of states and values. *)
 Definition aexp_eqv (a a' : aexp) : Prop :=
-  Same_set ([[ a ]]A) ([[ a' ]]A).
+  [[ a ]]A ≡ [[ a' ]]A.
 
 Notation "a1 '==A' a2 " := (aexp_eqv a1 a2) (at level 40).
 
@@ -41,15 +41,15 @@ Notation "a1 '==A' a2 " := (aexp_eqv a1 a2) (at level 40).
    transititve, and symmetric for 'free'. *)
 Lemma aexp_eqv_refl : forall (a : aexp),
     a ==A a.
-Proof. intro; apply Same_set_refl. Qed.
+Proof. set_solver. Qed.
 
 Lemma aexp_eqv_sym : forall (a1 a2 : aexp),
     a1 ==A a2 -> a2 ==A a1.
-Proof. intros; apply Same_set_sym; assumption. Qed.
+Proof. set_solver.  Qed.
 
 Lemma aexp_eqv_trans : forall (a1 a2 a3 : aexp),
     a1 ==A a2 -> a2 ==A a3 -> a1 ==A a3.
-Proof. intros; eapply Same_set_trans; eassumption. Qed.
+Proof. set_solver. Qed.
 
 (* We can use the following command to register the fact that our
    notion of equivalence for arithmetic expressions is actually an
@@ -67,32 +67,39 @@ Add Parametric Relation : aexp aexp_eqv
 Example aexp_tactic_ex : forall (a1 a2 a3 : aexp),
     a1 ==A a2 -> a3 ==A a2 -> a1 ==A a3.
 Proof.
-  intros.
-  symmetry in H.
-  symmetry.
-  transitivity a2.
-  assumption.
-  assumption.
+  set_solver.
+Qed.
+
+Lemma BigStep_aexp_eqv :
+  forall a1 a2,
+    a1 ==A a2 ->
+    forall st, aeval st a1 = aeval st a2.
+Proof.
+
+  intros; unfold aexp_eqv in H.
+  apply BigStep_A_Denotational_Adequate.
+  apply H.
+  apply Denotational_A_BigStep_Sound.
 Qed.
 
 (* Equivalence of boolean expressions is defined similarly. *)
 
 Definition bexp_eqv (b b' : bexp) : Prop :=
-  Same_set ([[ b ]]B) ([[ b' ]]B).
+  [[ b ]]B ≡ [[ b' ]]B.
 
 Notation "b1 '==B' b2 " := (bexp_eqv b1 b2) (at level 40).
 
 Lemma bexp_eqv_refl : forall (b : bexp),
     b ==B b.
-Proof. intro; apply Same_set_refl. Qed.
+Proof. set_solver. Qed.
 
 Lemma bexp_eqv_sym : forall (b1 b2 : bexp),
     b1 ==B b2 -> b2 ==B b1.
-Proof. intros; apply Same_set_sym; assumption. Qed.
+Proof. set_solver. Qed.
 
 Lemma bexp_eqv_trans : forall (b1 b2 b3 : bexp),
     b1 ==B b2 -> b2 ==B b3 -> b1 ==B b3.
-Proof. intros; eapply Same_set_trans; eassumption. Qed.
+Proof. set_solver. Qed.
 
 #[global]
 Add Parametric Relation : bexp bexp_eqv
@@ -103,16 +110,28 @@ Add Parametric Relation : bexp bexp_eqv
 
 Theorem beq_eqv_example : forall a, <{ a = a }> ==B <{ true }>.
 Proof.
-  split; simpl; intros (n, st) In_st.
+  intros. intros (n, st); split; simpl; intros In_st.
   - In_inversion.
-    erewrite aexp_eqv_unique with (m := x) (n := x0) in H1 by eassumption.
+    erewrite aexp_eqv_unique with (m := v1) (n := v2) in H1 by eassumption.
+    unfold elem_of at 1, PSet_In_ElemOf, Fixpoints.In in H1.
     rewrite <- H1.
     reflexivity.
   - In_inversion.
     In_intro.
-    destruct (denote_aexp_defined a st) as [m denote_a].
-    exists m, m; repeat split; try assumption.
-    subst; reflexivity.
+    + apply Denotational_A_BigStep_Sound.
+    + apply Denotational_A_BigStep_Sound.
+    + firstorder.
+Qed.
+
+Lemma BigStep_bexp_eqv :
+  forall b1 b2,
+    b1 ==B b2 ->
+    forall st, beval st b1 = beval st b2.
+Proof.
+  intros; unfold bexp_eqv in H.
+  apply BigStep_B_Denotational_Adequate.
+  apply H.
+  apply Denotational_B_BigStep_Sound.
 Qed.
 
 (* We can once again prove some congrence facts about the
@@ -128,17 +147,16 @@ Add Parametric Morphism : BEq
       as beq_eqv_cong.
 Proof.
   intros a1 a1' a1_eqv a2 a2' a2_eqv.
-  split; intros (b, st) v_In.
+  unfold bexp_eqv.
+  intros (b, st); split; intros v_In.
   - simpl in *; In_inversion; In_intro.
-    exists x, x0.
-    repeat split; try tauto.
-    + apply a1_eqv; assumption.
-    + apply a2_eqv; assumption.
+    apply a1_eqv; apply H.
+    apply a2_eqv; apply H0.
+    set_solver.
   - simpl in *; In_inversion; In_intro.
-    exists x, x0.
-    repeat split; try tauto.
-    + apply a1_eqv; assumption.
-    + apply a2_eqv; assumption.
+    apply a1_eqv; apply H.
+    apply a2_eqv; apply H0.
+    set_solver.
 Qed.
 
 (* Lemma ble_eqv_cong : forall a1 a2 a1' a2',
@@ -150,18 +168,16 @@ Add Parametric Morphism : BLe
     with signature aexp_eqv ==> aexp_eqv ==> bexp_eqv
       as ble_eqv_cong.
 Proof.
-  intros a1 a1' a1_eqv a2 a2' a2_eqv; split;
-    simpl; intros (b, st) v_In; In_inversion.
-  - In_intro.
-    exists x, x0.
-    repeat split; try tauto.
-    + apply a1_eqv; assumption.
-    + apply a2_eqv; assumption.
-  - In_intro.
-    exists x, x0.
-    repeat split; try tauto.
-    + apply a1_eqv; assumption.
-    + apply a2_eqv; assumption.
+  intros a1 a1' a1_eqv a2 a2' a2_eqv;
+    intros (b, st); split; intros v_In.
+  - simpl in *; In_inversion; In_intro.
+    apply a1_eqv; apply H.
+    apply a2_eqv; apply H0.
+    set_solver.
+  - simpl in *; In_inversion; In_intro.
+    apply a1_eqv; apply H.
+    apply a2_eqv; apply H0.
+    set_solver.
 Qed.
 
 (* Lemma bnot_eqv_cong : forall b1 b1',
@@ -172,10 +188,7 @@ Add Parametric Morphism : BNot
     with signature bexp_eqv ==> bexp_eqv
       as bnot_eqv_cong.
 Proof.
-  intros b1 b1' b1_eqv; split;
-    simpl; intros (b, st) v_In; In_inversion.
-  - In_intro. apply b1_eqv; assumption.
-  - In_intro. apply b1_eqv; assumption.
+  intros b1 b1' b1_eqv (b, st); split; set_solver.
 Qed.
 
 (* Lemma band_eqv_cong : forall b1 b2 b1' b2',
@@ -187,29 +200,23 @@ Add Parametric Morphism : BAnd
     with signature bexp_eqv ==> bexp_eqv ==> bexp_eqv
       as band_eqv_cong.
 Proof.
-  intros b1 b1' b1_eqv b2 b2' b2_eqv; split;
-    simpl; intros (b, st) v_In; In_inversion.
-  - In_intro.
-    exists x, x0; repeat split; try assumption.
-    apply b1_eqv; assumption.
-    apply b2_eqv; assumption.
-  - In_intro.
-    exists x, x0; repeat split; try assumption.
-    apply b1_eqv; assumption.
-    apply b2_eqv; assumption.
+  intros b1 b1' b1_eqv b2 b2' b2_eqv (b, st); split;
+    simpl; intros  v_In; In_inversion; In_intro;
+    first [apply b1_eqv; eassumption
+          | apply b2_eqv; eassumption
+          | reflexivity].
 Qed.
 
 (* As expected, two commands are semantically equivalent if their
    denotation is the same set of starting and final states. *)
 
-Definition com_eqv (c c' : com) : Prop :=
-  Same_set ([[ c ]]) ([[c']]).
+Definition com_eqv (c c' : com) : Prop := [[ c ]] ≡ [[c']].
 
 Notation "c1 '==C' c2 " := (com_eqv c1 c2) (at level 40).
 
 Lemma com_eqv_refl : forall (c : com),
     c ==C c.
-Proof. intro; apply Same_set_refl. Qed.
+Proof. set_solver. Qed.
 
 Lemma com_eqv_sym : forall (c1 c2 : com),
     c1 ==C c2 -> c2 ==C c1.
@@ -240,13 +247,10 @@ Add Parametric Morphism : CSeq
     with signature com_eqv ==> com_eqv ==> com_eqv
       as seq_eq_cong.
 Proof.
-  intros; split; simpl; intros (st, st') X_In; In_inversion.
-  - exists x1; split.
-    + apply H; assumption.
-    + apply H0; assumption.
-  - exists x1; split.
-    + apply H; assumption.
-    + apply H0; assumption.
+  intros c1 c1' c1_eqv c2 c2' c2_eqv (st, st'); split; simpl;
+    intros; In_inversion; In_intro;
+    first [ apply c1_eqv; eauto
+          | apply c2_eqv; eauto].
 Qed.
 
 (* Lemma if_eq_cong : forall b c1 c2 c1' c2',
@@ -258,20 +262,8 @@ Add Parametric Morphism : CIf
     with signature bexp_eqv ==> com_eqv ==> com_eqv ==> com_eqv
       as if_eq_cong.
 Proof.
-  intros; split; simpl; intros [? ?] X_In; In_inversion.
-  - unfold elem_of, PSet_In_ElemOf, Fixpoints.In.
-    left; intuition.
-    + apply H. assumption.
-    + apply H0. assumption.
-  - right; intuition.
-    + apply H. assumption.
-    + apply H1. assumption.
-  - left; intuition.
-    + apply H. assumption.
-    + apply H0. assumption.
-  - right; intuition.
-    + apply H. assumption.
-    + apply H1. assumption.
+  intros b b' b_eqv c1 c1' c1_eqv c2 c2' c2_eqv (st, st'); split; simpl;
+    intros; In_inversion; In_intro; firstorder.
 Qed.
 
 (* Lemma while_eq_cong : forall b c1 c1',
@@ -282,41 +274,30 @@ Add Parametric Morphism : CWhile
     with signature bexp_eqv ==> com_eqv ==> com_eqv
       as while_eq_cong.
 Proof.
-  intros; split; simpl; intros ? X_In; In_inversion.
-  - intuition.
-    + eapply Ind in X_In.
-      apply X_In.
-      unfold FClosed.
-      intros [? ?] ?.
-      In_inversion.
-      intuition; subst.
-      * apply LFP_fold.
-        apply while_body_monotone.
-        In_intro.
-        left; intuition.
-        apply H; assumption.
-      * apply LFP_fold.
-        apply while_body_monotone.
-        right. exists x1; intuition.
-        -- apply H; assumption.
-        -- apply H0; assumption.
-  - intuition.
-    + eapply Ind in X_In.
-      apply X_In.
-      unfold FClosed.
-      intros [? ?] ?.
-      In_inversion.
-      intuition; subst.
-      * apply LFP_fold.
-        apply while_body_monotone.
-        left; intuition.
-        apply H; assumption.
-      * apply LFP_fold.
-        apply while_body_monotone.
-        right.
-        exists x1; intuition.
-        -- apply H; assumption.
-        -- apply H0; assumption.
+  intros b b' b_eqv c1 c1' c1_eqv (st, st'); split; simpl;
+    intros; In_inversion; In_intro.
+  - eapply Ind in H.
+    apply H.
+    unfold FClosed.
+    intros [? ?] ?.
+    In_inversion.
+    + apply LFP_fold.
+      * apply while_body_monotone.
+      * firstorder.
+    + apply LFP_fold.
+      apply while_body_monotone.
+      firstorder.
+  - eapply Ind in H.
+    apply H.
+    unfold FClosed.
+    intros [? ?] ?.
+    In_inversion.
+    + apply LFP_fold.
+      * apply while_body_monotone.
+      * firstorder.
+    + apply LFP_fold.
+      * apply while_body_monotone.
+      * firstorder.
 Qed.
 
 (* Using the denotational semantics of commands, we can prove that
@@ -325,18 +306,15 @@ Lemma seq_skip_opt :
   forall c,
     <{skip; c}> ==C c.
 Proof.
-  intros c; split; intros (st, st') In_st.
+  intros c (st, st'); split; intros In_st.
   - (* (st, st') ∈ [[skip; c]] -> (st, st') ∈ [[c]] *)
-    simpl in *; In_inversion.
-    subst.
-    In_intro; assumption.
+    simpl in *; In_inversion; firstorder.
   - (* (st, st') ∈ [[c]] -> (st, st') ∈ [[skip; c]] *)
     (* In this case, we need to show that (st, st') ∈ [[skip; c]] by
        giving an intermediate state [st''], such that (st, st'') ∈
        [[skip]] and (st'', st') ∈ [[c]]. Since [[skip]] only contains
        pairs of the same state, the state [st] fits the bill.  *)
     simpl in *. In_intro.
-    exists st; split.
     + reflexivity.
     + assumption.
 Qed.
@@ -348,8 +326,7 @@ Theorem if_true: forall b c1 c2,
     b ==B <{true}>  ->
     <{ if b then c1 else c2 end }> ==C  c1.
 Proof.
-  intros b c1 c2 Hb.
-  split; intros (st, st') st_In.
+  intros b c1 c2 Hb (st, st'); split; intros st_In.
   - (* We need to show that (st, st') ∈ [[<{ if b then c1 else c2 end }>]]
        implies (st, st') ∈ [[c1]] *)
     (* By simplifying [[<{ if b then c1 else c2 end }>]], we can do
@@ -361,10 +338,7 @@ Proof.
       assumption.
     + (* In the second case, [[b ]]B ∈ (false, st) contradicts our assumption that
          [[b]]B ⊆ [[<{ true }>]]B  *)
-      destruct Hb.
-      simpl in H1.
-      apply H1 in H.
-      In_inversion.
+      apply Hb in H; simpl in H; In_inversion.
   - (* In the other direction, We need to show that (st, st') ∈ [[c1]] implies
        (st, st') ∈ [[<{ if b then c1 else c2 end }>]].
 
@@ -372,10 +346,9 @@ Proof.
       (st, st') ∈ {{(st0, st'0) | (true, st0) ∈ [[b ]]B /\ (st0, st'0) ∈ [[c1]]}},
       which follows immediately from the assumption that (st, st') ∈ [[c1]] and
       [[<{ true }>]]B ⊆ [[b]]B.*)
-    simpl. left; split.
-    + destruct Hb as [b_sub_tre true_sub_b].
-      apply true_sub_b. simpl. In_intro.
-    + apply st_In.
+    left; split.
+    + firstorder.
+    + assumption.
 Qed.
 
 Lemma If_while_eq :
@@ -384,20 +357,15 @@ Lemma If_while_eq :
 Proof.
   unfold com_eqv; intros.
   eapply Same_set_trans.
-  simpl; apply LFP_unfold.
-  apply while_body_monotone.
-  simpl.
-  split; intros x In_x.
-  - destruct x; In_inversion.
-    (* The denotation of [if] is built from the denotations of each branch *)
-    + right. intuition. subst.
-      reflexivity.
-    + left. intuition.
-      eexists; intuition; eassumption.
-  - destruct x; In_inversion.
-    + right. eexists. intuition. eassumption.
-      apply H1.
-    + left. intuition.
+  - simpl; apply LFP_unfold.
+    apply while_body_monotone.
+  - simpl; intros (st, st'); split; In_intro; intros;
+      In_inversion.
+    + (* The denotation of [if] is built from the denotations of each branch *)
+      right. firstorder.
+    + left. firstorder.
+    + right. firstorder.
+    + left. firstorder.
 Qed.
 
 End Equiv.

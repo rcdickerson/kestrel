@@ -19,21 +19,21 @@ Section Equiv.
   (* Our notion of equivalence for aligned programs is defined via
      CoreRel's denotational semantics. *)
   Definition align_eqv (r1 r2 : algn_com) : Prop :=
-    Same_set ([[ r1 ]]R) ([[ r2 ]]R).
+    [[ r1 ]]R ≡ [[ r2 ]]R.
 
   Notation "r1 '==R' r2 " := (align_eqv r1 r2) (at level 40).
 
   Lemma align_com_eqv_refl : forall (r : algn_com),
       r ==R r.
-  Proof. intro; apply Same_set_refl. Qed.
+  Proof. set_solver. Qed.
 
   Lemma align_com_eqv_sym : forall (r1 r2 : algn_com),
       r1 ==R r2 -> r2 ==R r1.
-  Proof. intros; apply Same_set_sym; assumption. Qed.
+  Proof. set_solver. Qed.
 
   Lemma align_com_eqv_trans : forall (r1 r2 r3 : algn_com),
       r1 ==R r2 -> r2 ==R r3 -> r1 ==R r3.
-  Proof. intros; eapply Same_set_trans; eassumption. Qed.
+  Proof. set_solver. Qed.
 
   #[global]
    Add Parametric Relation : algn_com align_eqv
@@ -51,12 +51,7 @@ Section Equiv.
     with signature com_eqv ==> com_eqv ==> align_eqv
       as block_eqv_cong.
   Proof.
-    intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
-      simpl in *.
-    - apply H in H1; apply H0 in H2.
-      In_intro; eauto.
-    - apply H in H1; apply H0 in H2.
-      In_intro; eauto.
+    intros c1 c1' c1_eqv c2 c2' c2_eqv ((st1, st2), (st1', st2')); firstorder.
   Qed.
 
   #[global]
@@ -64,12 +59,12 @@ Section Equiv.
     with signature align_eqv ==> align_eqv ==> align_eqv
       as ACSeq_eqv_cong.
   Proof.
-    intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
-      simpl in *.
-    - apply H in H1; apply H0 in H2.
-      In_intro; eauto.
-    - apply H in H1; apply H0 in H2.
-      In_intro; eauto.
+    intros r1 r1' r1_eqv c2 c2' c2_eqv ((st1, st2), (st1', st2')); simpl; split;
+      intros; In_inversion; simpl in *; In_intro.
+    - apply r1_eqv; eauto.
+    - apply c2_eqv; eauto.
+    - apply r1_eqv; eauto.
+    - apply c2_eqv; eauto.
   Qed.
 
   #[global]
@@ -77,20 +72,15 @@ Section Equiv.
     with signature bexp_eqv ==> bexp_eqv ==> align_eqv ==> align_eqv ==> align_eqv
       as ACIf_eqv_cong.
   Proof.
-    intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
-      simpl in *; In_intro.
-    - apply H in H3; apply H0 in H4; apply H1 in H5.
-      left; left; In_intro; intuition.
-    - apply H in H3; apply H2 in H4.
-      left; right; In_intro; intuition.
-    - apply H0 in H3; apply H2 in H4.
-      right; In_intro; intuition.
-    - apply H in H3; apply H0 in H4; apply H1 in H5.
-      left; left; In_intro; intuition.
-    - apply H in H3; apply H2 in H4.
-      left; right; In_intro; intuition.
-    - apply H0 in H3; apply H2 in H4.
-      right; In_intro; intuition.
+    intros b1 b1' b1_eqv b2 b2' b2_eqv r1 r1' r1_eqv r2 r2' r2_eqv
+           ((st1, st2), (st1', st2')); simpl; split; intros;
+      In_inversion; simpl in *.
+    - firstorder.
+    - firstorder.
+    - firstorder.
+    - firstorder.
+    - firstorder.
+    - firstorder.
   Qed.
 
   #[global]
@@ -98,54 +88,39 @@ Section Equiv.
     with signature bexp_eqv ==> bexp_eqv ==> align_eqv ==> align_eqv
       as ACWhile_eqv_cong.
   Proof.
-    intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
-      simpl in *; In_intro.
-    - eapply Ind in X_In.
-      apply X_In.
-      unfold FClosed.
-      intros ((stL, stR), (stL', stR')) ?.
-      In_inversion.
-      intuition; subst.
-      * apply LFP_fold.
-        apply while_body_monotone.
-        In_intro.
-        left; left; In_intro; intuition eauto.
-        apply H; eauto.
-      * apply LFP_fold.
-        apply while_body_monotone.
-        In_intro.
-        left; right; In_intro; intuition eauto.
-        apply H0; eauto.
-      * apply LFP_fold.
-        apply while_body_monotone.
-        right. In_intro; intuition.
-        -- apply H; assumption.
-        -- apply H0; assumption.
-        -- eexists _, _; split; eauto.
-           apply H1; assumption.
-    - eapply Ind in X_In.
-      apply X_In.
-      unfold FClosed.
-      intros ((stL, stR), (stL', stR')) ?.
-      In_inversion.
-      intuition; subst.
-      * apply LFP_fold.
-        apply while_body_monotone.
-        In_intro.
-        left; left; In_intro; intuition eauto.
-        apply H; eauto.
-      * apply LFP_fold.
-        apply while_body_monotone.
-        In_intro.
-        left; right; In_intro; intuition eauto.
-        apply H0; eauto.
-      * apply LFP_fold.
-        apply while_body_monotone.
-        right. In_intro; intuition.
-        -- apply H; assumption.
-        -- apply H0; assumption.
-        -- eexists _, _; split; eauto.
-           apply H1; assumption.
+    intros b1 b1' b1_eqv b2 b2' b2_eqv r1 r1' r1_eqv
+           ((st1, st2), (st1', st2')); simpl; split; intros;
+      In_inversion; simpl in *.
+    - eapply Ind in H.
+      + apply H.
+      + unfold FClosed.
+        intros ((stL, stR), (stL', stR')) ?.
+        In_inversion.
+        compute in H1, H2; simpl in H0; subst.
+        * apply LFP_fold.
+          apply while_body_monotone.
+          firstorder.
+        * apply LFP_fold.
+          apply while_body_monotone.
+          firstorder.
+        * apply LFP_fold.
+          apply while_body_monotone.
+          firstorder.
+    - eapply Ind in H.
+      + apply H.
+      + unfold FClosed.
+        intros ((stL, stR), (stL', stR')) ?.
+        In_inversion.
+        compute in H1, H2; simpl in H0; subst.
+        * apply LFP_fold.
+          apply while_body_monotone.
+          firstorder.
+        * apply LFP_fold.
+          apply while_body_monotone.
+          firstorder.
+        * apply LFP_fold.
+          apply while_body_monotone.
+          firstorder.
   Qed.
 
   (* More interestingly, we can prove analogues of algebraic
@@ -154,157 +129,87 @@ Section Equiv.
   Lemma rel_def : forall s1 s2,
       <{ <|s1 | s2|> }> ==R <{ <| s1 | skip|>;; <|skip | s2 |> }>.
   Proof.
-    intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
-      simpl in *; In_intro; subst; intuition eauto.
-    eexists _, _; intuition eauto.
+    intros s1 s2 ((st1, st2), (st1', st2')); firstorder;
+      simpl in *; In_inversion;
+      firstorder.
   Qed.
 
   Lemma rel_comm : forall s1 s2,
       <{ <| skip | s2 |>;; <|s1 | skip |> }> ==R <{ <| s1 | skip|>;; <|skip | s2 |> }>.
   Proof.
-    intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
-      simpl in *; In_intro; subst; intuition eauto.
-    eexists _, _; intuition eauto.
-    eexists _, _; intuition eauto.
+    intros s1 s2 ((st1, st2), (st1', st2')); firstorder;
+      simpl in *; In_inversion;
+      firstorder.
   Qed.
 
   Lemma prod_hom_l : forall s1 s2,
       <{ <|s1; s2 | skip|> }> ==R <{ <| s1 | skip|>;; <|s2 | skip |> }>.
   Proof.
-    intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
-      simpl in *; In_intro; subst; intuition eauto.
-    eexists _, _; intuition eauto.
+    intros s1 s2 ((st1, st2), (st1', st2')); firstorder;
+      simpl in *; In_inversion;
+      firstorder.
   Qed.
 
   Lemma prod_hom_r : forall s1 s2,
       <{ <| skip | s1; s2|> }> ==R <{ <| skip | s1 |>;; <|skip | s2 |> }>.
   Proof.
-    intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
-      simpl in *; In_intro; subst; intuition eauto.
-    eexists _, _; intuition eauto.
+    intros s1 s2 ((st1, st2), (st1', st2')); firstorder;
+      simpl in *; In_inversion;
+      firstorder.
   Qed.
 
   Lemma prod_seq_assoc : forall r1 r2 r3,
       <{ (r1 ;; r2);; r3  }> ==R <{ r1;; r2;; r3 }>.
   Proof.
-    intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
-      simpl in *; In_intro; subst; intuition eauto.
-    eexists _, _; intuition eauto.
-    eexists _, _; intuition eauto.
+    intros r1 r2 r3 ((st1, st2), (st1', st2')); firstorder;
+      simpl in *; In_inversion; In_intro; eauto; firstorder.
   Qed.
 
   Lemma whileR_false_L : forall b1 b2 r,
       bexp_eqv b1 <{false}> ->
       <{ whileR <|b1 | b2|> do r end  }> ==R <{ <|skip|skip|> }> .
   Proof.
-    intros.
-    rewrite H; clear H.
-    intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
-      simpl in *; In_intro; subst; intuition eauto.
-    + apply LFP_fold in X_In; try apply while_body_monotone.
-      In_inversion.
-      * eauto.
-      * eauto.
-      *   unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
-          destruct x as ((?, ?), (?, ?)).
-          In_inversion.
-            -- simpl in *; left; left; In_intro; intuition.
-            -- left; right; In_intro; intuition.
-      + apply LFP_fold in X_In; try apply while_body_monotone.
-        In_inversion.
-        * eauto.
-        * eauto.
-        *   unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
-            destruct x as ((?, ?), (?, ?)).
-            In_inversion.
-            -- simpl in *; left; left; In_intro; intuition.
-            -- left; right; In_intro; intuition.
-      + eapply Ind with (F := fun rec st => st = ((st1', st2'), (st1', st2'))).
-        unfold FClosed, subseteq, set_subseteq_instance; simpl.
-        intros ((?, ?), (?, ?)) ?; In_inversion; injection H; intros; subst.
-        apply LFP_fold.
-        -- unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
-           destruct x as ((?, ?), (?, ?)).
-           In_inversion.
-           ++ simpl in *; left; left; In_intro; intuition.
-           ++ left; right; In_intro; intuition.
-        -- left; left; In_intro; intuition.
-        -- apply LFP_fold.
-           ++ unfold Monotone, subseteq, set_subseteq_instance, rel_state; eauto.
-           ++ In_intro.
+    intros b1 b2 r b1_eqv ((st1, st2), (st1', st2')); split;
+      intros; In_inversion; firstorder;
+      apply Denotational_BigStep_Adequate in H.
+    - eapply BigStep_bexp_eqv with (st := st1) in b1_eqv.
+      inversion H; simpl in *; try congruence.
+    - eapply BigStep_bexp_eqv with (st := st1) in b1_eqv.
+      inversion H; simpl in *; try congruence.
   Qed.
 
   Lemma whileR_false_R : forall b1 b2 r,
       bexp_eqv b2 <{false}> ->
       <{ whileR <|b1 | b2|> do r end  }> ==R <{ <|skip|skip|> }> .
   Proof.
-    intros.
-    rewrite H; clear H.
-    intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
-      simpl in *; In_intro; subst; intuition eauto.
-    + apply LFP_fold in X_In; try apply while_body_monotone.
+    intros b1 b2 r b2_eqv ((st1, st2), (st1', st2')); split;
+      intros; In_inversion; firstorder.
+    - simpl in H; apply LFP_fold in H; try apply while_body_monotone.
       In_inversion.
-      * eauto.
-      * eauto.
-      *   unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
-          destruct x as ((?, ?), (?, ?)).
-          In_inversion.
-          -- simpl in *; left; left; In_intro; intuition.
-          -- left; right; In_intro; intuition.
-    + apply LFP_fold in X_In; try apply while_body_monotone.
+      + compute in H0, H1; subst; firstorder.
+      + compute in H0, H1; subst; firstorder.
+      + simpl in *.
+        apply b2_eqv in H0; compute in H0; discriminate.
+    - simpl in H; apply LFP_fold in H; try apply while_body_monotone.
       In_inversion.
-      * eauto.
-      * eauto.
-      *   unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
-          destruct x as ((?, ?), (?, ?)).
-          In_inversion.
-          -- simpl in *; left; left; In_intro; intuition.
-          -- left; right; In_intro; intuition.
-    + eapply Ind with (F := fun rec st => st = ((st1', st2'), (st1', st2'))).
-      unfold FClosed, subseteq, set_subseteq_instance; simpl.
-      intros ((?, ?), (?, ?)) ?; In_inversion; injection H; intros; subst.
-      apply LFP_fold.
-      -- unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
-         destruct x as ((?, ?), (?, ?)).
-         In_inversion.
-         ++ simpl in *; left; left; In_intro; intuition.
-         ++ left; right; In_intro; intuition.
-      -- left; right; In_intro; intuition.
-      -- apply LFP_fold.
-         ++ unfold Monotone, subseteq, set_subseteq_instance, rel_state; eauto.
-         ++ In_intro.
+      + compute in H0, H1; subst; firstorder.
+      + compute in H0, H1; subst; firstorder.
+      + simpl in *.
+        apply b2_eqv in H0; compute in H0; discriminate.
   Qed.
 
   Lemma whileR_false_L' : forall b1 b2 r st1 st2,
       (denote_B b1) (false, st1) ->
       [[<{ whileR <|b1 | b2|> do r end  }>]]R (st1, st2, (st1, st2)).
   Proof.
-    simpl; intros.
-    apply LFP_fold.
-    - unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
-      destruct x as ((?, ?), (?, ?)).
-      In_inversion.
-      -- simpl in *; left; left; In_intro; intuition.
-      -- left; right; In_intro; intuition.
-      -- right; In_intro; intuition.
-         eexists _, _; eauto.
-    - left; left; In_intro; intuition.
+    firstorder.
   Qed.
 
   Lemma whileR_false_R' : forall b1 b2 r st1 st2,
       (denote_B b2) (false, st2) ->
       [[<{ whileR <|b1 | b2|> do r end  }>]]R (st1, st2, (st1, st2)).
   Proof.
-    simpl; intros.
-    apply LFP_fold.
-    - unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
-      destruct x as ((?, ?), (?, ?)).
-      In_inversion.
-      -- simpl in *; left; left; In_intro; intuition.
-      -- left; right; In_intro; intuition.
-      -- right; In_intro; intuition.
-         eexists _, _; eauto.
-    - left; right; In_intro; intuition.
+    firstorder.
   Qed.
 
   Lemma whileR_false_L'' : forall b1 b2 r st1 st2 st1' st2',
@@ -313,20 +218,12 @@ Section Equiv.
       st1 = st1' /\ st2 = st2'.
   Proof.
     simpl; intros.
-    apply LFP_fold in H0.
-    - In_inversion.
-      + subst; intuition.
-      + subst; intuition.
-      + apply BigStep_B_Denotational_Adequate in H;
-          apply BigStep_B_Denotational_Adequate in H0;
-          congruence.
-    - unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
-      destruct x as ((?, ?), (?, ?)).
-      In_inversion.
-      -- simpl in *; left; left; In_intro; intuition.
-      -- left; right; In_intro; intuition.
-      -- right; In_intro; intuition.
-         eexists _, _; eauto.
+    apply LFP_fold in H0; try apply while_body_monotone.
+    In_inversion.
+    - compute in H0, H1; subst; firstorder.
+    - compute in H0, H1; subst; firstorder.
+    - apply BigStep_B_Denotational_Adequate in H;
+        apply BigStep_B_Denotational_Adequate in H0; simpl in *; congruence.
   Qed.
 
   Lemma whileR_false_R'' : forall b1 b2 r st1 st2 st1' st2',
@@ -335,47 +232,31 @@ Section Equiv.
       st1 = st1' /\ st2 = st2'.
   Proof.
     simpl; intros.
-    apply LFP_fold in H0.
-    - In_inversion.
-      + subst; intuition.
-      + subst; intuition.
-      + apply BigStep_B_Denotational_Adequate in H;
-          apply BigStep_B_Denotational_Adequate in H1;
-          congruence.
-    - unfold Monotone, subseteq, set_subseteq_instance, rel_state; intros.
-      destruct x as ((?, ?), (?, ?)).
-      In_inversion.
-      -- simpl in *; left; left; In_intro; intuition.
-      -- left; right; In_intro; intuition.
-      -- right; In_intro; intuition.
-         eexists _, _; eauto.
+    apply LFP_fold in H0; try apply while_body_monotone.
+    In_inversion.
+    - compute in H0, H1; subst; firstorder.
+    - compute in H0, H1; subst; firstorder.
+    - apply BigStep_B_Denotational_Adequate in H;
+        apply BigStep_B_Denotational_Adequate in H1; simpl in *; congruence.
   Qed.
 
   Lemma whileR_unroll : forall b1 b2 r,
       <{ whileR <|b1 | b2|> do r end  }>
       ==R <{ifR <|b1 | b2|> then r else <|skip|skip|> end;; whileR <|b1 | b2|> do r end}> .
   Proof.
-    intros; split; simpl; intros ((st1, st2), (st1', st2')) X_In; In_inversion;
-      simpl in *; In_intro; subst; intuition eauto.
-    - apply LFP_fold in X_In; try apply while_body_monotone.
-      In_inversion.
-      + eexists _, _; split.
-        * left; right; In_intro; intuition eauto.
-        * subst; eapply whileR_false_L'; eauto.
-      + eexists _, _; split.
-        * right; In_intro; intuition eauto.
-        * subst; eapply whileR_false_R'; eauto.
-      + eexists x, x0; split; eauto.
-        left; left; In_intro; intuition eauto.
-    - apply LFP_fold; try apply while_body_monotone.
-      destruct H as [ [? |? ] | ?]; In_inversion; In_intro.
-      + right; In_intro; intuition eauto.
-      + subst; left; left.
-        In_intro.
-        apply whileR_false_L'' in H0; intuition.
-      + subst; left; right.
-        In_intro.
-        apply whileR_false_R'' in H0; intuition.
+    intros b1 b2 r((st1, st2), (st1', st2')); simpl; split; intros;
+      In_inversion; simpl in *; try firstorder.
+    apply LFP_fold in H; try apply while_body_monotone.
+    In_inversion.
+    - compute in H0, H1; subst; firstorder.
+      In_intro.
+      + firstorder.
+      + eapply whileR_false_L'; eauto.
+    - compute in H0, H1; subst; firstorder.
+      In_intro.
+      + firstorder.
+      + eapply whileR_false_R'; eauto.
+    - simpl in *; firstorder.
   Qed.
 
   Lemma whileR_lockstep : forall b1 b2 s1 s2,
@@ -383,7 +264,7 @@ Section Equiv.
       ==R <{whileR <|b1 | b2|> do <|s1 | s2|> end;;
           <| while b1 do s1 end | while b2 do s2 end |> }>.
   Proof.
-    intros; split. intros ((st1, st2), (st1', st2')) X_In.
+    intros b1 b2 s1 s2 ((st1, st2), (st1', st2')); split; intros X_In.
     - eapply CR.Semantics.BigStep_Denotational_Sound.
       eapply CR.Semantics.Denotational_BigStep_Adequate in X_In.
       inversion X_In; subst; simpl in *; clear X_In.
@@ -410,26 +291,25 @@ Section Equiv.
           econstructor; eauto.
           econstructor; eauto.
           eapply IHceval2; eauto.
-    - intros (rst, (st1', st2')) ?.
-      eapply CR.Semantics.Denotational_BigStep_Adequate in H;
-        inversion H; subst; clear H.
+    - eapply CR.Semantics.Denotational_BigStep_Adequate in X_In;
+        inversion X_In; subst; clear X_In.
       remember <{whileR <| b1 | b2 |> do <| s1 | s2 |> end}> as r eqn:Heqr;
-        revert  st1' st2' Heqr H5; induction H2;
+        revert  st1' st2' Heqr H4; induction H1;
         intros; first [discriminate | injection Heqr; intros; subst; clear Heqr].
-      + clear IHaceval1; specialize (IHaceval2 _ _ eq_refl H5).
+      + clear IHaceval1; specialize (IHaceval2 _ _ eq_refl H4).
         eapply block_eqv_cong.
         eapply If_while_eq.
         eapply If_while_eq.
         eapply CR.Semantics.BigStep_Denotational_Sound.
         eapply CR.Semantics.Denotational_BigStep_Adequate in IHaceval2.
-        revert H H0 H2_ IHaceval2.
+        revert H H0 H1_ IHaceval2.
         econstructor.
         * econstructor; eauto.
-          inversion H2_; subst.
+          inversion H1_; subst.
           econstructor; eauto.
           inversion IHaceval2; subst; intros; eauto.
         * econstructor; eauto.
-          inversion H2_; subst.
+          inversion H1_; subst.
           econstructor; eauto.
           inversion IHaceval2; subst; intros; eauto.
       + eapply CR.Semantics.BigStep_Denotational_Sound; eauto.

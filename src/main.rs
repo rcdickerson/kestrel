@@ -90,11 +90,11 @@ fn main() {
   println!("--------------------------");
 
   let unaligned_eggroll = unaligned_crel.to_eggroll();
-  // println!("\nUnaligned Eggroll");
-  // println!("--------------------------");
-  // let ue_expr: RecExpr<kestrel::eggroll::ast::Eggroll> = unaligned_eggroll.parse().unwrap();
-  // println!("{}", ue_expr.pretty(80));
-  // println!("--------------------------");
+  println!("\nUnaligned Eggroll");
+  println!("--------------------------");
+  let ue_expr: RecExpr<kestrel::eggroll::ast::Eggroll> = unaligned_eggroll.parse().unwrap();
+  println!("{}", ue_expr.pretty(80));
+  println!("--------------------------");
 
   let runner = Runner::default()
     .with_expr(&unaligned_eggroll.parse().unwrap())

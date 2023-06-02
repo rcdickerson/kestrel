@@ -231,23 +231,21 @@ fn expect_statement(sexp: &Sexp) -> Statement {
         }
       },
       Sexp::Atom(Atom::S(s)) if s == "while-lockstep" => {
-        let left_iters = expect_i64(&sexps[1]);
-        let right_iters = expect_i64(&sexps[2]);
-        let cond1 = expect_expression(&sexps[3]);
-        let cond2 = expect_expression(&sexps[4]);
+        let cond1 = expect_expression(&sexps[1]);
+        let cond2 = expect_expression(&sexps[2]);
         let conj = Expression::Binop {
           lhs: Box::new(cond1.clone()),
           rhs: Box::new(cond2.clone()),
           op: BinaryOp::And,
         };
-        let runoff1 = Expression::Binop {
+        let runoff_cond1 = Expression::Binop {
           lhs: Box::new(cond1.clone()),
           rhs: Box::new(Expression::Unop{
             expr: Box::new(cond2.clone()),
             op: UnaryOp::Not}),
           op: BinaryOp::And,
         };
-        let runoff2 = Expression::Binop {
+        let runoff_cond2 = Expression::Binop {
           lhs: Box::new(Expression::Unop{
             expr: Box::new(cond1.clone()),
             op: UnaryOp::Not}),
@@ -255,64 +253,110 @@ fn expect_statement(sexp: &Sexp) -> Statement {
           op: BinaryOp::And,
         };
 
-        let body1 = expect_statement(&sexps[5]);
-        let mut body1_rel = body1.clone();
-        let mut repeats1 = vec!(body1.clone());
-        while (repeats1.len() as i64) < left_iters {
-          let next_iter = Statement::If {
-            condition: Box::new(cond1.clone()),
-            then: Box::new(body1.clone()),
-            els: None,
-          };
-          repeats1.push(next_iter);
-        }
-        if left_iters > 1 {
-          let items = repeats1.iter()
-            .map(|s| BlockItem::Statement(s.clone()))
-            .collect();
-          body1_rel = Statement::Compound(items);
-        }
-
-        let body2 = expect_statement(&sexps[6]);
-        let mut body2_rel = body2.clone();
-        let mut repeats2 = vec!(body2.clone());
-        while (repeats2.len() as i64) < right_iters {
-          let next_iter = Statement::If {
-            condition: Box::new(cond2.clone()),
-            then: Box::new(body2.clone()),
-            els: None,
-          };
-          repeats2.push(next_iter);
-        }
-        if right_iters > 1 {
-          let items = repeats2.iter()
-            .map(|s| BlockItem::Statement(s.clone()))
-            .collect();
-          body2_rel = Statement::Compound(items);
-        }
-
-        let bodies = Statement::Relation {
-          lhs: Box::new(body1_rel),
-          rhs: Box::new(body2_rel),
-        };
+        let runoff_body1 = expect_statement(&sexps[3]);
+        let runoff_body2 = expect_statement(&sexps[4]);
+        let body = expect_statement(&sexps[5]);
 
         let stmts = vec! [
           BlockItem::Statement(Statement::While {
             condition: Box::new(conj),
-            body: Some(Box::new(bodies))}),
+            body: Some(Box::new(body))}),
           BlockItem::Statement(Statement::While {
-            condition: Box::new(runoff1),
-            body: Some(Box::new(body1))}),
+            condition: Box::new(runoff_cond1),
+            body: Some(Box::new(runoff_body1))}),
           BlockItem::Statement(Statement::While {
-            condition: Box::new(runoff2),
-            body: Some(Box::new(body2))}),
+            condition: Box::new(runoff_cond2),
+            body: Some(Box::new(runoff_body2))}),
         ];
         Statement::Compound(stmts)
+      },
+      Sexp::Atom(Atom::S(s)) if s == "while-scheduled" => {
+        expect_while_scheduled(&sexps)
       },
       _ => Statement::Expression(Box::new(expect_expression(&sexp)))
     },
     _ => Statement::Expression(Box::new(expect_expression(&sexp)))
   }
+}
+
+fn expect_while_scheduled(sexps: &[Sexp]) -> Statement {
+  let left_iters = expect_i64(&sexps[1]);
+  let right_iters = expect_i64(&sexps[2]);
+  let cond1 = expect_expression(&sexps[3]);
+  let cond2 = expect_expression(&sexps[4]);
+  let conj = Expression::Binop {
+    lhs: Box::new(cond1.clone()),
+    rhs: Box::new(cond2.clone()),
+    op: BinaryOp::And,
+  };
+  let runoff1 = Expression::Binop {
+    lhs: Box::new(cond1.clone()),
+    rhs: Box::new(Expression::Unop{
+      expr: Box::new(cond2.clone()),
+      op: UnaryOp::Not}),
+    op: BinaryOp::And,
+  };
+  let runoff2 = Expression::Binop {
+    lhs: Box::new(Expression::Unop{
+      expr: Box::new(cond1.clone()),
+      op: UnaryOp::Not}),
+    rhs: Box::new(cond2.clone()),
+    op: BinaryOp::And,
+  };
+
+  let body1 = expect_statement(&sexps[5]);
+  let mut body1_rel = body1.clone();
+  let mut repeats1 = vec!(body1.clone());
+  while (repeats1.len() as i64) < left_iters {
+    let next_iter = Statement::If {
+      condition: Box::new(cond1.clone()),
+      then: Box::new(body1.clone()),
+      els: None,
+    };
+    repeats1.push(next_iter);
+  }
+  if left_iters > 1 {
+    let items = repeats1.iter()
+      .map(|s| BlockItem::Statement(s.clone()))
+      .collect();
+    body1_rel = Statement::Compound(items);
+  }
+
+  let body2 = expect_statement(&sexps[6]);
+  let mut body2_rel = body2.clone();
+  let mut repeats2 = vec!(body2.clone());
+  while (repeats2.len() as i64) < right_iters {
+    let next_iter = Statement::If {
+      condition: Box::new(cond2.clone()),
+      then: Box::new(body2.clone()),
+      els: None,
+    };
+    repeats2.push(next_iter);
+  }
+  if right_iters > 1 {
+    let items = repeats2.iter()
+      .map(|s| BlockItem::Statement(s.clone()))
+      .collect();
+    body2_rel = Statement::Compound(items);
+  }
+
+  let bodies = Statement::Relation {
+    lhs: Box::new(body1_rel),
+    rhs: Box::new(body2_rel),
+  };
+
+  let stmts = vec! [
+    BlockItem::Statement(Statement::While {
+      condition: Box::new(conj),
+      body: Some(Box::new(bodies))}),
+    BlockItem::Statement(Statement::While {
+      condition: Box::new(runoff1),
+      body: Some(Box::new(body1))}),
+    BlockItem::Statement(Statement::While {
+      condition: Box::new(runoff2),
+      body: Some(Box::new(body2))}),
+  ];
+  Statement::Compound(stmts)
 }
 
 fn expect_specifiers(sexp: &Sexp) -> Vec<DeclarationSpecifier> {

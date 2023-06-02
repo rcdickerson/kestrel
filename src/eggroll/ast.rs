@@ -47,7 +47,8 @@ define_language! {
     // make these kinds of rewrites within the
     // expanded form, but we may want to revisit this
     // tradeoff in the future.
-    "while-lockstep" = WhileLockstep([Id; 6]),
+    "while-lockstep" = WhileLockstep([Id; 5]),
+    "while-scheduled" = WhileScheduled([Id; 6]),
 
     // Declarations
     "declaration" = Declaration([Id; 3]),

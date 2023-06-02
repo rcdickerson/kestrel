@@ -25,6 +25,7 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
 
     let mut best = selection.program(root);
     let mut best_score = score;
+    println!("Initial score: {}", best_score);
 
     for k in 0..max_iterations {
       let mut selections = selection.selections.iter()

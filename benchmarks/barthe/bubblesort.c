@@ -3,8 +3,8 @@
      (a_1[_i] >= a_2[_i] && a_1[_i] - a_2[_i] < epsilon) ||
      (a_2[_i] >= a_1[_i] && a_2[_i] - a_1[_i] < epsilon)
    };
- * left: bubble_sort;
- * right: bubble_sort;
+ * left: left;
+ * right: right;
  * post: for _j in (1..N) {
      (a_1[_j] >= a_2[_j] && a_1[_j] - a_2[_j] < epsilon) ||
      (a_2[_j] >= a_1[_j] && a_2[_j] - a_1[_j] < epsilon)
@@ -31,7 +31,7 @@ void _generator(float _arr[N]) {
   }
 }
 
-void bubble_sort(void) {
+void left(void) {
   int i = 0;
   while (i < N) {
     int j = N - 1;
@@ -40,6 +40,22 @@ void bubble_sort(void) {
         float temp = a_1[j];
         a_1[j] = a_1[j - 1];
         a_1[j - 1] = temp;
+      }
+      j = j - 1;
+    }
+    i = i + 1;
+  }
+}
+
+void right(void) {
+  int i = 0;
+  while (i < N) {
+    int j = N - 1;
+    while (j > i) {
+      if (a_2[j - 1] > a_2[j]) {
+        float temp = a_2[j];
+        a_2[j] = a_2[j - 1];
+        a_2[j - 1] = temp;
       }
       j = j - 1;
     }

@@ -18,13 +18,57 @@ pub type TraceState = HashMap<String, TraceStateValue>;
 pub enum TraceStateValue {
   Int(i32),
   Float(f32),
-  Array(Vec<HeapValue>),
+  Array(Vec<TraceStateValue>),
+}
+
+impl TraceStateValue {
+
+  pub fn from_var_read(read: &VarRead) -> Self {
+    match read {
+      VarRead::Value(val) => TraceStateValue::from_heap_value(val),
+      VarRead::Array(val) => {
+        TraceStateValue::Array(val.iter()
+          .map(TraceStateValue::from_heap_value)
+          .collect::<Vec<TraceStateValue>>())
+      },
+    }
+  }
+
+  pub fn from_heap_value(value: &HeapValue) -> Self {
+    match value {
+      HeapValue::Int(i) => TraceStateValue::Int(*i),
+      HeapValue::Float(f) => TraceStateValue::Float(*f),
+    }
+  }
+
+  pub fn minus(&self, other: &TraceStateValue) -> TraceStateValue {
+    match (self, other) {
+      (TraceStateValue::Int(i1), TraceStateValue::Int(i2)) => TraceStateValue::Int(i1 - i2),
+      (TraceStateValue::Float(f1), TraceStateValue::Float(f2)) => TraceStateValue::Float(f1 - f2),
+      (TraceStateValue::Array(a1), TraceStateValue::Array(a2)) => {
+        let mut arr = Vec::new();
+        for (v1, v2) in a1.iter().zip(a2) {
+          arr.push(v1.minus(v2));
+        }
+        TraceStateValue::Array(arr)
+      },
+      _ => panic!("Cannot subtract values of different types: {:?} and {:?}", self, other),
+    }
+  }
+
+  pub fn is_zero(&self) -> bool {
+    match self {
+      TraceStateValue::Int(i) => *i == 0,
+      TraceStateValue::Float(f) => *f == 0.0,
+      TraceStateValue::Array(a) => a.iter().all(|v| v.is_zero()),
+    }
+  }
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct TraceItem {
-  tag: Tag,
-  state: TraceState,
+  pub tag: Tag,
+  pub state: TraceState,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -42,19 +86,7 @@ impl Trace {
     let mut trace_state = HashMap::new();
     for (name, _, _) in state.vars() {
       let read = state.read_var(&name);
-      match read {
-        VarRead::Value(val) => match val {
-          HeapValue::Int(i) => {
-            trace_state.insert(name, TraceStateValue::Int(i));
-          },
-          HeapValue::Float(f) => {
-            trace_state.insert(name, TraceStateValue::Float(f));
-          },
-        },
-        VarRead::Array(val) => {
-          trace_state.insert(name, TraceStateValue::Array(val.to_vec()));
-        },
-      }
+      trace_state.insert(name, TraceStateValue::from_var_read(&read));
     }
     self.items.push(TraceItem{tag, state: trace_state});
   }

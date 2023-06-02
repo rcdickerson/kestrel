@@ -1,7 +1,7 @@
 use clap::{Parser, ValueEnum};
 use kestrel::annealer::*;
 use kestrel::crel::eval::*;
-use kestrel::eggroll::cost_functions::*;
+use kestrel::eggroll::cost_functions::{minloops::*, sa::*};
 use kestrel::eggroll::milp_extractor::*;
 use kestrel::spec::parser::parse_spec;
 use egg::*;
@@ -111,7 +111,7 @@ fn main() {
       unaligned_eggroll.parse().unwrap()
     },
     ExtractorArg::CountLoops => {
-      let extractor = Extractor::new(&runner.egraph, LocalCountLoops);
+      let extractor = Extractor::new(&runner.egraph, MinLoops);
       let (_, best) = extractor.find_best(runner.roots[0]);
       println!("Computed alignment by local loop counting.");
       best
@@ -128,7 +128,7 @@ fn main() {
       let annealer = Annealer::new(&runner.egraph);
       let trace_states = rand_states_satisfying(num_trace_states, &spec.pre, Some(&global_decls), 1000);
       annealer.find_best(max_iterations, runner.roots[0], |expr| {
-        kestrel::eggroll::cost_functions::sa_score(&trace_states, trace_fuel, expr)
+        sa_score(&trace_states, trace_fuel, expr)
       })
     },
   };

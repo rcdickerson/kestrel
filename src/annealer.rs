@@ -36,6 +36,7 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
       let temp = 1.0 - (k as f32) / ((1 + max_iterations) as f32);
       let neighbor = selection.neighbor();
       let n_score = fitness(neighbor.program(root));
+
       if n_score < best_score {
         best = neighbor.program(root);
         best_score = n_score;

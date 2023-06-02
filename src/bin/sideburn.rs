@@ -5,7 +5,9 @@
 use clap::{Parser, ValueEnum};
 use egg::*;
 use kestrel::crel::{ast::*, eval::*};
-use kestrel::eggroll::{ast::*, cost_functions::*, to_crel::*};
+use kestrel::eggroll::{ast::*,
+                       cost_functions::sa::*,
+                       to_crel::*};
 use kestrel::spec::{KestrelSpec, parser::parse_spec};
 use regex::Regex;
 use std::fs;
@@ -110,7 +112,7 @@ fn main() {
       println!("State: {:?}", state);
       let trace = kestrel::crel::eval::run(&input.main_body(), state.clone(), 10000).trace;
       print_trace(&trace);
-      SAScore::score_trace(&input.crel, &trace).print();
+      SAScore::new(&input.crel, &trace).print();
     },
   }
 }

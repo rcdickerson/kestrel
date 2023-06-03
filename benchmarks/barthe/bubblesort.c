@@ -1,13 +1,13 @@
 /* @KESTREL
  * pre: for _i in (1..N) {
-     (a_1[_i] >= a_2[_i] && a_1[_i] - a_2[_i] < epsilon) ||
-     (a_2[_i] >= a_1[_i] && a_2[_i] - a_1[_i] < epsilon)
+     (a_1[_i] >= a_2[_i] || a_2[_i] - a_1[_i] < epsilon) &&
+     (a_1[_i] <  a_2[_i] || a_1[_i] - a_2[_i] < epsilon)
    };
  * left: left;
  * right: right;
  * post: for _j in (1..N) {
-     (a_1[_j] >= a_2[_j] && a_1[_j] - a_2[_j] < epsilon) ||
-     (a_2[_j] >= a_1[_j] && a_2[_j] - a_1[_j] < epsilon)
+     (a_1[_j] >= a_2[_j] || a_2[_j] - a_1[_j] < epsilon) &&
+     (a_1[_j] <  a_2[_j] || a_1[_j] - a_2[_j] < epsilon)
    };
  */
 

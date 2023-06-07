@@ -109,241 +109,6 @@ Section Fixpoints.
     intuition.
   Qed.
 
-  (* Forward reasoning lemmas for simplifying assumptions involving
-     set comprehensions into assumptions using basic set operations *)
-  Lemma elem_exists_forward {A B} (P : B -> PSet A) :
-    forall (a : A),
-      a ∈ (fun a => ∃ b : B, P b a)
-      -> ∃ b : B, a ∈ (P b).
-  Proof.
-    intuition.
-  Qed.
-
-  Lemma elem_and_forward {A} (P1 P2 : PSet A) :
-    forall (a : A),
-      a ∈ (fun a => P1 a /\ P2 a)
-      -> a ∈ P1 /\ a ∈ P2.
-  Proof.
-    set_solver.
-  Qed.
-
-  Lemma elem_or_forward {A} (P1 P2 : PSet A) :
-    forall (a : A),
-      a ∈ (fun a => P1 a \/ P2 a)
-      -> a ∈ P1 \/ a ∈ P2.
-  Proof.
-    intuition.
-  Qed.
-
-  (* Variants of our helper lemmas for sets of pairs: *)
-  Lemma elem_pair_exists_forward {A B C} (P : C -> A -> B -> Prop) :
-    forall (ab : A * B ),
-      ab ∈ (fun a : A * B => let (a, b) := a in ∃ c , P c a b ) ->
-      exists c, ab ∈ (fun a : A * B => let (a, b) := a in P c a b).
-  Proof.
-    intros (a, b) In_a_b; intuition.
-  Qed.
-
-  Lemma elem_pair_and_forward {A B} (P1 P2 : A -> B -> Prop) :
-    forall (a : A * B ),
-      a ∈ (fun a : A * B => let (a, b) := a in P1 a b /\ P2 a b)
-      -> a ∈ (fun a : A * B => let (a, b) := a in P1 a b) /\
-           a ∈ (fun a : A * B => let (a, b) := a in P2 a b).
-  Proof.
-    intros (a, b); set_solver.
-  Qed.
-
-  Lemma elem_pair_or_forward {A B} (P1 P2 : A -> B -> Prop) :
-    forall (a : A * B ),
-      a ∈ (fun a : A * B => let (a, b) := a in P1 a b \/ P2 a b)
-      -> a ∈ (fun a : A * B => let (a, b) := a in P1 a b) \/
-           a ∈ (fun a : A * B => let (a, b) := a in P2 a b).
-  Proof.
-    intros (a, b); intuition.
-  Qed.
-
-  Lemma elem_singleton_forward {A} :
-    forall (a a' : A),
-      a ∈ (fun a => a = a')
-      -> a = a'.
-  Proof.
-    intuition.
-  Qed.
-
-  Lemma elem_singleton_sym_forward {A} :
-    forall (a a' : A),
-      a ∈ (fun a => a' = a)
-      -> a = a'.
-  Proof.
-    intuition.
-  Qed.
-
-  (* Backward reasoning lemmas for decomposing goals involving set
-     comprehensions into subgoals involving basic set operations *)
-  Lemma elem_exists_backward {A B} (P : B -> PSet A) :
-    forall (a : A),
-      (∃ b : B, a ∈ (P b)) ->
-      a ∈ (fun a => ∃ b : B, P b a).
-  Proof.
-    intuition.
-  Qed.
-
-  Lemma elem_and_backward {A} (P1 P2 : PSet A) :
-    forall (a : A),
-      a ∈ P1 ->
-      a ∈ P2 ->
-      a ∈ (fun a => P1 a /\ P2 a).
-  Proof.
-    intros; split; auto.
-  Qed.
-
-  Lemma elem_or_backward {A} (P1 P2 : PSet A) :
-    forall (a : A),
-      a ∈ P1 \/ a ∈ P2 ->
-      a ∈ (fun a => P1 a \/ P2 a).
-  Proof.
-    set_solver.
-  Qed.
-
-  Lemma elem_pair_fst_singleton_forward {A B} :
-    forall (ab : A * B) (a' : A),
-      ab ∈ (fun ab': A * B => let (a, b) := ab' in a = a')
-      -> fst ab = a'.
-  Proof.
-    intuition.
-  Qed.
-
-  Lemma elem_pair_snd_singleton_forward {A B} :
-    forall (ab : A * B) (b' : B),
-      ab ∈ (fun ab': A * B => let (a, b) := ab' in b = b')
-      -> snd ab = b'.
-  Proof.
-    intuition.
-  Qed.
-
-  Lemma elem_pair_singleton_forward {A B} (f : B -> A):
-    forall (ab : A * B),
-      ab ∈ (fun ab': A * B => let (a, b) := ab' in a = f b)
-      -> fst ab = f (snd ab).
-  Proof.
-    intros (a, b); firstorder.
-  Qed.
-
-  Lemma elem_pair_singleton_sym_forward {A B} (f : B -> A):
-    forall (ab : A * B),
-      ab ∈ (fun ab: A * B => let (a, b) := ab in f b = a)
-      -> fst ab = f (snd ab).
-  Proof.
-    intros (a, b); firstorder.
-  Qed.
-
-  Lemma elem_pair_singleton_forward' {A B} (f : A -> B):
-    forall (ab : A * B),
-      ab ∈ (fun ab': A * B => let (a, b) := ab' in f a = b)
-      -> f (fst ab) = snd ab.
-  Proof.
-    intros (a, b); firstorder.
-  Qed.
-
-  Lemma elem_pair_singleton_sym_forward' {A B} (f : A -> B):
-    forall (ab : A * B),
-      ab ∈ (fun ab: A * B => let (a, b) := ab in b = f a)
-      -> f (fst ab) = snd ab.
-  Proof.
-    intros (a, b); firstorder.
-  Qed.
-
-  Lemma elem_pair_fst_singleton_sym_forward {A B} :
-    forall (ab : A * B) (a' : A),
-      ab ∈ (fun ab': A * B => let (a, b) := ab' in a' = a)
-      -> fst ab = a'.
-  Proof.
-    intuition.
-  Qed.
-
-  Lemma elem_pair_snd_singleton_sym_forward {A B} :
-    forall (ab : A * B) (b' : B),
-      ab ∈ (fun ab': A * B => let (a, b) := ab' in b' = b)
-      -> snd ab = b'.
-  Proof.
-    intuition.
-  Qed.
-
-  (* Variants of our helper lemmas for sets of pairs: *)
-  Lemma elem_pair_exists_backward {A B C} (P : C -> A -> B -> Prop) :
-    forall (ab : A * B),
-      (exists c, ab ∈ (fun a : A * B => let (a, b) := a in P c a b)) ->
-      ab ∈ (fun a : A * B => let (a, b) := a in ∃ c , P c a b ).
-  Proof.
-    intros (a, b) In_a_b; intuition.
-  Qed.
-
-  Lemma elem_pair_and_backward {A B} (P1 P2 : A -> B -> Prop) :
-    forall (a : A * B ),
-      a ∈ (fun a : A * B => let (a, b) := a in P1 a b) ->
-      a ∈ (fun a : A * B => let (a, b) := a in P2 a b) ->
-      a ∈ (fun a : A * B => let (a, b) := a in P1 a b /\ P2 a b).
-  Proof.
-    intros (a, b); intros; split; intuition.
-  Qed.
-
-  Lemma elem_pair_or_backward {A B} (P1 P2 : A -> B -> Prop) :
-    forall (a : A * B ),
-      a ∈ (fun a : A * B => let (a, b) := a in P1 a b) \/
-        a ∈ (fun a : A * B => let (a, b) := a in P2 a b) ->
-      a ∈ (fun a : A * B => let (a, b) := a in P1 a b \/ P2 a b).
-  Proof.
-    intros (a, b); firstorder.
-  Qed.
-
-  Lemma elem_singleton_backward {A} :
-    forall (a a' : A),
-      a = a' ->
-      a ∈ (fun a => a = a').
-  Proof.
-    intuition.
-  Qed.
-
-  Lemma elem_singleton_sym_backward {A} :
-    forall (a a' : A),
-      a = a' ->
-      a ∈ (fun a => a' = a).
-  Proof.
-    subst; set_solver.
-  Qed.
-
-  Lemma elem_pair_fst_singleton_backward {A B} :
-    forall (ab : A * B) (a' : A),
-      fst ab = a' ->
-      ab ∈ (fun ab': A * B => let (a, b) := ab' in a = a').
-  Proof.
-    intuition.
-  Qed.
-
-  Lemma elem_pair_snd_singleton_backward {A B} :
-    forall (ab : A * B) (b' : B),
-      snd ab = b' ->
-      ab ∈ (fun ab': A * B => let (a, b) := ab' in b = b').
-  Proof.
-    intuition.
-  Qed.
-
-  Lemma elem_pair_fst_singleton_sym_backward {A B} :
-    forall (ab : A * B) (a' : A),
-      fst ab = a' ->
-      ab ∈ (fun ab': A * B => let (a, b) := ab' in a' = a).
-  Proof.
-    intros (a, b); set_solver.
-  Qed.
-
-  Lemma elem_pair_snd_singleton_sym_backward {A B} :
-    forall (ab : A * B) (b' : B),
-      snd ab = b' ->
-      ab ∈ (fun ab': A * B => let (a, b) := ab' in b' = b).
-  Proof.
-    intros (a, b); set_solver.
-  Qed.
-
   Context {U : Type}. (* The type of elements of our set. *)
   Variable F : PSet U -> PSet U. (* Our generating function-- takes a set of Us and builds a new set.*)
 
@@ -529,6 +294,7 @@ Section Fixpoints.
 
 End Fixpoints.
 
+Section Ind_Example.
 (*A quick example of the principle of Induction *)
 Inductive isEven : nat -> Prop :=
 | isEvenZero : isEven 0
@@ -564,6 +330,246 @@ Proof.
       eassumption.
 Qed.
 
+End Ind_Example.
+
+(* Helper lemmas and tactics for working with sets. *)
+
+(* Forward reasoning lemmas for simplifying assumptions involving
+     set comprehensions into assumptions using basic set operations *)
+Lemma elem_exists_forward {A B} (P : B -> PSet A) :
+  forall (a : A),
+    a ∈ (fun a => ∃ b : B, P b a)
+    -> ∃ b : B, a ∈ (P b).
+Proof.
+  intuition.
+Qed.
+
+Lemma elem_and_forward {A} (P1 P2 : PSet A) :
+  forall (a : A),
+    a ∈ (fun a => P1 a /\ P2 a)
+    -> a ∈ P1 /\ a ∈ P2.
+Proof.
+  set_solver.
+Qed.
+
+Lemma elem_or_forward {A} (P1 P2 : PSet A) :
+  forall (a : A),
+    a ∈ (fun a => P1 a \/ P2 a)
+    -> a ∈ P1 \/ a ∈ P2.
+Proof.
+  intuition.
+Qed.
+
+(* Variants of our helper lemmas for sets of pairs: *)
+Lemma elem_pair_exists_forward {A B C} (P : C -> A -> B -> Prop) :
+  forall (ab : A * B ),
+    ab ∈ (fun a : A * B => let (a, b) := a in ∃ c , P c a b ) ->
+    exists c, ab ∈ (fun a : A * B => let (a, b) := a in P c a b).
+Proof.
+  intros (a, b) In_a_b; intuition.
+Qed.
+
+Lemma elem_pair_and_forward {A B} (P1 P2 : A -> B -> Prop) :
+  forall (a : A * B ),
+    a ∈ (fun a : A * B => let (a, b) := a in P1 a b /\ P2 a b)
+    -> a ∈ (fun a : A * B => let (a, b) := a in P1 a b) /\
+         a ∈ (fun a : A * B => let (a, b) := a in P2 a b).
+Proof.
+  intros (a, b); set_solver.
+Qed.
+
+Lemma elem_pair_or_forward {A B} (P1 P2 : A -> B -> Prop) :
+  forall (a : A * B ),
+    a ∈ (fun a : A * B => let (a, b) := a in P1 a b \/ P2 a b)
+    -> a ∈ (fun a : A * B => let (a, b) := a in P1 a b) \/
+         a ∈ (fun a : A * B => let (a, b) := a in P2 a b).
+Proof.
+  intros (a, b); intuition.
+Qed.
+
+Lemma elem_singleton_forward {A} :
+  forall (a a' : A),
+    a ∈ (fun a => a = a')
+    -> a = a'.
+Proof.
+  intuition.
+Qed.
+
+Lemma elem_singleton_sym_forward {A} :
+  forall (a a' : A),
+    a ∈ (fun a => a' = a)
+    -> a = a'.
+Proof.
+  intuition.
+Qed.
+
+(* Backward reasoning lemmas for decomposing goals involving set
+     comprehensions into subgoals involving basic set operations *)
+Lemma elem_exists_backward {A B} (P : B -> PSet A) :
+  forall (a : A),
+    (∃ b : B, a ∈ (P b)) ->
+    a ∈ (fun a => ∃ b : B, P b a).
+Proof.
+  intuition.
+Qed.
+
+Lemma elem_and_backward {A} (P1 P2 : PSet A) :
+  forall (a : A),
+    a ∈ P1 ->
+    a ∈ P2 ->
+    a ∈ (fun a => P1 a /\ P2 a).
+Proof.
+  intros; split; auto.
+Qed.
+
+Lemma elem_or_backward {A} (P1 P2 : PSet A) :
+  forall (a : A),
+    a ∈ P1 \/ a ∈ P2 ->
+    a ∈ (fun a => P1 a \/ P2 a).
+Proof.
+  set_solver.
+Qed.
+
+Lemma elem_pair_fst_singleton_forward {A B} :
+  forall (ab : A * B) (a' : A),
+    ab ∈ (fun ab': A * B => let (a, b) := ab' in a = a')
+    -> fst ab = a'.
+Proof.
+  intuition.
+Qed.
+
+Lemma elem_pair_snd_singleton_forward {A B} :
+  forall (ab : A * B) (b' : B),
+    ab ∈ (fun ab': A * B => let (a, b) := ab' in b = b')
+    -> snd ab = b'.
+Proof.
+  intuition.
+Qed.
+
+Lemma elem_pair_singleton_forward {A B} (f : B -> A):
+  forall (ab : A * B),
+    ab ∈ (fun ab': A * B => let (a, b) := ab' in a = f b)
+    -> fst ab = f (snd ab).
+Proof.
+  intros (a, b); firstorder.
+Qed.
+
+Lemma elem_pair_singleton_sym_forward {A B} (f : B -> A):
+  forall (ab : A * B),
+    ab ∈ (fun ab: A * B => let (a, b) := ab in f b = a)
+    -> fst ab = f (snd ab).
+Proof.
+  intros (a, b); firstorder.
+Qed.
+
+Lemma elem_pair_singleton_forward' {A B} (f : A -> B):
+  forall (ab : A * B),
+    ab ∈ (fun ab': A * B => let (a, b) := ab' in f a = b)
+    -> f (fst ab) = snd ab.
+Proof.
+  intros (a, b); firstorder.
+Qed.
+
+Lemma elem_pair_singleton_sym_forward' {A B} (f : A -> B):
+  forall (ab : A * B),
+    ab ∈ (fun ab: A * B => let (a, b) := ab in b = f a)
+    -> f (fst ab) = snd ab.
+Proof.
+  intros (a, b); firstorder.
+Qed.
+
+Lemma elem_pair_fst_singleton_sym_forward {A B} :
+  forall (ab : A * B) (a' : A),
+    ab ∈ (fun ab': A * B => let (a, b) := ab' in a' = a)
+    -> fst ab = a'.
+Proof.
+  intuition.
+Qed.
+
+Lemma elem_pair_snd_singleton_sym_forward {A B} :
+  forall (ab : A * B) (b' : B),
+    ab ∈ (fun ab': A * B => let (a, b) := ab' in b' = b)
+    -> snd ab = b'.
+Proof.
+  intuition.
+Qed.
+
+(* Variants of our helper lemmas for sets of pairs: *)
+Lemma elem_pair_exists_backward {A B C} (P : C -> A -> B -> Prop) :
+  forall (ab : A * B),
+    (exists c, ab ∈ (fun a : A * B => let (a, b) := a in P c a b)) ->
+    ab ∈ (fun a : A * B => let (a, b) := a in ∃ c , P c a b ).
+Proof.
+  intros (a, b) In_a_b; intuition.
+Qed.
+
+Lemma elem_pair_and_backward {A B} (P1 P2 : A -> B -> Prop) :
+  forall (a : A * B ),
+    a ∈ (fun a : A * B => let (a, b) := a in P1 a b) ->
+    a ∈ (fun a : A * B => let (a, b) := a in P2 a b) ->
+    a ∈ (fun a : A * B => let (a, b) := a in P1 a b /\ P2 a b).
+Proof.
+  intros (a, b); intros; split; intuition.
+Qed.
+
+Lemma elem_pair_or_backward {A B} (P1 P2 : A -> B -> Prop) :
+  forall (a : A * B ),
+    a ∈ (fun a : A * B => let (a, b) := a in P1 a b) \/
+      a ∈ (fun a : A * B => let (a, b) := a in P2 a b) ->
+    a ∈ (fun a : A * B => let (a, b) := a in P1 a b \/ P2 a b).
+Proof.
+  intros (a, b); firstorder.
+Qed.
+
+Lemma elem_singleton_backward {A} :
+  forall (a a' : A),
+    a = a' ->
+    a ∈ (fun a => a = a').
+Proof.
+  intuition.
+Qed.
+
+Lemma elem_singleton_sym_backward {A} :
+  forall (a a' : A),
+    a = a' ->
+    a ∈ (fun a => a' = a).
+Proof.
+  subst; set_solver.
+Qed.
+
+Lemma elem_pair_fst_singleton_backward {A B} :
+  forall (ab : A * B) (a' : A),
+    fst ab = a' ->
+    ab ∈ (fun ab': A * B => let (a, b) := ab' in a = a').
+Proof.
+  intuition.
+Qed.
+
+Lemma elem_pair_snd_singleton_backward {A B} :
+  forall (ab : A * B) (b' : B),
+    snd ab = b' ->
+    ab ∈ (fun ab': A * B => let (a, b) := ab' in b = b').
+Proof.
+  intuition.
+Qed.
+
+Lemma elem_pair_fst_singleton_sym_backward {A B} :
+  forall (ab : A * B) (a' : A),
+    fst ab = a' ->
+    ab ∈ (fun ab': A * B => let (a, b) := ab' in a' = a).
+Proof.
+  intros (a, b); set_solver.
+Qed.
+
+Lemma elem_pair_snd_singleton_sym_backward {A B} :
+  forall (ab : A * B) (b' : B),
+    snd ab = b' ->
+    ab ∈ (fun ab': A * B => let (a, b) := ab' in b' = b).
+Proof.
+  intros (a, b); set_solver.
+Qed.
+
+
 Lemma In_pair_inv {A B} :
   forall ab (s : PSet (Datatypes.prod A B)),
     ab ∈ s -> exists a b, ab = Datatypes.pair a b /\ s (Datatypes.pair a b).
@@ -589,7 +595,7 @@ Lemma adjust_pair_prop_backward {A B} (P : A -> B -> Prop):
   forall (ab : A * B),
     ab ∈ (fun ab' : A * B => P (fst ab') (snd ab')) ->
     ab ∈ (fun ab' : A * B => let (a, b) := ab' in
-                     P a b).
+                             P a b).
 Proof.
   intros (a, b); firstorder.
 Qed.
@@ -604,7 +610,7 @@ Proof.
 Qed.
 
 Lemma adjust_pair_prop_f_forward {A B C} (P : A -> B -> Prop)
-  (f : C -> A * B):
+      (f : C -> A * B):
   forall c,
     c ∈ (fun c : C => let (a, b) := f c in
                       P a b) ->
@@ -614,7 +620,7 @@ Proof.
 Qed.
 
 Lemma adjust_pair_prop_f_backward {A B C} (P : A -> B -> Prop)
-  (f : C -> A * B):
+      (f : C -> A * B):
   forall c,
     c ∈ (fun c : C => P (fst (f c)) (snd (f c))) ->
     c ∈ (fun c : C => let (a, b) := f c in

@@ -165,70 +165,21 @@ Section Equiv.
       simpl in *; In_inversion; In_intro; eauto; firstorder.
   Qed.
 
-Lemma denote_samestate : forall b st (v1 : bool) (v2 : bool),
-    (denote_B b) (v1, st) ->
-    (denote_B b) (v2, st) ->
-     v1 = v2.
- Proof.
-  induction b.
-  intros. rewrite H. rewrite H0. reflexivity.
-  simpl. intros. rewrite H. rewrite H0. reflexivity.
-
-  intros st v1 v2 H1 H2. destruct H1 as [v3 [v4 [denote_a1 [denote_a2 v_eq] ] ] ].
-  destruct H2 as [v5 [v6 [denote_a3 [denote_a4 v_eq1] ] ] ].
-  apply BigStep_A_Denotational_Adequate in denote_a1.
-  apply BigStep_A_Denotational_Adequate in denote_a2.
-  apply BigStep_A_Denotational_Adequate in denote_a3.
-  apply BigStep_A_Denotational_Adequate in denote_a4.
-  subst. destruct (Nat.eqb (aeval st a1) (aeval st a2)) eqn: ?; intuition.
-  rewrite H. rewrite H1. reflexivity.
-  apply PeanoNat.Nat.eqb_eq. assumption.
-  apply PeanoNat.Nat.eqb_eq. assumption.
-  destruct v1; auto. rewrite H1. reflexivity.
-  apply H0. reflexivity. 
-  apply PeanoNat.Nat.eqb_neq in Heqb. destruct v2; auto.
-  
-  intros st v1 v2 H1 H2. destruct H1 as [v3 [v4 [denote_a1 [denote_a2 v_eq] ] ] ].
-  destruct H2 as [v5 [v6 [denote_a3 [denote_a4 v_eq1] ] ] ].
-  apply BigStep_A_Denotational_Adequate in denote_a1.
-  apply BigStep_A_Denotational_Adequate in denote_a2.
-  apply BigStep_A_Denotational_Adequate in denote_a3.
-  apply BigStep_A_Denotational_Adequate in denote_a4.
-  subst. destruct (Nat.leb (aeval st a1) (aeval st a2)) eqn: ?; intuition.
-  rewrite H. rewrite H1. reflexivity.
-  apply PeanoNat.Nat.leb_le. assumption.
-  apply PeanoNat.Nat.leb_le. assumption.
-  destruct v1; auto. rewrite H1. reflexivity.
-  apply H0. reflexivity. destruct v2; auto.
-  
-  simpl. intros st v1 v2 H1 H2. In_inversion. specialize IHb with st (negb v1) (negb v2).
-  apply IHb in H1. Search negb. destruct v1, v2. reflexivity. simpl in H1. discriminate H1.
-  simpl in H1. discriminate H1. reflexivity. assumption.
-  
- intros st v1 v2 H1 H2. inversion H1; subst. inversion H; subst.
- inversion H2; subst. inversion H3; subst. In_inversion. subst.
- specialize IHb1 with st x x1. specialize IHb2 with st x2 x4.
- apply IHb1 in H0. apply IHb2 in H5. rewrite H0. rewrite <- H5. 
- symmetry. assumption. assumption. assumption.
- 
-Qed.
-
   Lemma if_align : forall b1 b2 c1 c2 c3 c4,
       <{ <| if b1 then c1 else c2 end | if b2 then c3 else c4 end |> }>
-      ==R <{ifR <|b1 | b2|> then <|c1 | c3|> else ifR <|b1 | BNot b2|> then <|c1 | c4|> 
+      ==R <{ifR <|b1 | b2|> then <|c1 | c3|> else ifR <|b1 | BNot b2|> then <|c1 | c4|>
             else ifR <|BNot b1 | b2|> then <|c2 | c3|> else <|c2 | c4|> end end end}> .
-  Proof. 
-   intros b1 b2 c1 c2 c3 c4 ((st1, st2), (st1', st2')). split.
-   intros. In_inversion. firstorder. 
-   intros. simpl in H. In_inversion; firstorder. simpl in H,H0,H1,H2,H3.
-   apply denote_samestate with b1 st1 false true in H. discriminate H. assumption.
-   simpl in H, H0, H1, H2, H3. apply denote_samestate with b1 st1 false true in H. 
-   discriminate H. assumption. simpl in H, H0, H1, H2, H3. 
-   apply denote_samestate with b2 st2 false true in H. discriminate H.
-   assumption. simpl in H,H0,H1,H2,H3. apply denote_samestate with b2 st2 false true in H.
-   discriminate H. assumption.
-Qed.
-
+  Proof.
+    intros b1 b2 c1 c2 c3 c4 ((st1, st2), (st1', st2')). split.
+    intros. In_inversion. firstorder.
+    intros. simpl in H. In_inversion; firstorder. simpl in H,H0,H1,H2,H3.
+    apply bexp_eqv_unique with b1 false true st1 in H. discriminate H. assumption.
+    simpl in H, H0, H1, H2, H3. apply bexp_eqv_unique with b1 false true st1 in H.
+    discriminate H. assumption. simpl in H, H0, H1, H2, H3.
+    apply bexp_eqv_unique with b2 false true st2 in H. discriminate H.
+    assumption. simpl in H,H0,H1,H2,H3. apply bexp_eqv_unique with b2 false true st2 in H.
+    discriminate H. assumption.
+  Qed.
 
   Lemma whileR_false_L : forall b1 b2 r,
       bexp_eqv b1 <{false}> ->

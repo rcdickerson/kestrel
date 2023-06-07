@@ -314,6 +314,27 @@ Fixpoint denote_B (b : bexp) : BExpDom :=
   end
 where "'[[' b ']]B'" := (denote_B b).
 
+Lemma bexp_eqv_unique : forall (b : bexp) (v1 v2 : bool) st,
+    (v1, st) ∈ [[b ]]B → (v2, st) ∈ [[b ]]B → v1 = v2.
+Proof.
+  induction b; simpl; intros;
+    In_inversion; eauto; simpl in *;
+    try (generalize (aexp_eqv_unique _ _ _ _ H H0);
+         generalize (aexp_eqv_unique _ _ _ _ H1 H3);
+         intros; subst).
+  - destruct (Nat.eq_dec v0 v5); intros; subst;
+      firstorder; simpl in *;
+      destruct v1; destruct v2;
+      first [congruence | tauto].
+  - destruct (Nat.le_dec v0 v5); intros; subst;
+            firstorder; simpl in *;
+      destruct v1; destruct v2;
+      first [congruence | tauto].
+  - destruct v1; destruct v2; simpl in *; eauto.
+  - rewrite (IHb2 _ _ _ H1 H3),
+      (IHb1 _ _ _ H H0); reflexivity.
+Qed.
+
 (* ======== Denotational Semantics of Imp Commands ========= *)
 
 (* The semantic domain for commands is pairs of initial and final

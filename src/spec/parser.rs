@@ -277,6 +277,7 @@ fn kcond_loop(i: &str) -> IResult<&str, KestrelCond> {
   let (i, _)     = tag(")")(i)?;
   let (i, _)     = multispace0(i)?;
   let (i, _)     = tag("{")(i)?;
+  let (i, _)     = multispace0(i)?;
   let (i, body)  = kestrel_cond(i)?;
   let (i, _)     = multispace0(i)?;
   let (i, _)     = tag("}")(i)?;

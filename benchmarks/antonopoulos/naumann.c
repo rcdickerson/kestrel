@@ -5,7 +5,7 @@
  * post:  left.z > right.z;
  */
 
-// The desirable loop invariant (y1 > y2 && z1 > z2 > 0)
+// The desirable loop invariant (y1 = y2 && z1 > z2 > 0)
 // works only with a data-dependent alignment; when
 // w1 % 2 != 0, perform a left-only iteration and when
 // w2 % 3 != 0, perform a right-only iteration. If

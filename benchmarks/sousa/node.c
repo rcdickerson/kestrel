@@ -1,10 +1,10 @@
 /* @KESTREL
- * pre: left.o1_contains_id == right.o2_contains_id &&
-        left.o1_get_id      == right.o2_get_id &&
-        left.o1_contains_id == right.o2_contains_id &&
-        left.o1_get_id      == right.o2_get_id;
- * left: cmp;
- * right: cmp;
+ * pre: left_o1_contains_id == right_o2_contains_id &&
+        left_o1_get_id      == right_o2_get_id &&
+        left_o1_contains_id == right_o2_contains_id &&
+        left_o1_get_id      == right_o2_get_id;
+ * left: left;
+ * right: right;
  * post: left.ret == -1 * right.ret;
  */
 
@@ -13,15 +13,33 @@
  *
  */
 
-void cmp(int o1_contains_id,
-        int o1_get_id,
-        int o2_contains_id,
-        int o2_get_id) {
+int left_o1_contains_id;
+int left_o1_get_id;
+int left_o2_contains_id;
+int left_o2_get_id;
+
+int right_o1_contains_id;
+int right_o1_get_id;
+int right_o2_contains_id;
+int right_o2_get_id;
+
+void _generator(int _contains_id1, int _contains_id2, int _get_id1, int _get_id2) {
+  left_o1_contains_id = _contains_id1;
+  left_o1_get_id = _get_id1;
+  left_o2_contains_id = _contains_id2;
+  left_o2_get_id = _contains_id2;
+  right_o1_contains_id = _contains_id2;
+  right_o1_get_id = _get_id2;
+  right_o2_contains_id = _contains_id1;
+  right_o2_get_id = _contains_id1;
+}
+
+void left(void) {
   int ret = -999;
 
-  if(o1_contains_id && o2_contains_id) {
-      int order1 = o1_get_id;
-      int order2 = o2_get_id;
+  if(left_o1_contains_id && left_o2_contains_id) {
+      int order1 = left_o1_get_id;
+      int order2 = left_o2_get_id;
 
       if(order1 < order2)
         ret = -1;
@@ -31,5 +49,23 @@ void cmp(int o1_contains_id,
         ret = 0;
   }
 
-  if (ret == -999) ret = o1_get_id - o2_get_id;
+  if (ret == -999) ret = left_o1_get_id - left_o2_get_id;
+}
+
+void right(void) {
+  int ret = -999;
+
+  if(right_o1_contains_id && right_o2_contains_id) {
+      int order1 = right_o1_get_id;
+      int order2 = right_o2_get_id;
+
+      if(order1 < order2)
+        ret = -1;
+      else if(order1 > order2)
+        ret = 1;
+      else
+        ret = 0;
+  }
+
+  if (ret == -999) ret = right_o1_get_id - right_o2_get_id;
 }

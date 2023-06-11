@@ -432,7 +432,11 @@ fn expect_declaration(sexp: &Sexp) -> Declaration {
       Sexp::Atom(Atom::S(s)) if s == "declaration" => {
         let specifiers = expect_specifiers(&sexps[1]);
         let declarator = expect_declarator(&sexps[2]);
-        let initializer = expect_initializer(&sexps[3]);
+        let initializer = if sexps.len() < 4 {
+          None
+        } else {
+          expect_initializer(&sexps[3])
+        };
         Declaration{specifiers, declarator, initializer}
       },
       _ => panic!("Expected declaration, got: {}", sexp),
@@ -443,7 +447,7 @@ fn expect_declaration(sexp: &Sexp) -> Declaration {
 
 fn expect_initializer(sexp: &Sexp) -> Option<Expression> {
   match &sexp {
-    Sexp::Atom(Atom::S(s)) if s == "initializer" => None,
+    Sexp::Atom(Atom::S(s)) if s == "no-initializer" => None,
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "initializer" => {
         let expr = expect_expression(&sexps[1]);

@@ -4,7 +4,7 @@ use crate::shanty::Writer;
 
 #[derive(Clone, Debug)]
 pub struct FunctionParameter {
-  name: String,
+  name: Option<String>,
   ty: Type,
   array_sizes: Vec<Expression>,
   is_array: bool,
@@ -16,7 +16,18 @@ impl FunctionParameter {
 
   pub fn new(name: &str, ty: Type) -> Self {
     FunctionParameter{
-      name: name.to_string(),
+      name: Some(name.to_string()),
+      ty,
+      array_sizes: Vec::new(),
+      is_array: false,
+      is_const: false,
+      is_pointer: false,
+    }
+  }
+
+  pub fn anonymous(ty: Type) -> Self {
+    FunctionParameter{
+      name: None,
       ty,
       array_sizes: Vec::new(),
       is_array: false,
@@ -51,11 +62,9 @@ impl FunctionParameter {
     }
     self.ty.emit(writer);
     if self.is_pointer {
-      writer.write("* ");
-    } else {
-      writer.write(" ");
+      writer.write("*");
     }
-    writer.write(&self.name);
+    self.name.as_ref().map(|name| writer.write(" ").write(&name));
     if self.is_array {
       writer.write("[");
       let mut delimit = "";

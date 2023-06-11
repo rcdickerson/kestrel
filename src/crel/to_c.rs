@@ -303,9 +303,11 @@ impl DeclarationBuilder {
     if self.is_extern { panic!("Unsupported: extern function parameter"); }
     if self.val.is_some() { panic!("Unsupported: function parameter initialized to value"); }
 
-    let mut param = C::FunctionParameter::new(
-      self.name.as_ref().expect("Parameter has no name").as_ref(),
-      self.ty.as_ref().expect("Parameter has no type").clone());
+    let ty = self.ty.as_ref().expect("Parameter has no type").clone();
+    let mut param = match self.name.as_ref() {
+      None => C::FunctionParameter::anonymous(ty),
+      Some(name) =>  C::FunctionParameter::new(name, ty),
+    };
     param.set_array(self.is_array);
     param.set_const(self.is_const);
     param.set_pointer(self.is_pointer);

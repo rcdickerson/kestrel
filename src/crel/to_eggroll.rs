@@ -174,10 +174,15 @@ fn declaration_to_eggroll(decl: &Declaration) -> String {
     .collect::<Vec<String>>()
     .join(" ");
   let decl_egg = declarator_to_eggroll(&decl.declarator);
-  let init_egg = decl.initializer.as_ref()
-    .map_or("".to_string(), |expr| expression_to_eggroll(&expr));
-  format!("(declaration (specifiers {}) {} (initializer {}))",
-          specs_egg, decl_egg, init_egg)
+  match decl.initializer.as_ref() {
+    None => format!("(declaration (specifiers {}) {} no-initializer)", specs_egg, decl_egg),
+    Some(init) => {
+      let init_egg = expression_to_eggroll(&init);
+      format!("(declaration (specifiers {}) {} (initializer {}))",
+              specs_egg, decl_egg, init_egg)
+
+    }
+  }
 }
 
 fn type_to_eggroll(ty: &Type) -> String {

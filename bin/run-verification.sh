@@ -28,7 +28,7 @@ do
     input_dir="$group_dir/$technique"
 
     # Make the log directory
-    log_dir="./results/verification_log/$group_name/$technique"
+    log_dir="./results/log/verification/$group_name/$technique"
     echo "Storing verification logs in in $log_dir"
     mkdir -p "$log_dir"
 

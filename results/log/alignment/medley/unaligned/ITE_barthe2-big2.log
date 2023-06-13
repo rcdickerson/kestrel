@@ -1,0 +1,203 @@
+
+Unaligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main(int l_n, int r_n) {
+  int l_i;
+  int l_x = 1;
+  l_i = 1;
+  while (l_i <= l_n) {
+    l_x = (l_x * 1);
+    l_i = (l_i + 1);
+  }
+  l_i = 0;
+  while (l_i <= l_n) {
+    l_x = (l_x + l_i);
+    l_i = (l_i + 1);
+  }
+  l_i = 1;
+  while (l_i <= l_n) {
+    l_x = (l_x * 2);
+    l_i = (l_i + 1);
+  }
+  int r_i;
+  int r_x = 1;
+  r_i = 1;
+  while (r_i <= r_n) {
+    r_x = (r_x * 1);
+    r_i = (r_i + 1);
+  }
+  r_i = 1;
+  while (r_i <= r_n) {
+    r_x = (r_x + r_i);
+    r_i = (r_i + 1);
+  }
+  r_i = 1;
+  while (r_i <= r_n) {
+    r_x = (r_x * 2);
+    r_i = (r_i + 1);
+  }
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_n)
+    (param-declaration (specifiers (type int)) r_n))
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_i no-initializer)
+        (declaration (specifiers (type int)) l_x (initializer (const-int 1)))
+        (= l_i (const-int 1)))
+      (seq
+        (while
+          (<= l_i l_n)
+          (basic-block (= l_x (* l_x (const-int 1))) (= l_i (+ l_i (const-int 1)))))
+        (seq
+          (basic-block (= l_i (const-int 0)))
+          (seq
+            (while
+              (<= l_i l_n)
+              (basic-block (= l_x (+ l_x l_i)) (= l_i (+ l_i (const-int 1)))))
+            (seq
+              (basic-block (= l_i (const-int 1)))
+              (while
+                (<= l_i l_n)
+                (basic-block (= l_x (* l_x (const-int 2))) (= l_i (+ l_i (const-int 1))))))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_i no-initializer)
+        (declaration (specifiers (type int)) r_x (initializer (const-int 1)))
+        (= r_i (const-int 1)))
+      (seq
+        (while
+          (<= r_i r_n)
+          (basic-block (= r_x (* r_x (const-int 1))) (= r_i (+ r_i (const-int 1)))))
+        (seq
+          (basic-block (= r_i (const-int 1)))
+          (seq
+            (while
+              (<= r_i r_n)
+              (basic-block (= r_x (+ r_x r_i)) (= r_i (+ r_i (const-int 1)))))
+            (seq
+              (basic-block (= r_i (const-int 1)))
+              (while
+                (<= r_i r_n)
+                (basic-block (= r_x (* r_x (const-int 2))) (= r_i (+ r_i (const-int 1))))))))))))
+--------------------------
+Treating naive product as final alignment.
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_n)
+    (param-declaration (specifiers (type int)) r_n))
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_i no-initializer)
+        (declaration (specifiers (type int)) l_x (initializer (const-int 1)))
+        (= l_i (const-int 1)))
+      (seq
+        (while
+          (<= l_i l_n)
+          (basic-block (= l_x (* l_x (const-int 1))) (= l_i (+ l_i (const-int 1)))))
+        (seq
+          (basic-block (= l_i (const-int 0)))
+          (seq
+            (while
+              (<= l_i l_n)
+              (basic-block (= l_x (+ l_x l_i)) (= l_i (+ l_i (const-int 1)))))
+            (seq
+              (basic-block (= l_i (const-int 1)))
+              (while
+                (<= l_i l_n)
+                (basic-block (= l_x (* l_x (const-int 2))) (= l_i (+ l_i (const-int 1))))))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_i no-initializer)
+        (declaration (specifiers (type int)) r_x (initializer (const-int 1)))
+        (= r_i (const-int 1)))
+      (seq
+        (while
+          (<= r_i r_n)
+          (basic-block (= r_x (* r_x (const-int 1))) (= r_i (+ r_i (const-int 1)))))
+        (seq
+          (basic-block (= r_i (const-int 1)))
+          (seq
+            (while
+              (<= r_i r_n)
+              (basic-block (= r_x (+ r_x r_i)) (= r_i (+ r_i (const-int 1)))))
+            (seq
+              (basic-block (= r_i (const-int 1)))
+              (while
+                (<= r_i r_n)
+                (basic-block (= r_x (* r_x (const-int 2))) (= r_i (+ r_i (const-int 1))))))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main() {
+  int l_n = arb_int();
+  int r_n = arb_int();
+  assume(l_n == r_n);
+  int l_i;
+  int l_x = 1;
+  l_i = 1;
+  while (l_i <= l_n) {
+    l_x = (l_x * 1);
+    l_i = (l_i + 1);
+  }
+  l_i = 0;
+  while (l_i <= l_n) {
+    l_x = (l_x + l_i);
+    l_i = (l_i + 1);
+  }
+  l_i = 1;
+  while (l_i <= l_n) {
+    l_x = (l_x * 2);
+    l_i = (l_i + 1);
+  }
+  int r_i;
+  int r_x = 1;
+  r_i = 1;
+  while (r_i <= r_n) {
+    r_x = (r_x * 1);
+    r_i = (r_i + 1);
+  }
+  r_i = 1;
+  while (r_i <= r_n) {
+    r_x = (r_x + r_i);
+    r_i = (r_i + 1);
+  }
+  r_i = 1;
+  while (r_i <= r_n) {
+    r_x = (r_x * 2);
+    r_i = (r_i + 1);
+  }
+  sassert(l_x == r_x);
+ }
+
+--------------------------
+Writing output to ./results/alignments/medley/unaligned/ITE_barthe2-big2.c...
+Done
+
+real	0m0.105s
+user	0m0.299s
+sys	0m0.249s

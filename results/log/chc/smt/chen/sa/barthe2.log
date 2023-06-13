@@ -1,0 +1,5 @@
+/home/usea/seahorn/bin/seahorn --keep-shadows=true --sea-dsa=ci -horn-inter-proc -horn-sem-lvl=mem --horn-step=large -o ./results/chc/smt/chen/sa/barthe2.smt ./results/chc/bytecode/chen/sa/barthe2.bc
+
+real	0m0.068s
+user	0m0.059s
+sys	0m0.009s

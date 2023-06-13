@@ -1,0 +1,28 @@
+/usr/bin/clang-14 -c -emit-llvm -D__SEAHORN__ -fdeclspec -O1 -Xclang -disable-llvm-optzns -fgnu89-inline -m32 -I/home/usea/seahorn/include -o /tmp/sea-9vgtsf52/chromosome.bc ./results/alignments/sousa/count-loops/chromosome.c
+./results/alignments/sousa/count-loops/chromosome.c:5:7: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+float left_o1_score[N];
+      ^
+./results/alignments/sousa/count-loops/chromosome.c:6:7: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+float left_o2_score[N];
+      ^
+./results/alignments/sousa/count-loops/chromosome.c:7:7: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+float right_o1_score[N];
+      ^
+./results/alignments/sousa/count-loops/chromosome.c:8:7: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+float right_o2_score[N];
+      ^
+./results/alignments/sousa/count-loops/chromosome.c:10:1: warning: return type of 'main' is not 'int' [-Wmain-return-type]
+void main() {
+^
+./results/alignments/sousa/count-loops/chromosome.c:10:1: note: change return type to 'int'
+void main() {
+^~~~
+int
+5 warnings generated.
+/home/usea/seahorn/bin/seapp -o /tmp/sea-9vgtsf52/chromosome.pp.bc --simplifycfg-sink-common=false --strip-extern=false --promote-assumptions=false --kill-vaarg=true --ignore-def-verifier-fn=false --horn-keep-arith-overflow=false /tmp/sea-9vgtsf52/chromosome.bc
+/home/usea/seahorn/bin/seapp --simplifycfg-sink-common=false -o /tmp/sea-9vgtsf52/chromosome.pp.ms.bc --horn-mixed-sem --ms-reduce-main /tmp/sea-9vgtsf52/chromosome.pp.bc
+/home/usea/seahorn/bin/seaopt -f --simplifycfg-sink-common=false -o ./results/chc/bytecode/sousa/count-loops/chromosome.bc -O3 --seaopt-enable-indvar=false --seaopt-enable-loop-idiom=false --unroll-threshold=150 --unroll-allow-partial=false --unroll-partial-threshold=0 --vectorize-slp=false /tmp/sea-9vgtsf52/chromosome.pp.ms.bc
+
+real	0m0.104s
+user	0m0.066s
+sys	0m0.040s

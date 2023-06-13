@@ -1,0 +1,205 @@
+
+Unaligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main(int l_o1_score, int l_o1_seq1start, int l_o1_seq2start, int l_o2_score, int l_o2_seq1start, int l_o2_seq2start, int r_o1_score, int r_o1_seq1start, int r_o1_seq2start, int r_o2_score, int r_o2_seq1start, int r_o2_seq2start) {
+  int l_ret;
+  if (l_o1_score > l_o2_score) {
+    l_ret = (-1);
+  } else {if (l_o1_score < l_o2_score) {
+      l_ret = 1;
+    } else {if ((l_o1_seq1start + l_o1_seq2start) < (l_o2_seq1start + l_o2_seq2start)) {
+        l_ret = (-1);
+      } else {if ((l_o1_seq1start + l_o1_seq2start) > (l_o2_seq1start + l_o2_seq2start)) {
+          l_ret = 1;
+        } else {l_ret = 0;
+        }
+      }
+    }
+  }
+  int r_ret;
+  if (r_o1_score > r_o2_score) {
+    r_ret = (-1);
+  } else {if (r_o1_score < r_o2_score) {
+      r_ret = 1;
+    } else {if ((r_o1_seq1start + r_o1_seq2start) < (r_o2_seq1start + r_o2_seq2start)) {
+        r_ret = (-1);
+      } else {if ((r_o1_seq1start + r_o1_seq2start) > (r_o2_seq1start + r_o2_seq2start)) {
+          r_ret = 1;
+        } else {r_ret = 0;
+        }
+      }
+    }
+  }
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_o1_score)
+    (param-declaration (specifiers (type int)) l_o1_seq1start)
+    (param-declaration (specifiers (type int)) l_o1_seq2start)
+    (param-declaration (specifiers (type int)) l_o2_score)
+    (param-declaration (specifiers (type int)) l_o2_seq1start)
+    (param-declaration (specifiers (type int)) l_o2_seq2start)
+    (param-declaration (specifiers (type int)) r_o1_score)
+    (param-declaration (specifiers (type int)) r_o1_seq1start)
+    (param-declaration (specifiers (type int)) r_o1_seq2start)
+    (param-declaration (specifiers (type int)) r_o2_score)
+    (param-declaration (specifiers (type int)) r_o2_seq1start)
+    (param-declaration (specifiers (type int)) r_o2_seq2start))
+  (<|>
+    (seq
+      (basic-block (declaration (specifiers (type int)) l_ret no-initializer))
+      (if-else
+        (> l_o1_score l_o2_score)
+        (basic-block (= l_ret (neg (const-int 1))))
+        (if-else
+          (< l_o1_score l_o2_score)
+          (basic-block (= l_ret (const-int 1)))
+          (if-else
+            (< (+ l_o1_seq1start l_o1_seq2start) (+ l_o2_seq1start l_o2_seq2start))
+            (basic-block (= l_ret (neg (const-int 1))))
+            (if-else
+              (> (+ l_o1_seq1start l_o1_seq2start) (+ l_o2_seq1start l_o2_seq2start))
+              (basic-block (= l_ret (const-int 1)))
+              (basic-block (= l_ret (const-int 0))))))))
+    (seq
+      (basic-block (declaration (specifiers (type int)) r_ret no-initializer))
+      (if-else
+        (> r_o1_score r_o2_score)
+        (basic-block (= r_ret (neg (const-int 1))))
+        (if-else
+          (< r_o1_score r_o2_score)
+          (basic-block (= r_ret (const-int 1)))
+          (if-else
+            (< (+ r_o1_seq1start r_o1_seq2start) (+ r_o2_seq1start r_o2_seq2start))
+            (basic-block (= r_ret (neg (const-int 1))))
+            (if-else
+              (> (+ r_o1_seq1start r_o1_seq2start) (+ r_o2_seq1start r_o2_seq2start))
+              (basic-block (= r_ret (const-int 1)))
+              (basic-block (= r_ret (const-int 0))))))))))
+--------------------------
+Starting simulated annealing...
+Initial score: 0.02857143
+Simulated annealing complete.
+Saw 2793 configurations
+Best score: 0.02857143
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_o1_score)
+    (param-declaration (specifiers (type int)) l_o1_seq1start)
+    (param-declaration (specifiers (type int)) l_o1_seq2start)
+    (param-declaration (specifiers (type int)) l_o2_score)
+    (param-declaration (specifiers (type int)) l_o2_seq1start)
+    (param-declaration (specifiers (type int)) l_o2_seq2start)
+    (param-declaration (specifiers (type int)) r_o1_score)
+    (param-declaration (specifiers (type int)) r_o1_seq1start)
+    (param-declaration (specifiers (type int)) r_o1_seq2start)
+    (param-declaration (specifiers (type int)) r_o2_score)
+    (param-declaration (specifiers (type int)) r_o2_seq1start)
+    (param-declaration (specifiers (type int)) r_o2_seq2start))
+  (<|>
+    (seq
+      (basic-block (declaration (specifiers (type int)) l_ret no-initializer))
+      (if-else
+        (> l_o1_score l_o2_score)
+        (basic-block (= l_ret (neg (const-int 1))))
+        (if-else
+          (< l_o1_score l_o2_score)
+          (basic-block (= l_ret (const-int 1)))
+          (if-else
+            (< (+ l_o1_seq1start l_o1_seq2start) (+ l_o2_seq1start l_o2_seq2start))
+            (basic-block (= l_ret (neg (const-int 1))))
+            (if-else
+              (> (+ l_o1_seq1start l_o1_seq2start) (+ l_o2_seq1start l_o2_seq2start))
+              (basic-block (= l_ret (const-int 1)))
+              (basic-block (= l_ret (const-int 0))))))))
+    (seq
+      (basic-block (declaration (specifiers (type int)) r_ret no-initializer))
+      (if-else
+        (> r_o1_score r_o2_score)
+        (basic-block (= r_ret (neg (const-int 1))))
+        (if-else
+          (< r_o1_score r_o2_score)
+          (basic-block (= r_ret (const-int 1)))
+          (if-else
+            (< (+ r_o1_seq1start r_o1_seq2start) (+ r_o2_seq1start r_o2_seq2start))
+            (basic-block (= r_ret (neg (const-int 1))))
+            (if-else
+              (> (+ r_o1_seq1start r_o1_seq2start) (+ r_o2_seq1start r_o2_seq2start))
+              (basic-block (= r_ret (const-int 1)))
+              (basic-block (= r_ret (const-int 0))))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main() {
+  int l_o1_score = arb_int();
+  int l_o1_seq1start = arb_int();
+  int l_o1_seq2start = arb_int();
+  int l_o2_score = arb_int();
+  int l_o2_seq1start = arb_int();
+  int l_o2_seq2start = arb_int();
+  int r_o1_score = arb_int();
+  int r_o1_seq1start = arb_int();
+  int r_o1_seq2start = arb_int();
+  int r_o2_score = arb_int();
+  int r_o2_seq1start = arb_int();
+  int r_o2_seq2start = arb_int();
+  assume((l_o1_score == r_o2_score) && ((l_o1_seq1start == r_o2_seq1start) && ((l_o1_seq2start == r_o2_seq2start) && ((l_o2_score == r_o1_score) && ((l_o2_seq1start == r_o1_seq1start) && (l_o2_seq2start == r_o1_seq2start))))));
+  int l_ret;
+  if (l_o1_score > l_o2_score) {
+    l_ret = (-1);
+  } else {if (l_o1_score < l_o2_score) {
+      l_ret = 1;
+    } else {if ((l_o1_seq1start + l_o1_seq2start) < (l_o2_seq1start + l_o2_seq2start)) {
+        l_ret = (-1);
+      } else {if ((l_o1_seq1start + l_o1_seq2start) > (l_o2_seq1start + l_o2_seq2start)) {
+          l_ret = 1;
+        } else {l_ret = 0;
+        }
+      }
+    }
+  }
+  int r_ret;
+  if (r_o1_score > r_o2_score) {
+    r_ret = (-1);
+  } else {if (r_o1_score < r_o2_score) {
+      r_ret = 1;
+    } else {if ((r_o1_seq1start + r_o1_seq2start) < (r_o2_seq1start + r_o2_seq2start)) {
+        r_ret = (-1);
+      } else {if ((r_o1_seq1start + r_o1_seq2start) > (r_o2_seq1start + r_o2_seq2start)) {
+          r_ret = 1;
+        } else {r_ret = 0;
+        }
+      }
+    }
+  }
+  sassert(l_ret == (-1 * r_ret));
+ }
+
+--------------------------
+Writing output to ./results/alignments/sousa/sa/match.c...
+Done
+
+real	0m34.903s
+user	0m35.135s
+sys	0m0.212s

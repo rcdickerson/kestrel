@@ -1,0 +1,5 @@
+/home/usea/seahorn/bin/seahorn --keep-shadows=true --sea-dsa=ci -horn-inter-proc -horn-sem-lvl=mem --horn-step=large -o ./results/chc/smt/barthe/sa/code-sinking.smt ./results/chc/bytecode/barthe/sa/code-sinking.bc
+
+real	0m0.069s
+user	0m0.051s
+sys	0m0.018s

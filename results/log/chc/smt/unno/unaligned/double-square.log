@@ -1,0 +1,5 @@
+/home/usea/seahorn/bin/seahorn --keep-shadows=true --sea-dsa=ci -horn-inter-proc -horn-sem-lvl=mem --horn-step=large -o ./results/chc/smt/unno/unaligned/double-square.smt ./results/chc/bytecode/unno/unaligned/double-square.bc
+
+real	0m0.059s
+user	0m0.059s
+sys	0m0.000s

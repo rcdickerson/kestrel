@@ -1,0 +1,34 @@
+/usr/bin/clang-14 -c -emit-llvm -D__SEAHORN__ -fdeclspec -O1 -Xclang -disable-llvm-optzns -fgnu89-inline -m32 -I/home/usea/seahorn/include -o /tmp/sea-0_g6l9s0/loop-pipelining.bc ./results/alignments/barthe/sa/loop-pipelining.c
+./results/alignments/barthe/sa/loop-pipelining.c:5:5: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+int a_1[N];
+    ^
+./results/alignments/barthe/sa/loop-pipelining.c:6:5: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+int b_1[N];
+    ^
+./results/alignments/barthe/sa/loop-pipelining.c:7:5: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+int c_1[N];
+    ^
+./results/alignments/barthe/sa/loop-pipelining.c:8:5: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+int a_2[N];
+    ^
+./results/alignments/barthe/sa/loop-pipelining.c:9:5: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+int b_2[N];
+    ^
+./results/alignments/barthe/sa/loop-pipelining.c:10:5: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+int c_2[N];
+    ^
+./results/alignments/barthe/sa/loop-pipelining.c:12:1: warning: return type of 'main' is not 'int' [-Wmain-return-type]
+void main() {
+^
+./results/alignments/barthe/sa/loop-pipelining.c:12:1: note: change return type to 'int'
+void main() {
+^~~~
+int
+7 warnings generated.
+/home/usea/seahorn/bin/seapp -o /tmp/sea-0_g6l9s0/loop-pipelining.pp.bc --simplifycfg-sink-common=false --strip-extern=false --promote-assumptions=false --kill-vaarg=true --ignore-def-verifier-fn=false --horn-keep-arith-overflow=false /tmp/sea-0_g6l9s0/loop-pipelining.bc
+/home/usea/seahorn/bin/seapp --simplifycfg-sink-common=false -o /tmp/sea-0_g6l9s0/loop-pipelining.pp.ms.bc --horn-mixed-sem --ms-reduce-main /tmp/sea-0_g6l9s0/loop-pipelining.pp.bc
+/home/usea/seahorn/bin/seaopt -f --simplifycfg-sink-common=false -o ./results/chc/bytecode/barthe/sa/loop-pipelining.bc -O3 --seaopt-enable-indvar=false --seaopt-enable-loop-idiom=false --unroll-threshold=150 --unroll-allow-partial=false --unroll-partial-threshold=0 --vectorize-slp=false /tmp/sea-0_g6l9s0/loop-pipelining.pp.ms.bc
+
+real	0m0.107s
+user	0m0.078s
+sys	0m0.030s

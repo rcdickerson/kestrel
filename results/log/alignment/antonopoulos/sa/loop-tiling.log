@@ -1,0 +1,163 @@
+
+Unaligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main() {
+  int l_x = 0;
+  while (l_x < (N * M)) {
+    a_1[l_x] = f[l_x];
+    l_x = (l_x + 1);
+  }
+  int r_i = 0;
+  while (r_i < N) {
+    int r_j = 0;
+    while (r_j < M) {
+      a_2[r_i][r_j] = f[(r_i * M) + r_j];
+      r_j = (r_j + 1);
+    }
+    r_i = (r_i + 1);
+  }
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  params
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_x (initializer (const-int 0))))
+      (while
+        (< l_x (* N M))
+        (basic-block (= (index a_1 l_x) (index f l_x)) (= l_x (+ l_x (const-int 1))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_i (initializer (const-int 0))))
+      (while
+        (< r_i N)
+        (seq
+          (basic-block
+            (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
+          (seq
+            (while
+              (< r_j M)
+              (basic-block
+                (= (index (index a_2 r_i) r_j) (index f (+ (* r_i M) r_j)))
+                (= r_j (+ r_j (const-int 1)))))
+            (basic-block (= r_i (+ r_i (const-int 1))))))))))
+--------------------------
+Starting simulated annealing...
+Initial score: 0.88888896
+Score 0.8833333 at temperature 0.99966675
+Score 0.78829277 at temperature 0.9360213
+Score 0.78666675 at temperature 0.9326891
+Score 0.71139795 at temperature 0.9293569
+Score 0.7078787 at temperature 0.41986006
+Score 0.70730156 at temperature 0.005664766
+Simulated annealing complete.
+Saw 2866 configurations
+Best score: 0.70730156
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  params
+  (seq
+    (<|>
+      (basic-block
+        (declaration (specifiers (type int)) l_x (initializer (const-int 0))))
+      (basic-block
+        (declaration (specifiers (type int)) r_i (initializer (const-int 0)))))
+    (while-lockstep
+      (< l_x (* N M))
+      (< r_i N)
+      (basic-block (= (index a_1 l_x) (index f l_x)) (= l_x (+ l_x (const-int 1))))
+      (seq
+        (seq
+          (basic-block
+            (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
+          (while
+            (< r_j M)
+            (basic-block
+              (= (index (index a_2 r_i) r_j) (index f (+ (* r_i M) r_j)))
+              (= r_j (+ r_j (const-int 1))))))
+        (basic-block (= r_i (+ r_i (const-int 1)))))
+      (seq
+        (|>
+          (seq
+            (basic-block
+              (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
+            (while
+              (< r_j M)
+              (basic-block
+                (= (index (index a_2 r_i) r_j) (index f (+ (* r_i M) r_j)))
+                (= r_j (+ r_j (const-int 1)))))))
+        (<|>
+          (basic-block (= (index a_1 l_x) (index f l_x)) (= l_x (+ l_x (const-int 1))))
+          (basic-block (= r_i (+ r_i (const-int 1)))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+const int M = 10;
+const int N = 10;
+int a_1[N * M];
+int a_2[N][M];
+int f[N * M];
+
+void main() {
+  assume(1);
+  int l_x = 0;
+  int r_i = 0;
+  while ((l_x < (N * M)) && (r_i < N)) {
+    int r_j = 0;
+    while (r_j < M) {
+      a_2[r_i][r_j] = f[(r_i * M) + r_j];
+      r_j = (r_j + 1);
+    }
+    a_1[l_x] = f[l_x];
+    l_x = (l_x + 1);
+    r_i = (r_i + 1);
+  }
+  while ((l_x < (N * M)) && (!(r_i < N))) {
+    a_1[l_x] = f[l_x];
+    l_x = (l_x + 1);
+  }
+  while ((!(l_x < (N * M))) && (r_i < N)) {
+    int r_j = 0;
+    while (r_j < M) {
+      a_2[r_i][r_j] = f[(r_i * M) + r_j];
+      r_j = (r_j + 1);
+    }
+    r_i = (r_i + 1);
+  }
+  int i = 0;
+  while (i < N) {
+    int j = 0;
+    while (j < M) {
+      sassert(a_1[i * (M + j)] == a_2[i][j]);
+      j = (j + 1);
+    }
+    i = (i + 1);
+  }
+ }
+
+--------------------------
+Writing output to ./results/alignments/antonopoulos/sa/loop-tiling.c...
+Done
+
+real	0m39.175s
+user	0m29.209s
+sys	0m10.388s

@@ -1,0 +1,5 @@
+/home/usea/seahorn/bin/seahorn --keep-shadows=true --sea-dsa=ci -horn-inter-proc -horn-sem-lvl=mem --horn-step=large -o ./results/chc/smt/barthe/unaligned/loop-alignment.smt ./results/chc/bytecode/barthe/unaligned/loop-alignment.bc
+
+real	0m0.062s
+user	0m0.053s
+sys	0m0.010s

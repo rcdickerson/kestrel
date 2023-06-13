@@ -1,0 +1,5 @@
+/home/usea/seahorn/bin/seahorn --keep-shadows=true --sea-dsa=ci -horn-inter-proc -horn-sem-lvl=mem --horn-step=large -o ./results/chc/smt/antonopoulos/count-loops/array-insert.smt ./results/chc/bytecode/antonopoulos/count-loops/array-insert.bc
+
+real	0m0.123s
+user	0m0.109s
+sys	0m0.014s

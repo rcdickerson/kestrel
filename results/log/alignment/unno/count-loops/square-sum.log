@@ -1,0 +1,115 @@
+
+Unaligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main(int l_a, int l_b, int r_a, int r_b) {
+  int l_c = 0;
+  while (l_a < l_b) {
+    l_c = (l_c + (l_a * l_a));
+    l_a = (l_a + 1);
+  }
+  int r_c = 0;
+  while (r_a < r_b) {
+    r_c = (r_c + (r_a * r_a));
+    r_a = (r_a + 1);
+  }
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_a)
+    (param-declaration (specifiers (type int)) l_b)
+    (param-declaration (specifiers (type int)) r_a)
+    (param-declaration (specifiers (type int)) r_b))
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_c (initializer (const-int 0))))
+      (while
+        (< l_a l_b)
+        (basic-block (= l_c (+ l_c (* l_a l_a))) (= l_a (+ l_a (const-int 1))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_c (initializer (const-int 0))))
+      (while
+        (< r_a r_b)
+        (basic-block (= r_c (+ r_c (* r_a r_a))) (= r_a (+ r_a (const-int 1))))))))
+--------------------------
+Computed alignment by local loop counting.
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_a)
+    (param-declaration (specifiers (type int)) l_b)
+    (param-declaration (specifiers (type int)) r_a)
+    (param-declaration (specifiers (type int)) r_b))
+  (seq
+    (<|>
+      (basic-block
+        (declaration (specifiers (type int)) l_c (initializer (const-int 0))))
+      (basic-block
+        (declaration (specifiers (type int)) r_c (initializer (const-int 0)))))
+    (while-scheduled
+      1
+      2
+      (< l_a l_b)
+      (< r_a r_b)
+      (basic-block (= l_c (+ l_c (* l_a l_a))) (= l_a (+ l_a (const-int 1))))
+      (basic-block (= r_c (+ r_c (* r_a r_a))) (= r_a (+ r_a (const-int 1)))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main() {
+  int l_a = arb_int();
+  int l_b = arb_int();
+  int r_a = arb_int();
+  int r_b = arb_int();
+  assume((l_a == r_a) && (l_b == r_b));
+  int l_c = 0;
+  int r_c = 0;
+  while ((l_a < l_b) && (r_a < r_b)) {
+    l_c = (l_c + (l_a * l_a));
+    l_a = (l_a + 1);
+    r_c = (r_c + (r_a * r_a));
+    r_a = (r_a + 1);
+    if (r_a < r_b) {
+      r_c = (r_c + (r_a * r_a));
+      r_a = (r_a + 1);
+    }
+  }
+  while ((l_a < l_b) && (!(r_a < r_b))) {
+    l_c = (l_c + (l_a * l_a));
+    l_a = (l_a + 1);
+  }
+  while ((!(l_a < l_b)) && (r_a < r_b)) {
+    r_c = (r_c + (r_a * r_a));
+    r_a = (r_a + 1);
+  }
+  sassert(l_c == r_c);
+ }
+
+--------------------------
+Writing output to ./results/alignments/unno/count-loops/square-sum.c...
+Done
+
+real	0m0.035s
+user	0m0.129s
+sys	0m0.099s

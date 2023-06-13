@@ -1,0 +1,85 @@
+
+Unaligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main(int l_m, int l_n, int r_m, int r_n) {
+  int l_result = l_f0rec(l_m, l_n);
+  int r_result = r_f1rec(r_m, r_n);
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_m)
+    (param-declaration (specifiers (type int)) l_n)
+    (param-declaration (specifiers (type int)) r_m)
+    (param-declaration (specifiers (type int)) r_n))
+  (<|>
+    (basic-block
+      (declaration
+        (specifiers (type int))
+        l_result
+        (initializer (call l_f0rec (args l_m l_n)))))
+    (basic-block
+      (declaration
+        (specifiers (type int))
+        r_result
+        (initializer (call r_f1rec (args r_m r_n)))))))
+--------------------------
+Treating naive product as final alignment.
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_m)
+    (param-declaration (specifiers (type int)) l_n)
+    (param-declaration (specifiers (type int)) r_m)
+    (param-declaration (specifiers (type int)) r_n))
+  (<|>
+    (basic-block
+      (declaration
+        (specifiers (type int))
+        l_result
+        (initializer (call l_f0rec (args l_m l_n)))))
+    (basic-block
+      (declaration
+        (specifiers (type int))
+        r_result
+        (initializer (call r_f1rec (args r_m r_n)))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main() {
+  int l_m = arb_int();
+  int l_n = arb_int();
+  int r_m = arb_int();
+  int r_n = arb_int();
+  assume((l_m == r_m) && (l_n == r_n));
+  int l_result = l_f0rec(l_m, l_n);
+  int r_result = r_f1rec(r_m, r_n);
+  sassert(l_ret == r_ret);
+ }
+
+--------------------------
+Writing output to ./results/alignments/chen/unaligned/ackermann.c...
+Done
+
+real	0m0.056s
+user	0m0.186s
+sys	0m0.188s

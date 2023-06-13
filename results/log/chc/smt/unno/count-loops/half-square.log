@@ -1,0 +1,5 @@
+/home/usea/seahorn/bin/seahorn --keep-shadows=true --sea-dsa=ci -horn-inter-proc -horn-sem-lvl=mem --horn-step=large -o ./results/chc/smt/unno/count-loops/half-square.smt ./results/chc/bytecode/unno/count-loops/half-square.bc
+
+real	0m0.065s
+user	0m0.053s
+sys	0m0.012s

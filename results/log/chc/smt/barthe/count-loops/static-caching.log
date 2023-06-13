@@ -1,0 +1,6 @@
+/home/usea/seahorn/bin/seahorn --keep-shadows=true --sea-dsa=ci -horn-inter-proc -horn-sem-lvl=mem --horn-step=large -o ./results/chc/smt/barthe/count-loops/static-caching.smt ./results/chc/bytecode/barthe/count-loops/static-caching.bc
+WARNING: main function not found so program is trivially safe.
+
+real	0m0.053s
+user	0m0.029s
+sys	0m0.024s

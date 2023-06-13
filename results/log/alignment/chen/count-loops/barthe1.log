@@ -1,0 +1,174 @@
+
+Unaligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main(int l_n, int l_c, int r_n, int r_c) {
+  int l_x;
+  int l_i;
+  int l_j;
+  l_i = 0;
+  l_j = 0;
+  l_x = 0;
+  while (l_i < l_n) {
+    l_j = ((5 * l_i) + l_c);
+    l_x = (l_x + l_j);
+    l_i = (l_i + 1);
+  }
+  int r_x;
+  int r_i;
+  int r_j;
+  r_i = 0;
+  r_j = r_c;
+  r_x = 0;
+  while (r_i < r_n) {
+    r_x = (r_x + r_j);
+    r_j = (r_j + 5);
+    r_i = (r_i + 1);
+  }
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_n)
+    (param-declaration (specifiers (type int)) l_c)
+    (param-declaration (specifiers (type int)) r_n)
+    (param-declaration (specifiers (type int)) r_c))
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_x no-initializer)
+        (declaration (specifiers (type int)) l_i no-initializer)
+        (declaration (specifiers (type int)) l_j no-initializer)
+        (= l_i (const-int 0))
+        (= l_j (const-int 0))
+        (= l_x (const-int 0)))
+      (while
+        (< l_i l_n)
+        (basic-block
+          (= l_j (+ (* (const-int 5) l_i) l_c))
+          (= l_x (+ l_x l_j))
+          (= l_i (+ l_i (const-int 1))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_x no-initializer)
+        (declaration (specifiers (type int)) r_i no-initializer)
+        (declaration (specifiers (type int)) r_j no-initializer)
+        (= r_i (const-int 0))
+        (= r_j r_c)
+        (= r_x (const-int 0)))
+      (while
+        (< r_i r_n)
+        (basic-block
+          (= r_x (+ r_x r_j))
+          (= r_j (+ r_j (const-int 5)))
+          (= r_i (+ r_i (const-int 1))))))))
+--------------------------
+Computed alignment by local loop counting.
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_n)
+    (param-declaration (specifiers (type int)) l_c)
+    (param-declaration (specifiers (type int)) r_n)
+    (param-declaration (specifiers (type int)) r_c))
+  (seq
+    (<|>
+      (basic-block
+        (declaration (specifiers (type int)) l_x no-initializer)
+        (declaration (specifiers (type int)) l_i no-initializer)
+        (declaration (specifiers (type int)) l_j no-initializer)
+        (= l_i (const-int 0))
+        (= l_j (const-int 0))
+        (= l_x (const-int 0)))
+      (basic-block
+        (declaration (specifiers (type int)) r_x no-initializer)
+        (declaration (specifiers (type int)) r_i no-initializer)
+        (declaration (specifiers (type int)) r_j no-initializer)
+        (= r_i (const-int 0))
+        (= r_j r_c)
+        (= r_x (const-int 0))))
+    (while-scheduled
+      1
+      2
+      (< l_i l_n)
+      (< r_i r_n)
+      (basic-block
+        (= l_j (+ (* (const-int 5) l_i) l_c))
+        (= l_x (+ l_x l_j))
+        (= l_i (+ l_i (const-int 1))))
+      (basic-block
+        (= r_x (+ r_x r_j))
+        (= r_j (+ r_j (const-int 5)))
+        (= r_i (+ r_i (const-int 1)))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main() {
+  int l_n = arb_int();
+  int l_c = arb_int();
+  int r_n = arb_int();
+  int r_c = arb_int();
+  assume((l_n == r_n) && (l_c == r_c));
+  int l_x;
+  int l_i;
+  int l_j;
+  l_i = 0;
+  l_j = 0;
+  l_x = 0;
+  int r_x;
+  int r_i;
+  int r_j;
+  r_i = 0;
+  r_j = r_c;
+  r_x = 0;
+  while ((l_i < l_n) && (r_i < r_n)) {
+    l_j = ((5 * l_i) + l_c);
+    l_x = (l_x + l_j);
+    l_i = (l_i + 1);
+    r_x = (r_x + r_j);
+    r_j = (r_j + 5);
+    r_i = (r_i + 1);
+    if (r_i < r_n) {
+      r_x = (r_x + r_j);
+      r_j = (r_j + 5);
+      r_i = (r_i + 1);
+    }
+  }
+  while ((l_i < l_n) && (!(r_i < r_n))) {
+    l_j = ((5 * l_i) + l_c);
+    l_x = (l_x + l_j);
+    l_i = (l_i + 1);
+  }
+  while ((!(l_i < l_n)) && (r_i < r_n)) {
+    r_x = (r_x + r_j);
+    r_j = (r_j + 5);
+    r_i = (r_i + 1);
+  }
+  sassert(l_x == r_x);
+ }
+
+--------------------------
+Writing output to ./results/alignments/chen/count-loops/barthe1.c...
+Done
+
+real	0m0.038s
+user	0m0.112s
+sys	0m0.131s

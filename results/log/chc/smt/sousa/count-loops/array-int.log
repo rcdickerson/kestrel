@@ -1,0 +1,6 @@
+/home/usea/seahorn/bin/seahorn --keep-shadows=true --sea-dsa=ci -horn-inter-proc -horn-sem-lvl=mem --horn-step=large -o ./results/chc/smt/sousa/count-loops/array-int.smt ./results/chc/bytecode/sousa/count-loops/array-int.bc
+WARNING: no assertion was found so either program does not have assertions or frontend discharged them.
+
+real	0m0.053s
+user	0m0.031s
+sys	0m0.022s

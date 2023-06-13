@@ -1,0 +1,5 @@
+/home/usea/seahorn/bin/seahorn --keep-shadows=true --sea-dsa=ci -horn-inter-proc -horn-sem-lvl=mem --horn-step=large -o ./results/chc/smt/antonopoulos/count-loops/loop-tiling.smt ./results/chc/bytecode/antonopoulos/count-loops/loop-tiling.bc
+
+real	0m0.090s
+user	0m0.081s
+sys	0m0.009s

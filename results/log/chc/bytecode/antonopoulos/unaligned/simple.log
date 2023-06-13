@@ -1,0 +1,16 @@
+/usr/bin/clang-14 -c -emit-llvm -D__SEAHORN__ -fdeclspec -O1 -Xclang -disable-llvm-optzns -fgnu89-inline -m32 -I/home/usea/seahorn/include -o /tmp/sea-qivs40n0/simple.bc ./results/alignments/antonopoulos/unaligned/simple.c
+./results/alignments/antonopoulos/unaligned/simple.c:5:1: warning: return type of 'main' is not 'int' [-Wmain-return-type]
+void main() {
+^
+./results/alignments/antonopoulos/unaligned/simple.c:5:1: note: change return type to 'int'
+void main() {
+^~~~
+int
+1 warning generated.
+/home/usea/seahorn/bin/seapp -o /tmp/sea-qivs40n0/simple.pp.bc --simplifycfg-sink-common=false --strip-extern=false --promote-assumptions=false --kill-vaarg=true --ignore-def-verifier-fn=false --horn-keep-arith-overflow=false /tmp/sea-qivs40n0/simple.bc
+/home/usea/seahorn/bin/seapp --simplifycfg-sink-common=false -o /tmp/sea-qivs40n0/simple.pp.ms.bc --horn-mixed-sem --ms-reduce-main /tmp/sea-qivs40n0/simple.pp.bc
+/home/usea/seahorn/bin/seaopt -f --simplifycfg-sink-common=false -o ./results/chc/bytecode/antonopoulos/unaligned/simple.bc -O3 --seaopt-enable-indvar=false --seaopt-enable-loop-idiom=false --unroll-threshold=150 --unroll-allow-partial=false --unroll-partial-threshold=0 --vectorize-slp=false /tmp/sea-qivs40n0/simple.pp.ms.bc
+
+real	0m0.106s
+user	0m0.075s
+sys	0m0.031s

@@ -1,0 +1,6 @@
+/home/usea/seahorn/bin/seahorn --keep-shadows=true --sea-dsa=ci -horn-inter-proc -horn-sem-lvl=mem --horn-step=large -o ./results/chc/smt/barthe/unaligned/static-caching.smt ./results/chc/bytecode/barthe/unaligned/static-caching.bc
+WARNING: main function not found so program is trivially safe.
+
+real	0m0.053s
+user	0m0.048s
+sys	0m0.006s

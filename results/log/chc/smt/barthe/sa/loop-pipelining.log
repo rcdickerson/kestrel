@@ -1,0 +1,5 @@
+/home/usea/seahorn/bin/seahorn --keep-shadows=true --sea-dsa=ci -horn-inter-proc -horn-sem-lvl=mem --horn-step=large -o ./results/chc/smt/barthe/sa/loop-pipelining.smt ./results/chc/bytecode/barthe/sa/loop-pipelining.bc
+
+real	0m0.077s
+user	0m0.070s
+sys	0m0.008s

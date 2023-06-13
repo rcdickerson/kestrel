@@ -1,0 +1,158 @@
+(set-info :original "./results/chc/bytecode/sousa/count-loops/file-item.bc")
+(set-info :authors "SeaHorn v.14.0.0-rc0")
+(declare-rel verifier.error (Bool Bool Bool ))
+(declare-rel main@entry (Int ))
+(declare-rel main@verifier.error.split ())
+(declare-var main@%.not.i_0 Bool )
+(declare-var main@%.not13.i_0 Bool )
+(declare-var main@%..i_0 Int )
+(declare-var main@%spec.select16.i_0 Int )
+(declare-var main@%_33_0 Bool )
+(declare-var main@%.01.i_0 Int )
+(declare-var main@%_34_0 Int )
+(declare-var main@%.12.i_0 Int )
+(declare-var main@%.not4.i_0 Bool )
+(declare-var main@%.not9.i_0 Bool )
+(declare-var main@%.18.i_0 Int )
+(declare-var main@%spec.select20.i_0 Int )
+(declare-var main@%_35_0 Bool )
+(declare-var main@%.0.neg.i_0 Int )
+(declare-var main@%.neg.i_0 Int )
+(declare-var main@%.1.neg.i_0 Int )
+(declare-var main@%_36_0 Bool )
+(declare-var main@%_29_0 Bool )
+(declare-var main@%_30_0 Bool )
+(declare-var main@%_0_0 Int )
+(declare-var @arb_int_0 Int )
+(declare-var main@%_2_0 Int )
+(declare-var main@%_4_0 Int )
+(declare-var main@%_5_0 Int )
+(declare-var main@%_6_0 Int )
+(declare-var main@%_8_0 Int )
+(declare-var main@%_10_0 Int )
+(declare-var main@%_12_0 Int )
+(declare-var main@%_14_0 Int )
+(declare-var main@%_16_0 Int )
+(declare-var main@%_18_0 Int )
+(declare-var main@%_19_0 Int )
+(declare-var main@%_20_0 Int )
+(declare-var main@%_22_0 Int )
+(declare-var main@%_24_0 Bool )
+(declare-var main@%_25_0 Bool )
+(declare-var main@%or.cond.i_0 Bool )
+(declare-var main@%_26_0 Bool )
+(declare-var main@%or.cond14.i_0 Bool )
+(declare-var main@%_27_0 Bool )
+(declare-var main@%or.cond15.i_0 Bool )
+(declare-var main@%_32_2 Bool )
+(declare-var main@entry_0 Bool )
+(declare-var main@%_1_0 Int )
+(declare-var main@%_3_0 Int )
+(declare-var main@%_7_0 Int )
+(declare-var main@%_9_0 Int )
+(declare-var main@%_11_0 Int )
+(declare-var main@%_13_0 Int )
+(declare-var main@%_15_0 Int )
+(declare-var main@%_17_0 Int )
+(declare-var main@%_21_0 Int )
+(declare-var main@%_23_0 Int )
+(declare-var main@_28_0 Bool )
+(declare-var main@%_31_0 Bool )
+(declare-var main@verifier.error_0 Bool )
+(declare-var |tuple(main@entry_0, main@verifier.error_0)| Bool )
+(declare-var main@%_32_0 Bool )
+(declare-var main@%_32_1 Bool )
+(declare-var main@verifier.error.split_0 Bool )
+(rule (verifier.error false false false))
+(rule (verifier.error false true true))
+(rule (verifier.error true false true))
+(rule (verifier.error true true true))
+(rule (main@entry @arb_int_0))
+(rule (let ((a!1 (and (main@entry @arb_int_0)
+                true
+                (= main@%_0_0 @arb_int_0)
+                (= main@%_2_0 @arb_int_0)
+                (= main@%_4_0 @arb_int_0)
+                (= main@%_6_0 @arb_int_0)
+                (= main@%_8_0 @arb_int_0)
+                (= main@%_10_0 @arb_int_0)
+                (= main@%_12_0 @arb_int_0)
+                (= main@%_14_0 @arb_int_0)
+                (= main@%_16_0 @arb_int_0)
+                (= main@%_18_0 @arb_int_0)
+                (= main@%_20_0 @arb_int_0)
+                (= main@%_22_0 @arb_int_0)
+                (= main@%_24_0 (= main@%_1_0 main@%_15_0))
+                (= main@%_25_0 (= main@%_5_0 main@%_19_0))
+                (= main@%or.cond.i_0 (ite main@%_24_0 main@%_25_0 false))
+                (= main@%_26_0 (= main@%_9_0 main@%_23_0))
+                (= main@%or.cond14.i_0
+                   (ite main@%or.cond.i_0 main@%_26_0 false))
+                (= main@%_27_0 (= main@%_3_0 main@%_13_0))
+                (= main@%or.cond15.i_0
+                   (ite main@%or.cond14.i_0 main@%_27_0 false))
+                (=> main@_28_0 (and main@_28_0 main@entry_0))
+                (=> (and main@_28_0 main@entry_0) main@%or.cond15.i_0)
+                (=> main@_28_0 (= main@%_29_0 (= main@%_7_0 main@%_17_0)))
+                (=> main@_28_0 (= main@%_30_0 (= main@%_11_0 main@%_21_0)))
+                (=> main@_28_0
+                    (= main@%_31_0 (ite main@%_29_0 main@%_30_0 false)))
+                (=> |tuple(main@entry_0, main@verifier.error_0)| main@entry_0)
+                (=> main@verifier.error_0
+                    (or (and main@verifier.error_0 main@_28_0)
+                        |tuple(main@entry_0, main@verifier.error_0)|))
+                (=> |tuple(main@entry_0, main@verifier.error_0)|
+                    (not main@%or.cond15.i_0))
+                (=> (and main@verifier.error_0 main@_28_0)
+                    (= main@%_32_0 main@%_31_0))
+                (=> |tuple(main@entry_0, main@verifier.error_0)|
+                    (= main@%_32_1 false))
+                (=> (and main@verifier.error_0 main@_28_0)
+                    (= main@%_32_2 main@%_32_0))
+                (=> |tuple(main@entry_0, main@verifier.error_0)|
+                    (= main@%_32_2 main@%_32_1))
+                (=> main@verifier.error_0 main@%_32_2)
+                (=> main@verifier.error_0 (= main@%.not.i_0 (= main@%_1_0 0)))
+                (=> main@verifier.error_0 (= main@%.not13.i_0 (= main@%_3_0 0)))
+                (=> main@verifier.error_0
+                    (= main@%..i_0 (ite main@%.not13.i_0 1 0)))
+                (=> main@verifier.error_0
+                    (= main@%spec.select16.i_0
+                       (ite main@%.not13.i_0 (- 999) (- 1))))
+                (=> main@verifier.error_0
+                    (= main@%_33_0 (ite main@%.not.i_0 main@%.not13.i_0 false)))
+                (=> main@verifier.error_0
+                    (= main@%.01.i_0
+                       (ite main@%.not.i_0 main@%spec.select16.i_0 main@%..i_0)))
+                (=> main@verifier.error_0
+                    (= main@%_34_0 (- main@%_9_0 main@%_11_0)))
+                (=> main@verifier.error_0
+                    (= main@%.12.i_0
+                       (ite main@%_33_0 main@%_34_0 main@%.01.i_0)))
+                (=> main@verifier.error_0 (= main@%.not4.i_0 (= main@%_13_0 0)))
+                (=> main@verifier.error_0 (= main@%.not9.i_0 (= main@%_15_0 0)))
+                (=> main@verifier.error_0
+                    (= main@%.18.i_0 (ite main@%.not9.i_0 (- 1) 0)))
+                (=> main@verifier.error_0
+                    (= main@%spec.select20.i_0 (ite main@%.not9.i_0 999 1)))
+                (=> main@verifier.error_0
+                    (= main@%_35_0 (ite main@%.not4.i_0 main@%.not9.i_0 false)))
+                (=> main@verifier.error_0
+                    (= main@%.0.neg.i_0
+                       (ite main@%.not4.i_0
+                            main@%spec.select20.i_0
+                            main@%.18.i_0)))
+                (=> main@verifier.error_0
+                    (= main@%.neg.i_0 (- main@%_23_0 main@%_21_0)))
+                (=> main@verifier.error_0
+                    (= main@%.1.neg.i_0
+                       (ite main@%_35_0 main@%.neg.i_0 main@%.0.neg.i_0)))
+                (=> main@verifier.error_0
+                    (= main@%_36_0 (= main@%.12.i_0 main@%.1.neg.i_0)))
+                (=> main@verifier.error_0 (not main@%_36_0))
+                (=> main@verifier.error.split_0
+                    (and main@verifier.error.split_0 main@verifier.error_0))
+                main@verifier.error.split_0)))
+  (=> a!1 main@verifier.error.split)))
+(query main@verifier.error.split)
+

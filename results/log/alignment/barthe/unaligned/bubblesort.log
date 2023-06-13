@@ -1,0 +1,193 @@
+
+Unaligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main() {
+  int l_i = 0;
+  while (l_i < N) {
+    int l_j = N - 1;
+    while (l_j > l_i) {
+      if (a_1[l_j - 1] > a_1[l_j]) {
+        float l_temp = a_1[l_j];
+        a_1[l_j] = a_1[l_j - 1];
+        a_1[l_j - 1] = l_temp;
+      }
+      l_j = (l_j - 1);
+    }
+    l_i = (l_i + 1);
+  }
+  int r_i = 0;
+  while (r_i < N) {
+    int r_j = N - 1;
+    while (r_j > r_i) {
+      if (a_2[r_j - 1] > a_2[r_j]) {
+        float r_temp = a_2[r_j];
+        a_2[r_j] = a_2[r_j - 1];
+        a_2[r_j - 1] = r_temp;
+      }
+      r_j = (r_j - 1);
+    }
+    r_i = (r_i + 1);
+  }
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  params
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_i (initializer (const-int 0))))
+      (while
+        (< l_i N)
+        (seq
+          (basic-block
+            (declaration (specifiers (type int)) l_j (initializer (- N (const-int 1)))))
+          (seq
+            (while
+              (> l_j l_i)
+              (seq
+                (if
+                  (> (index a_1 (- l_j (const-int 1))) (index a_1 l_j))
+                  (basic-block
+                    (declaration (specifiers (type float)) l_temp (initializer (index a_1 l_j)))
+                    (= (index a_1 l_j) (index a_1 (- l_j (const-int 1))))
+                    (= (index a_1 (- l_j (const-int 1))) l_temp)))
+                (basic-block (= l_j (- l_j (const-int 1))))))
+            (basic-block (= l_i (+ l_i (const-int 1))))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_i (initializer (const-int 0))))
+      (while
+        (< r_i N)
+        (seq
+          (basic-block
+            (declaration (specifiers (type int)) r_j (initializer (- N (const-int 1)))))
+          (seq
+            (while
+              (> r_j r_i)
+              (seq
+                (if
+                  (> (index a_2 (- r_j (const-int 1))) (index a_2 r_j))
+                  (basic-block
+                    (declaration (specifiers (type float)) r_temp (initializer (index a_2 r_j)))
+                    (= (index a_2 r_j) (index a_2 (- r_j (const-int 1))))
+                    (= (index a_2 (- r_j (const-int 1))) r_temp)))
+                (basic-block (= r_j (- r_j (const-int 1))))))
+            (basic-block (= r_i (+ r_i (const-int 1))))))))))
+--------------------------
+Treating naive product as final alignment.
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  params
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_i (initializer (const-int 0))))
+      (while
+        (< l_i N)
+        (seq
+          (basic-block
+            (declaration (specifiers (type int)) l_j (initializer (- N (const-int 1)))))
+          (seq
+            (while
+              (> l_j l_i)
+              (seq
+                (if
+                  (> (index a_1 (- l_j (const-int 1))) (index a_1 l_j))
+                  (basic-block
+                    (declaration (specifiers (type float)) l_temp (initializer (index a_1 l_j)))
+                    (= (index a_1 l_j) (index a_1 (- l_j (const-int 1))))
+                    (= (index a_1 (- l_j (const-int 1))) l_temp)))
+                (basic-block (= l_j (- l_j (const-int 1))))))
+            (basic-block (= l_i (+ l_i (const-int 1))))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_i (initializer (const-int 0))))
+      (while
+        (< r_i N)
+        (seq
+          (basic-block
+            (declaration (specifiers (type int)) r_j (initializer (- N (const-int 1)))))
+          (seq
+            (while
+              (> r_j r_i)
+              (seq
+                (if
+                  (> (index a_2 (- r_j (const-int 1))) (index a_2 r_j))
+                  (basic-block
+                    (declaration (specifiers (type float)) r_temp (initializer (index a_2 r_j)))
+                    (= (index a_2 r_j) (index a_2 (- r_j (const-int 1))))
+                    (= (index a_2 (- r_j (const-int 1))) r_temp)))
+                (basic-block (= r_j (- r_j (const-int 1))))))
+            (basic-block (= r_i (+ r_i (const-int 1))))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+const int N = 10;
+float a_1[N];
+float a_2[N];
+const float epsilon = 0.01;
+
+void main() {
+  int _i = 1;
+  while (_i < N) {
+    assume(((a_1[_i] >= a_2[_i]) || ((a_2[_i] - a_1[_i]) < epsilon)) && ((a_1[_i] < a_2[_i]) || ((a_1[_i] - a_2[_i]) < epsilon)));
+    _i = (_i + 1);
+  }
+  int l_i = 0;
+  while (l_i < N) {
+    int l_j = N - 1;
+    while (l_j > l_i) {
+      if (a_1[l_j - 1] > a_1[l_j]) {
+        float l_temp = a_1[l_j];
+        a_1[l_j] = a_1[l_j - 1];
+        a_1[l_j - 1] = l_temp;
+      }
+      l_j = (l_j - 1);
+    }
+    l_i = (l_i + 1);
+  }
+  int r_i = 0;
+  while (r_i < N) {
+    int r_j = N - 1;
+    while (r_j > r_i) {
+      if (a_2[r_j - 1] > a_2[r_j]) {
+        float r_temp = a_2[r_j];
+        a_2[r_j] = a_2[r_j - 1];
+        a_2[r_j - 1] = r_temp;
+      }
+      r_j = (r_j - 1);
+    }
+    r_i = (r_i + 1);
+  }
+  int _j = 1;
+  while (_j < N) {
+    sassert(((a_1[_j] >= a_2[_j]) || ((a_2[_j] - a_1[_j]) < epsilon)) && ((a_1[_j] < a_2[_j]) || ((a_1[_j] - a_2[_j]) < epsilon)));
+    _j = (_j + 1);
+  }
+ }
+
+--------------------------
+Writing output to ./results/alignments/barthe/unaligned/bubblesort.c...
+Done
+
+real	0m0.102s
+user	0m0.300s
+sys	0m0.252s

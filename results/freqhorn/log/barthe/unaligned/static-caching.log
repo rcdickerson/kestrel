@@ -1,0 +1,7 @@
+(error "line 3 column 12: Invalid query argument, expected uinterpreted function name, but argument is interpreted")
+timeout: the monitored command dumped core
+bin/run-freqhorn.sh: line 44: 59917 Segmentation fault      timeout 10m $freqhorn $file
+
+real	0m0.188s
+user	0m0.014s
+sys	0m0.000s

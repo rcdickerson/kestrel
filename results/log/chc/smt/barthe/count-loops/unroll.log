@@ -1,0 +1,5 @@
+/home/usea/seahorn/bin/seahorn --keep-shadows=true --sea-dsa=ci -horn-inter-proc -horn-sem-lvl=mem --horn-step=large -o ./results/chc/smt/barthe/count-loops/unroll.smt ./results/chc/bytecode/barthe/count-loops/unroll.bc
+
+real	0m0.068s
+user	0m0.058s
+sys	0m0.010s

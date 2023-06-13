@@ -1,0 +1,323 @@
+
+Unaligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main() {
+  int l_ret = -999;
+  int l_index;
+  int l_aentry;
+  int l_bentry;
+  l_index = 0;
+  while ((l_index < left_o1_length) && (l_index < left_o2_length)) {
+    l_aentry = left_o1[l_index];
+    l_bentry = left_o2[l_index];
+    if (l_aentry < l_bentry) {
+      l_ret = (-1);
+      break;
+    }
+    if (l_aentry > l_bentry) {
+      l_ret = 1;
+      break;
+    }
+    l_index = (l_index + 1);
+  }
+  if (l_ret == (-999)) {
+    if (left_o1_length < left_o2_length) {
+      l_ret = (-1);
+    }
+    if (left_o1_length > left_o2_length) {
+      l_ret = 1;
+    }
+    l_ret = 0;
+  }
+  int r_ret = -999;
+  int r_index;
+  int r_aentry;
+  int r_bentry;
+  r_index = 0;
+  while ((r_index < right_o1_length) && (r_index < right_o2_length)) {
+    r_aentry = right_o1[r_index];
+    r_bentry = right_o2[r_index];
+    if (r_aentry < r_bentry) {
+      r_ret = (-1);
+      break;
+    }
+    if (r_aentry > r_bentry) {
+      r_ret = 1;
+      break;
+    }
+    r_index = (r_index + 1);
+  }
+  if (r_ret == (-999)) {
+    if (right_o1_length < right_o2_length) {
+      r_ret = (-1);
+    }
+    if (right_o1_length > right_o2_length) {
+      r_ret = 1;
+    }
+    r_ret = 0;
+  }
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  params
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_ret (initializer (neg (const-int 999))))
+        (declaration (specifiers (type int)) l_index no-initializer)
+        (declaration (specifiers (type int)) l_aentry no-initializer)
+        (declaration (specifiers (type int)) l_bentry no-initializer)
+        (= l_index (const-int 0)))
+      (seq
+        (while
+          (&& (< l_index left_o1_length) (< l_index left_o2_length))
+          (seq
+            (basic-block
+              (= l_aentry (index left_o1 l_index))
+              (= l_bentry (index left_o2 l_index)))
+            (seq
+              (if (< l_aentry l_bentry) (basic-block (= l_ret (neg (const-int 1))) break))
+              (seq
+                (if (> l_aentry l_bentry) (basic-block (= l_ret (const-int 1)) break))
+                (basic-block (= l_index (+ l_index (const-int 1))))))))
+        (if
+          (== l_ret (neg (const-int 999)))
+          (seq
+            (if
+              (< left_o1_length left_o2_length)
+              (basic-block (= l_ret (neg (const-int 1)))))
+            (seq
+              (if (> left_o1_length left_o2_length) (basic-block (= l_ret (const-int 1))))
+              (basic-block (= l_ret (const-int 0))))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_ret (initializer (neg (const-int 999))))
+        (declaration (specifiers (type int)) r_index no-initializer)
+        (declaration (specifiers (type int)) r_aentry no-initializer)
+        (declaration (specifiers (type int)) r_bentry no-initializer)
+        (= r_index (const-int 0)))
+      (seq
+        (while
+          (&& (< r_index right_o1_length) (< r_index right_o2_length))
+          (seq
+            (basic-block
+              (= r_aentry (index right_o1 r_index))
+              (= r_bentry (index right_o2 r_index)))
+            (seq
+              (if (< r_aentry r_bentry) (basic-block (= r_ret (neg (const-int 1))) break))
+              (seq
+                (if (> r_aentry r_bentry) (basic-block (= r_ret (const-int 1)) break))
+                (basic-block (= r_index (+ r_index (const-int 1))))))))
+        (if
+          (== r_ret (neg (const-int 999)))
+          (seq
+            (if
+              (< right_o1_length right_o2_length)
+              (basic-block (= r_ret (neg (const-int 1)))))
+            (seq
+              (if (> right_o1_length right_o2_length) (basic-block (= r_ret (const-int 1))))
+              (basic-block (= r_ret (const-int 0))))))))))
+--------------------------
+Computed alignment by local loop counting.
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  params
+  (seq
+    (<|>
+      (basic-block
+        (declaration (specifiers (type int)) l_ret (initializer (neg (const-int 999))))
+        (declaration (specifiers (type int)) l_index no-initializer)
+        (declaration (specifiers (type int)) l_aentry no-initializer)
+        (declaration (specifiers (type int)) l_bentry no-initializer)
+        (= l_index (const-int 0)))
+      (basic-block
+        (declaration (specifiers (type int)) r_ret (initializer (neg (const-int 999))))
+        (declaration (specifiers (type int)) r_index no-initializer)
+        (declaration (specifiers (type int)) r_aentry no-initializer)
+        (declaration (specifiers (type int)) r_bentry no-initializer)
+        (= r_index (const-int 0))))
+    (seq
+      (while-scheduled
+        1
+        2
+        (&& (< l_index left_o1_length) (< l_index left_o2_length))
+        (&& (< r_index right_o1_length) (< r_index right_o2_length))
+        (seq
+          (basic-block
+            (= l_aentry (index left_o1 l_index))
+            (= l_bentry (index left_o2 l_index)))
+          (seq
+            (if (< l_aentry l_bentry) (basic-block (= l_ret (neg (const-int 1))) break))
+            (seq
+              (if (> l_aentry l_bentry) (basic-block (= l_ret (const-int 1)) break))
+              (basic-block (= l_index (+ l_index (const-int 1)))))))
+        (seq
+          (basic-block
+            (= r_aentry (index right_o1 r_index))
+            (= r_bentry (index right_o2 r_index)))
+          (seq
+            (if (< r_aentry r_bentry) (basic-block (= r_ret (neg (const-int 1))) break))
+            (seq
+              (if (> r_aentry r_bentry) (basic-block (= r_ret (const-int 1)) break))
+              (basic-block (= r_index (+ r_index (const-int 1))))))))
+      (<|>
+        (if
+          (== l_ret (neg (const-int 999)))
+          (seq
+            (if
+              (< left_o1_length left_o2_length)
+              (basic-block (= l_ret (neg (const-int 1)))))
+            (seq
+              (if (> left_o1_length left_o2_length) (basic-block (= l_ret (const-int 1))))
+              (basic-block (= l_ret (const-int 0))))))
+        (if
+          (== r_ret (neg (const-int 999)))
+          (seq
+            (if
+              (< right_o1_length right_o2_length)
+              (basic-block (= r_ret (neg (const-int 1)))))
+            (seq
+              (if (> right_o1_length right_o2_length) (basic-block (= r_ret (const-int 1))))
+              (basic-block (= r_ret (const-int 0))))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+const int left_o1_length = 10;
+const int left_o2_length = 15;
+int left_o1[left_o1_length];
+int left_o2[left_o2_length];
+const int right_o1_length = 15;
+const int right_o2_length = 10;
+int right_o1[right_o1_length];
+int right_o2[right_o2_length];
+
+void main() {
+  int _i = 1;
+  while (_i < left_o1_length) {
+    assume(left_o1[_i] == right_o2[_i]);
+    _i = (_i + 1);
+  }
+  int _j = 1;
+  while (_j < left_o2_length) {
+    assume(left_o2[_j] == right_o1[_j]);
+    _j = (_j + 1);
+  }
+  int l_ret = -999;
+  int l_index;
+  int l_aentry;
+  int l_bentry;
+  l_index = 0;
+  int r_ret = -999;
+  int r_index;
+  int r_aentry;
+  int r_bentry;
+  r_index = 0;
+  while (((l_index < left_o1_length) && (l_index < left_o2_length)) && ((r_index < right_o1_length) && (r_index < right_o2_length))) {
+    l_aentry = left_o1[l_index];
+    l_bentry = left_o2[l_index];
+    if (l_aentry < l_bentry) {
+      l_ret = (-1);
+      break;
+    }
+    if (l_aentry > l_bentry) {
+      l_ret = 1;
+      break;
+    }
+    l_index = (l_index + 1);
+    r_aentry = right_o1[r_index];
+    r_bentry = right_o2[r_index];
+    if (r_aentry < r_bentry) {
+      r_ret = (-1);
+      break;
+    }
+    if (r_aentry > r_bentry) {
+      r_ret = 1;
+      break;
+    }
+    r_index = (r_index + 1);
+    if ((r_index < right_o1_length) && (r_index < right_o2_length)) {
+      r_aentry = right_o1[r_index];
+      r_bentry = right_o2[r_index];
+      if (r_aentry < r_bentry) {
+        r_ret = (-1);
+        break;
+      }
+      if (r_aentry > r_bentry) {
+        r_ret = 1;
+        break;
+      }
+      r_index = (r_index + 1);
+    }
+  }
+  while (((l_index < left_o1_length) && (l_index < left_o2_length)) && (!((r_index < right_o1_length) && (r_index < right_o2_length)))) {
+    l_aentry = left_o1[l_index];
+    l_bentry = left_o2[l_index];
+    if (l_aentry < l_bentry) {
+      l_ret = (-1);
+      break;
+    }
+    if (l_aentry > l_bentry) {
+      l_ret = 1;
+      break;
+    }
+    l_index = (l_index + 1);
+  }
+  while ((!((l_index < left_o1_length) && (l_index < left_o2_length))) && ((r_index < right_o1_length) && (r_index < right_o2_length))) {
+    r_aentry = right_o1[r_index];
+    r_bentry = right_o2[r_index];
+    if (r_aentry < r_bentry) {
+      r_ret = (-1);
+      break;
+    }
+    if (r_aentry > r_bentry) {
+      r_ret = 1;
+      break;
+    }
+    r_index = (r_index + 1);
+  }
+  if (l_ret == (-999)) {
+    if (left_o1_length < left_o2_length) {
+      l_ret = (-1);
+    }
+    if (left_o1_length > left_o2_length) {
+      l_ret = 1;
+    }
+    l_ret = 0;
+  }
+  if (r_ret == (-999)) {
+    if (right_o1_length < right_o2_length) {
+      r_ret = (-1);
+    }
+    if (right_o1_length > right_o2_length) {
+      r_ret = 1;
+    }
+    r_ret = 0;
+  }
+  sassert(l_ret == (-1 * r_ret));
+ }
+
+--------------------------
+Writing output to ./results/alignments/sousa/count-loops/array-int.c...
+Done
+
+real	0m0.060s
+user	0m0.240s
+sys	0m0.184s

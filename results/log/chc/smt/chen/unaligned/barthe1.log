@@ -1,0 +1,5 @@
+/home/usea/seahorn/bin/seahorn --keep-shadows=true --sea-dsa=ci -horn-inter-proc -horn-sem-lvl=mem --horn-step=large -o ./results/chc/smt/chen/unaligned/barthe1.smt ./results/chc/bytecode/chen/unaligned/barthe1.bc
+
+real	0m0.064s
+user	0m0.059s
+sys	0m0.005s

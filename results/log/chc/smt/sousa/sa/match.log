@@ -1,0 +1,5 @@
+/home/usea/seahorn/bin/seahorn --keep-shadows=true --sea-dsa=ci -horn-inter-proc -horn-sem-lvl=mem --horn-step=large -o ./results/chc/smt/sousa/sa/match.smt ./results/chc/bytecode/sousa/sa/match.bc
+
+real	0m0.057s
+user	0m0.041s
+sys	0m0.016s

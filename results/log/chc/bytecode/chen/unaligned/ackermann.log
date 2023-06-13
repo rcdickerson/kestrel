@@ -1,0 +1,25 @@
+/usr/bin/clang-14 -c -emit-llvm -D__SEAHORN__ -fdeclspec -O1 -Xclang -disable-llvm-optzns -fgnu89-inline -m32 -I/home/usea/seahorn/include -o /tmp/sea-pcvyf59x/ackermann.bc ./results/alignments/chen/unaligned/ackermann.c
+./results/alignments/chen/unaligned/ackermann.c:5:1: warning: return type of 'main' is not 'int' [-Wmain-return-type]
+void main() {
+^
+./results/alignments/chen/unaligned/ackermann.c:5:1: note: change return type to 'int'
+void main() {
+^~~~
+int
+./results/alignments/chen/unaligned/ackermann.c:11:18: warning: implicit declaration of function 'l_f0rec' is invalid in C99 [-Wimplicit-function-declaration]
+  int l_result = l_f0rec(l_m, l_n);
+                 ^
+./results/alignments/chen/unaligned/ackermann.c:12:18: warning: implicit declaration of function 'r_f1rec' is invalid in C99 [-Wimplicit-function-declaration]
+  int r_result = r_f1rec(r_m, r_n);
+                 ^
+./results/alignments/chen/unaligned/ackermann.c:13:11: error: use of undeclared identifier 'l_ret'
+  sassert(l_ret == r_ret);
+          ^
+./results/alignments/chen/unaligned/ackermann.c:13:20: error: use of undeclared identifier 'r_ret'
+  sassert(l_ret == r_ret);
+                   ^
+3 warnings and 2 errors generated.
+
+real	0m0.073s
+user	0m0.061s
+sys	0m0.008s

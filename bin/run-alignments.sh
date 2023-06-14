@@ -44,8 +44,8 @@ do
         echo "$file..."
         file_basename=$(basename $file .c)
 
-        output_file="$output_dir/$file_basename".c
-        (time timeout 10m $kestrel_exec -i $file -o $output_file $technique) > "$log_dir/$file_basename".log 2>&1
+        output_file="$output_dir/$file_basename-${technique:0:3}".c
+        (time timeout 10m $kestrel_exec -i $file -o $output_file --output-mode=sv-comp $technique) > "$log_dir/$file_basename".log 2>&1
     done
   done
 done

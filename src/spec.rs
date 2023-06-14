@@ -5,7 +5,7 @@ pub mod to_crel;
 use crate::crel::ast::*;
 use crate::crel::blockify::*;
 use crate::names::*;
-use crate::spec::{condition::*, to_crel::*};
+use crate::spec::{condition::*};
 use std::collections::HashSet;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -52,64 +52,6 @@ impl KestrelSpec {
     };
 
     (decls, new_main)
-  }
-
-  pub fn add_specs_to_main(&self, crel: &CRel, global_decls: Vec<Declaration>) -> CRel {
-    let (_, fundefs) = crate::crel::fundef::extract_fundefs(crel);
-    let main_fun = fundefs.get("main").expect("No main function found");
-
-    let mut arb_inits = self.build_arb_inits(&main_fun.params);
-    let preconds = self.build_preconds();
-    let postconds = self.build_postconds();
-
-    let mut body_items: Vec<BlockItem> = Vec::new();
-    body_items.append(&mut arb_inits);
-    body_items.push(preconds);
-    body_items.push(BlockItem::Statement(main_fun.body.clone()));
-    body_items.push(postconds);
-    let new_body = Statement::Compound(body_items);
-
-    let new_main = CRel::FunctionDefinition {
-      specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
-      name: "main".to_string(),
-      params: Vec::new(),
-      body: Box::new(new_body),
-    };
-
-    let mut new_seq: Vec<CRel> = global_decls.iter()
-      .map(|decl| CRel::Declaration(decl.clone()))
-      .collect();
-    new_seq.push(new_main);
-    CRel::Seq(new_seq)
-  }
-
-  fn build_arb_inits(&self, params: &Vec<ParameterDeclaration>) -> Vec<BlockItem> {
-    let call_arb_int = Expression::Call {
-      callee: Box::new(Expression::Identifier{name: "arb_int".to_string()}),
-      args: Vec::new(),
-    };
-    params.iter()
-      .filter(|param| param.declarator.is_some())
-      .map(|param| {
-        BlockItem::Declaration(
-          Declaration {
-            specifiers: param.specifiers.clone(),
-            declarator: param.declarator.as_ref().unwrap().clone(),
-            initializer: Some(call_arb_int.clone())
-          }
-        )
-      })
-      .collect()
-  }
-
-  fn build_preconds(&self) -> BlockItem {
-    let assume = self.pre.to_crel(StatementKind::Assume);
-    BlockItem::Statement(assume)
-  }
-
-  fn build_postconds(&self) -> BlockItem {
-    let assert = self.post.to_crel(StatementKind::Assert);
-    BlockItem::Statement(assert)
   }
 }
 

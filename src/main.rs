@@ -3,11 +3,12 @@ use kestrel::annealer::*;
 use kestrel::crel::eval::*;
 use kestrel::eggroll::cost_functions::{minloops::*, sa::*};
 use kestrel::eggroll::milp_extractor::*;
+use kestrel::output_mode::*;
 use kestrel::spec::parser::parse_spec;
 use egg::*;
 use std::fs::File;
 use std::io::prelude::*;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -19,6 +20,10 @@ struct Args {
   /// Output file.
   #[arg(short, long)]
   output: Option<String>,
+
+  /// Output format.
+  #[arg(long, value_enum, default_value_t = OutputMode::Seahorn)]
+  output_mode: OutputMode,
 
   /// Output a dot file representation of the e-graph.
   #[arg(short, long)]
@@ -141,10 +146,13 @@ fn main() {
   println!("{}", aligned_eggroll.pretty(80));
   println!("--------------------------");
 
-  let aligned_crel_no_specs =
+  let aligned_crel =
     kestrel::eggroll::to_crel::eggroll_to_crel(&aligned_eggroll.to_string());
-  let aligned_crel = spec.add_specs_to_main(&aligned_crel_no_specs, global_decls);
-  let aligned_c = aligned_crel.to_c();
+  let filename = args.output.as_ref().map(|outpath| {
+    let path = Path::new(outpath);
+    path.file_name().unwrap().to_str().unwrap().to_string()
+  });
+  let aligned_c = args.output_mode.prepare_crel(&aligned_crel, &spec, global_decls, &filename);
   println!("\nAligned Product Program");
   println!("--------------------------");
   println!("{}", aligned_c);
@@ -158,5 +166,33 @@ fn main() {
       Ok(_) => println!("Done"),
       Err(err) => panic!("Error writing output file: {}", err),
     }
+    if args.output_mode == OutputMode::SvComp {
+      let mut yaml_pathbuf = PathBuf::from(path);
+      yaml_pathbuf.set_extension("yml");
+      let yaml_path = yaml_pathbuf.to_str().unwrap();
+      println!("Writing yaml to {}...", yaml_path);
+      let mut file = File::create(&yaml_path)
+        .expect(format!("Error creating file: {}", yaml_path).as_ref());
+      match file.write_all(svcomp_yaml(&filename.unwrap()).as_bytes()) {
+        Ok(_) => println!("Done"),
+        Err(err) => panic!("Error writing output file: {}", err),
+      }
+    }
   });
+}
+
+fn svcomp_yaml(filename: &String) -> String {
+format!(
+"format_version: '2.0'
+
+input_files: '{}'
+
+properties:
+  - property_file: ../properties/unreach-call.prp
+    expected_verdict: true
+
+options:
+  language: C
+  data_model: ILP32
+", filename)
 }

@@ -79,7 +79,7 @@ do
         echo "$file..."
         file_basename=$(basename $file .bc)
 
-        output_file="$output_dir/$file_basename".smt
+        output_file="$output_dir/$file_basename".smt2
         (time timeout 10m sea horn $file -o $output_file) > "$log_dir/$file_basename".log 2>&1
     done
   done

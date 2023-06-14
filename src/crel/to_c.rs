@@ -4,9 +4,6 @@ use crate::shanty as C;
 impl CRel {
   pub fn to_c(&self) -> String {
     let mut source = C::Source::new();
-    source.include("seahorn/seahorn.h");
-    source.push_function(C::Function::new("arb_int", C::Type::Int)
-                         .set_extern(true));
     crel_to_c(self, &mut source);
     source.to_string()
   }

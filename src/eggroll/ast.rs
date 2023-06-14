@@ -78,6 +78,7 @@ define_language! {
     // Literals
     "const-int"  = ConstInt(Id),
     "const-float" = ConstFloat(Id),
+    Num(usize),
     Identifier(Symbol),
     RawString(String),
     "lit-string" = LitString(Id),

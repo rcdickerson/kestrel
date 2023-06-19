@@ -51,7 +51,6 @@ impl CostFunction<Eggroll> for MinLoops {
       };
       match enode {
         Eggroll::Num(i) => {
-          println!("Saw num: {}", i);
           LoopCost{num_loops, ast_size, const_int: Some(*i)}
         },
         _ => {

@@ -87,7 +87,7 @@ impl Variable {
     }
     self.ty.emit(writer);
     if self.is_pointer {
-      writer.write("*");
+      writer.write("* ");
     } else {
       writer.write(" ");
     }

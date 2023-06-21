@@ -5,6 +5,7 @@ use kestrel::eggroll::cost_functions::{minloops::*, sa::*};
 use kestrel::eggroll::milp_extractor::*;
 use kestrel::output_mode::*;
 use kestrel::spec::parser::parse_spec;
+use kestrel::unaligned::*;
 use egg::*;
 use std::fs::File;
 use std::io::prelude::*;
@@ -86,15 +87,15 @@ fn main() {
   // println!("{:?}", crel);
   // println!("--------------------------");
 
-  let (global_decls, unaligned_crel) = spec.build_unaligned_crel(&crel);
+  let unaligned_crel = UnalignedCRel::from(&crel, &spec);
 
-  let unaligned_c = unaligned_crel.to_c();
+  let unaligned_c = unaligned_crel.main.to_c();
   println!("\nUnaligned Product Program");
   println!("--------------------------");
   println!("{}", unaligned_c);
   println!("--------------------------");
 
-  let unaligned_eggroll = unaligned_crel.to_eggroll();
+  let unaligned_eggroll = unaligned_crel.main.to_eggroll();
   println!("\nUnaligned Eggroll");
   println!("--------------------------");
   let ue_expr: RecExpr<kestrel::eggroll::ast::Eggroll> = unaligned_eggroll.parse().unwrap();
@@ -132,7 +133,9 @@ fn main() {
 
       let (_, fundefs) = kestrel::crel::fundef::extract_fundefs(&crel);
       let generator = fundefs.get(&"_generator".to_string());
-      let trace_states = rand_states_satisfying(num_trace_states, &spec.pre, Some(&global_decls), generator, 1000);
+      let decls = unaligned_crel.global_decls_and_params();
+      let trace_states = rand_states_satisfying(
+        num_trace_states, &spec.pre, Some(&decls), generator, 1000);
 
       let annealer = Annealer::new(&runner.egraph);
       annealer.find_best(max_iterations, runner.roots[0], |expr| {
@@ -152,7 +155,8 @@ fn main() {
     let path = Path::new(outpath);
     path.file_name().unwrap().to_str().unwrap().to_string()
   });
-  let aligned_c = args.output_mode.prepare_crel(&aligned_crel, &spec, global_decls, &filename);
+  let aligned_c = args.output_mode.prepare_crel(
+    &aligned_crel, &spec, unaligned_crel.global_decls, &filename);
   println!("\nAligned Product Program");
   println!("--------------------------");
   println!("{}", aligned_c);

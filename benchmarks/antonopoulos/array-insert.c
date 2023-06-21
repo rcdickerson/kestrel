@@ -5,33 +5,31 @@
  * post: left.i == right.j;
  */
 
-const int A_SIZE = 10;
-int A_left[A_SIZE + 1];
-int A_right[A_SIZE + 1];
+const int A_SIZE = 100;
 
 extern int shiftArray(int* A, int idx, int amt);
 
-void left(int val) {
+void left(int A[A_SIZE], int val) {
   int i = 0;
-  while( i < A_SIZE && A_left[i] < val) {
+  while( i < A_SIZE && A[i] < val) {
     i = i + 1;
   }
   // int len = shiftArray(A_left, i, 1);
   int len = A_SIZE + 1; // spec of shiftArray
-  A_left[i] = val;
+  A[i] = val;
   while (i < len) {
     i = i + 1;
   }
 }
 
-void right(int val) {
+void right(int A[A_SIZE], int val) {
   int j = 0;
-  while( j < A_SIZE && A_right[j] < val) {
+  while( j < A_SIZE && A[j] < val) {
     j = j + 1;
   }
   // int len = shiftArray(A_left, i, 1);
   int len = A_SIZE + 1; // spec of shiftArray
-  A_right[j] = val;
+  A[j] = val;
   while (j < len) {
     j = j + 1;
   }

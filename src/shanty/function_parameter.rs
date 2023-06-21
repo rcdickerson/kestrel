@@ -4,12 +4,12 @@ use crate::shanty::Writer;
 
 #[derive(Clone, Debug)]
 pub struct FunctionParameter {
-  name: Option<String>,
-  ty: Type,
-  array_sizes: Vec<Expression>,
-  is_array: bool,
-  is_const: bool,
-  is_pointer: bool,
+  pub name: Option<String>,
+  pub ty: Type,
+  pub array_sizes: Vec<Expression>,
+  pub is_array: bool,
+  pub is_const: bool,
+  pub is_pointer: bool,
 }
 
 impl FunctionParameter {

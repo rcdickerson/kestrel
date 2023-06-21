@@ -21,7 +21,7 @@ impl OutputMode {
     let (_, fundefs) = crate::crel::fundef::extract_fundefs(crel);
     let main_fun = fundefs.get("main").expect("No main function found");
 
-    let mut arb_inits = build_arb_inits(&main_fun.params);
+    let mut arb_inits = build_param_inits(&main_fun.params);
     let preconds = BlockItem::Statement(spec.pre.to_crel(StatementKind::Assume));
     let postconds = BlockItem::Statement(spec.post.to_crel(StatementKind::Assert));
 
@@ -70,7 +70,7 @@ void assume(int cond) {{
 int arb_int();\n", filename.as_ref().unwrap_or(&"anonymous".to_string()))
 }
 
-fn build_arb_inits(params: &Vec<ParameterDeclaration>) -> Vec<BlockItem> {
+fn build_param_inits(params: &Vec<ParameterDeclaration>) -> Vec<BlockItem> {
   let call_arb_int = Expression::Call {
     callee: Box::new(Expression::Identifier{name: "arb_int".to_string()}),
     args: Vec::new(),
@@ -78,11 +78,20 @@ fn build_arb_inits(params: &Vec<ParameterDeclaration>) -> Vec<BlockItem> {
   params.iter()
     .filter(|param| param.declarator.is_some())
     .map(|param| {
+      let c_param = param.to_c();
+      let is_int = c_param.ty == crate::shanty::Type::Int;
+      let is_array = c_param.is_array;
+      let is_ptr = c_param.is_pointer;
+      let initializer = if is_int && !is_array && !is_ptr {
+        Some(call_arb_int.clone())
+      } else {
+        None
+      };
       BlockItem::Declaration(
         Declaration {
           specifiers: param.specifiers.clone(),
           declarator: param.declarator.as_ref().unwrap().clone(),
-          initializer: Some(call_arb_int.clone())
+          initializer
         }
       )
     })

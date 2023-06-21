@@ -5,3 +5,4 @@ pub mod names;
 pub mod output_mode;
 pub mod shanty;
 pub mod spec;
+pub mod unaligned;

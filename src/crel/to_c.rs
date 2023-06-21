@@ -9,6 +9,12 @@ impl CRel {
   }
 }
 
+impl ParameterDeclaration {
+  pub fn to_c(&self) -> C::FunctionParameter {
+    param_decl_to_param(self)
+  }
+}
+
 fn crel_to_c(crel: &CRel, source: &mut C::Source) {
   match crel {
     CRel::Declaration(decl) => {

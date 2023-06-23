@@ -311,9 +311,8 @@ pub fn rand_states_satisfying(num: usize,
                               generator: Option<&FunDef>,
                               fuel: usize) -> Vec<State> {
   let mut states = Vec::new();
-  let vars = cond.state_vars();
   while states.len() < num {
-    let mut state = rand_state(vars.iter(), decls, fuel);
+    let mut state = rand_state(decls, fuel);
     if generator.is_some() {
       let generator = generator.unwrap();
       for decl in &generator.params {
@@ -330,13 +329,8 @@ pub fn rand_states_satisfying(num: usize,
   states
 }
 
-fn rand_state<'a, I>(vars: I, decls: Option<&Vec<Declaration>>, fuel: usize) -> State
-  where I: Iterator<Item = &'a String>
-{
+fn rand_state(decls: Option<&Vec<Declaration>>, fuel: usize) -> State {
   let mut state = State::new();
-  for var in vars {
-    state.alloc(&var, 1, rand_val(Type::Int));
-  }
   match decls {
     None => state,
     Some(decls) => {

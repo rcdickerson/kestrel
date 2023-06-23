@@ -10,8 +10,8 @@
  */
 
 extern int f(int);
-const int M = 1000;
-const int N = 1000;
+const int M = 10;
+const int N = 10;
 
 void left(int a[N*M]) {
   int x = 0;

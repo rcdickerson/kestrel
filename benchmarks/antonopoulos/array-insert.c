@@ -5,7 +5,7 @@
  * post: left.i == right.j;
  */
 
-const int A_SIZE = 100;
+const int A_SIZE = 10;
 
 extern int shiftArray(int* A, int idx, int amt);
 

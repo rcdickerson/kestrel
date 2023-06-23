@@ -1,36 +1,53 @@
 /* @KESTREL
- * pre: true;
+ * pre: for _i in (0..24) { left.a[_i] == right.a[_i] }
+     && for _i2 in (0..2) { left.s[_i2] == right.s[_i2] };
  * left: left;
  * right: right;
- * post: for i in (0..(N - M + 1)) { s_1[i] == s_2[i] };
+ * post: for _j in (0..6) { left.s[_j] == right.s[_j] };
  */
 
-const int M = 5;
-const int N = 10;
-const int L = 10;
+#define M 5
+#define N 6
+#define L 4
 
-int a[N][L];
-int b[N];
-int s_1[N-M+1];
-int s_2[N-M+1];
+void _generator(int _arr1[N*L], int _arr2[N - M + 1]) {
+  int _ai = 0;
+  int l_a[N*L];
+  int r_a[N*L];
+  while (_ai < N*L) {
+    l_a[_ai] = _arr1[_ai];
+    r_a[_ai] = _arr1[_ai];
+    _ai = _ai + 1;
+  }
 
-void left(void) {
+  int _si = 0;
+  int l_s[N*L];
+  int r_s[N*L];
+  while (_si < N-M+1) {
+    l_s[_si] = _arr2[_si];
+    r_s[_si] = _arr2[_si];
+    _si = _si + 1;
+  }
+}
+
+void left(int a[N][L], int s[N-M+1]) {
   int i = 0;
   while (i < N - M) {
-    s_1[i] = 0;
+    s[i] = 0;
     int k = 0;
     while (k <= M - 1) {
       int l = 0;
       while (l <= L - 1) {
-        s_1[i] = s_1[i] + a[i + k][l];
+        s[i] = s[i] + a[i + k][l];
         l = l + 1;
       }
     }
   }
 }
 
-void right(void) {
-  s_2[0] = 0;
+void right(int a[N][L], int s[N-M+1]) {
+  s[0] = 0;
+  int b[N];
   int k = 0;
   while (k <= M - 1) {
     b[k] = 0;
@@ -39,7 +56,7 @@ void right(void) {
       b[k] = b[k] + a[k][l];
       l = l + 1;
     }
-    s_2[0] = s_2[0] + b[k];
+    s[0] = s[0] + b[k];
     k = k + 1;
   }
   int i = 1;
@@ -51,7 +68,7 @@ void right(void) {
       l = l + 1;
     }
     int z = b[i + M - 1] - b[i - 1];
-    s_2[i] = s_2[i - 1] + z;
+    s[i] = s[i - 1] + z;
     i = i + 1;
   }
 }

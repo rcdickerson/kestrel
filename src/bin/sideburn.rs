@@ -9,6 +9,7 @@ use kestrel::eggroll::{ast::*,
                        cost_functions::sa::*,
                        to_crel::*};
 use kestrel::spec::{KestrelSpec, parser::parse_spec};
+use kestrel::unaligned::*;
 use regex::Regex;
 use std::fs;
 
@@ -56,10 +57,13 @@ impl Input {
   fn read_c_file(input_file: &String) -> Self {
     let spec = parse_spec(input_file).unwrap();
     let raw_crel = kestrel::crel::parser::parse_c_file(input_file);
-    let (global_declarations, crel) = spec.build_unaligned_crel(&raw_crel);
-    let eggroll_str = crel.to_eggroll();
+    let unaligned_crel = UnalignedCRel::from(&raw_crel, &spec);
+    let eggroll_str = unaligned_crel.main.to_eggroll();
     let eggroll = eggroll_str.parse().unwrap();
-    Input{spec, crel, global_declarations, eggroll}
+    Input{spec,
+          crel: unaligned_crel.main,
+          global_declarations: unaligned_crel.global_decls,
+          eggroll}
   }
 
   fn read_eggroll_file(spec_file: &String, eggroll_file: &String) -> Self {

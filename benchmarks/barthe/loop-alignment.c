@@ -1,45 +1,46 @@
 /* @KESTREL
- * pre: for _i in (0..N) { a_1[_i] == a_2[_i] && b_1[0] == b_2[0] };
+ * pre: for _i in (0..20) { left.a[_i] == right.a[_i] && left.b[0] == right.b[0] };
  * left: left;
  * right: right;
- * post: for _j in (1..N) { d_1[_j] == d_2[_j] };
+ * post: for _j in (1..20) { left.d[_j] == right.d[_j] };
  */
 
-const int N = 20;
-int a_1[N + 1];
-int b_1[N + 1];
-int d_1[N + 1];
-int a_2[N + 1];
-int b_2[N + 1];
-int d_2[N + 1];
+#define N 20
 
 void _generator(int _arr[N], int _b) {
   int _ai = 0;
+  int l_a[N + 1];
+  int l_b[N + 1];
+  int r_a[N + 1];
+  int r_b[N + 1];
+
   while (_ai < N) {
-    a_1[_ai] = _arr[_ai];
-    a_2[_ai] = _arr[_ai];
+    l_a[_ai] = _arr[_ai];
+    r_a[_ai] = _arr[_ai];
     _ai = _ai + 1;
   }
-  b_1[0] = _b;
-  b_2[0] = _b;
+  l_b[0] = _b;
+  r_b[0] = _b;
 }
 
-void left(void) {
+void left(int a[N+1], int b[N+1]) {
   int i = 1;
+  int d[N+1];
   while (i <= N ) {
-    b_1[i] = a_1[i];
-    d_1[i] = b_1[i - 1];
+    b[i] = a[i];
+    d[i] = b[i - 1];
     i = i + 1;
   }
 }
 
-void right(void) {
+void right(int a[N+1], int b[N+1]) {
   int j = 1;
-  d_2[1] = b_2[0];
+  int d[N+1];
+  d[1] = b[0];
   while (j <= N - 1) {
-    b_2[j] = a_2[j];
-    d_2[j+1] = b_2[j];
+    b[j] = a[j];
+    d[j+1] = b[j];
     j = j + 1;
   }
-  b_2[N] = a_2[N];
+  b[N] = a[N];
 }

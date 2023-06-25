@@ -319,7 +319,7 @@ fn score_loop_executions(program: &CRel, trace: &Trace) -> f32 {
 }
 
 pub fn sa_score(trace_states: &Vec<State>, trace_fuel: usize, expr: RecExpr<Eggroll>) -> f32 {
-let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string());
+  let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string());
   let body = crate::crel::fundef::extract_fundefs(&crel).1
     .get(&"main".to_string())
     .expect("Missing main function")

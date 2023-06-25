@@ -46,7 +46,7 @@ impl TraceStateValue {
       (TraceStateValue::Int(i1), TraceStateValue::Int(i2)) => TraceStateValue::Int(i1 - i2),
       (TraceStateValue::Float(f1), TraceStateValue::Float(f2)) => TraceStateValue::Float(f1 - f2),
       (TraceStateValue::Array(a1), TraceStateValue::Array(a2)) => {
-        let mut arr = Vec::new();
+        let mut arr = Vec::with_capacity(a1.len());
         for (v1, v2) in a1.iter().zip(a2) {
           arr.push(v1.minus(v2));
         }
@@ -83,7 +83,7 @@ impl Trace {
   }
 
   pub fn push_state(&mut self, tag: Tag, state: &State) {
-    let mut trace_state = HashMap::new();
+    let mut trace_state = HashMap::with_capacity(state.vars().len());
     for (name, _, _) in state.vars() {
       let read = state.read_var(&name);
       trace_state.insert(name, TraceStateValue::from_var_read(&read));

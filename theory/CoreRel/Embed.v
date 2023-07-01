@@ -1,6 +1,7 @@
 From Common Require Import Id Fixpoints.
 From Imp Require Import Syntax Semantics Equiv.
 From CR Require Import Syntax Semantics Equiv.
+From Coq Require Import Strings.String.
 
 (* We now show how to convert from a pair of Imp programs to a CoreRel
    program and back. *)
@@ -18,7 +19,7 @@ Section Embed.
   Context {id : Id I M}.
 
   (* A pair of product programs is embedded into a aligned
-     representation largely as expected. *)
+     representation largely as expected. - Pair of programs into product program? *)
 
   Definition embed_com (s1 s2 : @com I) : @algn_com I :=
     <{<| s1 | s2 |> }>.
@@ -113,6 +114,7 @@ Section Embed.
     forall st1 st2 a,
       aeval st1 a = aeval (M := (@prod_M M)) (st1, st2) (inj_id_aexp_l a).
   Proof.
+
     induction a; simpl; eauto.
   Qed.
 
@@ -266,7 +268,7 @@ Section Embed.
   Qed.
 
   (* We build a product program by reifying an aligned program into
-     the standard IMP syntax. *)
+     the standard IMP syntax. - ? *)
 
   Fixpoint reify_com (r : @algn_com I) : (@com (I + I)) :=
     match r with
@@ -282,6 +284,8 @@ Section Embed.
     | <{ whileR <| b1 | b2 |> do r end }> =>
         <{ while (inj_id_bexp_l b1 && inj_id_bexp_r b2) do reify_com r end}>
     end.
+
+Compute reify_com <{ <| CSkip | CSkip |> }>.
 
   (* We define a different notion of equivalence between aligned
      programs and a single program with variables drawn from two
@@ -447,4 +451,160 @@ Section Embed.
     eapply embed_reify_sound; eauto.
   Qed.
 
+  Definition Assertion := (@state M) -> (@state M) -> Prop.
+
+  Definition hoare_triple
+             (P : Assertion) (r : @com (I + I)) (Q : Assertion) : Prop :=
+    forall st1 st2 st1' st2',
+      P st1 st2 ->
+      (st1, st2) =[ r ]=> (st1', st2') ->
+      Q st1' st2'.
+
+  Definition hoare_triple_relational
+             (P : Assertion) (s1 s2 : @com I) (Q : Assertion) : Prop :=
+    forall st1 st2 st1' st2',
+      P st1 st2  ->
+      st1 =[s1]=> st1' ->
+      st2 =[s2]=> st2' ->
+      Q st1' st2'.
+
+  Lemma hoare_triple_prod_a :
+    forall (s1 s2 : @com I)(P Q : Assertion)
+           (r : @algn_com I),
+      align_eqv r (embed_com s1 s2) /\ (hoare_triple P (reify_com r) Q) ->
+      hoare_triple_relational P s1 s2 Q.
+  Proof.
+    unfold hoare_triple, hoare_triple_relational, align_eqv. intros.
+    destruct H as [eqv_r P_r].
+    eapply P_r.
+    eassumption.
+    eapply embed_reify_sound; eauto.
+    unfold align_eqv.
+    symmetry.
+    apply eqv_r.
+  Qed.
+
+  Lemma hoare_triple_prod_b :
+    forall (s1 s2 : @com I)(P Q : Assertion),
+      hoare_triple_relational P s1 s2 Q ->
+      exists r : @algn_com I, align_eqv r (embed_com s1 s2) /\
+                                (hoare_triple P (reify_com r) Q).
+  Proof.
+    unfold hoare_triple, hoare_triple_relational.
+    intros; eexists; split; try reflexivity; intros.
+    eapply reify_is_iso in H1.
+    unfold embed_com in H1; inversion H1; subst.
+    eauto.
+  Qed.
+
 End Embed.
+
+Module Proofs.
+
+  Import Imp.Syntax.notations.
+  Import Imp.Semantics.notations.
+  Import CR.Syntax.notations.
+  Import CR.Semantics.notations.
+  Require Import Coq.Setoids.Setoid.
+
+  Definition I := string.
+  Context {M : Type -> Type}.
+  Context {id : Id I M}.
+
+  Variable W X Y Z : I.
+
+  Lemma comm_def : forall c1 c2 c3 c4,
+      align_eqv <{ <|c1; c2 | c3; c4|> }> <{ <| c1 | c3|> ;; <| c2 | c4 |> }>.
+  Proof.
+    intros. rewrite rel_def. rewrite  prod_hom_l. rewrite prod_hom_r.
+    rewrite prod_seq_assoc.
+    rewrite <- prod_seq_assoc with (r3 := <{<| skip | c4 |>}>) . rewrite <- rel_comm.
+    rewrite <- !prod_seq_assoc.  rewrite <- rel_def.
+    rewrite prod_seq_assoc. rewrite <- rel_def. reflexivity.
+  Qed.
+
+  Lemma comm_skip : forall c1 c3 c4,
+      align_eqv <{ <|c1 | c3; c4|> }> <{ <| c1 | c3|> ;; <| skip | c4 |> }>.
+  Proof.
+    intros. rewrite rel_def. rewrite prod_hom_r. rewrite <- prod_seq_assoc.
+    rewrite <- rel_def. reflexivity.
+  Qed.
+
+
+ Definition ex_1 Y Z : @algn_com I :=
+  <{
+     <| Y := 0 | Y := 0 |>;;
+     <| Z :=  2 * 2 | Z := 2 * 2|> }>.
+
+ Compute reify_com (ex_1 Y Z).
+
+
+ Definition ex_2 Y Z : @algn_com I :=
+   <{ <| Y := 0 ; Z := 2 * 2 | skip |>;;
+      <| skip | Y :=  0 ; Z := 2 * 2|> }>.
+
+
+ Compute reify_com (ex_2 Y Z).
+
+ Lemma example_12 : align_eqv  (ex_1 Y Z) (ex_2 Y Z).
+ Proof.
+   unfold ex_2. rewrite <- rel_def.  rewrite comm_def. reflexivity.
+ Qed.
+
+ Definition AId' : I -> aexp := AId.
+ Coercion AId' : I >-> aexp.
+
+ Definition kestrel_paper_p1 : @com I :=
+   <{Y := 0;
+     Z := 2 * X;
+     while (~(Z <= 0)) do
+       Z := Z - 1;
+       Y := Y + X;
+       Z := Z - 1;
+       Y := Y + X
+       end}>.
+
+  Definition kestrel_paper_p2 : @com I :=
+    <{ Y := 0;
+      Z := X;
+     while ~ (Z <= 0) do
+       Z := Z - 1;
+       Y := Y + X
+     end; Y := Y * 2 }>.
+
+ Definition kestrel_paper_example_1_prod_efficient : @algn_com I :=
+ <{ <| Y := 0 | Y := 0 |>;;
+     <| Z :=  2 * X | Z := X|>;;
+   (whileR <| ~(Z <= 0) | ~(Z <= 0) |> do
+            <| Z := Z - 1; Y := Y + X;
+               Z :=  Z - 1; Y := Y + X |
+               Z :=  Z - 1; Y := Y + X |> end;; <|while  ~(Z <= 0) do Z := Z - 1; Y := Y + X;
+               Z :=  Z - 1; Y := Y + X end | while ~(Z <= 0) do  Z :=  Z - 1; Y := Y + X end|>);;
+     <| skip | Y := Y * 2 |> }>.
+
+ Lemma paper_example1_eqv : align_eqv (embed_com kestrel_paper_p1 kestrel_paper_p2)
+                                  kestrel_paper_example_1_prod_efficient.
+ Proof.
+   unfold kestrel_paper_p1, kestrel_paper_p2; unfold embed_com; simpl.
+   rewrite comm_def.
+   rewrite comm_def.
+   rewrite comm_skip.
+   rewrite whileR_lockstep.
+   reflexivity.
+ Qed.
+
+ Definition equiv_state : @Assertion M :=
+   fun st1 st2 : state => forall id : I, ((st1, st2) : @prod_M M nat) !!! (@inl I I id : prod_I) = ((st1, st2) : @prod_M M nat) !!! (@inr I I id).
+
+ Lemma paper_example1 :
+   hoare_triple_relational equiv_state
+                           kestrel_paper_p1 kestrel_paper_p2
+                           equiv_state.
+ Proof.
+   eapply hoare_triple_prod_a.
+   split.
+   - symmetry; exact paper_example1_eqv.
+   - simpl.
+ Admitted.
+
+End Proofs.

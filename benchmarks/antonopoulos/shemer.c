@@ -2,24 +2,26 @@
  * pre:   left.x == right.x;
  * left:  left;
  * right: right;
- * post:  left.x == right.x;
+ * post:  left.y == right.y;
  */
 
 void left(int x) {
   int y = 0;
   int z = 2 * x;
-  while (z > 0) {
-    z = z - 1;
+  int i = 0;
+  while (i < z) {
     y = y + x;
+    i = i + 1;
   }
 }
 
 void right(int x) {
   int y = 0;
   int z = x;
-  while (z > 0) {
-    z = z - 1;
+  int i = 0;
+  while (i < z) {
     y = y + x;
+    i = i + 1;
   }
   y = y * 2;
 }

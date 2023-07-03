@@ -505,7 +505,7 @@ Module Proofs.
   Import Imp.Semantics.notations.
   Import CR.Syntax.notations.
   Import CR.Semantics.notations.
-  Require Import Coq.Setoids.Setoid.
+  Import Coq.Setoids.Setoid.
 
   Definition I := string.
   Context {M : Type -> Type}.

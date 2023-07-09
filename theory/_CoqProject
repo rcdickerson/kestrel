@@ -10,3 +10,4 @@ CoreRel/Syntax.v
 CoreRel/Semantics.v
 CoreRel/Equiv.v
 CoreRel/Embed.v
+CoreRel/Hoare.v

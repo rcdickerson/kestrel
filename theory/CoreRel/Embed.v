@@ -114,9 +114,11 @@ Section Embed.
     forall st1 st2 a,
       aeval st1 a = aeval (M := (@prod_M M)) (st1, st2) (inj_id_aexp_l a).
   Proof.
-
+ 
     induction a; simpl; eauto.
   Qed.
+
+ 
 
   Lemma inj_id_aexp_r_aeval :
     forall st1 st2 a,
@@ -129,6 +131,7 @@ Section Embed.
     forall st1 st2 b,
       beval st1 b = beval (M := (@prod_M M)) (st1, st2) (inj_id_bexp_l b).
   Proof.
+  
     induction b; simpl; eauto;
       try erewrite !inj_id_aexp_l_aeval;
       rewrite ?IHb;
@@ -234,7 +237,8 @@ Section Embed.
     - specialize (E_Ass (st, st2) (inj_id_aexp_l a) n (inl x));
         simpl; intro H0; apply H0.
       rewrite <- inj_id_aexp_l_aeval; assumption.
-    - econstructor;
+    - 
+    econstructor;
         try rewrite <- inj_id_bexp_l_beval; eauto.
     - eapply E_IfFalse;
         try rewrite <- inj_id_bexp_l_beval; eauto.
@@ -270,7 +274,7 @@ Section Embed.
   (* We build a product program by reifying an aligned program into
      the standard IMP syntax. - ? *)
 
-  Fixpoint reify_com (r : @algn_com I) : (@com (I + I)) :=
+  Fixpoint reify_com (r : @algn_com I) : (@com prod_I) :=
     match r with
     | <{ <| s1 | s2 |> }> =>
         <{ inj_id_com_l s1; inj_id_com_r s2}>
@@ -293,7 +297,8 @@ Compute reify_com <{ <| CSkip | CSkip |> }>.
 
   Definition lift_state (st1 st2 : @state M) : (@state (@prod_M M)) := (st1, st2).
 
-  Definition algn_eqv_single (r : @algn_com I) (s : @com (I + I)) : Prop :=
+
+  Definition algn_eqv_single (r : @algn_com I) (s : @com prod_I) : Prop :=
     forall rst rst',
       (rst =[ s ]=> rst') <->
         rst =<[ r ]>=> rst'.
@@ -361,14 +366,15 @@ Compute reify_com <{ <| CSkip | CSkip |> }>.
         simpl; rewrite <- inj_id_bexp_l_beval, <- inj_id_bexp_r_beval, ?H, ?H0; auto using andb_false_r.
   Qed.
 
-  Definition eqv_single_prod (s1 s2 : @com I) (s12 : @com (I + I)) : Prop :=
+  Definition eqv_single_prod (s1 s2 : @com I) (s12 : @com prod_I) : Prop :=
     forall st1 st2 st1' st2',
       (st1 =[ s1 ]=> st1' /\ st2 =[ s2 ]=> st2') <->
         (st1, st2) =[ s12 ]=> (st1', st2').
 
+
   Lemma eqv_single_prod_respect_eqv
     : forall (s1 s2 s1' s2' : @com I)
-             (s12 s12' : @com (I + I)),
+             (s12 s12' : @com prod_I),
       com_eqv s1 s1' -> com_eqv s2 s2' -> com_eqv s12 s12' ->
       eqv_single_prod s1 s2 s12 ->
       eqv_single_prod s1' s2' s12'.
@@ -451,53 +457,64 @@ Compute reify_com <{ <| CSkip | CSkip |> }>.
     eapply embed_reify_sound; eauto.
   Qed.
 
-  Definition Assertion := (@state M) -> (@state M) -> Prop.
+End Embed.
 
-  Definition hoare_triple
-             (P : Assertion) (r : @com (I + I)) (Q : Assertion) : Prop :=
-    forall st1 st2 st1' st2',
+Section rel_verification.
+From CR Require Import Hoare.
+    Definition I := @prod_I string.
+    Context {M : Type -> Type}.
+    Context {id : Id string M}.
+
+  
+  (*Definition Assertion := CR.Hoare.Definitions.Assertion. *)
+  (*Import CR.Hoare.Definitions.*)
+   Set Printing All.
+   
+   
+  Definition hoare_triple_product
+             (P : Assertion) (r : @com I ) (Q : Assertion) : Prop := hoare_triple P r Q.
+    (*forall st1 st2 st1' st2',
       P st1 st2 ->
       (st1, st2) =[ r ]=> (st1', st2') ->
-      Q st1' st2'.
+      Q st1' st2'. *)
 
   Definition hoare_triple_relational
-             (P : Assertion) (s1 s2 : @com I) (Q : Assertion) : Prop :=
+             (P : @Assertion M) (s1 s2 : @com string) (Q : @Assertion M) : Prop :=
     forall st1 st2 st1' st2',
-      P st1 st2  ->
-      st1 =[s1]=> st1' ->
-      st2 =[s2]=> st2' ->
-      Q st1' st2'.
+      P (st1 ,st2)  ->
+      ceval s1 st1 st1' ->
+      (*st1 =[s1]=> st1' ->*)
+      ceval s2 st2 st2' ->
+      Q (st1', st2').
 
   Lemma hoare_triple_prod_a :
-    forall (s1 s2 : @com I)(P Q : Assertion)
-           (r : @algn_com I),
-      align_eqv r (embed_com s1 s2) /\ (hoare_triple P (reify_com r) Q) ->
+    forall (s1 s2 : @com string)(P Q : Assertion)
+           (r : @algn_com string),
+      align_eqv r (embed_com s1 s2) /\ (hoare_triple_product P (reify_com r) Q) ->
       hoare_triple_relational P s1 s2 Q.
   Proof.
-    unfold hoare_triple, hoare_triple_relational, align_eqv. intros.
+    unfold hoare_triple_product, hoare_triple_relational, align_eqv. intros.
     destruct H as [eqv_r P_r].
     eapply P_r.
     eassumption.
-    eapply embed_reify_sound; eauto.
-    unfold align_eqv.
-    symmetry.
-    apply eqv_r.
+    apply embed_reify_sound with (s1 := s1) (s2 := s2). unfold align_eqv. eauto.
+    split. assumption. assumption.
   Qed.
 
   Lemma hoare_triple_prod_b :
-    forall (s1 s2 : @com I)(P Q : Assertion),
+    forall (s1 s2 : @com string)(P Q : Assertion),
       hoare_triple_relational P s1 s2 Q ->
-      exists r : @algn_com I, align_eqv r (embed_com s1 s2) /\
-                                (hoare_triple P (reify_com r) Q).
+      exists r : @algn_com string, align_eqv r (embed_com s1 s2) /\
+                                (hoare_triple_product P (reify_com r) Q).
   Proof.
-    unfold hoare_triple, hoare_triple_relational.
+    unfold hoare_triple_product, hoare_triple, hoare_triple_relational.
     intros; eexists; split; try reflexivity; intros.
     eapply reify_is_iso in H1.
-    unfold embed_com in H1; inversion H1; subst.
-    eauto.
+    unfold embed_com in H1; inversion H1; subst. destruct st.
+    eapply H; eassumption. 
   Qed.
 
-End Embed.
+End rel_verification.
 
 Module Proofs.
 
@@ -506,6 +523,7 @@ Module Proofs.
   Import CR.Syntax.notations.
   Import CR.Semantics.notations.
   Import Coq.Setoids.Setoid.
+  Import CR.Hoare.
 
   Definition I := string.
   Context {M : Type -> Type}.
@@ -582,6 +600,22 @@ Module Proofs.
                Z :=  Z - 1; Y := Y + X end | while ~(Z <= 0) do  Z :=  Z - 1; Y := Y + X end|>);;
      <| skip | Y := Y * 2 |> }>.
 
+  Definition kestrel_paper_skip1 : @com I := <{skip}>.
+
+  Definition kestrel_paper_skip2 : @com I := <{ skip }>.
+
+  Definition kestrel_paper_skip_prod_efficient : @algn_com I :=
+ <{ <|skip | skip|>}>.
+
+  Definition kestrel_paper_while1 : @com I := <{while false do skip end}>.
+
+  Definition kestrel_paper_while2 : @com I := <{while false do skip end}>.
+  
+  Definition kestrel_paper_while_prod_efficient : @algn_com I :=
+ <{ whileR <| false | false |> do <|skip | skip|> end ;; 
+    <| while false do skip end | while false do skip end |>}>.  
+
+
  Lemma paper_example1_eqv : align_eqv (embed_com kestrel_paper_p1 kestrel_paper_p2)
                                   kestrel_paper_example_1_prod_efficient.
  Proof.
@@ -593,8 +627,41 @@ Module Proofs.
    reflexivity.
  Qed.
 
+ Lemma paper_while_eqv : align_eqv (embed_com kestrel_paper_while1 kestrel_paper_while2)
+                                  kestrel_paper_while_prod_efficient.
+ Proof.
+  unfold kestrel_paper_while1, kestrel_paper_while2; unfold embed_com; simpl. 
+  rewrite whileR_lockstep. unfold kestrel_paper_while_prod_efficient. reflexivity.
+ Qed.
+
+
+ Lemma paper_skip_eqv : align_eqv (embed_com kestrel_paper_skip1 kestrel_paper_skip2)
+                                  kestrel_paper_skip_prod_efficient.
+ Proof.
+   unfold kestrel_paper_skip1, kestrel_paper_skip2; unfold embed_com; simpl.
+   unfold kestrel_paper_skip_prod_efficient. reflexivity.
+ Qed.
+
  Definition equiv_state : @Assertion M :=
-   fun st1 st2 : state => forall id : I, ((st1, st2) : @prod_M M nat) !!! (@inl I I id : prod_I) = ((st1, st2) : @prod_M M nat) !!! (@inr I I id).
+   fun st: state => forall id : I, (st : @prod_M M nat) !!! (@inl I I id : prod_I) = (st : @prod_M M nat) !!! (@inr I I id : prod_I).
+
+
+  Ltac assn_auto :=
+  try auto; 
+  try (unfold assert_implies, assn_sub, insert;
+       intros; simpl in *; lia).
+
+ Lemma paper_skip :
+   hoare_triple_relational equiv_state
+                           kestrel_paper_skip1 kestrel_paper_skip2
+                           equiv_state.
+ Proof.
+  eapply hoare_triple_prod_a. split.
+  symmetry. exact paper_skip_eqv.
+  simpl. unfold hoare_triple_product, equiv_state. 
+  eapply hoare_seq. apply hoare_skip. apply hoare_skip. 
+ Qed.
+
 
  Lemma paper_example1 :
    hoare_triple_relational equiv_state
@@ -604,7 +671,8 @@ Module Proofs.
    eapply hoare_triple_prod_a.
    split.
    - symmetry; exact paper_example1_eqv.
-   - simpl.
+   - simpl. unfold hoare_triple_product, equiv_state. intros.
+     eapply hoare_seq. eapply hoare_seq. eapply hoare_while.
  Admitted.
 
 End Proofs.

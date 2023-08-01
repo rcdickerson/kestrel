@@ -25,9 +25,12 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
 
     let mut best = selection.program(root);
     let mut best_score = score;
+    let mut last_best_at = 0;
     println!("Initial score: {}", best_score);
 
     for k in 0..max_iterations {
+      if k - last_best_at > 2000 { break; }
+
       let mut selections = selection.selections.iter()
         .map( |(k, v)| (k.clone(), v.clone()))
         .collect::<Vec<(egg::Id, usize)>>();
@@ -41,6 +44,7 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
       if n_score < best_score {
         best = neighbor.program(root);
         best_score = n_score;
+        last_best_at = k;
         println!("Score {} at temperature {}", best_score, temp);
       }
       let transition = if n_score <= score { true } else {

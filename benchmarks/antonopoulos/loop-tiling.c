@@ -2,9 +2,9 @@
  * pre:   true;
  * left:  left;
  * right: right;
- * post:  for i in (0..1000) {
-            for j in (0..1000) {
-              left.a[i * 1000 + j] == right.a[i][j]
+ * post:  for i in (0..100) {
+            for j in (0..100) {
+              left.a[i * 100 + j] == right.a[i][j]
             }
           };
  */

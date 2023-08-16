@@ -23,7 +23,7 @@ Class Id A M := {
 Module string_id_instance.
 
   Definition id := string.
-  Definition idmap := stringmap.
+  Definition idmap := stringmap. 
 
   #[export]
   Instance is_string : Id id idmap.
@@ -58,8 +58,15 @@ Section Id_prod.
   Definition prod_I : Type := I + I.
   Definition prod_M (T : Type) : Type := M T * M T.
 
+
+Check FMap. (* (Type → Type) → Type: takes a function and returns an element*)
+
+
+
   Definition prod_id_finmap_fmap : FMap prod_M :=
     fun A B f M2 => (id_finmap_fmap A B f (fst M2), id_finmap_fmap A B f (snd M2)).
+
+Check FMap prod_M.
 
   Definition prod_id_finmap_lookup : ∀ C, Lookup prod_I C (prod_M C) :=
     fun C i M2 => match i with

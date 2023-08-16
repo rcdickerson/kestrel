@@ -36,8 +36,13 @@ Section Semantics.
 
     A _machine state_ (or just _state_) represents the current values
     of _all_ variables at some point in the execution of a program. *)
-
+ 
   Definition state := M nat.
+
+  Inductive result : Type :=
+    | RNormal : state -> result
+    | RError : result.
+
 
   Fixpoint aeval (st : state) (a : aexp) : nat :=
     match a with
@@ -66,102 +71,132 @@ Section Semantics.
     defining an evaluation function tricky... *)
 
 (* ----------------------------------------------------------------- *)
-(** *** Operational Semantics *)
+(** *** Operational Semantics - including result *)
 
 (** Here is an informal definition of evaluation, presented as inference
     rules for readability:
 
                            -----------------                            (E_Skip)
-                           st =[ skip ]=> st
+                           st =[ skip ]=> RNormal st
 
                            aeval st a = n
                    -------------------------------                      (E_Ass)
-                   st =[ x := a ]=> (x !-> n ; st)
+                   st =[ x := a ]=> RNormal (x !-> n ; st)
 
-                           st  =[ c1 ]=> st'
-                           st' =[ c2 ]=> st''
-                         ---------------------                           (E_Seq)
-                         st =[ c1;c2 ]=> st''
+                           st  =[ c1 ]=> RNormal st'
+                           st' =[ c2 ]=> r
+                         ---------------------                           (E_SeqNormal)
+                         st =[ c1;c2 ]=> r
+
+
+                           st  =[ c1 ]=> RError
+                         ---------------------                           (E_SeqError)
+                         st =[ c1;c2 ]=> RError
 
                           beval st b = true
-                           st =[ c1 ]=> st'
+                           st =[ c1 ]=> r
                 --------------------------------------               (E_IfTrue)
-                st =[ if b then c1 else c2 end ]=> st'
+                st =[ if b then c1 else c2 end ]=> r
 
                          beval st b = false
-                           st =[ c2 ]=> st'
+                           st =[ c2 ]=> r
                 --------------------------------------              (E_IfFalse)
-                st =[ if b then c1 else c2 end ]=> st'
+                st =[ if b then c1 else c2 end ]=> r
 
                          beval st b = false
                     -----------------------------                 (E_WhileFalse)
-                    st =[ while b do c end ]=> st
+                    st =[ while b do c end ]=> RNormal st
 
                           beval st b = true
-                           st =[ c ]=> st'
-                  st' =[ while b do c end ]=> st''
-                  --------------------------------                 (E_WhileTrue)
-                  st  =[ while b do c end ]=> st''
+                           st =[ c ]=> RNormal st'
+                  st' =[ while b do c end ]=> r
+                  --------------------------------                 (E_WhileTrueNormal)
+                  st  =[ while b do c end ]=> r
+
+                           beval st b = true
+                          st =[ c ]=> RError
+                  --------------------------------                 (E_WhileTrueError)
+                  st  =[ while b do c end ]=> RError
+
+                            beval st b = true
+                --------------------------------------              (E_AssertNormal)
+                     st =[ assert b ]=> RNormal st
+
+
+                          beval st b = false
+                --------------------------------------              (E_AssertError)
+                     st =[ assert b ]=> RError
 *)
 
 Reserved Notation
-         "st '=[' c ']=>' st'"
+         "st '=[' c ']=>' r"
          (at level 40, c custom com at level 99,
-          st constr, st' constr at next level).
+          st constr, r constr at next level).
 
-Inductive ceval : com -> state -> state -> Prop :=
+Inductive cevalr : com -> state -> result -> Prop :=
   | E_Skip : forall st,
-      st =[ skip ]=> st
+      st =[ skip ]=> RNormal st
   | E_Ass  : forall st a n x,
       aeval st a = n ->
-      st =[ x := a ]=> (<[x := n]> st)
-  | E_Seq : forall c1 c2 st st' st'',
-      st  =[ c1 ]=> st'  ->
-      st' =[ c2 ]=> st'' ->
-      st  =[ c1 ; c2 ]=> st''
-  | E_IfTrue : forall st st' b c1 c2,
+      st =[ x := a ]=> RNormal (<[x := n]> st)
+  | E_SeqNormal : forall c1 c2 st st' r,
+      st  =[ c1 ]=> RNormal st'  ->
+      st' =[ c2 ]=> r ->
+      st  =[ c1 ; c2 ]=> r
+  | E_SeqError : forall c1 c2 st,
+      st  =[ c1 ]=> RError ->
+      st  =[ c1 ; c2 ]=> RError
+  | E_IfTrue : forall st r b c1 c2,
       beval st b = true ->
-      st =[ c1 ]=> st' ->
-      st =[ if b then c1 else c2 end]=> st'
-  | E_IfFalse : forall st st' b c1 c2,
+      st =[ c1 ]=> r ->
+      st =[ if b then c1 else c2 end]=> r
+  | E_IfFalse : forall st r b c1 c2,
       beval st b = false ->
-      st =[ c2 ]=> st' ->
-      st =[ if b then c1 else c2 end]=> st'
+      st =[ c2 ]=> r ->
+      st =[ if b then c1 else c2 end]=> r
   | E_WhileFalse : forall b st c,
       beval st b = false ->
-      st =[ while b do c end ]=> st
-  | E_WhileTrue : forall st st' st'' b c,
+      st =[ while b do c end ]=> RNormal st
+  | E_WhileTrueNormal : forall st st' r b c,
       beval st b = true ->
-      st  =[ c ]=> st' ->
-      st' =[ while b do c end ]=> st'' ->
-      st  =[ while b do c end ]=> st''
+      st  =[ c ]=> RNormal st' ->
+      st' =[ while b do c end ]=> r ->
+      st  =[ while b do c end ]=> r
+  | E_WhileTrueError : forall st b c,
+      beval st b = true ->
+      st  =[ c ]=> RError ->
+      st =[ while b do c end ]=> RError
+  | E_AssertNormal : forall st b,
+      beval st b = true ->
+      st =[ assert b ]=> RNormal st
+  | E_AssertError : forall st b,
+      beval st b = false ->
+      st =[ assert b]=> RError
 
-  where "st =[ c ]=> st'" := (ceval c st st').
-
-(** The cost of defining evaluation as a relation instead of a
-    function is that we now need to construct _proofs_ that some
-    program evaluates to some result state, rather than just letting
-    Coq's computation mechanism do it for us. *)
+  where "st =[ c ]=> r" := (cevalr c st r).
 
 
 (* ================================================================= *)
 (** ** Determinism of Evaluation *)
 
-Theorem ceval_deterministic: forall c st st1 st2,
-     st =[ c ]=> st1  ->
-     st =[ c ]=> st2 ->
-     st1 = st2.
+Theorem ceval_deterministic: forall c st r1 r2,
+     st =[ c ]=> r1  ->
+     st =[ c ]=> r2 ->
+     r1 = r2.
 Proof.
-  intros c st st1 st2 E1 E2.
-  generalize dependent st2.
-  induction E1; intros st2 E2; inversion E2; subst.
+  intros c st r1 r2 E1 E2.
+  generalize dependent r2.
+  induction E1; intros r2 E2; inversion E2; subst.
   - (* E_Skip *) reflexivity.
   - (* E_Ass *) reflexivity.
-  - (* E_Seq *)
-    rewrite (IHE1_1 st'0 H1) in *.
+  - (* E_Seq *) 
+    specialize IHE1_1 with (RNormal st'0). apply IHE1_1 in H1. inversion H1; subst.
     apply IHE1_2. assumption.
   - (* E_IfTrue, b evaluates to true *)
-      apply IHE1. assumption.
+     specialize IHE1_1 with RError. apply IHE1_1 in H3. discriminate H3.
+  - specialize IHE1 with (RNormal st'). apply IHE1 in H1. discriminate H1.
+  - reflexivity.
+  - apply IHE1. assumption.
   - (* E_IfTrue,  b evaluates to false (contradiction) *)
       rewrite H in H5. discriminate.
   - (* E_IfFalse, b evaluates to true (contradiction) *)
@@ -172,16 +207,25 @@ Proof.
     reflexivity.
   - (* E_WhileFalse, b evaluates to true (contradiction) *)
     rewrite H in H2. discriminate.
-  - (* E_WhileTrue, b evaluates to false (contradiction) *)
-    rewrite H in H4. discriminate.
-  - (* E_WhileTrue, b evaluates to true *)
-    rewrite (IHE1_1 st'0 H3) in *.
-    apply IHE1_2. assumption.  Qed.
-
+  - (* E_WhileTrue Error*)
+    rewrite H in H2. discriminate.
+  - (* E_WhileTrueNormal, contradiction *)
+    rewrite H in H4. discriminate H4.
+  - specialize IHE1_1 with (RNormal st'0). apply IHE1_1 in H3.
+    inversion H3; subst. apply IHE1_2. assumption.
+  - apply IHE1_1 with RError in H5. discriminate H5.
+  - rewrite H in H4. discriminate H4.
+  - apply IHE1 with (RNormal st') in H3. discriminate H3.
+  - reflexivity.
+  - reflexivity.
+  - rewrite H in H1. discriminate H1.
+  - rewrite H in H1. discriminate H1.
+  - reflexivity.
+Qed.
 
 Definition AExpDom := PSet (nat * state)%type.
 Definition BExpDom := PSet (bool * state)%type.
-Definition ComDom := PSet (state * state)%type.
+Definition ComDom := PSet (state * result)%type.
 
 Reserved Notation "'[[' a ']]A'" (at level 40).
 Reserved Notation "'[[' b ']]B'" (at level 40).
@@ -314,6 +358,15 @@ Fixpoint denote_B (b : bexp) : BExpDom :=
   end
 where "'[[' b ']]B'" := (denote_B b).
 
+
+Lemma bexp_denote : forall (b : bexp) (v : bool) st,
+    [[b ]]B (v, st) → (v, st) ∈ [[b ]]B.
+Proof.
+ induction b; simpl; intros; firstorder.
+Qed.
+
+
+
 Lemma bexp_eqv_unique : forall (b : bexp) (v1 v2 : bool) st,
     (v1, st) ∈ [[b ]]B → (v2, st) ∈ [[b ]]B → v1 = v2.
 Proof.
@@ -357,21 +410,22 @@ Qed.
                                       ⋀ (σ2, σ3) ∈ rec} *)
 
 (*The denotation of while loops uses the least fixed point [LFP]
-  combinator defined in Fixpoints.v. *)
+  combinator defined in FixpointsJ.v. *)
+
 Fixpoint denote_Com (c : com)
   : ComDom :=
   match c with
   | <{ skip }> =>
-    {{ (st, st') | st = st' }}
+    {{ (st, st')| st' = RNormal st }}
   | <{x := a1}> => {{ (st, st') | exists v,
                                (v, st) ∈ [[a1]]A
-                               /\ st' = <[x := v]>st }}
+                               /\ st' = RNormal (<[x := v]>st) }}
 
   | <{c1; c2}> => {{ (st, st') |
-                   exists st'',
-                   (st, st'') ∈ [[c1]] /\
-                   (st'', st') ∈ [[c2]] }}
-
+                   (exists st'',
+                   (st, RNormal st'') ∈ [[c1]] /\ (st'', st') ∈ [[c2]]) 
+                 \/ ((st, RError) ∈ [[c1]] /\ st' = RError)}}
+ 
   | <{ if b then c1 else c2 end }> =>
     {{ (st, st') |
       ((true, st) ∈ [[b]]B /\ (st, st') ∈ [[c1]])
@@ -380,15 +434,56 @@ Fixpoint denote_Com (c : com)
   | <{ while b do c end }> =>
     LFP (fun (phi : PSet _) =>
            {{ (st, st') |
-              ((false, st) ∈ [[b]]B /\ st' = st)
-               \/ (exists st'',
+              ((false, st) ∈ [[b]]B /\ st' = RNormal st)
+               \/ (exists st'', (*TrueNormal*)
                       (true, st) ∈ [[b]]B /\
-                      (st, st'') ∈ [[c]]
-                      /\  (st'', st') ∈ phi) }})
+                      (st, RNormal st'') ∈ [[c]]
+                      /\  (st'', st') ∈ phi)
+               \/ ((true, st) ∈ [[b]]B /\ (*True *)
+                      (st, RError) ∈ [[c]]
+                      /\  st' = RError)}})
+  | <{ assert b }> => {{ (st, st') | ((true, st) ∈ [[b]]B /\ st' = RNormal st)
+     \/ ((false, st) ∈ [[b]]B /\ st' = RError )}}
 
 
   end
-where "'[[' c ']]'" := (denote_Com c).
+where "'[[' c ']]'" := (denote_Com c). 
+
+
+(*Fixpoint denote_Com (c : com)
+  : ComDom :=
+  match c with
+  | <{ skip }> =>
+    {{ (st, st')| st' = RNormal st }}
+  | <{x := a1}> => {{ (st, st') | exists v,
+                               (v, st) ∈ [[a1]]A
+                               /\ st' = RNormal (<[x := v]>st) }}
+
+  | <{c1; c2}> => {{ (st, st') |
+                   (exists st'' st''',
+                   (st, RNormal st'') ∈ [[c1]] /\ (st'', RNormal st''') ∈ [[c2]]
+                   /\ st' = RNormal st''') }}
+ 
+  | <{ if b then c1 else c2 end }> =>
+    {{ (st, st') |
+      (exists st'', (true, st) ∈ [[b]]B /\ (st, RNormal st'') ∈ [[c1]] /\ st' = RNormal st'')
+      \/ (exists st'', (false, st) ∈ [[b]]B /\ (st, RNormal st'') ∈ [[c2]] /\ st' = RNormal st'')}}
+
+  | <{ while b do c end }> =>
+    LFP (fun (phi : PSet _) =>
+           {{ (st, st') |
+              ((false, st) ∈ [[b]]B /\ st' = RNormal st)
+               \/ (exists st'' st''', (*TrueNormal*)
+                      (true, st) ∈ [[b]]B /\
+                      (st, RNormal st'') ∈ [[c]]
+                      /\  (st'', RNormal st''') ∈ phi /\ st' = RNormal st''')
+              }})
+  | <{ assert b }> => {{ (st, st') | ((true, st) ∈ [[b]]B /\ st' = RNormal st)}}
+
+
+  end
+where "'[[' c ']]'" := (denote_Com c). *)
+
 
 (* To show that LFP is a proper fixed point in subsequent proofs, we
    need to show that if is applied to a monotone function. *)
@@ -396,17 +491,22 @@ Lemma while_body_monotone :
   forall b c,
     Monotone (fun (phi : PSet _) =>
            {{ (st, st') |
-              ((false, st) ∈ [[b]]B /\ st' = st)
-               \/ (exists st'',
+              ((false, st) ∈ [[b]]B /\ st' = RNormal st)
+               \/ (exists st'', (*TrueNormal*)
                       (true, st) ∈ [[b]]B /\
-                      (st, st'') ∈ [[c]]
-                      /\  (st'', st') ∈ phi) }}).
+                      (st, RNormal st'') ∈ [[c]]
+                      /\  (st'', st') ∈ phi)
+                \/ ((true, st) ∈ [[b]]B /\ (*Error *)
+                      (st, RError) ∈ [[c]]
+                      /\  st' = RError)
+                }}).
 Proof.
   unfold Monotone, subseteq, set_subseteq_instance; intros.
   destruct x; unfold elem_of in *; In_inversion.
   - subst; left; split; try assumption; reflexivity.
-  - right; eexists _; intuition; try eassumption.
-    apply H; eassumption.
+  - right. left. eexists. intuition eauto.     
+  - subst. right. right. split. eassumption. split.
+    eassumption. reflexivity. 
 Qed.
 
 (* Finally, we can show that the denotational and big-step operational
@@ -443,29 +543,34 @@ Lemma BigStep_Denotational_Sound :
   forall c st st',
     st =[c]=> st' -> (st, st') ∈ [[c]].
 Proof.
-  intros.
-  induction H; simpl; try solve [econstructor]; In_intro;
-    try reflexivity; try eassumption.
-  - (* E_Ass *)
-    rewrite <- H; eapply Denotational_A_BigStep_Sound.
-  - (* E_IfTrue *)
-    left; subst; split; try eassumption.
-    rewrite <- H; eapply Denotational_B_BigStep_Sound.
-  - (* E_IfFalse *)
-    right; subst; split; try eassumption.
-    rewrite <- H; eapply Denotational_B_BigStep_Sound.
-  - (* E_WhileEnd *)
-    apply LFP_unfold.
-    apply while_body_monotone.
-    left.
-    intuition.
-    rewrite <- H; apply Denotational_B_BigStep_Sound.
-  - (* E_WhileLoop *)
-    apply LFP_unfold.
-    apply while_body_monotone.
-    right.
-    eexists; repeat split; try eassumption.
-    rewrite <- H; apply Denotational_B_BigStep_Sound.
+  intros. induction H.
+  (*skip*)
+  constructor. rewrite <- H. econstructor.
+  (*Assignment*)
+  split. eapply Denotational_A_BigStep_Sound. reflexivity.
+  (*Sequence - Normal*)
+  econstructor. eexists. split. eassumption. eauto.
+  (*Sequence - Error*)
+  simpl. right. split. assumption. reflexivity.
+  (*If - true*)
+  left. split. rewrite <- H. apply Denotational_B_BigStep_Sound. assumption.
+  (*if - false*)
+  right. split. rewrite <- H. apply Denotational_B_BigStep_Sound. assumption.
+  (*while - false*)
+  simpl. intros. apply LFP_unfold.  apply while_body_monotone. left. split.
+  rewrite <- H. apply Denotational_B_BigStep_Sound. reflexivity.
+  (*while - true normal*)
+  simpl. apply LFP_unfold. apply while_body_monotone. right. left.
+  eexists. split. rewrite <- H. apply Denotational_B_BigStep_Sound.
+  split. eassumption. eassumption.
+  (*while - true error*)
+  simpl. apply LFP_unfold. apply while_body_monotone. right. right.
+  split. rewrite <- H. apply Denotational_B_BigStep_Sound. split.
+  assumption. reflexivity.
+  (*assert : true*)
+  left. split. rewrite <- H.  apply Denotational_B_BigStep_Sound. reflexivity.
+  (*assert : false*)
+  right. split. rewrite <- H.  apply Denotational_B_BigStep_Sound. reflexivity.
 Qed.
 
 (* Similarly, our denotational semantics is adequate with respect to
@@ -543,46 +648,55 @@ Lemma Denotational_BigStep_Adequate :
   forall c st st',
     (st, st') ∈ [[c]] -> st =[c]=> st'.
 Proof.
-  induction c; simpl; intros st st' denote_c; In_inversion.
-  - (* skip *)
-    econstructor.
-  - (* Assignment *)
-    econstructor.
-    erewrite BigStep_A_Denotational_Adequate; try reflexivity; assumption.
-  - (* Sequence *)
-    subst; econstructor.
-    + apply IHc1; eassumption.
-    + apply IHc2; eassumption.
-  - (* Conditional *)
-    constructor.
-    erewrite BigStep_B_Denotational_Adequate; try reflexivity; assumption.
-    apply IHc1; eassumption.
-  - apply E_IfFalse.
-      erewrite BigStep_B_Denotational_Adequate; try reflexivity; assumption.
-      apply IHc2; eassumption.
-  - apply LFP_unfold in denote_c; try apply while_body_monotone.
-    unfold elem_of in *; In_inversion.
-    + rewrite H0; econstructor.
-      erewrite BigStep_B_Denotational_Adequate; try reflexivity; assumption.
-    + eapply E_WhileTrue.
-      erewrite BigStep_B_Denotational_Adequate; try reflexivity; assumption.
-      apply IHc; eassumption.
-      replace x with (fst (x, st')) by reflexivity.
-      replace st' with (snd (x, st')) at 2 by reflexivity.
-      pattern (x, st').
-      (* Hmmmm... we're (almost) back to where we started! *)
-      (* Why can't we apply the Inductive Hypothesis? *)
-      eapply Ind; try eassumption.
-      generalize IHc; clear.
-      intros IHc [st'' st']
-             [ [denote_b st_eq]
-             | [st''0 [denote_b [denote_c ? ] ] ] ].
-      * subst; econstructor.
-        erewrite BigStep_B_Denotational_Adequate; try reflexivity; assumption.
-      * econstructor.
-        erewrite BigStep_B_Denotational_Adequate; try reflexivity; assumption.
-        apply IHc; eassumption.
-        apply H.
+  induction c; intros.
+  (*skip*)
+  inversion H; subst. constructor.
+  (*assign*)
+  inversion H; subst. destruct H0 as [H1 H2]. rewrite H2. constructor.
+  symmetry. apply BigStep_A_Denotational_Adequate. assumption.
+  (*sequence c1; c2 - Normal*)
+  inversion H; subst. inversion H0. destruct H1 as [H11 H12].
+  eapply E_SeqNormal. eapply IHc1. eassumption. eapply IHc2. assumption.
+  (*sequence c1; c2 - Error*)
+  destruct H0 as [H01 H02]. rewrite H02. eapply E_SeqError.
+  eapply IHc1. assumption.
+  (*If - true*)
+  inversion H; subst. destruct H0 as [H01 H02].
+  econstructor. apply BigStep_B_Denotational_Adequate. assumption.
+  apply IHc1. assumption.
+  (*If - false*)
+   destruct H0 as [H01 H02]. apply E_IfFalse. apply BigStep_B_Denotational_Adequate. 
+   assumption. apply IHc2. assumption.
+  (*while - false *)
+  simpl. simpl in H. apply LFP_unfold in H. unfold elem_of in *. In_inversion.
+  rewrite H0. constructor. apply BigStep_B_Denotational_Adequate. assumption.
+ (*while - true Normal*)
+  eapply E_WhileTrueNormal. apply BigStep_B_Denotational_Adequate. apply H.
+  eapply IHc. eassumption. replace x with (fst (x, st')) by reflexivity. 
+  replace st' with (snd (x, st')) at 2 by reflexivity. pattern (x, st').
+  eapply Ind; try eassumption. generalize IHc. clear.
+
+   intros IHc [st'' st']
+              [ [denote_b st_eq]
+             | [ [st''0 [denote_b [denote_c ? ] ] ] | [denote_b [denote_c ?] ] ] ].
+  subst. econstructor. erewrite BigStep_B_Denotational_Adequate; try reflexivity; assumption.
+  econstructor. erewrite BigStep_B_Denotational_Adequate; try reflexivity; assumption.
+  apply IHc. eassumption. assumption.
+  (*while - True Error*)
+  subst. eapply E_WhileTrueError. simpl. erewrite BigStep_B_Denotational_Adequate.
+  try reflexivity. assumption.
+  simpl. apply IHc. eassumption.
+  (*while - True Error*)
+  subst. apply E_WhileTrueError. erewrite BigStep_B_Denotational_Adequate; try reflexivity; assumption.
+  apply IHc. assumption.
+  apply while_body_monotone.
+  (*assert*)
+  inversion H; subst. destruct H0 as [H01 H02]. subst. apply E_AssertNormal.
+  apply BigStep_B_Denotational_Adequate. assumption.
+  (*assert - Error*)
+  destruct H0 as [H01 H02]. subst. constructor. apply BigStep_B_Denotational_Adequate.
+  assumption.
+
 Qed.
 
 (* We can encode the idea of 'is a subterm' using contexts-- these are
@@ -599,7 +713,7 @@ Module notations.
   Notation "'[[' b ']]B'" := (denote_B b) : denote_scope.
   Notation "'[[' c ']]'" := (denote_Com c) : denote_scope.
 
-  Notation "st =[ c ]=> st'" := (ceval c st st')
+  Notation "st =[ c ]=> st'" := (cevalr c st st')
                                   (at level 40, c custom com at level 99,
                                     st constr, st' constr at next level).
 

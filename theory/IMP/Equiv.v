@@ -247,10 +247,14 @@ Add Parametric Morphism : CSeq
     with signature com_eqv ==> com_eqv ==> com_eqv
       as seq_eq_cong.
 Proof.
-  intros c1 c1' c1_eqv c2 c2' c2_eqv (st, st'); split; simpl;
-    intros; In_inversion; In_intro;
-    first [ apply c1_eqv; eauto
-          | apply c2_eqv; eauto].
+  intros c1 c1' c1_eqv c2 c2' c2_eqv (st, st'). split.
+  simpl. intros; In_inversion. left. eexists. split.
+  eapply c1_eqv. simpl in H. eassumption. simpl in H0. 
+  apply c2_eqv. assumption.
+  simpl in H. right. split. apply c1_eqv. assumption. reflexivity.
+  simpl. intros; In_inversion. simpl in H, H0. left. eexists. split.
+  eapply c1_eqv. eassumption. apply c2_eqv. assumption.
+  simpl in H. right. split. apply c1_eqv. assumption. reflexivity.
 Qed.
 
 (* Lemma if_eq_cong : forall b c1 c2 c1' c2',
@@ -287,11 +291,17 @@ Proof.
     + apply LFP_fold.
       apply while_body_monotone.
       firstorder.
+    + simpl in H1, H0. apply LFP_fold. 
+      apply while_body_monotone.
+      firstorder.
   - eapply Ind in H.
     apply H.
     unfold FClosed.
     intros [? ?] ?.
     In_inversion.
+    + apply LFP_fold.
+      * apply while_body_monotone.
+      * firstorder.
     + apply LFP_fold.
       * apply while_body_monotone.
       * firstorder.
@@ -308,15 +318,15 @@ Lemma seq_skip_opt :
 Proof.
   intros c (st, st'); split; intros In_st.
   - (* (st, st') ∈ [[skip; c]] -> (st, st') ∈ [[c]] *)
-    simpl in *; In_inversion; firstorder.
+    simpl in *; In_inversion; firstorder. inversion H; subst. simpl in H0.
+    assumption.
   - (* (st, st') ∈ [[c]] -> (st, st') ∈ [[skip; c]] *)
     (* In this case, we need to show that (st, st') ∈ [[skip; c]] by
        giving an intermediate state [st''], such that (st, st'') ∈
        [[skip]] and (st'', st') ∈ [[c]]. Since [[skip]] only contains
        pairs of the same state, the state [st] fits the bill.  *)
-    simpl in *. In_intro.
-    + reflexivity.
-    + assumption.
+    simpl in *. 
+    + left. eexists. split. reflexivity. assumption.
 Qed.
 
 (* Using the denotational semantics of commands, we can show that if
@@ -364,9 +374,15 @@ Proof.
     + (* The denotation of [if] is built from the denotations of each branch *)
       right. firstorder.
     + left. firstorder.
-    + right. firstorder.
-    + left. firstorder.
+    + left. simpl in H0, H. split. assumption. right. split.
+      assumption. reflexivity. 
+    + simpl in *. In_inversion.  right. left. eexists. split.
+      assumption. split. eassumption. assumption.
+    + simpl in *. right. right. split. assumption. split.
+      assumption. reflexivity.
+    + simpl in H. left. split. assumption. reflexivity.
 Qed.
+
 
 End Equiv.
 

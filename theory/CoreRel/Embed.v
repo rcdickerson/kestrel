@@ -18,6 +18,9 @@ Section Embed.
   Context {M : Type -> Type}.
   Context {id : Id I M}.
 
+
+  (*Definition result := @result M. *)
+
   (* A pair of product programs is embedded into a aligned
      representation largely as expected. - Pair of programs into product program? *)
 
@@ -26,15 +29,16 @@ Section Embed.
 
   Definition algn_eqv_pair (s1 s2 : @com I) (r : @algn_com I) : Prop :=
     forall st1 st2 st1' st2',
-      (st1 =[ s1 ]=> st1' /\ st2 =[ s2 ]=> st2') <->
-        (st1, st2) =<[ r ]>=> (st1', st2').
+      ((st1 =[ s1 ]=> RNormal st1' /\ st2 =[ s2 ]=> RNormal st2') <->
+        (st1, st2) =<[ r ]>=> (RNormal st1', RNormal st2')).
 
   Theorem embed_is_iso :
     forall s1 s2, algn_eqv_pair s1 s2 (embed_com s1 s2).
-  Proof.
-    split; simpl; intros.
-    - econstructor; tauto.
-    - inversion H; subst ; tauto.
+  Proof. intros. unfold algn_eqv_pair. intros. split.
+   intros. destruct H as [? ?]. unfold embed_com. constructor. 
+   simpl. assumption. simpl. assumption.
+   intros. unfold embed_com in H. inversion H; subst. 
+   simpl in H4,H6. split. assumption. assumption. 
   Qed.
 
   (* Variable renaming functions. There are, of course, more elegant
@@ -91,6 +95,8 @@ Section Embed.
 
   | <{ while b do c end }> =>
       <{ while inj_id_bexp_l b do inj_id_com_l c end }>
+
+  | <{ assert b }> => <{ assert inj_id_bexp_l b }>
   end.
 
   Fixpoint inj_id_com_r (c : @com I) : @com (I + I) :=
@@ -106,7 +112,12 @@ Section Embed.
 
   | <{ while b do c end }> =>
       <{ while inj_id_bexp_r b do inj_id_com_r c end }>
+
+  | <{ assert b }> => <{ assert inj_id_bexp_r b }>
   end.
+
+Print Imp.Semantics.state.
+
 
   (* All these lifting functions are semantics preserving, as
      expected: *)
@@ -114,11 +125,8 @@ Section Embed.
     forall st1 st2 a,
       aeval st1 a = aeval (M := (@prod_M M)) (st1, st2) (inj_id_aexp_l a).
   Proof.
- 
     induction a; simpl; eauto.
   Qed.
-
- 
 
   Lemma inj_id_aexp_r_aeval :
     forall st1 st2 a,
@@ -131,7 +139,6 @@ Section Embed.
     forall st1 st2 b,
       beval st1 b = beval (M := (@prod_M M)) (st1, st2) (inj_id_bexp_l b).
   Proof.
-  
     induction b; simpl; eauto;
       try erewrite !inj_id_aexp_l_aeval;
       rewrite ?IHb;
@@ -150,131 +157,145 @@ Section Embed.
       rewrite ?IHb2; reflexivity.
   Qed.
 
-  Lemma inj_id_com_l_ceval :
+
+ (*From here*)
+ Lemma inj_id_com_l_ceval :
     forall s (rst rst' : @state (@prod_M M)),
-      rst =[ (inj_id_com_l s) ]=> rst' ->
-      fst rst =[ s ]=> fst rst' /\ snd rst = snd rst'.
+      rst =[ (inj_id_com_l s) ]=> RNormal rst' ->
+      fst rst =[ s ]=> RNormal (fst rst') /\ snd rst = snd rst'.
   Proof.
-    intros.
-    remember (inj_id_com_l s) as s' eqn: Heqs; revert s Heqs.
+    intros. remember (inj_id_com_l s). remember (RNormal rst'). 
+    generalize dependent rst'. generalize dependent s.
     induction H; simpl; intros; destruct s; simpl in *;
-      try discriminate; try injection Heqs; intros; subst;
-      try destruct st as [st1 st2];
-      try destruct st' as [st1' st2'];
-      try destruct st'' as [st1'' st2''];
-      simpl in *;
-      try specialize (IHceval _ eq_refl);
-      try rewrite <- !inj_id_bexp_l_beval in *;
-      intuition eauto; subst.
-    - econstructor.
-    - constructor; auto using inj_id_aexp_l_aeval.
-    - specialize (IHceval1 _ eq_refl);
-        specialize (IHceval2 _ eq_refl);
-        intuition eauto;
-        first [econstructor; eauto | congruence].
-    - specialize (IHceval1 _ eq_refl);
-        specialize (IHceval2 _ eq_refl);
-        intuition eauto; congruence.
-    - econstructor; eauto.
-    - eapply E_IfFalse; eauto.
-    - eapply E_WhileFalse; eauto.
-    - specialize (IHceval1 _ eq_refl);
-        intuition eauto; subst.
-      eapply E_WhileTrue; eauto.
-      eapply IHceval2; reflexivity.
-    - specialize (IHceval1 _ eq_refl);
-        intuition eauto; subst.
-      eapply IHceval2 with (s := CWhile _ _); reflexivity.
+    try discriminate; try injection Heqc; intros; 
+    try destruct st as [st1 st2] ; try destruct st' as [st1' st2'] ; subst.
+    inversion Heqr; subst. split. constructor. reflexivity.
+    inversion Heqr; subst. simpl. split. constructor. 
+    rewrite <- inj_id_aexp_l_aeval. reflexivity. reflexivity.
+    (*s1; s2*) simpl. specialize (IHcevalr1 _ eq_refl); 
+    specialize (IHcevalr2 _ eq_refl). simpl in IHcevalr1, IHcevalr2.
+    specialize IHcevalr1 with (st1', st2'). specialize IHcevalr2 with rst'.
+    firstorder. simpl in H3,H4. eapply E_SeqNormal. eassumption.
+    assumption. simpl in H4. rewrite H4. assumption.
+    (*if beval true*) simpl. split. eapply E_IfTrue. 
+    rewrite <- inj_id_bexp_l_beval in H. assumption. 
+    specialize IHcevalr with s1 rst'. firstorder.
+    specialize IHcevalr with s1 rst'. firstorder.
+    (*if beval false*) simpl. split. eapply E_IfFalse. 
+    rewrite <- inj_id_bexp_l_beval in H. assumption. 
+    specialize IHcevalr with s2 rst'. firstorder.
+    specialize IHcevalr with s2 rst'. firstorder.
+    (*while - false*) inversion Heqr; subst. clear Heqr. simpl. split. 
+    eapply E_WhileFalse. rewrite <- inj_id_bexp_l_beval in H. assumption.
+    reflexivity. simpl.
+    (*while - true*) 
+    specialize IHcevalr1 with s (st1', st2'). firstorder.
+    simpl in H2, H3. eapply E_WhileTrueNormal. rewrite <- inj_id_bexp_l_beval in H.
+    assumption. eassumption. simpl in IHcevalr2. eapply IHcevalr2. eauto.
+    reflexivity. simpl in H2,H3.  simpl in IHcevalr2. rewrite H3.
+    eapply IHcevalr2 with (s := CWhile _ _). eauto. reflexivity.
+    (*assert*) simpl. inversion Heqr; subst. clear Heqr. simpl.
+    split. constructor. rewrite <- inj_id_bexp_l_beval in H. 
+    assumption. reflexivity.
   Qed.
 
   Lemma inj_id_com_r_ceval :
     forall s (rst rst' : @state (@prod_M M)),
-      rst =[ (inj_id_com_r s) ]=> rst' ->
-      snd rst =[ s ]=> snd rst' /\ fst rst = fst rst'.
+      rst =[ (inj_id_com_r s) ]=> RNormal rst' ->
+      snd rst =[ s ]=> RNormal (snd rst') /\ fst rst = fst rst'.
   Proof.
-    intros.
-    remember (inj_id_com_r s) as s' eqn: Heqs; revert s Heqs.
+    intros. remember (inj_id_com_r s). remember (RNormal rst'). 
+    generalize dependent rst'. generalize dependent s.
     induction H; simpl; intros; destruct s; simpl in *;
-      try discriminate; try injection Heqs; intros; subst;
-      try destruct st as [st1 st2];
-      try destruct st' as [st1' st2'];
-      try destruct st'' as [st1'' st2''];
-      simpl in *;
-      try specialize (IHceval _ eq_refl);
-      try rewrite <- !inj_id_bexp_r_beval in *;
-      intuition eauto; subst.
-    - econstructor.
-    - constructor; auto using inj_id_aexp_r_aeval.
-    - specialize (IHceval1 _ eq_refl);
-        specialize (IHceval2 _ eq_refl);
-        intuition eauto;
-        first [econstructor; eauto | congruence].
-    - specialize (IHceval1 _ eq_refl);
-        specialize (IHceval2 _ eq_refl);
-        intuition eauto; congruence.
-    - econstructor; eauto.
-    - eapply E_IfFalse; eauto.
-    - eapply E_WhileFalse; eauto.
-    - specialize (IHceval1 _ eq_refl);
-        intuition eauto; subst.
-      eapply E_WhileTrue; eauto.
-      eapply IHceval2; reflexivity.
-    - specialize (IHceval1 _ eq_refl);
-        intuition eauto; subst.
-      eapply IHceval2 with (s := CWhile _ _); reflexivity.
-  Qed.
+    try discriminate; try injection Heqc; intros; 
+    try destruct st as [st1 st2] ; try destruct st' as [st1' st2'] ; subst.
+    inversion Heqr; subst. split. constructor. reflexivity.
+    inversion Heqr; subst. simpl. split. constructor. 
+    rewrite <- inj_id_aexp_r_aeval. reflexivity. reflexivity.
+    (*s1; s2*) simpl. specialize (IHcevalr1 _ eq_refl); 
+    specialize (IHcevalr2 _ eq_refl). simpl in IHcevalr1, IHcevalr2.
+    specialize IHcevalr1 with (st1', st2'). specialize IHcevalr2 with rst'.
+    firstorder. simpl in H3,H4. eapply E_SeqNormal. eassumption.
+    assumption. simpl in H4. rewrite H4. assumption.
+    (*if beval true*) simpl. split. eapply E_IfTrue. 
+    rewrite <- inj_id_bexp_r_beval in H. assumption. 
+    specialize IHcevalr with s1 rst'. firstorder.
+    specialize IHcevalr with s1 rst'. firstorder.
+    (*if beval false*) simpl. split. eapply E_IfFalse. 
+    rewrite <- inj_id_bexp_r_beval in H. assumption. 
+    specialize IHcevalr with s2 rst'. firstorder.
+    specialize IHcevalr with s2 rst'. firstorder.
+    (*while - false*) inversion Heqr; subst. clear Heqr. simpl. split. 
+    eapply E_WhileFalse. rewrite <- inj_id_bexp_r_beval in H. assumption.
+    reflexivity. simpl.
+    (*while - true*) 
+    specialize IHcevalr1 with s (st1', st2'). firstorder.
+    simpl in H2, H3. eapply E_WhileTrueNormal. rewrite <- inj_id_bexp_r_beval in H.
+    assumption. eassumption. simpl in IHcevalr2. eapply IHcevalr2. eauto.
+    reflexivity. simpl in H2,H3.  simpl in IHcevalr2. rewrite H3.
+    eapply IHcevalr2 with (s := CWhile _ _). eauto. reflexivity.
+    (*assert*) simpl. inversion Heqr; subst. clear Heqr. simpl.
+    split. constructor. rewrite <- inj_id_bexp_r_beval in H. 
+    assumption. reflexivity.
+  Qed. 
 
   Lemma inj_id_com_l_ceval' :
     forall s (st1 st1' : @state M),
-      st1 =[ s ]=> st1' ->
+      st1 =[ s ]=> RNormal st1' ->
       forall (st2 : @state M),
-        (st1, st2) =[ (inj_id_com_l s) ]=> (st1', st2).
+        (st1, st2) =[ (inj_id_com_l s) ]=> RNormal (st1', st2).
   Proof.
-    intros.
-    induction H; simpl; intros; try solve [econstructor; eauto];
-      try rewrite <- inj_id_aexp_l_aeval;
-      try rewrite <- inj_id_bexp_l_beval.
-    - specialize (E_Ass (st, st2) (inj_id_aexp_l a) n (inl x));
-        simpl; intro H0; apply H0.
-      rewrite <- inj_id_aexp_l_aeval; assumption.
-    - 
-    econstructor;
-        try rewrite <- inj_id_bexp_l_beval; eauto.
-    - eapply E_IfFalse;
-        try rewrite <- inj_id_bexp_l_beval; eauto.
-    - eapply E_WhileFalse;
-        try rewrite <- inj_id_bexp_l_beval; eauto.
-    - eapply E_WhileTrue;
-        try rewrite <- inj_id_bexp_l_beval; eauto.
+    intros. remember (RNormal st1'). generalize dependent st2.
+    generalize dependent st1'.
+    induction H; simpl; intros; 
+    try solve [econstructor; eauto];
+    try rewrite <- inj_id_aexp_l_aeval;
+    try rewrite <- inj_id_bexp_l_beval.
+   (*Skip*) inversion Heqr; subst; clear Heqr; constructor.
+   (*Assignment*) inversion Heqr; subst; clear Heqr. 
+    specialize (E_Ass (st, st2) (inj_id_aexp_l a) (aeval st a) (inl x)).
+    simpl; intro H0; apply H0. rewrite <- inj_id_aexp_l_aeval. reflexivity.
+    (*sequence*) discriminate.
+    (*if - true*) econstructor; try rewrite <- inj_id_bexp_l_beval; eauto.
+    (*if - false*) eapply E_IfFalse; try rewrite <- inj_id_bexp_l_beval; eauto.
+    (*while - false*) inversion Heqr; subst. clear Heqr.
+    eapply E_WhileFalse; try rewrite <- inj_id_bexp_l_beval; eauto.
+    (*while - true*) eapply E_WhileTrueNormal; try rewrite <- inj_id_bexp_l_beval; eauto.
+    (*while - error*) discriminate.
+    (*assert - normal*) inversion Heqr; subst. constructor.
+    rewrite <- inj_id_bexp_l_beval. assumption.
+    (*assert - Error*) discriminate. 
   Qed.
 
   Lemma inj_id_com_r_ceval' :
     forall s (st2 st2' : @state M),
-      st2 =[ s ]=> st2' ->
+      st2 =[ s ]=> RNormal st2' ->
       forall (st1 : @state M),
-        (st1, st2) =[ (inj_id_com_r s) ]=> (st1, st2').
+        (st1, st2) =[ (inj_id_com_r s) ]=> RNormal (st1, st2').
   Proof.
-    intros.
-    induction H; simpl; intros; try solve [econstructor; eauto];
-      try rewrite <- inj_id_aexp_r_aeval;
-      try rewrite <- inj_id_bexp_r_beval.
-    - specialize (E_Ass (st1, st) (inj_id_aexp_r a) n (inr x));
-        simpl; intro H0; apply H0.
-      rewrite <- inj_id_aexp_r_aeval; assumption.
-    - econstructor;
-        try rewrite <- inj_id_bexp_r_beval; eauto.
-    - eapply E_IfFalse;
-        try rewrite <- inj_id_bexp_r_beval; eauto.
-    - eapply E_WhileFalse;
-        try rewrite <- inj_id_bexp_r_beval; eauto.
-    - eapply E_WhileTrue;
-        try rewrite <- inj_id_bexp_r_beval; eauto.
+    intros. remember (RNormal st2'). generalize dependent st1.
+    generalize dependent st2'.
+    induction H; simpl; intros; 
+    try solve [econstructor; eauto];
+    try rewrite <- inj_id_aexp_r_aeval;
+    try rewrite <- inj_id_bexp_r_beval.
+   (*Skip*) inversion Heqr; subst; clear Heqr; constructor.
+   (*Assignment*) inversion Heqr; subst; clear Heqr. 
+    specialize (E_Ass (st1, st) (inj_id_aexp_r a) (aeval st a) (inr x)).
+    simpl; intro H0; apply H0. rewrite <- inj_id_aexp_r_aeval. reflexivity.
+    (*sequence*) discriminate.
+    (*if - true*) econstructor; try rewrite <- inj_id_bexp_r_beval; eauto.
+    (*if - false*) eapply E_IfFalse; try rewrite <- inj_id_bexp_r_beval; eauto.
+    (*while - false*) inversion Heqr; subst. clear Heqr.
+    eapply E_WhileFalse; try rewrite <- inj_id_bexp_r_beval; eauto.
+    (*while - true*) eapply E_WhileTrueNormal; try rewrite <- inj_id_bexp_r_beval; eauto.
+    (*while - error*) discriminate.
+    (*assert - normal*) inversion Heqr; subst. constructor.
+    rewrite <- inj_id_bexp_r_beval. assumption.
+    (*assert - Error*) discriminate. 
   Qed.
 
-  (* We build a product program by reifying an aligned program into
-     the standard IMP syntax. - ? *)
-
-  Fixpoint reify_com (r : @algn_com I) : (@com prod_I) :=
+  Fixpoint reify_com (r : @algn_com I) : (@com (I + I)) :=
     match r with
     | <{ <| s1 | s2 |> }> =>
         <{ inj_id_com_l s1; inj_id_com_r s2}>
@@ -289,92 +310,47 @@ Section Embed.
         <{ while (inj_id_bexp_l b1 && inj_id_bexp_r b2) do reify_com r end}>
     end.
 
-Compute reify_com <{ <| CSkip | CSkip |> }>.
 
   (* We define a different notion of equivalence between aligned
      programs and a single program with variables drawn from two
      distinct domains: *)
 
-  Definition lift_state (st1 st2 : @state M) : (@state (@prod_M M)) := (st1, st2).
+  Definition lift_state (st1 st2 : @state M) : (@state (@prod_M M)) := (st1, st2). 
 
 
-  Definition algn_eqv_single (r : @algn_com I) (s : @com prod_I) : Prop :=
+
+ Definition algn_eqv_single (r : @algn_com I) (s : @com (I + I)) : Prop :=
     forall rst rst',
-      (rst =[ s ]=> rst') <->
-        rst =<[ r ]>=> rst'.
+      (rst =[ s ]=> RNormal rst') <->
+        rst =<[ r ]>=> (RNormal (fst rst'), RNormal (snd rst')).
 
   Theorem reify_is_iso :
     forall r, algn_eqv_single r (reify_com r).
   Proof.
-    split; simpl; intros.
-    - remember (reify_com r) as rc eqn:Hrc;
-        revert r Hrc; induction H; subst;
-        simpl; intros;
-        try destruct st as [st1 st2];
-        try destruct st' as [st1' st2'];
-        try destruct st'' as [st1'' st2''];
-        destruct r; simpl in Hrc;
-        first [discriminate
-                 | injection Hrc; intros; subst; clear Hrc].
-      + econstructor; simpl in *;
-        eapply inj_id_com_l_ceval in H;
-          eapply inj_id_com_r_ceval in H0;
-          simpl in *; intuition eauto; subst; eauto.
-      + specialize (IHceval1 _ eq_refl);
-          specialize (IHceval2 _ eq_refl);
-          econstructor; eauto.
-      + specialize (IHceval _ eq_refl).
-        simpl in H; apply andb_prop in H;
-          rewrite <- inj_id_bexp_l_beval in H;
-          rewrite <- inj_id_bexp_r_beval in H;
-          econstructor; simpl in *; intuition eauto.
-      + simpl in H; apply andb_false_iff in H;
-          rewrite <- inj_id_bexp_l_beval in H;
-          rewrite <- inj_id_bexp_r_beval in H;
-          specialize (IHceval _ eq_refl);
-          intuition.
-        * apply E_ACIfFalseL; eauto.
-        * apply E_ACIfFalseR; eauto.
-      + simpl in H; apply andb_false_iff in H;
-          rewrite <- inj_id_bexp_l_beval in H;
-          rewrite <- inj_id_bexp_r_beval in H;
-          intuition.
-        * apply E_ACWhileFalseL; eauto.
-        * apply E_ACWhileFalseR; eauto.
-      + specialize (IHceval1 _ eq_refl);
-          simpl in H; apply andb_prop in H;
-          rewrite <- inj_id_bexp_l_beval in H;
-          rewrite <- inj_id_bexp_r_beval in H;
-          econstructor; intuition eauto.
-    - induction H; try destruct rst as [st1 st2];
-        try destruct rst' as [st'1 st'2];
-        try destruct rst'' as [st''1 st''2];
-        simpl in *.
-      + econstructor; eauto using inj_id_com_l_ceval', inj_id_com_r_ceval'.
-      + econstructor; eauto using inj_id_com_l_ceval', inj_id_com_r_ceval'.
-      + econstructor; eauto using inj_id_com_l_ceval', inj_id_com_r_ceval'.
-        simpl; rewrite <- inj_id_bexp_l_beval, <- inj_id_bexp_r_beval, H, H0; auto.
-      + apply E_IfFalse; simpl; eauto.
-        simpl; rewrite <- inj_id_bexp_l_beval, <- inj_id_bexp_r_beval, ?H, ?H0; auto.
-      + apply E_IfFalse; simpl; eauto.
-        simpl; rewrite <- inj_id_bexp_l_beval, <- inj_id_bexp_r_beval, ?H, ?H0; auto using andb_false_r.
-      + eapply E_WhileTrue; try eauto.
-        simpl; rewrite <- inj_id_bexp_l_beval, <- inj_id_bexp_r_beval, ?H, ?H0; auto.
-      + apply E_WhileFalse; simpl; eauto.
-        simpl; rewrite <- inj_id_bexp_l_beval, <- inj_id_bexp_r_beval, ?H, ?H0; auto using andb_false_r.
-      + apply E_WhileFalse; simpl; eauto.
-        simpl; rewrite <- inj_id_bexp_l_beval, <- inj_id_bexp_r_beval, ?H, ?H0; auto using andb_false_r.
-  Qed.
+    split; simpl; intros. remember (reify_com r) as rc eqn:Hrc;
+    remember (RNormal rst') as rt eqn:Hrt; revert r Hrc Hrt; 
+    induction H. (*∀ r : algn_com, <{ c1; c2 }> = reify_com r → st =<[ r ]>=> st''*) intros;
+    intros. simpl in Hrc. destruct r. discriminate. discriminate. discriminate.
+    discriminate.
+    intros. destruct r. discriminate. discriminate. discriminate. discriminate.
+    intros. destruct r0. simpl in Hrc. inversion Hrc; subst. 
+    econstructor; simpl in *;  eapply inj_id_com_l_ceval in H;
+    eapply inj_id_com_r_ceval in H0; simpl in *; intuition eauto; subst; eauto.
+    rewrite H3 in H1. assumption. rewrite <- H2 in H. assumption.
+    (*sequence: *) destruct r0_1, r0_2.
+  
+  Admitted.
+    
+   
 
-  Definition eqv_single_prod (s1 s2 : @com I) (s12 : @com prod_I) : Prop :=
+  Definition eqv_single_prod (s1 s2 : @com I) (s12 : @com (I + I)) : Prop :=
     forall st1 st2 st1' st2',
-      (st1 =[ s1 ]=> st1' /\ st2 =[ s2 ]=> st2') <->
-        (st1, st2) =[ s12 ]=> (st1', st2').
-
+      (st1 =[ s1 ]=> RNormal st1' /\ st2 =[ s2 ]=> RNormal st2') <->
+        (st1, st2) =[ s12 ]=> RNormal (st1', st2').
 
   Lemma eqv_single_prod_respect_eqv
     : forall (s1 s2 s1' s2' : @com I)
-             (s12 s12' : @com prod_I),
+             (s12 s12' : @com (I + I)),
       com_eqv s1 s1' -> com_eqv s2 s2' -> com_eqv s12 s12' ->
       eqv_single_prod s1 s2 s12 ->
       eqv_single_prod s1' s2' s12'.
@@ -429,7 +405,7 @@ Compute reify_com <{ <| CSkip | CSkip |> }>.
       eapply CR.Semantics.Denotational_BigStep_Adequate.
       apply H.
       eapply CR.Semantics.BigStep_Denotational_Sound.
-      apply reify_is_iso. assumption.
+      apply reify_is_iso in H0. simpl in H0. assumption.
   Qed.
 
   (* As a consequence, we can reduce relational reasoning of 2-safety
@@ -444,12 +420,12 @@ Compute reify_com <{ <| CSkip | CSkip |> }>.
            (r_eqv : align_eqv (embed_com s1 s2) r)
            (r_safe : forall (st1 st2 st1' st2' : @state M),
                P st1 st2 ->
-               (st1, st2) =[reify_com r]=> (st1', st2') ->
+               (st1, st2) =[reify_com r]=> RNormal (st1', st2') ->
                                            Q st1' st2'),
     forall (st1 st2 st1' st2' : @state M),
       P st1 st2 ->
-      st1 =[s1]=> st1' ->
-      st2 =[s2]=> st2' ->
+      st1 =[s1]=> RNormal st1' ->
+      st2 =[s2]=> RNormal st2' ->
       Q st1' st2'.
   Proof.
     intros.
@@ -458,221 +434,3 @@ Compute reify_com <{ <| CSkip | CSkip |> }>.
   Qed.
 
 End Embed.
-
-Section rel_verification.
-From CR Require Import Hoare.
-    Definition I := @prod_I string.
-    Context {M : Type -> Type}.
-    Context {id : Id string M}.
-
-  
-  (*Definition Assertion := CR.Hoare.Definitions.Assertion. *)
-  (*Import CR.Hoare.Definitions.*)
-   Set Printing All.
-   
-   
-  Definition hoare_triple_product
-             (P : Assertion) (r : @com I ) (Q : Assertion) : Prop := hoare_triple P r Q.
-    (*forall st1 st2 st1' st2',
-      P st1 st2 ->
-      (st1, st2) =[ r ]=> (st1', st2') ->
-      Q st1' st2'. *)
-
-  Definition hoare_triple_relational
-             (P : @Assertion M) (s1 s2 : @com string) (Q : @Assertion M) : Prop :=
-    forall st1 st2 st1' st2',
-      P (st1 ,st2)  ->
-      ceval s1 st1 st1' ->
-      (*st1 =[s1]=> st1' ->*)
-      ceval s2 st2 st2' ->
-      Q (st1', st2').
-
-  Lemma hoare_triple_prod_a :
-    forall (s1 s2 : @com string)(P Q : Assertion)
-           (r : @algn_com string),
-      align_eqv r (embed_com s1 s2) /\ (hoare_triple_product P (reify_com r) Q) ->
-      hoare_triple_relational P s1 s2 Q.
-  Proof.
-    unfold hoare_triple_product, hoare_triple_relational, align_eqv. intros.
-    destruct H as [eqv_r P_r].
-    eapply P_r.
-    eassumption.
-    apply embed_reify_sound with (s1 := s1) (s2 := s2). unfold align_eqv. eauto.
-    split. assumption. assumption.
-  Qed.
-
-  Lemma hoare_triple_prod_b :
-    forall (s1 s2 : @com string)(P Q : Assertion),
-      hoare_triple_relational P s1 s2 Q ->
-      exists r : @algn_com string, align_eqv r (embed_com s1 s2) /\
-                                (hoare_triple_product P (reify_com r) Q).
-  Proof.
-    unfold hoare_triple_product, hoare_triple, hoare_triple_relational.
-    intros; eexists; split; try reflexivity; intros.
-    eapply reify_is_iso in H1.
-    unfold embed_com in H1; inversion H1; subst. destruct st.
-    eapply H; eassumption. 
-  Qed.
-
-End rel_verification.
-
-Module Proofs.
-
-  Import Imp.Syntax.notations.
-  Import Imp.Semantics.notations.
-  Import CR.Syntax.notations.
-  Import CR.Semantics.notations.
-  Import Coq.Setoids.Setoid.
-  Import CR.Hoare.
-
-  Definition I := string.
-  Context {M : Type -> Type}.
-  Context {id : Id I M}.
-
-  Variable W X Y Z : I.
-
-  Lemma comm_def : forall c1 c2 c3 c4,
-      align_eqv <{ <|c1; c2 | c3; c4|> }> <{ <| c1 | c3|> ;; <| c2 | c4 |> }>.
-  Proof.
-    intros. rewrite rel_def. rewrite  prod_hom_l. rewrite prod_hom_r.
-    rewrite prod_seq_assoc.
-    rewrite <- prod_seq_assoc with (r3 := <{<| skip | c4 |>}>) . rewrite <- rel_comm.
-    rewrite <- !prod_seq_assoc.  rewrite <- rel_def.
-    rewrite prod_seq_assoc. rewrite <- rel_def. reflexivity.
-  Qed.
-
-  Lemma comm_skip : forall c1 c3 c4,
-      align_eqv <{ <|c1 | c3; c4|> }> <{ <| c1 | c3|> ;; <| skip | c4 |> }>.
-  Proof.
-    intros. rewrite rel_def. rewrite prod_hom_r. rewrite <- prod_seq_assoc.
-    rewrite <- rel_def. reflexivity.
-  Qed.
-
-
- Definition ex_1 Y Z : @algn_com I :=
-  <{
-     <| Y := 0 | Y := 0 |>;;
-     <| Z :=  2 * 2 | Z := 2 * 2|> }>.
-
- Compute reify_com (ex_1 Y Z).
-
-
- Definition ex_2 Y Z : @algn_com I :=
-   <{ <| Y := 0 ; Z := 2 * 2 | skip |>;;
-      <| skip | Y :=  0 ; Z := 2 * 2|> }>.
-
-
- Compute reify_com (ex_2 Y Z).
-
- Lemma example_12 : align_eqv  (ex_1 Y Z) (ex_2 Y Z).
- Proof.
-   unfold ex_2. rewrite <- rel_def.  rewrite comm_def. reflexivity.
- Qed.
-
- Definition AId' : I -> aexp := AId.
- Coercion AId' : I >-> aexp.
-
- Definition kestrel_paper_p1 : @com I :=
-   <{Y := 0;
-     Z := 2 * X;
-     while (~(Z <= 0)) do
-       Z := Z - 1;
-       Y := Y + X;
-       Z := Z - 1;
-       Y := Y + X
-       end}>.
-
-  Definition kestrel_paper_p2 : @com I :=
-    <{ Y := 0;
-      Z := X;
-     while ~ (Z <= 0) do
-       Z := Z - 1;
-       Y := Y + X
-     end; Y := Y * 2 }>.
-
- Definition kestrel_paper_example_1_prod_efficient : @algn_com I :=
- <{ <| Y := 0 | Y := 0 |>;;
-     <| Z :=  2 * X | Z := X|>;;
-   (whileR <| ~(Z <= 0) | ~(Z <= 0) |> do
-            <| Z := Z - 1; Y := Y + X;
-               Z :=  Z - 1; Y := Y + X |
-               Z :=  Z - 1; Y := Y + X |> end;; <|while  ~(Z <= 0) do Z := Z - 1; Y := Y + X;
-               Z :=  Z - 1; Y := Y + X end | while ~(Z <= 0) do  Z :=  Z - 1; Y := Y + X end|>);;
-     <| skip | Y := Y * 2 |> }>.
-
-  Definition kestrel_paper_skip1 : @com I := <{skip}>.
-
-  Definition kestrel_paper_skip2 : @com I := <{ skip }>.
-
-  Definition kestrel_paper_skip_prod_efficient : @algn_com I :=
- <{ <|skip | skip|>}>.
-
-  Definition kestrel_paper_while1 : @com I := <{while false do skip end}>.
-
-  Definition kestrel_paper_while2 : @com I := <{while false do skip end}>.
-  
-  Definition kestrel_paper_while_prod_efficient : @algn_com I :=
- <{ whileR <| false | false |> do <|skip | skip|> end ;; 
-    <| while false do skip end | while false do skip end |>}>.  
-
-
- Lemma paper_example1_eqv : align_eqv (embed_com kestrel_paper_p1 kestrel_paper_p2)
-                                  kestrel_paper_example_1_prod_efficient.
- Proof.
-   unfold kestrel_paper_p1, kestrel_paper_p2; unfold embed_com; simpl.
-   rewrite comm_def.
-   rewrite comm_def.
-   rewrite comm_skip.
-   rewrite whileR_lockstep.
-   reflexivity.
- Qed.
-
- Lemma paper_while_eqv : align_eqv (embed_com kestrel_paper_while1 kestrel_paper_while2)
-                                  kestrel_paper_while_prod_efficient.
- Proof.
-  unfold kestrel_paper_while1, kestrel_paper_while2; unfold embed_com; simpl. 
-  rewrite whileR_lockstep. unfold kestrel_paper_while_prod_efficient. reflexivity.
- Qed.
-
-
- Lemma paper_skip_eqv : align_eqv (embed_com kestrel_paper_skip1 kestrel_paper_skip2)
-                                  kestrel_paper_skip_prod_efficient.
- Proof.
-   unfold kestrel_paper_skip1, kestrel_paper_skip2; unfold embed_com; simpl.
-   unfold kestrel_paper_skip_prod_efficient. reflexivity.
- Qed.
-
- Definition equiv_state : @Assertion M :=
-   fun st: state => forall id : I, (st : @prod_M M nat) !!! (@inl I I id : prod_I) = (st : @prod_M M nat) !!! (@inr I I id : prod_I).
-
-
-  Ltac assn_auto :=
-  try auto; 
-  try (unfold assert_implies, assn_sub, insert;
-       intros; simpl in *; lia).
-
- Lemma paper_skip :
-   hoare_triple_relational equiv_state
-                           kestrel_paper_skip1 kestrel_paper_skip2
-                           equiv_state.
- Proof.
-  eapply hoare_triple_prod_a. split.
-  symmetry. exact paper_skip_eqv.
-  simpl. unfold hoare_triple_product, equiv_state. 
-  eapply hoare_seq. apply hoare_skip. apply hoare_skip. 
- Qed.
-
-
- Lemma paper_example1 :
-   hoare_triple_relational equiv_state
-                           kestrel_paper_p1 kestrel_paper_p2
-                           equiv_state.
- Proof.
-   eapply hoare_triple_prod_a.
-   split.
-   - symmetry; exact paper_example1_eqv.
-   - simpl. unfold hoare_triple_product, equiv_state. intros.
-     eapply hoare_seq. eapply hoare_seq. eapply hoare_while.
- Admitted.
-
-End Proofs.

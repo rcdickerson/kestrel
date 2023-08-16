@@ -91,7 +91,7 @@ Coercion ANum : nat >-> aexp.
     grammar.
 
      c := skip | x := a | c ; c | if b then c else c end
-         | while b do c end
+         | while b do c end | assert b
 *)
 
 Inductive com : Type :=
@@ -99,7 +99,11 @@ Inductive com : Type :=
   | CAss (x : I) (a : aexp)
   | CSeq (c1 c2 : com)
   | CIf (b : bexp) (c1 c2 : com)
-  | CWhile (b : bexp) (c : com).
+  | CWhile (b : bexp) (c : com)
+  | CAssert (b : bexp).
+
+
+
 End Syntax.
 
 Module notations.
@@ -130,6 +134,8 @@ Module notations.
   Notation "x && y" := (BAnd x y) (in custom com at level 80, left associativity).
   Notation "'~' b"  := (BNot b) (in custom com at level 75, right associativity).
 
+  Notation "'assert' l" := 
+     (CAssert l) (in custom com at level 8, l custom com at level 0) : com_scope.
   Notation "'skip'"  :=
     CSkip (in custom com at level 0) : com_scope.
   Notation "x := y"  :=

@@ -326,20 +326,82 @@ Print Imp.Semantics.state.
 
   Theorem reify_is_iso :
     forall r, algn_eqv_single r (reify_com r).
-  Proof.
+  Proof. 
     split; simpl; intros. remember (reify_com r) as rc eqn:Hrc;
-    remember (RNormal rst') as rt eqn:Hrt; revert r Hrc Hrt; 
-    induction H. (*∀ r : algn_com, <{ c1; c2 }> = reify_com r → st =<[ r ]>=> st''*) intros;
-    intros. simpl in Hrc. destruct r. discriminate. discriminate. discriminate.
+    remember (RNormal rst') as rt eqn:Hrt; revert r rst' Hrc Hrt;
+    induction H; subst;
+    simpl; intros;
+    try destruct st as [st1 st2];
+    try destruct st' as [st1' st2'];
+    try destruct st'' as [st1'' st2''];
+    simpl in Hrc. destruct r. discriminate. discriminate. discriminate.
     discriminate.
     intros. destruct r. discriminate. discriminate. discriminate. discriminate.
     intros. destruct r0. simpl in Hrc. inversion Hrc; subst. 
     econstructor; simpl in *;  eapply inj_id_com_l_ceval in H;
     eapply inj_id_com_r_ceval in H0; simpl in *; intuition eauto; subst; eauto.
-    rewrite H3 in H1. assumption. rewrite <- H2 in H. assumption.
-    (*sequence: *) destruct r0_1, r0_2.
-  
-  Admitted.
+    (*sequence: *) simpl in Hrc. injection Hrc; subst. intros. econstructor.
+    eapply IHcevalr1. assumption. reflexivity.
+    simpl. eapply IHcevalr2. assumption. reflexivity. 
+    (*conditional*) simpl in Hrc; inversion Hrc; subst.
+    (*while*) simpl in Hrc; inversion Hrc; subst. 
+    (*discriminate: Error equals Normal*) discriminate.
+    (*r0*) destruct r0; simpl in Hrc; inversion Hrc; subst. clear Hrc.
+    (*if - true case*) simpl in H. inversion H. rewrite <- inj_id_bexp_l_beval in H2.
+    rewrite <- inj_id_bexp_r_beval in H2. Search andb. apply andb_prop in H2.
+    destruct H2 as [? ?]. eapply E_ACIfTrue. simpl. assumption.
+    simpl. assumption. eapply IHcevalr. reflexivity. reflexivity.
+    (*b is false*) destruct r0; simpl in Hrc; inversion Hrc; subst; clear Hrc.
+    inversion H. rewrite <- inj_id_bexp_l_beval in H2. rewrite <- inj_id_bexp_r_beval in H2.
+    apply andb_false_iff in H2. destruct H2. 
+    (*b1 is false*) eapply E_ACIfFalseL. simpl. assumption. eapply IHcevalr.
+    reflexivity. reflexivity.
+    (*b2 is false*) eapply E_ACIfFalseR. simpl. assumption. eapply IHcevalr.
+    reflexivity. reflexivity.
+    (*while false*) destruct r. discriminate. discriminate. discriminate. 
+    inversion Hrc; subst. clear Hrc. inversion Hrt; subst. clear Hrt. simpl. inversion H. 
+    rewrite <- inj_id_bexp_l_beval in H1. rewrite <- inj_id_bexp_r_beval in H1. 
+    apply andb_false_iff in H1. destruct H1. eapply E_ACWhileFalseL. assumption.
+    eapply E_ACWhileFalseR. assumption.
+    (*r0 - inversions take care of the discriminate case*) 
+    destruct r0; simpl in Hrc; inversion Hrc; subst. clear Hrc.
+    (*while - true case*) inversion H. rewrite <- inj_id_bexp_l_beval in H3.
+    rewrite <- inj_id_bexp_r_beval in H3. apply andb_prop in H3. destruct H3 as [? ?].
+    eapply E_ACWhileTrueNormal. simpl. assumption. eauto. eapply IHcevalr1.
+    reflexivity. reflexivity. simpl. intuition eauto.
+    (*Error Normal*) discriminate.
+    (*assert*) destruct r; simpl in Hrc; inversion Hrc; subst. discriminate.
+    (*Other side*)
+    match goal with (*remember didn't work - so pattern match*)
+      | [ H : ?r =<[ ?ra ]>=> ?l |- _ ] => remember l
+    end.
+    generalize dependent Heqp; generalize dependent rst'; induction H; intros;
+    try destruct rst as [st1 st2];
+    try destruct rst' as [st'1 st'2];
+    try destruct rst'' as [st''1 st''2]; 
+    simpl in *.
+    econstructor; eauto using inj_id_com_l_ceval', inj_id_com_r_ceval'.
+    inversion Heqp; subst. eauto using inj_id_com_r_ceval'. 
+    (*Error & Normal*) discriminate. discriminate.
+    (*reify sequence*) econstructor. specialize IHaceval1 with (st, st'). 
+    simpl in IHaceval1. eapply IHaceval1. reflexivity. eapply IHaceval2. assumption.
+    (*Error & Normal*) discriminate. 
+    (*if - both true*) eapply E_IfTrue. simpl. rewrite <- inj_id_bexp_l_beval, <- inj_id_bexp_r_beval.
+     rewrite H,H0. simpl. reflexivity. eapply IHaceval. assumption.
+     (*if - b1 false*) eapply E_IfFalse. simpl. rewrite <- inj_id_bexp_l_beval, <- inj_id_bexp_r_beval.
+     rewrite H; simpl. reflexivity. eapply IHaceval. assumption.
+     (*if - b2 false*) eapply E_IfFalse. simpl. rewrite <- inj_id_bexp_l_beval, <- inj_id_bexp_r_beval.
+     rewrite H; simpl. apply andb_false_intro2. reflexivity. eapply IHaceval. assumption.
+     (*while - true*) eapply E_WhileTrueNormal; try eauto. simpl.
+      rewrite <- inj_id_bexp_l_beval, <- inj_id_bexp_r_beval. rewrite H,H0. auto.
+      specialize IHaceval1 with (st, st'). apply IHaceval1. simpl. reflexivity.
+     (*Error - Normal*) discriminate.
+     (* whle - b1 false*) inversion Heqp; subst. clear Heqp. apply E_WhileFalse; simpl; eauto.
+      rewrite <- inj_id_bexp_l_beval, <- inj_id_bexp_r_beval. rewrite H. auto.
+     (*while - b2 false*) inversion Heqp; subst. clear Heqp. apply E_WhileFalse; simpl; eauto.
+      rewrite <- inj_id_bexp_l_beval, <- inj_id_bexp_r_beval. rewrite H. 
+      apply andb_false_intro2. reflexivity.
+  Qed.
     
    
 
@@ -369,6 +431,7 @@ Print Imp.Semantics.state.
         eapply H0.
         eapply Imp.Semantics.BigStep_Denotational_Sound.
         eassumption.
+
     - eapply Imp.Semantics.BigStep_Denotational_Sound in H3.
       eapply H1 in H3.
       eapply Imp.Semantics.Denotational_BigStep_Adequate in H3.

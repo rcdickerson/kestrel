@@ -152,7 +152,7 @@ Qed.
 
 
 (*Functional Model: empty for kestrel*)
-(*API spec => verifyfunc spec *)
+(*API spec => verifyfunc spec; left and right are equal *)
 Definition verifyfunc_spec : ident * funspec :=
 DECLARE _verifyfunc
   WITH l_a : val, r_a : val, sh1 : share, sh2 : share,
@@ -162,13 +162,16 @@ DECLARE _verifyfunc
     PROP (
     writable_share sh1; writable_share sh2;
     Forall (fun x => 0 <= x <= Int.max_unsigned) contents_la;
-    Forall (fun x => 0 <= x <= Int.max_unsigned) contents_ra)
+    Forall (fun x => 0 <= x <= Int.max_unsigned) contents_ra;
+    Forall2 (fun x y => x = y) contents_la contents_ra)
   PARAMS (l_a;r_a)
     SEP (data_at sh1 (tarray tuint 11) (map Vint (map Int.repr contents_la)) l_a;
     data_at sh2 (tarray tuint 11) (map Vint (map Int.repr contents_ra)) r_a)
   POST [ tvoid ]
     EX lnd : Z, EX rnd : Z, 
-    PROP ()
+    PROP (0 <= lnd < 11; 0 <= rnd < 11; Znth lnd contents_la = Znth rnd contents_ra;
+    Forall2 (fun x y => x = y) contents_la contents_ra
+    )
     RETURN () (*void*)
     SEP (if Z.eq_dec lnd 10 then (data_at sh1 (tarray tuint 11) (map Vint (map Int.repr contents_la)) l_a)
     else if Z.eq_dec lnd 0 then (data_at sh1 (tarray tuint 11) (map Vint (map Int.repr ([Znth 10 contents_la] ++ sublist 1 10 contents_la ++
@@ -194,6 +197,46 @@ DECLARE _verifyfunc
     rewrite H. reflexivity. lia.
   Qed.
 
+Lemma eqmaxlist: forall l1 l2: list Z,
+  Zlength l1 = Zlength l2 ->
+  Forall (fun x : Z => 0 <= x <= Int.max_unsigned) l1 ->
+  Forall (fun x : Z => 0 <= x <= Int.max_unsigned) l2 ->
+  Forall2 (fun x y : Z => x = y) l1 l2 ->
+  sum_max 0 l1 = sum_max 0 l2.
+Proof.
+  intros. destruct l1,l2.
+  reflexivity. rewrite Zlength_nil in H. 
+  rewrite Zlength_cons in H.
+  unfold Z.succ in H. destruct (Zlength l2) eqn:Zll2. simpl in H.
+  discriminate H. discriminate H. 
+  assert (Zlength l2 >= 0). {
+     apply Z.le_ge. apply Zlength_nonneg.
+  }
+  rewrite Zll2 in H3. 
+  assert (Z.neg p < 0). {
+    apply Pos2Z.neg_is_neg.
+  }
+  contradiction.  
+  rewrite Zlength_nil in H. rewrite Zlength_cons in H. 
+  destruct (Zlength l1) eqn:Zll1. simpl in H.
+  discriminate H. discriminate H. 
+  assert (Zlength l1 >= 0). {
+     apply Z.le_ge. apply Zlength_nonneg.
+  }
+  rewrite Zll1 in H3. 
+  assert (Z.neg p < 0). {
+    apply Pos2Z.neg_is_neg.
+  }
+  contradiction.  eapply Forall2_cons_iff in H2. 
+  destruct H2 as [? ?]. rewrite H2. unfold sum_max. 
+  rewrite <- H2. rewrite !fold_right_cons. f_equal. rewrite <- H2 in H,H1.
+  rewrite !Zlength_cons in H. apply Z.succ_inj in H. apply Forall_inv_tail in H0,H1.
+  induction H3. reflexivity. rewrite H3. rewrite !fold_right_cons. f_equal. 
+  rewrite !Zlength_cons in H.  apply Z.succ_inj in H.
+  apply IHForall2.  assumption. apply Forall_inv_tail in H0.
+  assumption. apply Forall_inv_tail in H1.  assumption.  
+Qed.
+
 (*Pack APIs together*)
 Definition Gprog := [verifyfunc_spec].
 
@@ -203,12 +246,12 @@ Proof.
  start_function. 
  (*a1 length is M*)
  assert_PROP (Zlength contents_la = 11). {
-  entailer!. rewrite <- H2. do 2 rewrite Zlength_map. reflexivity.
+  entailer!. rewrite <- H3. do 2 rewrite Zlength_map. reflexivity.
  }
  assert_PROP (Zlength contents_ra = 11). {
-  entailer!. rewrite <- H6. do 2 rewrite Zlength_map. reflexivity.
+  entailer!. rewrite <- H7. do 2 rewrite Zlength_map. reflexivity.
  }
- fastforward. Search Z.lt. 
+ fastforward. 
 forward_loop 
   (EX l_i:Z, EX r_i:Z, EX li:Z, EX ri:Z, 
     PROP (0 <= l_i <= 11; 0 <= r_i <= 11; 
@@ -286,18 +329,18 @@ forward_loop
    SEP (data_at sh1 (tarray tuint 11) (map Vint (map Int.repr contents_la)) l_a;
    data_at sh2 (tarray tuint 11) (map Vint (map Int.repr contents_ra)) r_a) 
    ). 
- forward. forward. rewrite !Int.unsigned_repr in H12. Exists (Znth l_i contents_la).
+ forward. forward. rewrite !Int.unsigned_repr in H13. Exists (Znth l_i contents_la).
  Exists l_i. entailer!. 
  (*right*)
  unfold Z_lt_ge_dec. 
  destruct (Z_lt_dec (sum_max 0 (sublist 0 r_i contents_la))(Znth r_i contents_la)) eqn:HDe.
  split; reflexivity. contradiction. destruct (Z_lt_le_dec r_i 11) eqn:Hltler.
- entailer!. Search Z.le. clear Hltler. apply Z.le_ge in l. contradiction. 
+ entailer!. clear Hltler. apply Z.le_ge in l. contradiction. 
  apply summax_one. lia. assumption.
  eapply summax_range. eapply Forall_sublist in H. eassumption.
  forward.
  (*other way*)
- rewrite !Int.unsigned_repr in H12. Exists (sum_max 0 (sublist 0 l_i contents_la)). 
+ rewrite !Int.unsigned_repr in H13. Exists (sum_max 0 (sublist 0 l_i contents_la)). 
  Exists li. entailer!.
  unfold Z_lt_ge_dec. 
  destruct (Z_lt_dec (sum_max 0 (sublist 0 r_i contents_la))(Znth r_i contents_la)) eqn:HDe. 
@@ -326,7 +369,7 @@ forward_loop
    data_at sh2 (tarray tuint 11) (map Vint (map Int.repr contents_ra)) r_a) 
    ).
   forward. forward. 
-  rewrite !Int.unsigned_repr in H15. Exists (Znth r_i contents_ra).
+  rewrite !Int.unsigned_repr in H16. Exists (Znth r_i contents_ra).
   Exists r_i. entailer!. 
  (*right*)
  unfold Z_lt_ge_dec. 
@@ -336,7 +379,7 @@ forward_loop
  eapply summax_range. eapply Forall_sublist in H0. eassumption.
  forward.
  (*other way*)
- rewrite !Int.unsigned_repr in H15. Exists (sum_max 0 (sublist 0 r_i contents_ra)). 
+ rewrite !Int.unsigned_repr in H16. Exists (sum_max 0 (sublist 0 r_i contents_ra)). 
  Exists ri. entailer!.
  unfold Z_lt_ge_dec. 
  destruct (Z_lt_dec (sum_max 0 (sublist 0 r_i contents_ra))(Znth r_i contents_ra)) eqn:HDe. 
@@ -364,10 +407,10 @@ forward_loop
    [Znth rind contents_ra])))) r_a
    )).
   fastforward. entailer!. simpl. eapply entailment_swap; assumption.
-  forward. entailer!. Search (_ <> _). apply not_Zeq_inf in H18. destruct H18 as [? | ?].
-  destruct (Z_lt_le_dec r_i 10) eqn:Hltledec. entailer!. Search Z.lt. apply Z.lt_gt in l.
-  contradiction. (*contradiction - successor case*)  replace 11 with (Z.succ 10) in H10 by lia.  
-  apply Zlt_succ_le in H10. apply Z.lt_gt in l. contradiction. forward. forward.
+  forward. entailer!.  apply not_Zeq_inf in H19. destruct H19 as [? | ?].
+  destruct (Z_lt_le_dec r_i 10) eqn:Hltledec. entailer!.  apply Z.lt_gt in l.
+  contradiction. (*contradiction - successor case*)  replace 11 with (Z.succ 10) in H11 by lia.  
+  apply Zlt_succ_le in H11. apply Z.lt_gt in l. contradiction. forward. forward.
   (*plus 1*)
   Exists (l_i + 1). Exists (r_i + 1). Exists lind. Exists rind. entailer!.
  (*same proof all over - destruct both?*)
@@ -386,39 +429,40 @@ forward_loop
  }
  rewrite !(sublist_split 0 r_i (r_i + 1)) by lia. rewrite !sublist_len_1 by lia.
  rewrite !summax_app. clear HDe1. clear HDe2. apply Z.lt_le_incl in l,l0.
- apply Z.max_r in l,l0. rewrite l,l0. split; try reflexivity. split; try reflexivity.
- rewrite H16, H13; split; reflexivity. 
+ apply Z.max_r in l,l0. rewrite l,l0. rewrite H15. split; try reflexivity.
+ rewrite H18. split; try reflexivity. split; reflexivity.
  apply summax_one. lia. assumption. apply summax_one. lia. assumption.
- 
  rewrite !(sublist_split 0 r_i (r_i + 1)) by lia. rewrite !sublist_len_1 by lia.
  rewrite !summax_app. clear HDe1. apply Z.lt_le_incl in l.  apply Z.max_r in l.
- rewrite l. rewrite H14. (*other side*)
- clear HDe2. Search Z.le. apply Z.ge_le in g. Check Z.max_r. apply Z.max_r in g.
- rewrite Z.max_comm in g. rewrite g. rewrite H17. split. reflexivity.
- split. assumption. rewrite H16, H13; split; reflexivity.
+ rewrite l. rewrite H15. 
+ (*other side*)
+ clear HDe2. apply Z.ge_le in g. apply Z.max_r in g.
+ rewrite Z.max_comm in g. rewrite g. rewrite H18. split. reflexivity.
+ split. assumption. rewrite H17, H14; split; reflexivity.
  apply summax_one. lia. assumption. apply summax_one. lia. assumption.
  destruct (Z_lt_ge_dec (sum_max 0 (sublist 0 r_i contents_ra))(Znth r_i contents_ra)) eqn:HDe2.
  (*opposite treatment*)
  rewrite !(sublist_split 0 r_i (r_i + 1)) by lia. rewrite !sublist_len_1 by lia.
  rewrite !summax_app. clear HDe2. apply Z.lt_le_incl in l.  apply Z.max_r in l.
- rewrite l. rewrite H17.  (*other side*)
+ rewrite l. rewrite H18.  
+ (*other side*)
  clear HDe1. apply Z.ge_le in g. apply Z.max_r in g.
- rewrite Z.max_comm in g. rewrite g. rewrite H14. rewrite H8. split. reflexivity.
- split. reflexivity. rewrite H16, H13; split; reflexivity.
+ rewrite Z.max_comm in g. rewrite g. rewrite H15, H9. split. reflexivity.
+ split. reflexivity. rewrite H17, H14; split; reflexivity.
  apply summax_one. lia. assumption. apply summax_one. lia. assumption.
  (*both >=*)
  rewrite !(sublist_split 0 r_i (r_i + 1)) by lia. rewrite !sublist_len_1 by lia.
  rewrite !summax_app. clear HDe1. clear HDe2. apply Z.ge_le in g0,g. apply Z.max_r in g0,g.
- rewrite Z.max_comm in g0,g. rewrite g0,g. rewrite H14. rewrite <- H8.
- rewrite H17. rewrite <- H9. rewrite H16. rewrite <- H9. rewrite H13. rewrite <- H8.
+ rewrite Z.max_comm in g0,g. rewrite g0,g. rewrite H15. rewrite <- H9.
+ rewrite H18, <- H10, H17, <- H10, H14, <- H9.
  split. reflexivity. split. reflexivity. split. reflexivity. reflexivity.
  apply summax_one. lia. assumption. apply summax_one. lia. assumption. entailer!.
  destruct (Z_lt_le_dec r_i 10) eqn:Hfin1. destruct (Z_lt_le_dec (r_i + 1) 11) eqn:Hfin2. 
- entailer!. Search Z.le.  clear Hfin2. replace (r_i + 1) with (Z.succ r_i) in l0 by lia.
+ entailer!. clear Hfin2. replace (r_i + 1) with (Z.succ r_i) in l0 by lia.
  apply Z.le_pred_lt_succ in l0. apply Z.le_ge in l0. replace (Z.pred 11) with 10 in l0 by lia.
  contradiction.
  destruct (Z_lt_le_dec (r_i + 1) 11) eqn:Hfin2. clear Hfin2. replace (r_i + 1) with (Z.succ r_i) in l0 by lia.
- apply Z.lt_succ_lt_pred in l0. replace (Z.pred 11) with 10 in l0 by lia. Search Z.le. Search Z.lt.
+ apply Z.lt_succ_lt_pred in l0. replace (Z.pred 11) with 10 in l0 by lia. 
  apply Z.lt_gt in l0. contradiction. entailer!.
  (*next loop*)
  Intros l_i r_i li ri.
@@ -469,9 +513,9 @@ forward_loop
    [Znth ri contents_ra])))) r_a
    ))%assert.
    Exists l_i. Exists r_i. Exists li. Exists ri. entailer!. Intros l_i0 r_i0 li0 ri0.
-   rewrite H14,H15. forward_if. forward. 
+   rewrite H15,H16. forward_if. forward. 
    (*other side*)
-   Exists l_i0. Exists r_i0. Exists li0. Exists ri0. entailer!. discriminate H21.
+   Exists l_i0. Exists r_i0. Exists li0. Exists ri0. entailer!. discriminate H22.
    (*r loop*)   
    Intros l_i0 r_i0 li0 ri0.
    forward_loop 
@@ -521,12 +565,16 @@ forward_loop
    [Znth ri0 contents_ra])))) r_a
    ))%assert.
    Exists l_i0. Exists r_i0. Exists li0. Exists ri0. entailer!. Intros l_i1 r_i1 li1 ri1.
-   rewrite H23,H24. forward_if. forward. 
+   rewrite H24,H25. forward_if. forward. 
    (*other side*)
-   Exists l_i1. Exists r_i1. Exists li1. Exists ri1. entailer!. discriminate H30.
+   Exists l_i1. Exists r_i1. Exists li1. Exists ri1. entailer!. discriminate H31.
    fastforward. Exists li1. Exists ri1.
-   entailer!. apply sepcon_derives. eapply entailment_swap. destruct H26. split. assumption.
-   replace 11 with (Z.succ 10) in H6 by lia. Search Z.succ. apply Zlt_succ_le in H6.
+   entailer!. rewrite H29,H30. apply eqmaxlist. rewrite !Zlength_sublist by lia.
+   reflexivity. Search Forall sublist. eapply Forall_sublist in H.
+   eassumption. eapply Forall_sublist in H0. eassumption. Search Forall2 sublist.
+   eapply Forall2_sublist in H1. eassumption. lia.   
+   apply sepcon_derives. eapply entailment_swap. destruct H27. split. assumption.
+   replace 11 with (Z.succ 10) in H7 by lia.  apply Zlt_succ_le in H7.
    assumption. assumption. simpl. entailer!.
 Qed.
  

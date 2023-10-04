@@ -18,9 +18,6 @@ else
   techniques=("$ext_technique")
 fi
 
-# Third argument: output mode.
-out_mode=${3:-seahorn}
-
 echo "Building KestRel"
 cargo build --release
 kestrel_exec=./target/release/kestrel
@@ -48,7 +45,7 @@ do
         file_basename=$(basename $file .c)
 
         output_file="$output_dir/$file_basename-${technique:0:3}".c
-        (time timeout 10m $kestrel_exec -i $file -o $output_file --output-mode=$out_mode $technique --sa-max-iterations=12000) > "$log_dir/$file_basename".log 2>&1
+        (time timeout 10m $kestrel_exec -i $file -o $output_file --output-mode=sv-comp $technique) > "$log_dir/$file_basename".log 2>&1
     done
   done
 done

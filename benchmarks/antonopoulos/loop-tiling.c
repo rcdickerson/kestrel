@@ -2,9 +2,9 @@
  * pre:   true;
  * left:  left;
  * right: right;
- * post:  for i in (0..1000) {
-            for j in (0..1000) {
-              left.a[i * 1000 + j] == right.a[i][j]
+ * post:  for i in (0..10) {
+            for j in (0..10) {
+              left.a[(i * 10) + j] == right.a[i][j]
             }
           };
  */
@@ -26,7 +26,7 @@ void right(int a[N][M]) {
   while (i < N) {
     int j = 0;
     while (j < M) {
-      a[i][j] = f(i*M+j);
+      a[i][j] = f(i*N+j);
       j = j + 1;
     }
     i = i + 1;

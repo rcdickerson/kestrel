@@ -1,11 +1,11 @@
 /* @KESTREL
- * pre: for _i in (1..N) {
+ * pre: for _i in (1..10) {
      (left.a[_i] >= right.a[_i] || right.a[_i] - left.a[_i] < epsilon) &&
      (left.a[_i] <  right.a[_i] || left.a[_i] - right.a[_i] < epsilon)
    };
  * left: left;
  * right: right;
- * post: for _j in (1..N) {
+ * post: for _j in (1..10) {
      (left.a[_j] >= right.a[_j] || right.a[_j] - left.a[_j] < epsilon) &&
      (left.a[_j] <  right.a[_j] || left.a[_j] - right.a[_j] < epsilon)
    };

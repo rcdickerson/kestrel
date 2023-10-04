@@ -238,23 +238,28 @@ fn expect_statement(sexp: &Sexp) -> Statement {
           rhs: Box::new(cond2.clone()),
           op: BinaryOp::And,
         };
-        let runoff_cond1 = Expression::Binop {
-          lhs: Box::new(cond1.clone()),
-          rhs: Box::new(Expression::Unop{
-            expr: Box::new(cond2.clone()),
-            op: UnaryOp::Not}),
-          op: BinaryOp::And,
-        };
-        let runoff_cond2 = Expression::Binop {
-          lhs: Box::new(Expression::Unop{
-            expr: Box::new(cond1.clone()),
-            op: UnaryOp::Not}),
-          rhs: Box::new(cond2.clone()),
-          op: BinaryOp::And,
-        };
 
-        let runoff_body1 = expect_statement(&sexps[3]);
-        let runoff_body2 = expect_statement(&sexps[4]);
+        let body1 = expect_statement(&sexps[3]);
+        let runoff_body_1 = Statement::Compound(vec!(
+          BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
+            callee: Box::new(Expression::Identifier{name: "assume".to_string()}),
+            args: vec!(Expression::Unop{
+              expr: Box::new(cond2.clone()),
+              op: UnaryOp::Not}),
+          }))),
+          BlockItem::Statement(body1.clone()),
+        ));
+
+        let body2 = expect_statement(&sexps[4]);
+        let runoff_body_2 = Statement::Compound(vec!(
+          BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
+            callee: Box::new(Expression::Identifier{name: "assume".to_string()}),
+            args: vec!(Expression::Unop{
+              expr: Box::new(cond1.clone()),
+              op: UnaryOp::Not}),
+          }))),
+          BlockItem::Statement(body2.clone()),
+        ));
         let body = expect_statement(&sexps[5]);
 
         let stmts = vec! [
@@ -262,11 +267,11 @@ fn expect_statement(sexp: &Sexp) -> Statement {
             condition: Box::new(conj),
             body: Some(Box::new(body))}),
           BlockItem::Statement(Statement::While {
-            condition: Box::new(runoff_cond1),
-            body: Some(Box::new(runoff_body1))}),
+            condition: Box::new(cond1),
+            body: Some(Box::new(runoff_body_1))}),
           BlockItem::Statement(Statement::While {
-            condition: Box::new(runoff_cond2),
-            body: Some(Box::new(runoff_body2))}),
+            condition: Box::new(cond2),
+            body: Some(Box::new(runoff_body_2))}),
         ];
         Statement::Compound(stmts)
       },
@@ -289,18 +294,12 @@ fn expect_while_scheduled(sexps: &[Sexp]) -> Statement {
     rhs: Box::new(cond2.clone()),
     op: BinaryOp::And,
   };
-  let runoff1 = Expression::Binop {
+
+Expression::Binop {
     lhs: Box::new(cond1.clone()),
     rhs: Box::new(Expression::Unop{
       expr: Box::new(cond2.clone()),
       op: UnaryOp::Not}),
-    op: BinaryOp::And,
-  };
-  let runoff2 = Expression::Binop {
-    lhs: Box::new(Expression::Unop{
-      expr: Box::new(cond1.clone()),
-      op: UnaryOp::Not}),
-    rhs: Box::new(cond2.clone()),
     op: BinaryOp::And,
   };
 
@@ -321,6 +320,15 @@ fn expect_while_scheduled(sexps: &[Sexp]) -> Statement {
       .collect();
     body1_rel = Statement::Compound(items);
   }
+  let runoff_body_1 = Statement::Compound(vec!(
+    BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
+      callee: Box::new(Expression::Identifier{name: "assume".to_string()}),
+      args: vec!(Expression::Unop{
+        expr: Box::new(cond2.clone()),
+        op: UnaryOp::Not}),
+    }))),
+    BlockItem::Statement(body1.clone()),
+  ));
 
   let body2 = expect_statement(&sexps[6]);
   let mut body2_rel = body2.clone();
@@ -339,6 +347,15 @@ fn expect_while_scheduled(sexps: &[Sexp]) -> Statement {
       .collect();
     body2_rel = Statement::Compound(items);
   }
+  let runoff_body_2 = Statement::Compound(vec!(
+    BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
+      callee: Box::new(Expression::Identifier{name: "assume".to_string()}),
+      args: vec!(Expression::Unop{
+        expr: Box::new(cond1.clone()),
+        op: UnaryOp::Not}),
+    }))),
+    BlockItem::Statement(body2.clone()),
+  ));
 
   let bodies = Statement::Relation {
     lhs: Box::new(body1_rel),
@@ -350,11 +367,11 @@ fn expect_while_scheduled(sexps: &[Sexp]) -> Statement {
       condition: Box::new(conj),
       body: Some(Box::new(bodies))}),
     BlockItem::Statement(Statement::While {
-      condition: Box::new(runoff1),
-      body: Some(Box::new(body1))}),
+      condition: Box::new(cond1),
+      body: Some(Box::new(runoff_body_1))}),
     BlockItem::Statement(Statement::While {
-      condition: Box::new(runoff2),
-      body: Some(Box::new(body2))}),
+      condition: Box::new(cond2),
+      body: Some(Box::new(runoff_body_2))}),
   ];
   Statement::Compound(stmts)
 }

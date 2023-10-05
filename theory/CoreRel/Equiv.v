@@ -330,6 +330,14 @@ Section Equiv.
       inversion H2; subst. symmetry. assumption.
   Qed.
 
+  (*Normal -> Normal*)
+  Lemma whileI_false_L : forall b r st,
+     (denote_B b) (false, st)->
+      denote_Com <{ while b do r end }> (st, RNormal st).
+  Proof.
+    firstorder.
+  Qed.
+
  (*Normal -> Normal*)
   Lemma whileR_false_L' : forall b1 b2 r st1 st2,
       (denote_B b1) (false, st1) ->
@@ -500,9 +508,251 @@ Section Equiv.
     intros. subst.  eapply CR.Semantics.BigStep_Denotational_Sound; eauto.
     (*while, Normal*) injection Heqr; subst; clear Heqr. injection Heqp; subst; clear Heqp.
     intros. subst.  eapply CR.Semantics.BigStep_Denotational_Sound; eauto.
-
+   
   Qed.
-    
+
+Check <{ <| skip | skip|> }>.
+
+ Lemma bnegb_equiv: forall b st, negb (beval st b) = (beval st (BNot b)).
+ Proof.
+   intros. simpl. reflexivity. Qed.
+
+
+(*This is potentially problemmatic as it requires inverting the safe lemmas into comm. form
+  - Inverting over ∉ lemmas aren't there. I tried to write them, but proving is problemmatic. *)
+ Lemma whileR_lockstep_ : forall b1 b2 s1 s2,
+    (*put safety assumption here: 
+       Safe p is equivalent to error not in denotation of p
+       Safe p1 /\ Safe p2 => (p1 eqv. p2)*)
+     forall (r_safe1: forall stl str, 
+     ~((stl, str) =<[<{whileR <|b1 | b2|> do <|s1 | s2|> end;;<| assert ~b1 | assert ~b2|>}>]>=> (RError,RError))),
+     <{ <| while b1 do s1 end | while b2 do s2 end |>  }> ==R 
+     <{whileR <|b1 | b2|> do <|s1 | s2|> end;;<| assert ~b1 | assert ~b2|>}> .
+  Proof. 
+   intros b1 b2 s1 s2 H1 H2. destruct H2 as ((stl, str), (stl', str')); split; intros. 
+   inversion H; subst. inversion H0; subst. destruct H2 as [H31 H32]. destruct H32 as [H321 H322]. destruct H322 as [? ?]; subst.
+   eapply Imp.Semantics.Denotational_BigStep_Adequate in H31, H321.
+   eapply CR.Semantics.BigStep_Denotational_Sound. clear H. clear H0.
+   remember <{ while b1 do s1 end}>. remember (RNormal x).  
+   generalize dependent str. generalize dependent s2. generalize dependent b2.
+   induction H31; try discriminate.
+   injection Heqc; intros; subst; clear Heqc. 
+   (*apply constructor*) eapply E_ACSeqNormal. eapply E_ACWhileFalseL; simpl; eauto.
+   (*< | s1 | s2 |> - Normal*) eapply E_ACBlockNormal; simpl; eauto. 
+   (*assert - Normal will go through*) eapply E_AssertNormal. simpl.
+   rewrite H. simpl. reflexivity.
+   (*induction on H321*) remember <{ while b2 do s2 end}>. remember (RNormal x0).
+   generalize dependent s1. generalize dependent b1. generalize dependent Heqr.
+   generalize dependent x. generalize dependent st. induction H321; try discriminate.
+   injection Heqc; intros; subst; clear Heqc. (*assert Normal will go through*) eapply E_AssertNormal.
+   simpl. rewrite H. simpl. reflexivity.
+   (*true or ~b false case - error case*) injection Heqc; intros; subst; clear Heqc. 
+   clear IHcevalr1. clear IHcevalr2. Search negb. eapply negb_false_iff in H.
+   rewrite bnegb_equiv in H. (*assert Error - discriminate*) eapply E_AssertError in H.
+   eapply Imp.Semantics.BigStep_Denotational_Sound in H.
+   specialize H3 with st0 st. unfold not in H3. destruct H3. econstructor.
+   eapply E_ACWhileFalseL. assumption. (*assert Normal : ~b1*) eapply negb_true_iff in H2.
+   rewrite bnegb_equiv in H2. eapply E_AssertNormal in H2. 
+   (*denotation to operational in H*) eapply Imp.Semantics.Denotational_BigStep_Adequate in H.
+   eapply E_ACBlockErrorP2. simpl. eassumption. simpl. assumption.
+   intros. clear IHcevalr1. injection Heqc; intros; subst; clear Heqc. subst. 
+   inversion H321; subst; intros.
+   econstructor. eapply E_ACWhileFalseR; simpl; eauto. 
+   specialize H1 with st x0. unfold not in H1. destruct H1. econstructor.
+   eapply E_ACWhileFalseR. assumption. eapply negb_true_iff in H4.
+   rewrite bnegb_equiv in H4. eapply E_AssertNormal in H4. eapply negb_false_iff in H.
+   rewrite bnegb_equiv in H. eapply E_AssertError in H. eapply E_ACBlockErrorP1.
+   simpl. eassumption.
+   (*b2 is true*) 
+   eapply CR.Semantics.Denotational_BigStep_Adequate.
+   eapply ACSeq_eqv_cong. eapply whileR_unroll. reflexivity. eapply prod_seq_assoc.
+   eapply CR.Semantics.BigStep_Denotational_Sound. econstructor. econstructor; eauto.
+   econstructor; eauto. eapply IHcevalr2; eauto.
+   (*other side*)
+   inversion H; subst. inversion H0; subst. inversion H2; subst. inversion H3; subst.
+   clear H0. clear H2. clear H3. clear H. destruct H4 as [? ?]. destruct H0 as [? ?].
+   destruct H2 as [? ?]; subst. eapply CR.Semantics.Denotational_BigStep_Adequate in H, H0.
+   remember <{whileR <| b1 | b2 |> do <| s1 | s2 |> end}> as r eqn:Heqr. 
+   remember (RNormal x, RNormal x0). generalize dependent x1. generalize dependent x2.
+   induction H; try discriminate. 
+   (*while - while*) injection Heqr; intros; subst; clear Heqr.
+   clear IHaceval1. firstorder. eapply block_eqv_cong.
+   eapply If_while_eq. eapply If_while_eq. eapply CR.Semantics.BigStep_Denotational_Sound. 
+   specialize H4 with x2 x1. apply H4 in H7. 
+   eapply CR.Semantics.Denotational_BigStep_Adequate in H7.
+   econstructor; eauto. econstructor; eauto. econstructor; eauto. 
+   inversion H2; subst. eassumption. inversion H7; subst. eauto. econstructor; eauto.
+   econstructor; eauto. inversion H2; subst. eauto. inversion H7; subst; eauto. 
+   (*second last*)
+   injection Heqr; subst; clear Heqr. injection Heqp; subst; clear Heqp.
+   intros; subst. eapply CR.Semantics.BigStep_Denotational_Sound. 
+   inversion H6; subst. simpl in H5,H8. 
+   inversion H5; subst. inversion H8; subst. simpl in H4,H7. eapply negb_true_iff in H7.
+   constructor; simpl. eapply E_WhileFalse. assumption. eapply E_WhileFalse. assumption.
+   (*last*) 
+   injection Heqr; subst; clear Heqr. injection Heqp; intros; subst; clear Heqp.
+   eapply CR.Semantics.BigStep_Denotational_Sound; eauto.
+   (*Block - assert Error*) inversion H6; subst. simpl in H5,H8. eapply negb_true_iff in H. 
+   rewrite bnegb_equiv in H. eapply E_AssertNormal in H. subst. 
+   inversion H5; subst.  (*<| s1 | s2 | >*) eapply E_ACBlockNormal; simpl; eauto.
+   simpl in H4. eapply negb_true_iff in H4. eapply E_WhileFalse. assumption.
+   inversion H8; subst. simpl in H7. eapply negb_true_iff in H7. eapply E_WhileFalse. assumption.
+ Qed.
+
+  (*ifR <|b1 | BNot b2|> then <| while b1 do s1 end | skip|> else ifR <|BNot b1 | b2|> then <|skip | while b2 do s2 end|>
+     else < skip | skip > end end end*)  
+ Lemma whileR_lockstep2: forall b1 b2 s1 s2, 
+     forall (r_safe2: forall stl str, (stl,RError) ∉ denote_Com <{  assert (~ b1) }> /\ (str,RError) ∉ denote_Com <{  assert (~ b2) }>),
+     <{ <| while b1 do s1 end | while b2 do s2 end |>  }> ==R 
+     <{whileR <|b1 | b2|> do <|s1 | s2|> end;;<| assert ~b1 | assert ~b2|>}> .
+  Proof. 
+   intros b1 b2 s1 s2 H1 H2. destruct H2 as ((stl, str), (stl', str')); split; intros. 
+   inversion H; subst. inversion H0; subst. destruct H2 as [H31 H32]. destruct H32 as [H321 H322]. destruct H322 as [? ?]; subst.
+   eapply Imp.Semantics.Denotational_BigStep_Adequate in H31, H321.
+   eapply CR.Semantics.BigStep_Denotational_Sound. clear H. clear H0.
+   remember <{ while b1 do s1 end}>. remember (RNormal x).  
+   generalize dependent str. generalize dependent s2. generalize dependent b2.
+   induction H31; try discriminate.
+   injection Heqc; intros; subst; clear Heqc. 
+   (*apply constructor*) eapply E_ACSeqNormal. eapply E_ACWhileFalseL; simpl; eauto.
+   (*< | s1 | s2 |> - Normal*) eapply E_ACBlockNormal; simpl; eauto. 
+   (*assert - Normal will go through*) eapply E_AssertNormal. simpl.
+   rewrite H. simpl. reflexivity.
+   (*induction on H321*) remember <{ while b2 do s2 end}>. remember (RNormal x0).
+   generalize dependent s1. generalize dependent b1. generalize dependent Heqr.
+   generalize dependent x. generalize dependent st. induction H321; try discriminate.
+   injection Heqc; intros; subst; clear Heqc. (*assert Normal will go through*) eapply E_AssertNormal.
+   simpl. rewrite H. simpl. reflexivity.
+   (*true or ~b false case - error case*) injection Heqc; intros; subst; clear Heqc. 
+   clear IHcevalr1. clear IHcevalr2. Search negb. eapply negb_false_iff in H.
+   rewrite bnegb_equiv in H. (*assert Error - discriminate*) eapply E_AssertError in H.
+   eapply Imp.Semantics.BigStep_Denotational_Sound in H.
+   specialize H3 with st0 st. destruct H3 as [H31 H32]. contradiction. intros. 
+   injection Heqc; intros; subst; clear Heqc. clear IHcevalr1. clear IHcevalr2.
+   (*b1 to negb - Error - contradiction*) eapply negb_false_iff in H. rewrite bnegb_equiv in H.
+   eapply E_AssertError in H. eapply Imp.Semantics.BigStep_Denotational_Sound in H. 
+   specialize H1 with st str. destruct H1 as [? ?]. contradiction. 
+   (*second case*) 
+    inversion H; subst. inversion H0; subst. inversion H2; subst. inversion H3; subst. 
+   clear H0. clear H2. clear H3. clear H. destruct H4 as [? ?]. destruct H0 as [? ?].
+   destruct H2 as [? ?]; subst. eapply CR.Semantics.Denotational_BigStep_Adequate in H, H0.
+   remember <{whileR <| b1 | b2 |> do <| s1 | s2 |> end}> as r eqn:Heqr. 
+   remember (RNormal x, RNormal x0). generalize dependent x1. generalize dependent x2.
+   generalize dependent H1. induction H; try discriminate.
+   injection Heqr; intros; subst; clear Heqr. clear IHaceval1. clear IHaceval2.
+   (*b1 to negb - Error - contradiction*) eapply negb_false_iff in H. rewrite bnegb_equiv in H.
+   eapply E_AssertError in H. eapply Imp.Semantics.BigStep_Denotational_Sound in H.
+   specialize H6 with rst.1 rst.2. destruct H6 as [? ?]. contradiction.
+   injection Heqr; subst; clear Heqr. injection Heqp; intros; subst; clear Heqp.
+   eapply CR.Semantics.BigStep_Denotational_Sound; eauto.
+   (*Block - assert Error*) inversion H6. simpl in H4. eapply negb_true_iff in H. 
+   rewrite bnegb_equiv in H. eapply E_AssertNormal in H. subst. simpl in H8.
+   inversion H4; subst.  (*<| s1 | s2 | >*) eapply E_ACBlockNormal; simpl; eauto.
+   eapply Imp.Semantics.Denotational_BigStep_Adequate. eapply whileI_false_L.
+   eapply bexp_denoterev. rewrite <- bnegb_equiv in H3. apply negb_true_iff in H3.
+   rewrite <- H3. apply Denotational_B_BigStep_Sound. clear H3.
+   inversion H8; subst. eapply Imp.Semantics.Denotational_BigStep_Adequate.
+   eapply whileI_false_L. eapply bexp_denoterev.  rewrite <- bnegb_equiv in H3.
+   apply negb_true_iff in H3. rewrite <- H3. apply Denotational_B_BigStep_Sound.
+   (*last case*)
+   injection Heqr; subst; clear Heqr. injection Heqp; intros; subst; clear Heqp.
+   eapply CR.Semantics.BigStep_Denotational_Sound; eauto.
+   (*Block - assert Error*) inversion H6. simpl in H4,H8. eapply negb_true_iff in H. 
+   rewrite bnegb_equiv in H. eapply E_AssertNormal in H. subst. 
+   inversion H4; subst.  (*<| s1 | s2 | >*) eapply E_ACBlockNormal; simpl; eauto.
+   eapply Imp.Semantics.Denotational_BigStep_Adequate. eapply whileI_false_L.
+   eapply bexp_denoterev. rewrite <- bnegb_equiv in H3. apply negb_true_iff in H3.
+   rewrite <- H3. apply Denotational_B_BigStep_Sound. clear H3.
+   inversion H8; subst. eapply Imp.Semantics.Denotational_BigStep_Adequate.
+   eapply whileI_false_L. eapply bexp_denoterev.  rewrite <- bnegb_equiv in H3.
+   apply negb_true_iff in H3. rewrite <- H3. apply Denotational_B_BigStep_Sound.
+Qed.
+
+Lemma whileR_lockstep3: forall b1 b2 s1 s2, 
+     <{ <| while b1 do s1 end | while b2 do s2 end |>  }> ==R 
+     <{whileR <|b1 | b2|> do <|s1 | s2|> end;; ifR <|b1 | BNot b2|> then <| while b1 do s1 end | skip|> else ifR <|BNot b1 | b2|> then <|skip | while b2 do s2 end|>
+     else <|skip | skip|> end end}> .
+Proof.
+   intros b1 b2 s1 s2 ((st1, st2), (st1', st2')); split; intros. inversion H; subst.
+   inversion H0; subst. destruct H1 as [H11 H12]. destruct H12 as [H121 H122].
+   destruct H122 as [? ?]. subst. 
+   (*bring it to form suitable for induction*)
+   eapply Imp.Semantics.Denotational_BigStep_Adequate in H11. 
+   eapply Imp.Semantics.Denotational_BigStep_Adequate in H121.
+   eapply CR.Semantics.BigStep_Denotational_Sound. clear H. clear H0.
+   remember <{ while b1 do s1 end}>. remember (RNormal x).
+   generalize dependent st2. generalize dependent s2. generalize dependent b2.
+   induction H11; try discriminate. inversion Heqc; subst. inversion Heqr; subst.
+   clear Heqc; clear Heqr; intros. 
+   econstructor. (*while - b1 false*) eapply E_ACWhileFalseL. assumption.
+   eapply E_ACIfFalseL. simpl. assumption. inversion H121; subst.
+   (*b2 is false*) apply E_ACIfFalseR. simpl; assumption.
+   constructor; constructor; constructor.
+   (*b1 - true, b2 - true*) eapply negb_true_iff in H. rewrite bnegb_equiv in H.
+   apply E_ACIfTrue; simpl; try assumption. 
+   constructor; try constructor; try assumption.
+   (*complicated case*) clear IHcevalr1. injection Heqc; intros; subst; clear Heqc. 
+   intros. inversion H121; subst; intros.
+   econstructor. (*b2 is false*) eapply E_ACWhileFalseR; simpl; eauto. (*if - both true*)
+   eapply negb_true_iff in H3. rewrite bnegb_equiv in H3. eapply E_ACIfTrue; simpl; try assumption.
+   constructor; simpl; try constructor. eapply E_WhileTrueNormal; eauto. 
+   (*both true*)
+   eapply CR.Semantics.Denotational_BigStep_Adequate.
+   eapply ACSeq_eqv_cong. eapply whileR_unroll. reflexivity. eapply prod_seq_assoc.
+   eapply CR.Semantics.BigStep_Denotational_Sound. econstructor. econstructor; eauto.
+   econstructor; eauto. eapply IHcevalr2; eauto.
+   (*Other side*)
+   inversion H; subst. inversion H0; subst. inversion H1; subst. inversion H2; subst.
+   clear H0. clear H1. clear H2. clear H. destruct H3 as [? ?]. destruct H0 as [? ?].
+   destruct H1 as [? ?]. subst. eapply CR.Semantics.Denotational_BigStep_Adequate in H, H0.
+   remember <{whileR <| b1 | b2 |> do <| s1 | s2 |> end}> as r eqn:Heqr. 
+   remember (RNormal x, RNormal x0). generalize dependent x1. generalize dependent x2.
+   induction H; try discriminate.
+   (*while - while*) inversion Heqr; subst.
+   clear IHaceval1. firstorder. eapply block_eqv_cong.
+   eapply If_while_eq. eapply If_while_eq. eapply CR.Semantics.BigStep_Denotational_Sound.
+   clear Heqr. specialize H4 with x2 x1. apply H4 in H3. 
+   eapply CR.Semantics.Denotational_BigStep_Adequate in H3. 
+   econstructor; eauto. econstructor; eauto.
+   econstructor; eauto. inversion H1; subst. eassumption.
+   inversion H3; subst. eauto. econstructor; eauto. 
+   econstructor; eauto. inversion H1; subst. eauto. inversion H3; subst; eauto.
+   (*while, Normal*) injection Heqr; subst; clear Heqr. injection Heqp; subst; clear Heqp.
+   intros. subst.  eapply CR.Semantics.BigStep_Denotational_Sound. 
+   inversion H5; subst. simpl in H7,H8. Search negb. apply negb_true_iff in H8.
+   (*apply E_ACIfFalseL with b1 b2 <{ <| while b1 do s1 end | skip |> }> <{ ifR <| ~ b1 | b2 |> then <| skip | while b2 do s2 end |>
+          else <| skip | skip |> end }> (x,x0) (RNormal x1, RNormal x2) in H.*)
+   (*<{ <| while b1 do s1 end | skip |> }> <{ ifR <| ~ b1 | b2 |> then <| skip | while b2 do s2 end |>
+          else <| skip | skip |> end }>*)
+    inversion H9; subst. simpl in H4,H10. inversion H10; subst. constructor; simpl. assumption. 
+    eapply E_WhileFalse. assumption. simpl in H7. inversion H8; subst. simpl in H9,H10.
+    apply negb_true_iff in H9. inversion H11; subst. simpl in H4,H12. inversion H4; subst.
+    constructor; simpl. eapply E_WhileFalse; assumption. assumption. simpl in H9.
+    rewrite H7 in H9. simpl in H9. discriminate H9. simpl in H9.
+    (*invert H10 to get equality*) inversion H10; subst. simpl in H4,H11.
+    inversion H4; subst; inversion H11; subst. constructor; eapply E_WhileFalse; assumption.
+    inversion H8; subst. simpl in H9,H10. inversion H11; subst. simpl in H4,H12.
+    inversion H4; subst. constructor; simpl. apply E_WhileFalse; assumption.
+    assumption. simpl in H9. rewrite H in H9. simpl in H9. discriminate H9.
+    simpl in H7,H9. rewrite H9 in H7. simpl in H7; discriminate H7.
+    (*Last*)
+    injection Heqr; subst; clear Heqr. injection Heqp; subst; clear Heqp.
+    intros; subst. eapply CR.Semantics.BigStep_Denotational_Sound. 
+    inversion H5; subst. simpl in H7,H8. apply negb_true_iff in H8.
+    inversion H9; subst. simpl in H4,H10. inversion H10; subst. constructor; simpl. assumption. 
+    eapply E_WhileFalse. assumption. simpl in H7. inversion H8; subst. simpl in H9,H10.
+    apply negb_true_iff in H9. inversion H11; subst. simpl in H4,H12. inversion H4; subst.
+    constructor; simpl. eapply E_WhileFalse; assumption. assumption. simpl in H9.
+    rewrite H7 in H9. simpl in H9. discriminate H9. simpl in H9.
+    (*invert H10 to get equality*) inversion H10; subst. simpl in H4,H11.
+    inversion H4; subst; inversion H11; subst. constructor; eapply E_WhileFalse; assumption.
+    inversion H8; subst. simpl in H9,H10. inversion H11; subst. simpl in H4,H12.
+    inversion H4; subst. constructor; simpl. apply negb_true_iff in H9.
+    apply E_WhileFalse; assumption. assumption.
+    simpl in H9. apply negb_false_iff in H9. simpl in H7. rewrite H in H7. 
+    simpl in H7. discriminate H7. 
+    simpl in H7,H9. rewrite H9 in H7. simpl in H7; discriminate H7.
+Qed.
 
 
 End Equiv.

@@ -10,17 +10,13 @@ pub trait CondToCRel {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub enum StatementKind {
-  Assume,
-  Assert,
+pub struct StatementKind {
+  pub crel_name: String,
 }
 
 impl CondToCRel for StatementKind {
   fn to_crel(&self) -> crel::Expression {
-    match self {
-      StatementKind::Assume => crel::Expression::Identifier{name: "assume".to_string()},
-      StatementKind::Assert => crel::Expression::Identifier{name: "sassert".to_string()},
-    }
+    crel::Expression::Identifier{name: self.crel_name.clone()}
   }
 }
 

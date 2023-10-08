@@ -28,7 +28,7 @@ do
     input_dir="$group_dir/$technique"
 
     # Make the log directory
-    log_dir="./results/log/verification/seahorn/$group_name/$technique"
+    log_dir="./results/log/verification/icra/$group_name/$technique"
     echo "Storing verification logs in in $log_dir"
     mkdir -p "$log_dir"
 
@@ -37,7 +37,7 @@ do
     do
       echo "$file..."
       file_basename=$(basename $file .c)
-      (time timeout 10m sea pf -m64 --horn-strictly-la=false $file) > "$log_dir/$file_basename".log 2>&1
+      (time timeout 10m ~/Code/WALi-OpenNWA/icra.sh $file) > "$log_dir/$file_basename".log 2>&1
     done
   done
 done

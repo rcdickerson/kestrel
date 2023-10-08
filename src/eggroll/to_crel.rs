@@ -1,31 +1,37 @@
 use crate::crel::ast::*;
+use crate::output_mode;
 use sexp::{Atom, Sexp};
 
-pub fn eggroll_to_crel(eggroll: &String) -> CRel {
+pub fn eggroll_to_crel(eggroll: &String, options: Option<output_mode::Options>) -> CRel {
+  let options = options.unwrap_or(output_mode::Options {
+    assert_name: "assert".to_string(),
+    assume_name: "assume".to_string(),
+    nondet_name: "nondet".to_string(),
+  });
   match sexp::parse(eggroll.as_str()) {
     Err(msg) => panic!("{}", msg),
-    Ok(sexp) => expect_crel(&sexp),
+    Ok(sexp) => expect_crel(&sexp, &options),
   }
 }
 
-fn expect_crel(sexp: &Sexp) -> CRel {
+fn expect_crel(sexp: &Sexp, options: &output_mode::Options) -> CRel {
   match &sexp {
     Sexp::Atom(Atom::S(s)) if s.is_empty() => CRel::Seq(Vec::new()),
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "declaration" => {
-        let declaration = expect_declaration(&sexps[1]);
+        let declaration = expect_declaration(&sexps[1], options);
         CRel::Declaration(declaration)
       },
       Sexp::Atom(Atom::S(s)) if s == "fundef" => {
         let specifiers = expect_specifiers(&sexps[1]);
         let name = expect_string(&sexps[2]);
-        let params = expect_param_decls(&sexps[3]);
-        let body = Box::new(expect_statement(&sexps[4]));
+        let params = expect_param_decls(&sexps[3], options);
+        let body = Box::new(expect_statement(&sexps[4], options));
         CRel::FunctionDefinition{specifiers, name, params, body}
       },
       Sexp::Atom(Atom::S(s)) if s == "seq" => {
-        let mut seq = vec!(expect_crel(&sexps[1]));
-        let rhs = expect_crel(&sexps[2]);
+        let mut seq = vec!(expect_crel(&sexps[1], options));
+        let rhs = expect_crel(&sexps[2], options);
         match rhs {
           CRel::Seq(crels) => seq.append(&mut crels.to_owned()),
           _ => seq.push(rhs),
@@ -38,7 +44,7 @@ fn expect_crel(sexp: &Sexp) -> CRel {
   }
 }
 
-fn expect_expression(sexp: &Sexp) -> Expression {
+fn expect_expression(sexp: &Sexp, options: &output_mode::Options) -> Expression {
   match &sexp {
     Sexp::Atom(Atom::S(s)) if !s.is_empty() => Expression::Identifier{name: s.clone()},
     Sexp::List(sexps) => match &sexps[0] {
@@ -58,113 +64,113 @@ fn expect_expression(sexp: &Sexp) -> Expression {
         }
       },
       Sexp::Atom(Atom::S(s)) if s == "neg" => {
-        let expr = Box::new(expect_expression(&sexps[1]));
+        let expr = Box::new(expect_expression(&sexps[1], options));
         Expression::Unop{ expr, op: UnaryOp::Minus }
       },
       Sexp::Atom(Atom::S(s)) if s == "not" => {
-        let expr = Box::new(expect_expression(&sexps[1]));
+        let expr = Box::new(expect_expression(&sexps[1], options));
         Expression::Unop{ expr, op: UnaryOp::Not }
       },
       Sexp::Atom(Atom::S(s)) if s == "call" => {
-        let callee = Box::new(expect_expression(&sexps[1]));
-        let args = expect_args(&sexps[2]);
+        let callee = Box::new(expect_expression(&sexps[1], options));
+        let args = expect_args(&sexps[2], options);
         Expression::Call{ callee, args }
       },
       Sexp::Atom(Atom::S(s)) if s == "index" => {
-        let lhs = Box::new(expect_expression(&sexps[1]));
-        let rhs = Box::new(expect_expression(&sexps[2]));
+        let lhs = Box::new(expect_expression(&sexps[1], options));
+        let rhs = Box::new(expect_expression(&sexps[2], options));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Index }
       },
       Sexp::Atom(Atom::S(s)) if s == "+" => {
-        let lhs = Box::new(expect_expression(&sexps[1]));
-        let rhs = Box::new(expect_expression(&sexps[2]));
+        let lhs = Box::new(expect_expression(&sexps[1], options));
+        let rhs = Box::new(expect_expression(&sexps[2], options));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Add }
       },
       Sexp::Atom(Atom::S(s)) if s == "&&" => {
-        let lhs = Box::new(expect_expression(&sexps[1]));
-        let rhs = Box::new(expect_expression(&sexps[2]));
+        let lhs = Box::new(expect_expression(&sexps[1], options));
+        let rhs = Box::new(expect_expression(&sexps[2], options));
         Expression::Binop{ lhs, rhs, op: BinaryOp::And }
       },
       Sexp::Atom(Atom::S(s)) if s == "=" => {
-        let lhs = Box::new(expect_expression(&sexps[1]));
-        let rhs = Box::new(expect_expression(&sexps[2]));
+        let lhs = Box::new(expect_expression(&sexps[1], options));
+        let rhs = Box::new(expect_expression(&sexps[2], options));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Assign }
       },
       Sexp::Atom(Atom::S(s)) if s == "-" => {
-        let lhs = Box::new(expect_expression(&sexps[1]));
-        let rhs = Box::new(expect_expression(&sexps[2]));
+        let lhs = Box::new(expect_expression(&sexps[1], options));
+        let rhs = Box::new(expect_expression(&sexps[2], options));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Sub }
       },
       Sexp::Atom(Atom::S(s)) if s == "/" => {
-        let lhs = Box::new(expect_expression(&sexps[1]));
-        let rhs = Box::new(expect_expression(&sexps[2]));
+        let lhs = Box::new(expect_expression(&sexps[1], options));
+        let rhs = Box::new(expect_expression(&sexps[2], options));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Div }
       },
       Sexp::Atom(Atom::S(s)) if s == "==" => {
-        let lhs = Box::new(expect_expression(&sexps[1]));
-        let rhs = Box::new(expect_expression(&sexps[2]));
+        let lhs = Box::new(expect_expression(&sexps[1], options));
+        let rhs = Box::new(expect_expression(&sexps[2], options));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Equals }
       },
       Sexp::Atom(Atom::S(s)) if s == ">" => {
-        let lhs = Box::new(expect_expression(&sexps[1]));
-        let rhs = Box::new(expect_expression(&sexps[2]));
+        let lhs = Box::new(expect_expression(&sexps[1], options));
+        let rhs = Box::new(expect_expression(&sexps[2], options));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Gt }
       },
       Sexp::Atom(Atom::S(s)) if s == ">=" => {
-        let lhs = Box::new(expect_expression(&sexps[1]));
-        let rhs = Box::new(expect_expression(&sexps[2]));
+        let lhs = Box::new(expect_expression(&sexps[1], options));
+        let rhs = Box::new(expect_expression(&sexps[2], options));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Gte }
       },
       Sexp::Atom(Atom::S(s)) if s == "<" => {
-        let lhs = Box::new(expect_expression(&sexps[1]));
-        let rhs = Box::new(expect_expression(&sexps[2]));
+        let lhs = Box::new(expect_expression(&sexps[1], options));
+        let rhs = Box::new(expect_expression(&sexps[2], options));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Lt }
       },
       Sexp::Atom(Atom::S(s)) if s == "<=" => {
-        let lhs = Box::new(expect_expression(&sexps[1]));
-        let rhs = Box::new(expect_expression(&sexps[2]));
+        let lhs = Box::new(expect_expression(&sexps[1], options));
+        let rhs = Box::new(expect_expression(&sexps[2], options));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Lte }
       },
       Sexp::Atom(Atom::S(s)) if s == "mod" => {
-        let lhs = Box::new(expect_expression(&sexps[1]));
-        let rhs = Box::new(expect_expression(&sexps[2]));
+        let lhs = Box::new(expect_expression(&sexps[1], options));
+        let rhs = Box::new(expect_expression(&sexps[2], options));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Mod }
       },
       Sexp::Atom(Atom::S(s)) if s == "*" => {
-        let lhs = Box::new(expect_expression(&sexps[1]));
-        let rhs = Box::new(expect_expression(&sexps[2]));
+        let lhs = Box::new(expect_expression(&sexps[1], options));
+        let rhs = Box::new(expect_expression(&sexps[2], options));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Mul }
       },
       Sexp::Atom(Atom::S(s)) if s == "!=" => {
-        let lhs = Box::new(expect_expression(&sexps[1]));
-        let rhs = Box::new(expect_expression(&sexps[2]));
+        let lhs = Box::new(expect_expression(&sexps[1], options));
+        let rhs = Box::new(expect_expression(&sexps[2], options));
         Expression::Binop{ lhs, rhs, op: BinaryOp::NotEquals }
       },
       Sexp::Atom(Atom::S(s)) if s == "||" => {
-        let lhs = Box::new(expect_expression(&sexps[1]));
-        let rhs = Box::new(expect_expression(&sexps[2]));
+        let lhs = Box::new(expect_expression(&sexps[1], options));
+        let rhs = Box::new(expect_expression(&sexps[2], options));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Or }
       },
-      _ => Expression::Statement(Box::new(expect_statement(sexp))),
+      _ => Expression::Statement(Box::new(expect_statement(sexp, options))),
     },
-    _ => Expression::Statement(Box::new(expect_statement(sexp))),
+    _ => Expression::Statement(Box::new(expect_statement(sexp, options))),
   }
 }
 
-fn expect_statement(sexp: &Sexp) -> Statement {
+fn expect_statement(sexp: &Sexp, options: &output_mode::Options) -> Statement {
   match &sexp {
     Sexp::Atom(Atom::S(s)) if s == "break" => Statement::Break,
     Sexp::Atom(Atom::S(s)) if s == "return-none" => Statement::Return(None),
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "basic-block" => {
         let items = sexps[1..].iter()
-          .map(expect_block_item)
+          .map(|x| expect_block_item(x, options))
           .collect();
         Statement::BasicBlock(items)
       },
       Sexp::Atom(Atom::S(s)) if s == "seq" => {
-        let mut seq = vec!(expect_block_item(&sexps[1]));
-        let rhs = expect_statement(&sexps[2]);
+        let mut seq = vec!(expect_block_item(&sexps[1], options));
+        let rhs = expect_statement(&sexps[2], options);
         match rhs {
             Statement::Compound(items) => {
             seq.append(&mut items.to_owned())
@@ -174,49 +180,49 @@ fn expect_statement(sexp: &Sexp) -> Statement {
         Statement::Compound(seq)
       },
       Sexp::Atom(Atom::S(s)) if s == "if" => {
-        let condition = Box::new(expect_expression(&sexps[1]));
-        let then = Box::new(expect_statement(&sexps[2]));
+        let condition = Box::new(expect_expression(&sexps[1], options));
+        let then = Box::new(expect_statement(&sexps[2], options));
         Statement::If{condition, then, els: None}
       },
       Sexp::Atom(Atom::S(s)) if s == "if-else" => {
-        let condition = Box::new(expect_expression(&sexps[1]));
-        let then = Box::new(expect_statement(&sexps[2]));
-        let els  = Some(Box::new(expect_statement(&sexps[3])));
+        let condition = Box::new(expect_expression(&sexps[1], options));
+        let then = Box::new(expect_statement(&sexps[2], options));
+        let els  = Some(Box::new(expect_statement(&sexps[3], options)));
         Statement::If{condition, then, els}
       },
       Sexp::Atom(Atom::S(s)) if s == "<|>" => {
-        let lhs = Box::new(expect_statement(&sexps[1]));
-        let rhs = Box::new(expect_statement(&sexps[2]));
+        let lhs = Box::new(expect_statement(&sexps[1], options));
+        let rhs = Box::new(expect_statement(&sexps[2], options));
         Statement::Relation{lhs, rhs}
       },
       Sexp::Atom(Atom::S(s)) if s == "|>" => {
         let lhs = Box::new(Statement::None);
-        let rhs = Box::new(expect_statement(&sexps[1]));
+        let rhs = Box::new(expect_statement(&sexps[1], options));
         Statement::Relation{lhs, rhs}
       },
       Sexp::Atom(Atom::S(s)) if s == "<|" => {
-        let lhs = Box::new(expect_statement(&sexps[1]));
+        let lhs = Box::new(expect_statement(&sexps[1], options));
         let rhs = Box::new(Statement::None);
         Statement::Relation{lhs, rhs}
       },
       Sexp::Atom(Atom::S(s)) if s == "declaration" => {
-        Statement::Compound(vec!(BlockItem::Declaration(expect_declaration(sexp))))
+        Statement::Compound(vec!(BlockItem::Declaration(expect_declaration(sexp, options))))
       },
       Sexp::Atom(Atom::S(s)) if s == "return" => {
-        Statement::Return(Some(Box::new(expect_expression(&sexps[1]))))
+        Statement::Return(Some(Box::new(expect_expression(&sexps[1], options))))
       },
       Sexp::Atom(Atom::S(s)) if s == "while-no-body" => {
-        let condition = Box::new(expect_expression(&sexps[1]));
+        let condition = Box::new(expect_expression(&sexps[1], options));
         Statement::While{condition, body: None}
       },
       Sexp::Atom(Atom::S(s)) if s == "while" => {
-        let condition = Box::new(expect_expression(&sexps[1]));
-        let body = Some(Box::new(expect_statement(&sexps[2])));
+        let condition = Box::new(expect_expression(&sexps[1], options));
+        let body = Some(Box::new(expect_statement(&sexps[2], options)));
         Statement::While{condition, body}
       },
       Sexp::Atom(Atom::S(s)) if s == "while-double" => {
-        let condition = expect_expression(&sexps[1]);
-        let body_stmt = expect_statement(&sexps[2]);
+        let condition = expect_expression(&sexps[1], options);
+        let body_stmt = expect_statement(&sexps[2], options);
         let double_body = Statement::Compound(vec!(
           BlockItem::Statement(body_stmt.clone()),
           BlockItem::Statement(Statement::If {
@@ -231,18 +237,18 @@ fn expect_statement(sexp: &Sexp) -> Statement {
         }
       },
       Sexp::Atom(Atom::S(s)) if s == "while-lockstep" => {
-        let cond1 = expect_expression(&sexps[1]);
-        let cond2 = expect_expression(&sexps[2]);
+        let cond1 = expect_expression(&sexps[1], options);
+        let cond2 = expect_expression(&sexps[2], options);
         let conj = Expression::Binop {
           lhs: Box::new(cond1.clone()),
           rhs: Box::new(cond2.clone()),
           op: BinaryOp::And,
         };
 
-        let body1 = expect_statement(&sexps[3]);
+        let body1 = expect_statement(&sexps[3], options);
         let runoff_body_1 = Statement::Compound(vec!(
           BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
-            callee: Box::new(Expression::Identifier{name: "assume".to_string()}),
+            callee: Box::new(Expression::Identifier{name: options.assume_name.clone()}),
             args: vec!(Expression::Unop{
               expr: Box::new(cond2.clone()),
               op: UnaryOp::Not}),
@@ -250,17 +256,17 @@ fn expect_statement(sexp: &Sexp) -> Statement {
           BlockItem::Statement(body1.clone()),
         ));
 
-        let body2 = expect_statement(&sexps[4]);
+        let body2 = expect_statement(&sexps[4], options);
         let runoff_body_2 = Statement::Compound(vec!(
           BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
-            callee: Box::new(Expression::Identifier{name: "assume".to_string()}),
+            callee: Box::new(Expression::Identifier{name: options.assume_name.clone()}),
             args: vec!(Expression::Unop{
               expr: Box::new(cond1.clone()),
               op: UnaryOp::Not}),
           }))),
           BlockItem::Statement(body2.clone()),
         ));
-        let body = expect_statement(&sexps[5]);
+        let body = expect_statement(&sexps[5], options);
 
         let stmts = vec! [
           BlockItem::Statement(Statement::While {
@@ -276,19 +282,19 @@ fn expect_statement(sexp: &Sexp) -> Statement {
         Statement::Compound(stmts)
       },
       Sexp::Atom(Atom::S(s)) if s == "while-scheduled" => {
-        expect_while_scheduled(&sexps)
+        expect_while_scheduled(&sexps, options)
       },
-      _ => Statement::Expression(Box::new(expect_expression(&sexp)))
+      _ => Statement::Expression(Box::new(expect_expression(&sexp, options)))
     },
-    _ => Statement::Expression(Box::new(expect_expression(&sexp)))
+    _ => Statement::Expression(Box::new(expect_expression(&sexp, options)))
   }
 }
 
-fn expect_while_scheduled(sexps: &[Sexp]) -> Statement {
+fn expect_while_scheduled(sexps: &[Sexp], options: &output_mode::Options) -> Statement {
   let left_iters = expect_i64(&sexps[1]);
   let right_iters = expect_i64(&sexps[2]);
-  let cond1 = expect_expression(&sexps[3]);
-  let cond2 = expect_expression(&sexps[4]);
+  let cond1 = expect_expression(&sexps[3], options);
+  let cond2 = expect_expression(&sexps[4], options);
   let conj = Expression::Binop {
     lhs: Box::new(cond1.clone()),
     rhs: Box::new(cond2.clone()),
@@ -303,7 +309,7 @@ Expression::Binop {
     op: BinaryOp::And,
   };
 
-  let body1 = expect_statement(&sexps[5]);
+  let body1 = expect_statement(&sexps[5], options);
   let mut body1_rel = body1.clone();
   let mut repeats1 = vec!(body1.clone());
   while (repeats1.len() as i64) < left_iters {
@@ -330,7 +336,7 @@ Expression::Binop {
     BlockItem::Statement(body1.clone()),
   ));
 
-  let body2 = expect_statement(&sexps[6]);
+  let body2 = expect_statement(&sexps[6], options);
   let mut body2_rel = body2.clone();
   let mut repeats2 = vec!(body2.clone());
   while (repeats2.len() as i64) < right_iters {
@@ -443,16 +449,16 @@ fn expect_storage_class_specifier(sexp: &Sexp) -> StorageClassSpecifier {
   }
 }
 
-fn expect_declaration(sexp: &Sexp) -> Declaration {
+fn expect_declaration(sexp: &Sexp, options: &output_mode::Options) -> Declaration {
   match &sexp {
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "declaration" => {
         let specifiers = expect_specifiers(&sexps[1]);
-        let declarator = expect_declarator(&sexps[2]);
+        let declarator = expect_declarator(&sexps[2], options);
         let initializer = if sexps.len() < 4 {
           None
         } else {
-          expect_initializer(&sexps[3])
+          expect_initializer(&sexps[3], options)
         };
         Declaration{specifiers, declarator, initializer}
       },
@@ -462,12 +468,12 @@ fn expect_declaration(sexp: &Sexp) -> Declaration {
   }
 }
 
-fn expect_initializer(sexp: &Sexp) -> Option<Expression> {
+fn expect_initializer(sexp: &Sexp, options: &output_mode::Options) -> Option<Expression> {
   match &sexp {
     Sexp::Atom(Atom::S(s)) if s == "no-initializer" => None,
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "initializer" => {
-        let expr = expect_expression(&sexps[1]);
+        let expr = expect_expression(&sexps[1], options);
         Some(expr)
       },
       _ => panic!("Expected initializer, got: {}", sexp),
@@ -476,7 +482,7 @@ fn expect_initializer(sexp: &Sexp) -> Option<Expression> {
   }
 }
 
-fn expect_declarator(sexp: &Sexp) -> Declarator {
+fn expect_declarator(sexp: &Sexp, options: &output_mode::Options) -> Declarator {
   match &sexp {
     Sexp::Atom(Atom::S(name)) => Declarator::Identifier{name: name.clone()},
     Sexp::List(sexps) => match &sexps[0] {
@@ -484,15 +490,15 @@ fn expect_declarator(sexp: &Sexp) -> Declarator {
         Declarator::Array{name: expect_string(&sexps[1]), sizes: Vec::new()}
       },
       Sexp::Atom(Atom::S(s)) if s == "sized-array" => {
-        let sizes = expect_array_sizes(&sexps[2]);
+        let sizes = expect_array_sizes(&sexps[2], options);
         Declarator::Array{name: expect_string(&sexps[1]), sizes: sizes}
       },
       Sexp::Atom(Atom::S(s)) if s == "fun-declarator" => {
-        let params = expect_param_decls(&sexps[2]);
+        let params = expect_param_decls(&sexps[2], options);
         Declarator::Function{name: expect_string(&sexps[1]), params}
       },
       Sexp::Atom(Atom::S(s)) if s == "pointer" => {
-        let decl = expect_declarator(&sexps[1]);
+        let decl = expect_declarator(&sexps[1], options);
         Declarator::Pointer(Box::new(decl))
       },
       _ => panic!("Expected declarator, got: {}", sexp),
@@ -501,13 +507,13 @@ fn expect_declarator(sexp: &Sexp) -> Declarator {
   }
 }
 
-fn expect_array_sizes(sexp: &Sexp) -> Vec<Expression> {
+fn expect_array_sizes(sexp: &Sexp, options: &output_mode::Options) -> Vec<Expression> {
  match &sexp {
     Sexp::Atom(Atom::S(s)) if s == "array-sizes" => Vec::new(),
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "array-sizes" => {
         sexps[1..].iter()
-          .map(expect_expression)
+          .map(|x| expect_expression(x, options))
           .collect()
       },
       _ => panic!("Expected array sizes, got: {}", sexp),
@@ -516,13 +522,13 @@ fn expect_array_sizes(sexp: &Sexp) -> Vec<Expression> {
   }
 }
 
-fn expect_param_decls(sexp: &Sexp) -> Vec<ParameterDeclaration> {
+fn expect_param_decls(sexp: &Sexp, options: &output_mode::Options) -> Vec<ParameterDeclaration> {
   match &sexp {
     Sexp::Atom(Atom::S(s)) if s == "params" => Vec::new(),
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "params" => {
         sexps[1..].iter()
-          .map(expect_param_declaration)
+          .map(|x| expect_param_declaration(x, options))
           .collect()
       },
       _ => panic!("Expected params, got: {}", sexp),
@@ -531,13 +537,13 @@ fn expect_param_decls(sexp: &Sexp) -> Vec<ParameterDeclaration> {
   }
 }
 
-fn expect_param_declaration(sexp: &Sexp) -> ParameterDeclaration {
+fn expect_param_declaration(sexp: &Sexp, options: &output_mode::Options) -> ParameterDeclaration {
   match &sexp {
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "param-declaration" => {
         let specifiers = expect_specifiers(&sexps[1]);
         let declarator = if *&sexps.len() > 2 {
-          Some(expect_declarator(&sexps[2]))
+          Some(expect_declarator(&sexps[2], options))
         } else { None };
         ParameterDeclaration{specifiers, declarator}
       },
@@ -547,13 +553,13 @@ fn expect_param_declaration(sexp: &Sexp) -> ParameterDeclaration {
   }
 }
 
-fn expect_args(sexp: &Sexp) -> Vec<Expression> {
+fn expect_args(sexp: &Sexp, options: &output_mode::Options) -> Vec<Expression> {
   match &sexp {
     Sexp::Atom(Atom::S(s)) if s == "args" => Vec::new(),
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "args" => {
         sexps[1..].iter()
-          .map(expect_expression)
+          .map(|x| expect_expression(x, options))
           .collect()
       },
       _ => panic!("Expected args, got: {}", sexp),
@@ -562,16 +568,16 @@ fn expect_args(sexp: &Sexp) -> Vec<Expression> {
   }
 }
 
-fn expect_block_item(sexp: &Sexp) -> BlockItem {
+fn expect_block_item(sexp: &Sexp, options: &output_mode::Options) -> BlockItem {
   match &sexp {
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "declaration" => {
-        let declaration = expect_declaration(sexp);
+        let declaration = expect_declaration(sexp, options);
         BlockItem::Declaration(declaration)
       },
-      _ => BlockItem::Statement(expect_statement(&sexp)),
+      _ => BlockItem::Statement(expect_statement(&sexp, options)),
     },
-    _ => BlockItem::Statement(expect_statement(&sexp)),
+    _ => BlockItem::Statement(expect_statement(&sexp, options)),
   }
 }
 

@@ -81,10 +81,10 @@ fn write_file(contents: &String, location: &str) {
 ///   6. Convert the extracted Eggroll back to CRel, and then into a C product
 ///      program.
 ///
-/// The reason we have two IRs (CRel and Eggroll) is to separate two orthogonal
-/// translation concerns: 1) converting non-relational programs into relational
-/// ones, and 2) packaging C-like programs into an Egg-compatible language
-/// definition.
+/// The reason we have two IRs (CRel and Eggroll) is to separate two
+/// orthogonal translation concerns: 1) converting between
+/// non-relational and relational programs, and 2) packaging programs
+/// into an Egg-compatible language definition.
 fn main() {
   let args = Args::parse();
   let spec = parse_spec(&args.input).unwrap();
@@ -132,18 +132,6 @@ fn main() {
       let extractor = Extractor::new(&runner.egraph, MinLoops);
       let (_, best) = extractor.find_best(runner.roots[0]);
       println!("Computed alignment by local loop counting.");
-
-      // -- Hack --
-      let num_trace_states = 10;
-      let trace_fuel = 10000;
-      let (_, fundefs) = kestrel::crel::fundef::extract_fundefs(&crel);
-      let generator = fundefs.get(&"_generator".to_string());
-      let decls = unaligned_crel.global_decls_and_params();
-      let trace_states = rand_states_satisfying(
-        num_trace_states, &spec.pre, Some(&decls), generator, 1000);
-      println!("SA score: {}", sa_score(&trace_states, trace_fuel, best.clone()));
-      // ----------
-
       best
     },
     ExtractorArg::MILP => {
@@ -173,12 +161,13 @@ fn main() {
   println!("--------------------------");
 
   let aligned_crel =
-    kestrel::eggroll::to_crel::eggroll_to_crel(&aligned_eggroll.to_string());
+    kestrel::eggroll::to_crel::eggroll_to_crel(&aligned_eggroll.to_string(),
+                                               Some(args.output_mode.options()));
   let filename = args.output.as_ref().map(|outpath| {
     let path = Path::new(outpath);
     path.file_name().unwrap().to_str().unwrap().to_string()
   });
-  let aligned_c = args.output_mode.prepare_crel(
+  let aligned_c = args.output_mode.crel_to_c(
     &aligned_crel, &spec, unaligned_crel.global_decls, &filename);
   println!("\nAligned Product Program");
   println!("--------------------------");

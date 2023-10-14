@@ -1,6 +1,7 @@
-void verifyfunc(unsigned int l_a,unsigned int l_b, unsigned int l_c, 
- unsigned int r_a,unsigned int r_b, unsigned int r_c)
+void verifyfunc(unsigned l_a,unsigned l_b,unsigned r_a,unsigned r_b)
 {
+    unsigned l_c = 0;
+    unsigned r_c = 0;
     for(;;)
     {
         if(l_a >= l_b)
@@ -52,15 +53,3 @@ void verifyfunc(unsigned int l_a,unsigned int l_b, unsigned int l_c,
         }
     }
 }
-
-int main(void) 
-{
-  unsigned int l_a = 4;
-  unsigned int l_b = 5;
-  unsigned int r_a = 4;
-  unsigned int r_b = 5;
-  unsigned int l_c = 0;
-  unsigned int r_c = 0;
-  verifyfunc(l_a,l_b, l_c,r_a, r_b,r_c);
-  return 0;
- }

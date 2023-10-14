@@ -1,7 +1,10 @@
-void verifyfunc(unsigned int l_B,unsigned int l_C,unsigned int l_N,
-unsigned int l_x,unsigned int r_B,unsigned int r_C,unsigned int r_N,
-unsigned int r_x,unsigned int l_i,unsigned int l_j,unsigned int r_i,unsigned int r_j)
+void verifyfunc(unsigned l_B,unsigned l_C,unsigned l_N,
+unsigned l_x,unsigned r_B,unsigned r_C,unsigned r_N, unsigned r_x )
 {
+    unsigned l_i = 0;
+    unsigned r_i = 0;
+    unsigned l_j = 0;
+    unsigned r_j = r_C;
     for(;;)
     {
         if(l_i >= l_N)
@@ -58,21 +61,3 @@ unsigned int r_x,unsigned int l_i,unsigned int l_j,unsigned int r_i,unsigned int
         }
     }
 }
-
-int main(void) 
-{
-    unsigned int l_B = 5;
-    unsigned int l_C = 4;
-    unsigned int l_N = 3;
-    unsigned int l_x = 2;
-    unsigned int r_B = 5;
-    unsigned int r_C = 4;
-    unsigned int r_N = 3;
-    unsigned int r_x = 2;
-    unsigned int l_i = 0; //explicit assign
-    unsigned int l_j = 0; //explicit assign
-    unsigned int r_i = 0; //explicit assign
-    unsigned int r_j = r_C; //explicit assign
-    verifyfunc(l_B,l_C,l_N,l_x,r_B,r_C,r_N,r_x,l_i,l_j,r_i,r_j);
-    return 0;
- }

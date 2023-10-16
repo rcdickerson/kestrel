@@ -1,16 +1,16 @@
 /* @KESTREL
- * pre: for _i in (0..10) { left.a[_i] == right.a[_i] };
+ * pre: for _i in (0..11) { left.a[_i] == right.a[_i] };
  * left: left;
  * right: right;
- * post: for _j in (0..10) { left.a[_j] == right.a[_j] };
+ * post: for _j in (0..11) { left.a[_j] == right.a[_j] };
  */
 
 #define N 10
 
-void _generator(int _arr[N]) {
+void _generator(int _arr[N+1]) {
   int _ai = 0;
-  int l_a[N];
-  int r_a[N];
+  int l_a[N+1];
+  int r_a[N+1];
   while (_ai < N) {
     l_a[_ai] = _arr[_ai];
     r_a[_ai] = _arr[_ai];
@@ -18,7 +18,7 @@ void _generator(int _arr[N]) {
   }
 }
 
-void left(int a[N]) {
+void left(int a[N+1]) {
   int max = a[0];
   int maxi = 0;
   int i = 0;
@@ -34,11 +34,11 @@ void left(int a[N]) {
   a[maxi] = t;
 }
 
-void right(int a[N]) {
+void right(int a[N+1]) {
   int j = 0;
+  int max;
+  int maxi;
   while (j < N) {
-    int max;
-    int maxi;
     if (j == 0) {
       max = a[0];
       maxi = 0;

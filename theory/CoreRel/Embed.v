@@ -293,7 +293,7 @@ Compute reify_com <{ <| CSkip | CSkip |> }>.
 
   (* We define a different notion of equivalence between aligned
      programs and a single program with variables drawn from two
-     distinct domains: *)
+.     distinct domains: *)
 
   Definition lift_state (st1 st2 : @state M) : (@state (@prod_M M)) := (st1, st2).
 
@@ -407,11 +407,34 @@ Compute reify_com <{ <| CSkip | CSkip |> }>.
         eassumption.
   Qed.
 
-  (* Key theorem: a product program constructed from any alignment
-     that is semantically equivalent to the naive construction of a
-     pair of programs s1 and s2 is also equivalent to s1 and s2. *)
+  (* Key theorem: equivalent aligned programs produce equivalent
+     product program. *)
+  Theorem reify_preserves_eqv :
+    forall r1 r2,
+      align_eqv r1 r2 ->
+      com_eqv (reify_com r1) (reify_com r2).
+  Proof.
+    unfold align_eqv, com_eqv.
+    intros r1 r2 H (st1, st2); split; intro.
+    - eapply Imp.Semantics.BigStep_Denotational_Sound.
+      apply reify_is_iso.
+      eapply CR.Semantics.Denotational_BigStep_Adequate.
+      apply H.
+      eapply Imp.Semantics.Denotational_BigStep_Adequate in H0.
+      apply reify_is_iso in H0.
+      eapply CR.Semantics.BigStep_Denotational_Sound in H0.
+      assumption.
+    - eapply Imp.Semantics.BigStep_Denotational_Sound.
+      apply reify_is_iso.
+      eapply CR.Semantics.Denotational_BigStep_Adequate.
+      apply H.
+      eapply Imp.Semantics.Denotational_BigStep_Adequate in H0.
+      apply reify_is_iso in H0.
+      eapply CR.Semantics.BigStep_Denotational_Sound in H0.
+      assumption.
+  Qed.
 
-  Theorem embed_reify_sound :
+  Lemma embed_reify_sound :
     forall s1 s2 r,
       align_eqv (embed_com s1 s2) r ->
       eqv_single_prod s1 s2 (reify_com r).
@@ -454,7 +477,13 @@ Compute reify_com <{ <| CSkip | CSkip |> }>.
   Proof.
     intros.
     eapply r_safe; try eassumption.
-    eapply embed_reify_sound; eauto.
+    eapply Imp.Semantics.Denotational_BigStep_Adequate.
+    eapply reify_preserves_eqv.
+    - symmetry; eassumption.
+    - eapply Imp.Semantics.BigStep_Denotational_Sound.
+      eapply reify_is_iso.
+      unfold embed_com.
+      econstructor; simpl; eassumption.
   Qed.
 
 End Embed.

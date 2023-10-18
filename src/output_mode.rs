@@ -4,15 +4,14 @@ use crate::spec::{*, to_crel::*};
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum OutputMode {
-  Daikon,
   Icra,
   Seahorn,
   SvComp,
 }
 
 pub struct Options {
-  pub assert_name: Option<String>,
-  pub assume_name: Option<String>,
+  pub assert_name: String,
+  pub assume_name: String,
   pub nondet_name: String,
 }
 
@@ -55,11 +54,6 @@ impl OutputMode {
 
   fn top(&self, filename: &Option<String>) -> String {
     match self {
-      OutputMode::Daikon => {
-        [
-          "#include <stdlib.h>",
-        ].join("\n")
-      }
       OutputMode::Icra => {
         "#include \"assert.h\"".to_string()
       }
@@ -94,13 +88,6 @@ impl OutputMode {
 
   pub fn options(&self) -> Options {
     match self {
-      OutputMode::Daikon => {
-        Options {
-          assert_name: "__VERIFIER_assert".to_string(),
-          assume_name: "__VERIFIER_assume".to_string(),
-          nondet_name: "nondet".to_string(),
-        }
-      },
       OutputMode::Icra => {
         Options {
           assert_name: "__VERIFIER_assert".to_string(),

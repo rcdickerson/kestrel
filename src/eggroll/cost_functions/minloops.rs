@@ -6,7 +6,6 @@ use std::cmp::Ordering;
 pub struct LoopCost {
   num_loops: usize,
   ast_size: usize,
-  const_int: Option<usize>,
 }
 
 impl LoopCost {
@@ -14,7 +13,6 @@ impl LoopCost {
     LoopCost {
       num_loops: self.num_loops + other.num_loops,
       ast_size: self.ast_size + other.ast_size,
-      const_int: None,
     }
   }
 }
@@ -37,26 +35,24 @@ impl CostFunction<Eggroll> for MinLoops {
         C: FnMut(Id) -> Self::Cost
     {
       let num_loops = match enode {
-        Eggroll::While(_) => 1,
+        Eggroll::While(children) => {
+          1 + costs(children[1]).num_loops
+        },
         Eggroll::WhileNoBody(_) => 1,
-        Eggroll::WhileLockstep(_) => 1,
-        Eggroll::WhileScheduled(children) => std::cmp::max(
-            costs(children[0]).const_int.unwrap(),
-            costs(children[1]).const_int.unwrap()),
-        _ => 0,
+        Eggroll::WhileLockstep(children) => {
+          1 + costs(children[4]).num_loops
+        },
+        Eggroll::WhileScheduled(children) => {
+          1 + costs(children[4]).num_loops + costs(children[5]).num_loops
+        },
+        _ => {
+          enode.fold(0, |sum, id| sum + costs(id).num_loops)
+        },
       };
       let ast_size = match enode {
         Eggroll::Rel(children) if children.iter().min() == children.iter().max() => 0,
-        _ => 1,
+        _ => enode.fold(1, |sum, id| sum + costs(id).ast_size),
       };
-      match enode {
-        Eggroll::Num(i) => {
-          LoopCost{num_loops, ast_size, const_int: Some(*i)}
-        },
-        _ => {
-          let init_cost = LoopCost{num_loops, ast_size, const_int: None};
-          enode.fold(init_cost, |sum, id| sum.plus(costs(id)))
-        },
-      }
+      LoopCost{num_loops, ast_size}
     }
 }

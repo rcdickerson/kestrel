@@ -7,6 +7,7 @@ use kestrel::output_mode::*;
 use kestrel::spec::parser::parse_spec;
 use kestrel::unaligned::*;
 use egg::*;
+use std::collections::HashSet;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
@@ -120,7 +121,8 @@ fn main() {
   }
 
   if args.space_size {
-    println!("Alignment space size: {}", space_size(&runner.egraph, runner.roots[0]))
+    let seen = &mut HashSet::new();
+    println!("Alignment space size: {}", space_size(&runner.egraph, runner.roots[0], seen));
   }
 
   let aligned_eggroll = match args.extractor {
@@ -147,7 +149,6 @@ fn main() {
       let decls = unaligned_crel.global_decls_and_params();
       let trace_states = rand_states_satisfying(
         num_trace_states, &spec.pre, Some(&decls), generator, 1000);
-
       let annealer = Annealer::new(&runner.egraph);
       annealer.find_best(args.sa_max_iterations, runner.roots[0], |expr| {
         sa_score(&trace_states, trace_fuel, expr)
@@ -197,16 +198,39 @@ fn main() {
   });
 }
 
-fn space_size(egraph: &EGraph<kestrel::eggroll::ast::Eggroll, ()>, class: Id) -> usize {
+enum SpaceSize {
+  Finite(usize),
+  Infinite,
+}
+impl std::fmt::Display for SpaceSize {
+  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    match self {
+      SpaceSize::Finite(size) => write!(f, "{}", size),
+      SpaceSize::Infinite => write!(f, "Infinite"),
+    }
+  }
+}
+
+fn space_size(egraph: &EGraph<kestrel::eggroll::ast::Eggroll, ()>,
+              class: Id,
+              seen: &mut HashSet<Id>) -> SpaceSize {
+  if seen.contains(&class) {
+    return SpaceSize::Infinite
+  }
+  seen.insert(class);
   let mut total = 0;
   for node in egraph[class.clone()].clone().nodes {
     let mut node_total = 1;
     for child in node.children() {
-      node_total *= space_size(egraph, *child);
+      match space_size(egraph, *child, seen) {
+        SpaceSize::Infinite => { return SpaceSize::Infinite },
+        SpaceSize::Finite(child_size) => node_total *= child_size,
+      }
     }
     total += node_total;
   }
-  total
+  seen.remove(&class);
+  SpaceSize::Finite(total)
 }
 
 fn svcomp_yaml(filename: &String) -> String {

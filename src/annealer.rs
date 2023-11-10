@@ -115,7 +115,7 @@ impl<'a, L: Language, N: Analysis<L>> Selection<'a, L, N> {
     let mut rng = rand::thread_rng();
     let mut options = HashMap::new();
     let mut selections = HashMap::new();
-    let expr_nodes = Selection::expr_to_eclasses(egraph, expr);
+    let expr_nodes = Selection::expr_to_eclassed_nodes(egraph, expr);
     for eclass in egraph.classes() {
       let num_choices = eclass.nodes.len();
       if num_choices > 1 {
@@ -138,7 +138,7 @@ impl<'a, L: Language, N: Analysis<L>> Selection<'a, L, N> {
     Selection { egraph, options, selections }
   }
 
-  fn expr_to_eclasses(egraph: &'a EGraph<L, N>, expr: &RecExpr<L>) -> HashSet<L> {
+  fn expr_to_eclassed_nodes(egraph: &'a EGraph<L, N>, expr: &RecExpr<L>) -> HashSet<L> {
     let nodes = expr.as_ref();
     let mut ids = Vec::with_capacity(nodes.len());
     let mut eclass_nodes = HashSet::with_capacity(nodes.len());

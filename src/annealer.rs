@@ -138,15 +138,15 @@ impl<'a, L: Language, N: Analysis<L>> Selection<'a, L, N> {
     Selection { egraph, options, selections }
   }
 
-  fn expr_to_eclasses(egraph: &'a EGraph<L, N>, expr: &RecExpr<L>) -> Vec<L> {
+  fn expr_to_eclasses(egraph: &'a EGraph<L, N>, expr: &RecExpr<L>) -> HashSet<L> {
     let nodes = expr.as_ref();
     let mut ids = Vec::with_capacity(nodes.len());
-    let mut eclass_nodes = Vec::with_capacity(nodes.len());
+    let mut eclass_nodes = HashSet::with_capacity(nodes.len());
     for node in nodes {
       let node = node.clone().map_children(|i| ids[usize::from(i)]);
       let id = egraph.lookup(node.clone());
       ids.push(id.unwrap());
-      eclass_nodes.push(node);
+      eclass_nodes.insert(node);
     }
     eclass_nodes
   }

@@ -40,6 +40,11 @@ struct Args {
   #[arg(long, default_value_t=3000)]
   sa_max_iterations: usize,
 
+  /// Start simulated annealing from a random element instead of
+  /// count loops alignment.
+  #[arg(long)]
+  sa_start_random: bool,
+
   /// Count and print the size of the alignment state space.
   #[arg(short, long)]
   space_size: bool,
@@ -144,15 +149,20 @@ fn main() {
       let num_trace_states = 10;
       let trace_fuel = 10000;
 
+      let init = if args.sa_start_random { None } else {
+        let extractor = Extractor::new(&runner.egraph, MinLoops);
+        let (_, initial) = extractor.find_best(runner.roots[0]);
+        Some(initial)
+      };
+
       let (_, fundefs) = kestrel::crel::fundef::extract_fundefs(&crel);
       let generator = fundefs.get(&"_generator".to_string());
       let decls = unaligned_crel.global_decls_and_params();
       let trace_states = rand_states_satisfying(
         num_trace_states, &spec.pre, Some(&decls), generator, 1000);
       let annealer = Annealer::new(&runner.egraph);
-      annealer.find_best(args.sa_max_iterations, runner.roots[0], |expr| {
-        sa_score(&trace_states, trace_fuel, expr)
-      })
+      annealer.find_best(args.sa_max_iterations, runner.roots[0], init,
+                         |expr| { sa_score(&trace_states, trace_fuel, expr) })
     },
   };
 
@@ -223,7 +233,7 @@ fn space_size(egraph: &EGraph<kestrel::eggroll::ast::Eggroll, ()>,
     let mut node_total = 1;
     for child in node.children() {
       match space_size(egraph, *child, seen) {
-        SpaceSize::Infinite => { return SpaceSize::Infinite },
+        SpaceSize::Infinite => return SpaceSize::Infinite,
         SpaceSize::Finite(child_size) => node_total *= child_size,
       }
     }

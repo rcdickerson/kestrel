@@ -12,7 +12,12 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
     Annealer{egraph}
   }
 
-  pub fn find_best<F>(&self, max_iterations: usize, root: egg::Id, fitness: F) -> RecExpr<L>
+  pub fn find_best<F>(&self,
+                      max_iterations: usize,
+                      root: egg::Id,
+                      init: Option<RecExpr<L>>,
+                      fitness: F)
+                      -> RecExpr<L>
     where F: Fn(RecExpr<L>) -> f32
   {
     println!("Starting simulated annealing...");
@@ -20,7 +25,10 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
     let mut seen_selections = HashSet::new();
 
     let mut rng = rand::thread_rng();
-    let mut selection = Selection::random(self.egraph);
+    let mut selection = match init {
+      None => Selection::random(self.egraph),
+      Some(init) => Selection::from_expr(self.egraph, &init),
+    };
     let mut score = fitness(selection.program(root));
 
     let mut best = selection.program(root);
@@ -101,6 +109,46 @@ impl<'a, L: Language, N: Analysis<L>> Selection<'a, L, N> {
     }
 
     Selection { egraph, options, selections }
+  }
+
+  fn from_expr(egraph: &'a EGraph<L, N>, expr: &RecExpr<L>) -> Self {
+    let mut rng = rand::thread_rng();
+    let mut options = HashMap::new();
+    let mut selections = HashMap::new();
+    let expr_nodes = Selection::expr_to_eclasses(egraph, expr);
+    for eclass in egraph.classes() {
+      let num_choices = eclass.nodes.len();
+      if num_choices > 1 {
+        options.insert(eclass.id, num_choices);
+      }
+      let mut found = false;
+      for (i, node) in eclass.nodes.clone().into_iter().enumerate() {
+        if expr_nodes.contains(&node) {
+          selections.insert(eclass.id, i);
+          found = true;
+          break;
+        }
+      }
+      if !found {
+        let selection: usize = rng.gen_range(0..num_choices);
+        selections.insert(eclass.id, selection);
+      }
+    }
+
+    Selection { egraph, options, selections }
+  }
+
+  fn expr_to_eclasses(egraph: &'a EGraph<L, N>, expr: &RecExpr<L>) -> Vec<L> {
+    let nodes = expr.as_ref();
+    let mut ids = Vec::with_capacity(nodes.len());
+    let mut eclass_nodes = Vec::with_capacity(nodes.len());
+    for node in nodes {
+      let node = node.clone().map_children(|i| ids[usize::from(i)]);
+      let id = egraph.lookup(node.clone());
+      ids.push(id.unwrap());
+      eclass_nodes.push(node);
+    }
+    eclass_nodes
   }
 
   fn program(&self, root: egg::Id) -> RecExpr<L> {

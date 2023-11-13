@@ -116,16 +116,18 @@ fn main() {
   println!("{}", ue_expr.pretty(80));
   println!("--------------------------");
 
-  let runner = Runner::default()
-    .with_expr(&unaligned_eggroll.parse().unwrap())
-    .run(&kestrel::eggroll::rewrite::make_rules());
-
   if args.dot {
     println!("Writing egraph structure to egraph.dot");
+      let runner = Runner::default()
+        .with_expr(&unaligned_eggroll.parse().unwrap())
+        .run(&kestrel::eggroll::rewrite::eggroll_rules_with_unroll());
     write_file(&runner.egraph.dot().to_string(), "egraph.dot");
   }
 
   if args.space_size {
+    let runner = Runner::default()
+      .with_expr(&unaligned_eggroll.parse().unwrap())
+      .run(&kestrel::eggroll::rewrite::eggroll_rules_with_unroll());
     let seen = &mut HashSet::new();
     println!("Alignment space size: {}", space_size(&runner.egraph, runner.roots[0], seen));
   }
@@ -136,12 +138,18 @@ fn main() {
       unaligned_eggroll.parse().unwrap()
     },
     ExtractorArg::CountLoops => {
+      let runner = Runner::default()
+        .with_expr(&unaligned_eggroll.parse().unwrap())
+        .run(&kestrel::eggroll::rewrite::eggroll_rules());
       let extractor = Extractor::new(&runner.egraph, MinLoops);
       let (_, best) = extractor.find_best(runner.roots[0]);
       println!("Computed alignment by local loop counting.");
       best
     },
     ExtractorArg::MILP => {
+      let runner = Runner::default()
+        .with_expr(&unaligned_eggroll.parse().unwrap())
+        .run(&kestrel::eggroll::rewrite::eggroll_rules_with_unroll());
       let mut extractor = MilpExtractor::new(&runner.egraph);
       extractor.solve(runner.roots[0])
     },
@@ -149,12 +157,22 @@ fn main() {
       let num_trace_states = 10;
       let trace_fuel = 10000;
 
+      let init_runner = Runner::default()
+        .with_expr(&unaligned_eggroll.parse().unwrap())
+        .run(&kestrel::eggroll::rewrite::eggroll_rules());
       let init = if args.sa_start_random { None } else {
-        let extractor = Extractor::new(&runner.egraph, MinLoops);
-        let (_, initial) = extractor.find_best(runner.roots[0]);
+        let extractor = Extractor::new(&init_runner.egraph, MinLoops);
+        let (_, initial) = extractor.find_best(init_runner.roots[0]);
+        println!("\nPre-SA Initial Alignment");
+        println!("--------------------------");
+        println!("{}", initial.pretty(80));
+        println!("--------------------------");
         Some(initial)
       };
 
+      let runner = Runner::default()
+        .with_expr(&init.clone().unwrap_or(unaligned_eggroll.parse().unwrap()))
+        .run(&kestrel::eggroll::rewrite::eggroll_rules_with_unroll());
       let (_, fundefs) = kestrel::crel::fundef::extract_fundefs(&crel);
       let generator = fundefs.get(&"_generator".to_string());
       let decls = unaligned_crel.global_decls_and_params();

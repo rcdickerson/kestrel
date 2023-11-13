@@ -237,15 +237,17 @@ fn expect_statement(sexp: &Sexp, options: &output_mode::Options) -> Statement {
         }
       },
       Sexp::Atom(Atom::S(s)) if s == "while-lockstep" => {
-        let cond1 = expect_expression(&sexps[1], options);
-        let cond2 = expect_expression(&sexps[2], options);
+        let left_unrolls = expect_i64(&sexps[1]);
+        let right_unrolls = expect_i64(&sexps[2]);
+        let cond1 = expect_expression(&sexps[3], options);
+        let cond2 = expect_expression(&sexps[4], options);
         let conj = Expression::Binop {
           lhs: Box::new(cond1.clone()),
           rhs: Box::new(cond2.clone()),
           op: BinaryOp::And,
         };
 
-        let body1 = expect_statement(&sexps[3], options);
+        let body1 = expect_statement(&sexps[5], options);
         let runoff_body_1 = Statement::Compound(vec!(
           BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
             callee: Box::new(Expression::Identifier{name: options.assume_name.clone()}),
@@ -256,7 +258,7 @@ fn expect_statement(sexp: &Sexp, options: &output_mode::Options) -> Statement {
           BlockItem::Statement(body1.clone()),
         ));
 
-        let body2 = expect_statement(&sexps[4], options);
+        let body2 = expect_statement(&sexps[6], options);
         let runoff_body_2 = Statement::Compound(vec!(
           BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
             callee: Box::new(Expression::Identifier{name: options.assume_name.clone()}),
@@ -266,9 +268,30 @@ fn expect_statement(sexp: &Sexp, options: &output_mode::Options) -> Statement {
           }))),
           BlockItem::Statement(body2.clone()),
         ));
-        let body = expect_statement(&sexps[5], options);
+        let body = expect_statement(&sexps[7], options);
+
+        let mut unrolls1 = Vec::new();
+        while (unrolls1.len() as i64) < left_unrolls {
+          let next_iter = BlockItem::Statement(Statement::If {
+            condition: Box::new(cond1.clone()),
+            then: Box::new(body1.clone()),
+            els: None,
+          });
+          unrolls1.push(next_iter);
+        }
+        let mut unrolls2 = Vec::new();
+        while (unrolls2.len() as i64) < right_unrolls {
+          let next_iter = BlockItem::Statement(Statement::If {
+            condition: Box::new(cond2.clone()),
+            then: Box::new(body2.clone()),
+            els: None,
+          });
+          unrolls2.push(next_iter);
+        }
 
         let stmts = vec! [
+          BlockItem::Statement(Statement::Compound(unrolls1)),
+          BlockItem::Statement(Statement::Compound(unrolls2)),
           BlockItem::Statement(Statement::While {
             condition: Box::new(conj),
             body: Some(Box::new(body))}),
@@ -291,17 +314,19 @@ fn expect_statement(sexp: &Sexp, options: &output_mode::Options) -> Statement {
 }
 
 fn expect_while_scheduled(sexps: &[Sexp], options: &output_mode::Options) -> Statement {
-  let left_iters = expect_i64(&sexps[1]);
-  let right_iters = expect_i64(&sexps[2]);
-  let cond1 = expect_expression(&sexps[3], options);
-  let cond2 = expect_expression(&sexps[4], options);
+  let left_unrolls = expect_i64(&sexps[1]);
+  let right_unrolls = expect_i64(&sexps[2]);
+  let left_iters = expect_i64(&sexps[3]);
+  let right_iters = expect_i64(&sexps[4]);
+  let cond1 = expect_expression(&sexps[5], options);
+  let cond2 = expect_expression(&sexps[6], options);
   let conj = Expression::Binop {
     lhs: Box::new(cond1.clone()),
     rhs: Box::new(cond2.clone()),
     op: BinaryOp::And,
   };
 
-Expression::Binop {
+  Expression::Binop {
     lhs: Box::new(cond1.clone()),
     rhs: Box::new(Expression::Unop{
       expr: Box::new(cond2.clone()),
@@ -309,8 +334,17 @@ Expression::Binop {
     op: BinaryOp::And,
   };
 
-  let body1 = expect_statement(&sexps[5], options);
+  let body1 = expect_statement(&sexps[7], options);
   let mut body1_rel = body1.clone();
+  let mut unrolls1 = Vec::new();
+  while (unrolls1.len() as i64) < left_unrolls {
+    let next_iter = BlockItem::Statement(Statement::If {
+      condition: Box::new(cond1.clone()),
+      then: Box::new(body1.clone()),
+      els: None,
+    });
+    unrolls1.push(next_iter);
+  }
   let mut repeats1 = vec!(body1.clone());
   while (repeats1.len() as i64) < left_iters {
     let next_iter = Statement::If {
@@ -336,8 +370,17 @@ Expression::Binop {
     BlockItem::Statement(body1.clone()),
   ));
 
-  let body2 = expect_statement(&sexps[6], options);
+  let body2 = expect_statement(&sexps[8], options);
   let mut body2_rel = body2.clone();
+  let mut unrolls2 = Vec::new();
+  while (unrolls2.len() as i64) < right_unrolls {
+    let next_iter = BlockItem::Statement(Statement::If {
+      condition: Box::new(cond2.clone()),
+      then: Box::new(body2.clone()),
+      els: None,
+    });
+    unrolls2.push(next_iter);
+  }
   let mut repeats2 = vec!(body2.clone());
   while (repeats2.len() as i64) < right_iters {
     let next_iter = Statement::If {
@@ -369,6 +412,8 @@ Expression::Binop {
   };
 
   let stmts = vec! [
+    BlockItem::Statement(Statement::Compound(unrolls1)),
+    BlockItem::Statement(Statement::Compound(unrolls2)),
     BlockItem::Statement(Statement::While {
       condition: Box::new(conj),
       body: Some(Box::new(bodies))}),

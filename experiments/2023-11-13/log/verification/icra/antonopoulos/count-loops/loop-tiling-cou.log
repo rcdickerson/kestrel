@@ -1,0 +1,40 @@
+Passing command-line option -cra-forward-inv to duet.
+Passing command-line option -cra-split-loops to duet.
+Passing command-line option -use-ocrs to duet.
+Passing command-line option -cra-matrix to duet.
+./results/alignments/icra/antonopoulos/count-loops/loop-tiling-cou.c:7: Warning: Variable-sized local variable l_a
+./results/alignments/icra/antonopoulos/count-loops/loop-tiling-cou.c:8: Error: Length of array is not a constant: M
+Error in doStatement (Errormsg.Error)
+./results/alignments/icra/antonopoulos/count-loops/loop-tiling-cou.c:17: Error: Cannot resolve variable r_a.
+./results/alignments/icra/antonopoulos/count-loops/loop-tiling-cou.c:17: Error: Expecting a pointer type in index:
+ t1=TInt(int, )
+t2=TInt(int, )
+
+./results/alignments/icra/antonopoulos/count-loops/loop-tiling-cou.c:17: Error: Expecting a pointer type in index:
+ t1=TInt(int, )
+t2=TInt(int, )
+
+./results/alignments/icra/antonopoulos/count-loops/loop-tiling-cou.c:17: Error: Expected lval for assignment. Got Const(Int64(0,int,None))
+./results/alignments/icra/antonopoulos/count-loops/loop-tiling-cou.c:31: Error: Cannot resolve variable r_a.
+./results/alignments/icra/antonopoulos/count-loops/loop-tiling-cou.c:31: Error: Expecting a pointer type in index:
+ t1=TInt(int, )
+t2=TInt(int, )
+
+./results/alignments/icra/antonopoulos/count-loops/loop-tiling-cou.c:31: Error: Expecting a pointer type in index:
+ t1=TInt(int, )
+t2=TInt(int, )
+
+./results/alignments/icra/antonopoulos/count-loops/loop-tiling-cou.c:31: Error: Expected lval for assignment. Got Const(Int64(0,int,None))
+./results/alignments/icra/antonopoulos/count-loops/loop-tiling-cou.c:40: Error: Cannot resolve variable r_a.
+./results/alignments/icra/antonopoulos/count-loops/loop-tiling-cou.c:40: Error: Expecting a pointer type in index:
+ t1=TInt(int, )
+t2=TInt(int, )
+
+./results/alignments/icra/antonopoulos/count-loops/loop-tiling-cou.c:40: Error: Expecting a pointer type in index:
+ t1=TInt(int, )
+t2=TInt(int, )
+
+Could not parse input file
+real	0m0.033s
+user	0m0.016s
+sys	0m0.004s

@@ -1,0 +1,100 @@
+                                                                  /\ 
+                                                                  havoc:106 = phi_tmp___10:108
+                                                                  /\ 
+                                                                  1 = phi_tmp___11:107))
+                                                           /\ phi_r_o2_seq2start:109 = phi_r_o2_seq2start:112
+                                                           /\ phi_tmp___10:108 = phi_tmp___10:111
+                                                           /\ phi_tmp___11:107 = phi_tmp___11:110))
+                                                    /\ phi_r_o2_seq2start:112 = phi_r_o2_seq2start:115
+                                                    /\ phi_tmp___10:111 = phi_tmp___10:114
+                                                    /\ phi_tmp___11:110 = phi_tmp___11:113))
+                                             /\ phi_r_o2_seq2start:115 = phi_r_o2_seq2start:118
+                                             /\ phi_tmp___10:114 = phi_tmp___10:117
+                                             /\ phi_tmp___11:113 = phi_tmp___11:116))
+                                      /\ phi_r_o2_seq2start:118 = phi_r_o2_seq2start:121
+                                      /\ phi_tmp___10:117 = phi_tmp___10:120
+                                      /\ phi_tmp___11:116 = phi_tmp___11:119))
+                               /\ phi_r_o2_seq2start:121 = phi_r_o2_seq2start:124
+                               /\ phi_tmp___10:120 = phi_tmp___10:123
+                               /\ phi_tmp___11:119 = phi_tmp___11:122))
+                        /\ !(phi_tmp___11:122 = 0) /\ havoc:40 <= havoc:92
+                        /\ havoc:40 < havoc:92 /\ 1 = phi_l_ret:127))
+                 /\ phi_l_ret:127 = phi_l_ret:128)
+                \/ (((!(havoc:40 = havoc:98)
+                        /\ havoc:100 = phi_r_o2_seq2start:124
+                        /\ havoc:100 = phi_tmp___10:123
+                        /\ 0 = phi_tmp___11:122)
+                       \/ (((havoc:40 = havoc:98 /\ !(havoc:90 = havoc:99)
+                               /\ havoc:101 = phi_r_o2_seq2start:121
+                               /\ havoc:101 = phi_tmp___10:120
+                               /\ 0 = phi_tmp___11:119)
+                              \/ (((havoc:40 = havoc:98
+                                      /\ havoc:90 = havoc:99
+                                      /\ !(havoc:91 = havoc:102)
+                                      /\ havoc:102 = phi_r_o2_seq2start:118
+                                      /\ havoc:102 = phi_tmp___10:117
+                                      /\ 0 = phi_tmp___11:116)
+                                     \/ (((havoc:40 = havoc:98
+                                             /\ havoc:90 = havoc:99
+                                             /\ havoc:91 = havoc:103
+                                             /\ !(havoc:92 = havoc:95)
+                                             /\ havoc:103 = phi_r_o2_seq2start:115
+                                             /\ havoc:103 = phi_tmp___10:114
+                                             /\ 0 = phi_tmp___11:113)
+                                            \/ (((havoc:40 = havoc:98
+                                                    /\ havoc:90 = havoc:99
+                                                    /\ havoc:91 = havoc:104
+                                                    /\ havoc:92 = havoc:95
+                                                    /\ !(havoc:93 = havoc:96)
+                                                    /\ havoc:104 = phi_r_o2_seq2start:112
+                                                    /\ havoc:104 = phi_tmp___10:111
+                                                    /\ 0 = phi_tmp___11:110)
+                                                   \/ (((havoc:40 = havoc:98
+                                                           /\ havoc:90 = havoc:99
+                                                           /\ havoc:91 = havoc:105
+                                                           /\ havoc:92 = havoc:95
+                                                           /\ havoc:93 = havoc:96
+                                                           /\ !(havoc:94 = havoc:97)
+                                                           /\ havoc:105 = phi_r_o2_seq2start:109
+                                                           /\ havoc:105 = phi_tmp___10:108
+                                                           /\ 0 = phi_tmp___11:107)
+                                                          \/ (havoc:40 = havoc:98
+                                                                /\ havoc:90 = havoc:99
+                                                                /\ havoc:91 = havoc:106
+                                                                /\ havoc:92 = havoc:95
+                                                                /\ havoc:93 = havoc:96
+                                                                /\ havoc:94 = havoc:97
+                                                                /\ havoc:106 = phi_r_o2_seq2start:109
+                                                                /\ havoc:106 = phi_tmp___10:108
+                                                                /\ 1 = phi_tmp___11:107))
+                                                         /\ phi_r_o2_seq2start:109 = phi_r_o2_seq2start:112
+                                                         /\ phi_tmp___10:108 = phi_tmp___10:111
+                                                         /\ phi_tmp___11:107 = phi_tmp___11:110))
+                                                  /\ phi_r_o2_seq2start:112 = phi_r_o2_seq2start:115
+                                                  /\ phi_tmp___10:111 = phi_tmp___10:114
+                                                  /\ phi_tmp___11:110 = phi_tmp___11:113))
+                                           /\ phi_r_o2_seq2start:115 = phi_r_o2_seq2start:118
+                                           /\ phi_tmp___10:114 = phi_tmp___10:117
+                                           /\ phi_tmp___11:113 = phi_tmp___11:116))
+                                    /\ phi_r_o2_seq2start:118 = phi_r_o2_seq2start:121
+                                    /\ phi_tmp___10:117 = phi_tmp___10:120
+                                    /\ phi_tmp___11:116 = phi_tmp___11:119))
+                             /\ phi_r_o2_seq2start:121 = phi_r_o2_seq2start:124
+                             /\ phi_tmp___10:120 = phi_tmp___10:123
+                             /\ phi_tmp___11:119 = phi_tmp___11:122))
+                      /\ !(phi_tmp___11:122 = 0) /\ havoc:92 < havoc:40
+                      /\ -1 = phi_l_ret:128)) /\ havoc:98 < havoc:95
+               /\ -1 = phi_r_ret:132))}
+
+Is not SAT! (Assertion on line 45 PASSED)
+---------------------------------------------
+
+================================================
+Bounds on Variables
+
+================================================
+Finished!
+
+real	0m1.326s
+user	0m1.252s
+sys	0m0.044s

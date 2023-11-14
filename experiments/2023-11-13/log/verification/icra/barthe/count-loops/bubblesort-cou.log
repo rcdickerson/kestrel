@@ -1,0 +1,100 @@
+         /\ mid_mem_68@pos:2909 = mem_68@pos':2936
+         /\ mid_mem_67@pos:2910 = mem_67@pos':2937
+         /\ mid_mem_66@pos:2911 = mem_66@pos':2938
+         /\ mid_mem_65@pos:2912 = mem_65@pos':2939
+         /\ mid_mem_64@pos:2913 = mem_64@pos':2940
+         /\ mid_mem_63@pos:2914 = mem_63@pos':2941
+         /\ mid_mem_70:2915 = mem_70':2942 /\ mid_mem_69:2916 = mem_69':2943
+         /\ mid_mem_68:2917 = mem_68':2944 /\ mid_mem_67:2918 = mem_67':2945
+         /\ mid_mem_66:2919 = mem_66':2946 /\ mid_mem_65:2920 = mem_65':2947
+         /\ mid_mem_64:2921 = mem_64':2948 /\ mid_mem_63:2922 = mem_63':2949
+         /\ mid_tmp___0:2923 = tmp___0':2950 /\ mid__j:2924 = _j':2951
+         /\ 0 <= (-10 + (_i':2536)) /\ 0 <= (-10 + (l_i':2846))
+         /\ 0 <= (-10 + (r_i':2896)) /\ 0 <= (-1 + (_j':2951))
+         /\ 0 <= (10 + (-1 * _j':2951)) /\ _j':2951 < 10
+         /\ ((tr:3012 < tr:3013
+                /\ 5764607523034235/576460752303423488 <= (tr:3014 + -tr:3015)
+                /\ 0 = phi_tmp___0:3016
+                /\ (tr:3017 + (4 * _j':2951)) = phi_mem_65:3018
+                /\ (tr:3019 + (4 * _j':2951)) = phi_mem_66:3020
+                /\ mem_67':2945 = phi_mem_67:3021
+                /\ mem_68':2944 = phi_mem_68:3022
+                /\ mem_69':2943 = phi_mem_69:3023
+                /\ mem_70':2942 = phi_mem_70:3024
+                /\ (4 * _j':2951) = phi_mem_65@pos:3025
+                /\ (4 * _j':2951) = phi_mem_66@pos:3026
+                /\ mem_67@pos':2937 = phi_mem_67@pos:3027
+                /\ mem_68@pos':2936 = phi_mem_68@pos:3028
+                /\ mem_69@pos':2935 = phi_mem_69@pos:3029
+                /\ mem_70@pos':2934 = phi_mem_70@pos:3030
+                /\ 1 = phi_mem_65@width:3031 /\ 1 = phi_mem_66@width:3032
+                /\ mem_67@width':2929 = phi_mem_67@width:3033
+                /\ mem_68@width':2928 = phi_mem_68@width:3034
+                /\ mem_69@width':2927 = phi_mem_69@width:3035
+                /\ mem_70@width':2926 = phi_mem_70@width:3036)
+               \/ (((tr:3037 <= tr:3038 /\ mem_65':2947 = phi_mem_65:3039
+                       /\ mem_66':2946 = phi_mem_66:3040
+                       /\ mem_65@pos':2939 = phi_mem_65@pos:3041
+                       /\ mem_66@pos':2938 = phi_mem_66@pos:3042
+                       /\ mem_65@width':2931 = phi_mem_65@width:3043
+                       /\ mem_66@width':2930 = phi_mem_66@width:3044)
+                      \/ (tr:3012 < tr:3013
+                            /\ (tr:3045 + -tr:3046) < 5764607523034235/576460752303423488
+                            /\ (tr:3017 + (4 * _j':2951)) = phi_mem_65:3039
+                            /\ (tr:3019 + (4 * _j':2951)) = phi_mem_66:3040
+                            /\ (4 * _j':2951) = phi_mem_65@pos:3041
+                            /\ (4 * _j':2951) = phi_mem_66@pos:3042
+                            /\ 1 = phi_mem_65@width:3043
+                            /\ 1 = phi_mem_66@width:3044))
+                     /\ ((tr:3047 < tr:3048 /\ 1 = phi_tmp___0:3049
+                            /\ mem_69':2943 = phi_mem_69:3050
+                            /\ mem_70':2942 = phi_mem_70:3051
+                            /\ mem_69@pos':2935 = phi_mem_69@pos:3052
+                            /\ mem_70@pos':2934 = phi_mem_70@pos:3053
+                            /\ mem_69@width':2927 = phi_mem_69@width:3054
+                            /\ mem_70@width':2926 = phi_mem_70@width:3055)
+                           \/ (tr:3056 <= tr:3057
+                                 /\ (((tr:3058 + -tr:3059) < 5764607523034235/576460752303423488
+                                        /\ 1 = phi_tmp___0:3060)
+                                       \/ (5764607523034235/576460752303423488 <= (
+                                           tr:3061 + -tr:3062)
+                                             /\ 0 = phi_tmp___0:3060))
+                                 /\ phi_tmp___0:3060 = phi_tmp___0:3049
+                                 /\ (tr:3063 + (4 * _j':2951)) = phi_mem_69:3050
+                                 /\ (tr:3064 + (4 * _j':2951)) = phi_mem_70:3051
+                                 /\ (4 * _j':2951) = phi_mem_69@pos:3052
+                                 /\ (4 * _j':2951) = phi_mem_70@pos:3053
+                                 /\ 1 = phi_mem_69@width:3054
+                                 /\ 1 = phi_mem_70@width:3055))
+                     /\ phi_tmp___0:3049 = phi_tmp___0:3016
+                     /\ phi_mem_65:3039 = phi_mem_65:3018
+                     /\ phi_mem_66:3040 = phi_mem_66:3020
+                     /\ (tr:3065 + (4 * _j':2951)) = phi_mem_67:3021
+                     /\ (tr:3066 + (4 * _j':2951)) = phi_mem_68:3022
+                     /\ phi_mem_69:3050 = phi_mem_69:3023
+                     /\ phi_mem_70:3051 = phi_mem_70:3024
+                     /\ phi_mem_65@pos:3041 = phi_mem_65@pos:3025
+                     /\ phi_mem_66@pos:3042 = phi_mem_66@pos:3026
+                     /\ (4 * _j':2951) = phi_mem_67@pos:3027
+                     /\ (4 * _j':2951) = phi_mem_68@pos:3028
+                     /\ phi_mem_69@pos:3052 = phi_mem_69@pos:3029
+                     /\ phi_mem_70@pos:3053 = phi_mem_70@pos:3030
+                     /\ phi_mem_65@width:3043 = phi_mem_65@width:3031
+                     /\ phi_mem_66@width:3044 = phi_mem_66@width:3032
+                     /\ 1 = phi_mem_67@width:3033
+                     /\ 1 = phi_mem_68@width:3034
+                     /\ phi_mem_69@width:3054 = phi_mem_69@width:3035
+                     /\ phi_mem_70@width:3055 = phi_mem_70@width:3036)))}
+
+Is SAT! (Assertion on line 80 FAILED)
+---------------------------------------------
+
+================================================
+Bounds on Variables
+
+================================================
+Finished!
+
+real	1m10.965s
+user	1m10.660s
+sys	0m0.212s

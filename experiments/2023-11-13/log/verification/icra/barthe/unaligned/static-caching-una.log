@@ -1,0 +1,100 @@
+
+
+Eval: 55
+
+  The value on this round is: 
+
+Base relation: 
+{when false}
+
+
+NumRnds: 1
+
+Step 6: =========================================================
+##### Question automaton as FWPDS
+##### QUERY2
+WFA -
+  Initial State : __pstate
+  Q: {__pstate, __done}
+  F: {__done}
+    ( __pstate , accept , __done )	Base relation: 
+{}
+
+Weights on states: 
+__done 0x25b3bd0: 
+	Weight: Base relation: 
+{when false}
+	Accept: Base relation: 
+{}
+__pstate 0x25b3ac0: 
+	Weight: Base relation: 
+{when false}
+	Accept: Base relation: 
+{when false}
+##### ANS
+WFA -
+  Initial State : __pstate
+  Q: {__pstate, __done}
+  F: {__done}
+    ( __pstate , accept , __done )	Base relation: 
+{}
+
+Weights on states: 
+__done 0x25b3df0: 
+	Weight: Base relation: 
+{when false}
+	Accept: Base relation: 
+{}
+__pstate 0xc8c670: 
+	Weight: Base relation: 
+{when false}
+	Accept: Base relation: 
+{when false}
+
+[Newton] Time taken by: Newton: 
+0.998545
+
+================================================
+Procedure Summaries
+
+------------------------------------------------
+Procedure summary for main
+
+Base relation: 
+{when false}
+
+================================================
+Assertion Checking at Error Points
+
+Checking assertion at vertex 156, line 57
+
+Base relation: 
+{when !(tr:92 = tr:93)}
+
+
+contextWeight = 
+Base relation: 
+{}
+
+
+intraproceduralWeight = 
+Base relation: 
+{when false}
+
+
+contextWeight extend intraproceduralWeight = 
+Base relation: 
+{when false}
+
+Is not SAT! (Assertion on line 57 PASSED)
+---------------------------------------------
+
+================================================
+Bounds on Variables
+
+================================================
+Finished!
+
+real	0m1.788s
+user	0m1.720s
+sys	0m0.036s

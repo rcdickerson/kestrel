@@ -1,0 +1,100 @@
+                                                                  left_o1_cardType:10 = right_o2_cardType:11
+                                                                  /\ 
+                                                                  left_o2:8 = right_o1:9
+                                                                  /\ !(
+                                                                  left_o2_getCardSet:6 = right_o1_getCardSet:7)
+                                                                  /\ 
+                                                                  0 = phi_tmp:31)
+                                                                 \/ (
+                                                                 ((left_o1:18 = right_o2:19
+                                                                    /\ 
+                                                                    left_o1_getCardSet:16 = right_o2_getCardSet:17
+                                                                    /\ 
+                                                                    left_o1_getCardRarity:14 = right_o2_getCardRarity:15
+                                                                    /\ 
+                                                                    left_o1_getCardId:12 = right_o2_getCardId:13
+                                                                    /\ 
+                                                                    left_o1_cardType:10 = right_o2_cardType:11
+                                                                    /\ 
+                                                                    left_o2:8 = right_o1:9
+                                                                    /\ 
+                                                                    left_o2_getCardSet:6 = right_o1_getCardSet:7
+                                                                    /\ !(
+                                                                    left_o2_getCardRarity:4 = right_o1_getCardRarity:5)
+                                                                    /\ 
+                                                                    0 = phi_tmp:30)
+                                                                    \/ (
+                                                                    ((left_o1:18 = right_o2:19
+                                                                    /\ left_o1_getCardSet:16 = right_o2_getCardSet:17
+                                                                    /\ left_o1_getCardRarity:14 = right_o2_getCardRarity:15
+                                                                    /\ left_o1_getCardId:12 = right_o2_getCardId:13
+                                                                    /\ left_o1_cardType:10 = right_o2_cardType:11
+                                                                    /\ left_o2:8 = right_o1:9
+                                                                    /\ left_o2_getCardSet:6 = right_o1_getCardSet:7
+                                                                    /\ left_o2_getCardRarity:4 = right_o1_getCardRarity:5
+                                                                    /\ !(
+                                                                    left_o2_getCardId:2 = right_o1_getCardId:3)
+                                                                    /\ 0 = phi_tmp:29)
+                                                                    \/ (
+                                                                    ((left_o1:18 = right_o2:19
+                                                                    /\ left_o1_getCardSet:16 = right_o2_getCardSet:17
+                                                                    /\ left_o1_getCardRarity:14 = right_o2_getCardRarity:15
+                                                                    /\ left_o1_getCardId:12 = right_o2_getCardId:13
+                                                                    /\ left_o1_cardType:10 = right_o2_cardType:11
+                                                                    /\ left_o2:8 = right_o1:9
+                                                                    /\ left_o2_getCardSet:6 = right_o1_getCardSet:7
+                                                                    /\ left_o2_getCardRarity:4 = right_o1_getCardRarity:5
+                                                                    /\ left_o2_getCardId:2 = right_o1_getCardId:3
+                                                                    /\ !(
+                                                                    left_o2_cardType:0 = right_o1_cardType:1)
+                                                                    /\ 0 = phi_tmp:28)
+                                                                    \/ (
+                                                                    left_o1:18 = right_o2:19
+                                                                    /\ 
+                                                                    left_o1_getCardSet:16 = right_o2_getCardSet:17
+                                                                    /\ 
+                                                                    left_o1_getCardRarity:14 = right_o2_getCardRarity:15
+                                                                    /\ 
+                                                                    left_o1_getCardId:12 = right_o2_getCardId:13
+                                                                    /\ 
+                                                                    left_o1_cardType:10 = right_o2_cardType:11
+                                                                    /\ 
+                                                                    left_o2:8 = right_o1:9
+                                                                    /\ 
+                                                                    left_o2_getCardSet:6 = right_o1_getCardSet:7
+                                                                    /\ 
+                                                                    left_o2_getCardRarity:4 = right_o1_getCardRarity:5
+                                                                    /\ 
+                                                                    left_o2_getCardId:2 = right_o1_getCardId:3
+                                                                    /\ 
+                                                                    left_o2_cardType:0 = right_o1_cardType:1
+                                                                    /\ 
+                                                                    1 = phi_tmp:28))
+                                                                    /\ 
+                                                                    phi_tmp:28 = phi_tmp:29))
+                                                                    /\ 
+                                                                    phi_tmp:29 = phi_tmp:30))
+                                                                   /\ 
+                                                                   phi_tmp:30 = phi_tmp:31))
+                                                                /\ phi_tmp:31 = phi_tmp:32))
+                                                         /\ phi_tmp:32 = phi_tmp:33))
+                                                  /\ phi_tmp:33 = phi_tmp:34))
+                                           /\ phi_tmp:34 = phi_tmp:35))
+                                    /\ phi_tmp:35 = phi_tmp:36))
+                             /\ phi_tmp:36 = phi_tmp:37))
+                      /\ !(phi_tmp:37 = 0) /\ left_o1:18 = left_o2:8
+                      /\ 0 = phi_l_ret:44)) /\ right_o1:9 = right_o2:19
+               /\ 0 = phi_r_ret:51))}
+
+Is not SAT! (Assertion on line 71 PASSED)
+---------------------------------------------
+
+================================================
+Bounds on Variables
+
+================================================
+Finished!
+
+real	0m1.461s
+user	0m1.352s
+sys	0m0.080s

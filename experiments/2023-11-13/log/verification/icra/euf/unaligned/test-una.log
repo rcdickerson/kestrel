@@ -1,0 +1,100 @@
+                     /\ (!(0 <= K:250) \/ mid_r_x:249 = K:250)
+                     /\ (!(0 <= K:250) \/ (-1 * mid_r_x:249) <= (-1 * K:250))
+                     /\ (!(0 <= K:250) \/ mid_r_x:249 <= K:250)
+                     /\ (!((0 <= K:250 /\ K:250 <= 0)) \/ 0 <= K:250)
+                     /\ (!(1 <= K:250) \/ 0 <= (-1 + K:250))))
+         /\ mid_param0@width:244 = param0@width':251
+         /\ mid_param0@pos:245 = param0@pos':252
+         /\ mid_param0:246 = param0':253 /\ mid_tmp___5:247 = tmp___5':254
+         /\ mid_r_y:248 = r_y':255 /\ mid_r_x:249 = r_x':256
+         /\ 0 <= (l_x':230) /\ 0 <= (r_x':256)
+         /\ (-1 + (phi_tmp___3:202)) = 0 /\ phi_r_n:204 < r_x':256)}
+
+
+contextWeight extend intraproceduralWeight = 
+Base relation: 
+{l_x := l_x':230
+ tmp := havoc:31
+ l_n := havoc:194
+ tmp___0 := havoc:194
+ r_x := r_x':256
+ tmp___1 := havoc:195
+ r_n := phi_r_n:204
+ tmp___2 := phi_tmp___2:203
+ tmp___3 := phi_tmp___3:202
+ l_y := l_y':229
+ tmp___4 := tmp___4':228
+ r_y := r_y':255
+ tmp___5 := tmp___5':254
+ param0 := param0':253
+ param0@pos := param0@pos':252
+ param0@width := param0@width':251
+ when (((!(havoc:31 = havoc:195) /\ havoc:196 = phi_r_n:204
+           /\ havoc:196 = phi_tmp___2:203 /\ 0 = phi_tmp___3:202)
+          \/ (((havoc:31 = havoc:195 /\ !(havoc:194 = havoc:197)
+                  /\ havoc:197 = phi_r_n:201 /\ havoc:197 = phi_tmp___2:200
+                  /\ 0 = phi_tmp___3:199)
+                 \/ (havoc:31 = havoc:195 /\ havoc:194 = havoc:198
+                       /\ havoc:198 = phi_r_n:201
+                       /\ havoc:198 = phi_tmp___2:200 /\ 1 = phi_tmp___3:199))
+                /\ phi_r_n:201 = phi_r_n:204
+                /\ phi_tmp___2:200 = phi_tmp___2:203
+                /\ phi_tmp___3:199 = phi_tmp___3:202))
+         /\ !(phi_tmp___3:202 = 0)
+         /\ ((param0@width:76 = mid_param0@width:218
+                /\ param0@pos:74 = mid_param0@pos:219
+                /\ param0:72 = mid_param0:220 /\ tmp___4:9 = mid_tmp___4:221
+                /\ 0 = mid_l_y:222 /\ 0 = mid_l_x:223)
+               \/ ((-1 + phi_tmp___3:202) = 0 /\ 0 <= havoc:194 /\ 1 <= K:224
+                     /\ ((-1 * mid_l_y:222) + mid_tmp___4:221
+                           + mid_param0:220) = 0
+                     /\ (-1 + phi_tmp___3:202) = 0
+                     /\ 0 <= (1 + (-1 * mid_l_x:223) + havoc:194)
+                     /\ 0 <= (-1 + mid_l_x:223)
+                     /\ (!(0 <= K:224) \/ mid_l_x:223 = K:224)
+                     /\ (!(0 <= K:224) \/ (-1 * mid_l_x:223) <= (-1 * K:224))
+                     /\ (!(0 <= K:224) \/ mid_l_x:223 <= K:224)
+                     /\ (!((0 <= K:224 /\ K:224 <= 0)) \/ 0 <= K:224)
+                     /\ (!(1 <= K:224) \/ 0 <= (-1 + K:224))))
+         /\ mid_param0@width:218 = param0@width':225
+         /\ mid_param0@pos:219 = param0@pos':226
+         /\ mid_param0:220 = param0':227 /\ mid_tmp___4:221 = tmp___4':228
+         /\ mid_l_y:222 = l_y':229 /\ mid_l_x:223 = l_x':230
+         /\ 0 <= (l_x':230) /\ (-1 + (phi_tmp___3:202)) = 0
+         /\ havoc:194 < l_x':230
+         /\ ((param0@width':225 = mid_param0@width:244
+                /\ param0@pos':226 = mid_param0@pos:245
+                /\ param0':227 = mid_param0:246
+                /\ tmp___5:11 = mid_tmp___5:247 /\ 0 = mid_r_y:248
+                /\ 0 = mid_r_x:249)
+               \/ ((-1 + phi_tmp___3:202) = 0 /\ 0 <= phi_r_n:204
+                     /\ 0 <= l_x':230 /\ 1 <= K:250
+                     /\ ((-1 * mid_r_y:248) + mid_tmp___5:247
+                           + mid_param0:246) = 0
+                     /\ (-1 + phi_tmp___3:202) = 0
+                     /\ 0 <= (1 + (-1 * mid_r_x:249) + phi_r_n:204)
+                     /\ 0 <= l_x':230 /\ 0 <= (-1 + mid_r_x:249)
+                     /\ (!(0 <= K:250) \/ mid_r_x:249 = K:250)
+                     /\ (!(0 <= K:250) \/ (-1 * mid_r_x:249) <= (-1 * K:250))
+                     /\ (!(0 <= K:250) \/ mid_r_x:249 <= K:250)
+                     /\ (!((0 <= K:250 /\ K:250 <= 0)) \/ 0 <= K:250)
+                     /\ (!(1 <= K:250) \/ 0 <= (-1 + K:250))))
+         /\ mid_param0@width:244 = param0@width':251
+         /\ mid_param0@pos:245 = param0@pos':252
+         /\ mid_param0:246 = param0':253 /\ mid_tmp___5:247 = tmp___5':254
+         /\ mid_r_y:248 = r_y':255 /\ mid_r_x:249 = r_x':256
+         /\ 0 <= (l_x':230) /\ 0 <= (r_x':256)
+         /\ (-1 + (phi_tmp___3:202)) = 0 /\ phi_r_n:204 < r_x':256)}
+
+Is SAT! (Assertion on line 21 FAILED)
+---------------------------------------------
+
+================================================
+Bounds on Variables
+
+================================================
+Finished!
+
+real	0m1.126s
+user	0m1.096s
+sys	0m0.012s

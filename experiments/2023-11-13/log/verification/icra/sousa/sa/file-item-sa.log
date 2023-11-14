@@ -1,0 +1,100 @@
+                                                                    /\ havoc:109 = havoc:116
+                                                                    /\ havoc:111 = havoc:123
+                                                                    /\ havoc:108 = havoc:113
+                                                                    /\ havoc:110 = havoc:115
+                                                                    /\ !(
+                                                                    havoc:112 = havoc:117)
+                                                                    /\ havoc:123 = phi_r_o2_fileName:127
+                                                                    /\ havoc:123 = phi_tmp___10:126
+                                                                    /\ 0 = phi_tmp___11:125)
+                                                                    \/ (
+                                                                    havoc:46 = havoc:114
+                                                                    /\ 
+                                                                    havoc:109 = havoc:116
+                                                                    /\ 
+                                                                    havoc:111 = havoc:124
+                                                                    /\ 
+                                                                    havoc:108 = havoc:113
+                                                                    /\ 
+                                                                    havoc:110 = havoc:115
+                                                                    /\ 
+                                                                    havoc:112 = havoc:117
+                                                                    /\ 
+                                                                    havoc:124 = phi_r_o2_fileName:127
+                                                                    /\ 
+                                                                    havoc:124 = phi_tmp___10:126
+                                                                    /\ 
+                                                                    1 = phi_tmp___11:125))
+                                                                    /\ 
+                                                                    phi_r_o2_fileName:127 = phi_r_o2_fileName:130
+                                                                    /\ 
+                                                                    phi_tmp___10:126 = phi_tmp___10:129
+                                                                    /\ 
+                                                                    phi_tmp___11:125 = phi_tmp___11:128))
+                                                                    /\ 
+                                                                    phi_r_o2_fileName:130 = phi_r_o2_fileName:133
+                                                                    /\ 
+                                                                    phi_tmp___10:129 = phi_tmp___10:132
+                                                                    /\ 
+                                                                    phi_tmp___11:128 = phi_tmp___11:131))
+                                                                    /\ 
+                                                                    phi_r_o2_fileName:133 = phi_r_o2_fileName:136
+                                                                    /\ 
+                                                                    phi_tmp___10:132 = phi_tmp___10:135
+                                                                    /\ 
+                                                                    phi_tmp___11:131 = phi_tmp___11:134))
+                                                                    /\ 
+                                                                    phi_r_o2_fileName:136 = phi_r_o2_fileName:139
+                                                                    /\ 
+                                                                    phi_tmp___10:135 = phi_tmp___10:138
+                                                                    /\ 
+                                                                    phi_tmp___11:134 = phi_tmp___11:137))
+                                                                    /\ 
+                                                                    phi_r_o2_fileName:139 = phi_r_o2_fileName:142
+                                                                    /\ 
+                                                                    phi_tmp___10:138 = phi_tmp___10:141
+                                                                    /\ 
+                                                                    phi_tmp___11:137 = phi_tmp___11:140))
+                                                                    /\ !(
+                                                                    phi_tmp___11:140 = 0)
+                                                                    /\ !(
+                                                                    havoc:46 = 0)
+                                                                    /\ !(
+                                                                    havoc:108 = 0)
+                                                                    /\ 
+                                                                    0 = phi_l_result:144))
+                                                                   /\ 
+                                                                   phi_l_result:144 = phi_l_result:145))
+                                                                /\ !(
+                                                                havoc:113 = 0)
+                                                                /\ !(
+                                                                havoc:114 = 0)
+                                                                /\ 0 = phi_r_result:147))
+                                                         /\ phi_r_result:147 = phi_r_result:148))
+                                                  /\ phi_l_result:145 = -999
+                                                  /\ !(havoc:109 = 0)
+                                                  /\ !(havoc:110 = 0)
+                                                  /\ 0 = phi_l_result:150))
+                                           /\ phi_l_result:150 = phi_l_result:151))
+                                    /\ (havoc:111 + -havoc:112) = phi_l_result:154
+                                    /\ havoc:111 = phi_l_n1:153
+                                    /\ havoc:112 = phi_l_n2:152))
+                             /\ phi_r_result:148 = -999 /\ !(havoc:115 = 0)
+                             /\ !(havoc:116 = 0) /\ 0 = phi_r_result:156))
+                      /\ phi_r_result:156 = phi_r_result:157))
+               /\ (havoc:117 + -phi_r_o2_fileName:142) = phi_r_result:160
+               /\ havoc:117 = phi_r_n1:159
+               /\ phi_r_o2_fileName:142 = phi_r_n2:158))}
+
+Is not SAT! (Assertion on line 65 PASSED)
+---------------------------------------------
+
+================================================
+Bounds on Variables
+
+================================================
+Finished!
+
+real	0m6.818s
+user	0m6.632s
+sys	0m0.128s

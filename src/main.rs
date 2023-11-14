@@ -120,14 +120,14 @@ fn main() {
     println!("Writing egraph structure to egraph.dot");
       let runner = Runner::default()
         .with_expr(&unaligned_eggroll.parse().unwrap())
-        .run(&kestrel::eggroll::rewrite::eggroll_rules_with_unroll());
+        .run(&kestrel::eggroll::rewrite::rewrites(true));
     write_file(&runner.egraph.dot().to_string(), "egraph.dot");
   }
 
   if args.space_size {
     let runner = Runner::default()
       .with_expr(&unaligned_eggroll.parse().unwrap())
-      .run(&kestrel::eggroll::rewrite::eggroll_rules_with_unroll());
+      .run(&kestrel::eggroll::rewrite::rewrites(true));
     let seen = &mut HashSet::new();
     println!("Alignment space size: {}", space_size(&runner.egraph, runner.roots[0], seen));
   }
@@ -140,7 +140,7 @@ fn main() {
     ExtractorArg::CountLoops => {
       let runner = Runner::default()
         .with_expr(&unaligned_eggroll.parse().unwrap())
-        .run(&kestrel::eggroll::rewrite::eggroll_rules());
+        .run(&kestrel::eggroll::rewrite::rewrites(false));
       let extractor = Extractor::new(&runner.egraph, MinLoops);
       let (_, best) = extractor.find_best(runner.roots[0]);
       println!("Computed alignment by local loop counting.");
@@ -149,7 +149,7 @@ fn main() {
     ExtractorArg::MILP => {
       let runner = Runner::default()
         .with_expr(&unaligned_eggroll.parse().unwrap())
-        .run(&kestrel::eggroll::rewrite::eggroll_rules_with_unroll());
+        .run(&kestrel::eggroll::rewrite::rewrites(true));
       let mut extractor = MilpExtractor::new(&runner.egraph);
       extractor.solve(runner.roots[0])
     },
@@ -159,7 +159,7 @@ fn main() {
 
       let init_runner = Runner::default()
         .with_expr(&unaligned_eggroll.parse().unwrap())
-        .run(&kestrel::eggroll::rewrite::eggroll_rules());
+        .run(&kestrel::eggroll::rewrite::rewrites(false));
       let init = if args.sa_start_random { None } else {
         let extractor = Extractor::new(&init_runner.egraph, MinLoops);
         let (_, initial) = extractor.find_best(init_runner.roots[0]);
@@ -172,7 +172,7 @@ fn main() {
 
       let runner = Runner::default()
         .with_expr(&init.clone().unwrap_or(unaligned_eggroll.parse().unwrap()))
-        .run(&kestrel::eggroll::rewrite::eggroll_rules_with_unroll());
+        .run(&kestrel::eggroll::rewrite::rewrites(true));
       let (_, fundefs) = kestrel::crel::fundef::extract_fundefs(&crel);
       let generator = fundefs.get(&"_generator".to_string());
       let decls = unaligned_crel.global_decls_and_params();

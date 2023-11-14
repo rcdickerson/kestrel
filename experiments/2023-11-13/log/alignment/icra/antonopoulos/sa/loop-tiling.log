@@ -1,0 +1,231 @@
+
+Unaligned Product Program
+--------------------------
+
+void main(int l_a[N * M], int r_a[N][M]) {
+  int l_x = 0;
+  while (l_x < (N * M)) {
+    l_a[l_x] = f(l_x);
+    l_x = (l_x + 1);
+  }
+  int r_i = 0;
+  while (r_i < N) {
+    int r_j = 0;
+    while (r_j < M) {
+      r_a[r_i][r_j] = f((r_i * N) + r_j);
+      r_j = (r_j + 1);
+    }
+    r_i = (r_i + 1);
+  }
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_a (array-sizes (* N M))))
+    (param-declaration (specifiers (type int)) (sized-array r_a (array-sizes N M))))
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_x (initializer (const-int 0))))
+      (while
+        (< l_x (* N M))
+        (basic-block
+          (= (index l_a l_x) (call f (args l_x)))
+          (= l_x (+ l_x (const-int 1))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_i (initializer (const-int 0))))
+      (while
+        (< r_i N)
+        (seq
+          (basic-block
+            (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
+          (seq
+            (while
+              (< r_j M)
+              (basic-block
+                (= (index (index r_a r_i) r_j) (call f (args (+ (* r_i N) r_j))))
+                (= r_j (+ r_j (const-int 1)))))
+            (basic-block (= r_i (+ r_i (const-int 1))))))))))
+--------------------------
+
+Pre-SA Initial Alignment
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_a (array-sizes (* N M))))
+    (param-declaration (specifiers (type int)) (sized-array r_a (array-sizes N M))))
+  (seq
+    (<|>
+      (basic-block
+        (declaration (specifiers (type int)) l_x (initializer (const-int 0))))
+      (basic-block
+        (declaration (specifiers (type int)) r_i (initializer (const-int 0)))))
+    (while-lockstep
+      0
+      0
+      (< l_x (* N M))
+      (< r_i N)
+      (basic-block
+        (= (index l_a l_x) (call f (args l_x)))
+        (= l_x (+ l_x (const-int 1))))
+      (seq
+        (basic-block
+          (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
+        (seq
+          (while
+            (< r_j M)
+            (basic-block
+              (= (index (index r_a r_i) r_j) (call f (args (+ (* r_i N) r_j))))
+              (= r_j (+ r_j (const-int 1)))))
+          (basic-block (= r_i (+ r_i (const-int 1))))))
+      (<|>
+        (basic-block
+          (= (index l_a l_x) (call f (args l_x)))
+          (= l_x (+ l_x (const-int 1))))
+        (seq
+          (basic-block
+            (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
+          (seq
+            (while
+              (< r_j M)
+              (basic-block
+                (= (index (index r_a r_i) r_j) (call f (args (+ (* r_i N) r_j))))
+                (= r_j (+ r_j (const-int 1)))))
+            (basic-block (= r_i (+ r_i (const-int 1))))))))))
+--------------------------
+Starting simulated annealing...
+Initial score: 0.8245455
+Score 0.8158332 at temperature 0.9999167
+Score 0.785625 at temperature 0.99925005
+Score 0.77 at temperature 0.9991667
+Score 0.6996875 at temperature 0.9988334
+Score 0.69903225 at temperature 0.98525125
+Score 0.69045454 at temperature 0.98191816
+Score 0.6890477 at temperature 0.95058745
+Simulated annealing complete.
+Saw 2455 configurations
+Best score: 0.6890477
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_a (array-sizes (* N M))))
+    (param-declaration (specifiers (type int)) (sized-array r_a (array-sizes N M))))
+  (seq
+    (<|>
+      (basic-block
+        (declaration (specifiers (type int)) l_x (initializer (const-int 0))))
+      (basic-block
+        (declaration (specifiers (type int)) r_i (initializer (const-int 0)))))
+    (while-lockstep
+      1
+      0
+      (< l_x (* N M))
+      (< r_i N)
+      (basic-block
+        (= (index l_a l_x) (call f (args l_x)))
+        (= l_x (+ l_x (const-int 1))))
+      (seq
+        (basic-block
+          (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
+        (seq
+          (while
+            (< r_j M)
+            (basic-block
+              (= (index (index r_a r_i) r_j) (call f (args (+ (* r_i N) r_j))))
+              (= r_j (+ r_j (const-int 1)))))
+          (basic-block (= r_i (+ r_i (const-int 1))))))
+      (seq
+        (|>
+          (seq
+            (basic-block
+              (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
+            (while
+              (< r_j M)
+              (basic-block
+                (= (index (index r_a r_i) r_j) (call f (args (+ (* r_i N) r_j))))
+                (= r_j (+ r_j (const-int 1)))))))
+        (<|>
+          (basic-block
+            (= (index l_a l_x) (call f (args l_x)))
+            (= l_x (+ l_x (const-int 1))))
+          (basic-block (= r_i (+ r_i (const-int 1)))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "assert.h"
+extern int f(int);
+const int M = 10;
+const int N = 10;
+
+void main() {
+  int l_a[N * M];
+  int r_a[N][M];
+  __VERIFIER_assume(1);
+  int l_x = 0;
+  int r_i = 0;
+  if (l_x < (N * M)) {
+    l_a[l_x] = f(l_x);
+    l_x = (l_x + 1);
+  }
+  while ((l_x < (N * M)) && (r_i < N)) {
+    int r_j = 0;
+    while (r_j < M) {
+      r_a[r_i][r_j] = f((r_i * N) + r_j);
+      r_j = (r_j + 1);
+    }
+    l_a[l_x] = f(l_x);
+    l_x = (l_x + 1);
+    r_i = (r_i + 1);
+  }
+  while (l_x < (N * M)) {
+    __VERIFIER_assume(!(r_i < N));
+    l_a[l_x] = f(l_x);
+    l_x = (l_x + 1);
+  }
+  while (r_i < N) {
+    __VERIFIER_assume(!(l_x < (N * M)));
+    int r_j = 0;
+    while (r_j < M) {
+      r_a[r_i][r_j] = f((r_i * N) + r_j);
+      r_j = (r_j + 1);
+    }
+    r_i = (r_i + 1);
+  }
+  int i = 0;
+  while (i < 10) {
+    int j = 0;
+    while (j < 10) {
+      __VERIFIER_assert(l_a[(i * 10) + j] == r_a[i][j]);
+      j = (j + 1);
+    }
+    i = (i + 1);
+  }
+ }
+
+--------------------------
+Writing output to ./results/alignments/antonopoulos/sa/loop-tiling-sa.c...
+Done
+
+real	0m42.196s
+user	0m36.952s
+sys	0m5.172s

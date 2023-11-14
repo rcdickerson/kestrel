@@ -1,0 +1,230 @@
+
+Unaligned Product Program
+--------------------------
+
+void main(int l_a[10], int l_b[10], int l_c[10], int l_k, int l_x, int r_a[10], int r_b[10], int r_c[10], int r_k, int r_x) {
+  int l_i = 0;
+  while (l_i < 10) {
+    l_a[l_i] = (l_a[l_i] + l_k);
+    if (l_x < 7) {
+      l_b[l_i] = (l_a[l_i] * l_c[l_i]);
+    } else {l_b[l_i] = (l_a[l_i - 1] * l_b[l_i - 1]);
+    }
+    l_i = (l_i + 1);
+  }
+  if (r_x < 7) {
+    int r_j = 0;
+    while (r_j < 10) {
+      r_a[r_j] = (r_a[r_j] + r_k);
+      r_b[r_j] = (r_a[r_j] * r_c[r_j]);
+      r_j = (r_j + 1);
+    }
+  } else {int r_j = 0;
+    while (r_j < 10) {
+      r_a[r_j] = (r_a[r_j] + r_k);
+      r_b[r_j] = (r_a[r_j - 1] * r_b[r_j - 1]);
+      r_j = (r_j + 1);
+    }
+  }
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_a (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_b (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_c (array-sizes (const-int 10))))
+    (param-declaration (specifiers (type int)) l_k)
+    (param-declaration (specifiers (type int)) l_x)
+    (param-declaration
+      (specifiers (type int))
+      (sized-array r_a (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array r_b (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array r_c (array-sizes (const-int 10))))
+    (param-declaration (specifiers (type int)) r_k)
+    (param-declaration (specifiers (type int)) r_x))
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_i (initializer (const-int 0))))
+      (while
+        (< l_i (const-int 10))
+        (seq
+          (basic-block (= (index l_a l_i) (+ (index l_a l_i) l_k)))
+          (seq
+            (if-else
+              (< l_x (const-int 7))
+              (basic-block (= (index l_b l_i) (* (index l_a l_i) (index l_c l_i))))
+              (basic-block
+                (=
+                  (index l_b l_i)
+                  (* (index l_a (- l_i (const-int 1))) (index l_b (- l_i (const-int 1)))))))
+            (basic-block (= l_i (+ l_i (const-int 1))))))))
+    (if-else
+      (< r_x (const-int 7))
+      (seq
+        (basic-block
+          (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
+        (while
+          (< r_j (const-int 10))
+          (basic-block
+            (= (index r_a r_j) (+ (index r_a r_j) r_k))
+            (= (index r_b r_j) (* (index r_a r_j) (index r_c r_j)))
+            (= r_j (+ r_j (const-int 1))))))
+      (seq
+        (basic-block
+          (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
+        (while
+          (< r_j (const-int 10))
+          (basic-block
+            (= (index r_a r_j) (+ (index r_a r_j) r_k))
+            (=
+              (index r_b r_j)
+              (* (index r_a (- r_j (const-int 1))) (index r_b (- r_j (const-int 1)))))
+            (= r_j (+ r_j (const-int 1)))))))))
+--------------------------
+Treating naive product as final alignment.
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_a (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_b (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_c (array-sizes (const-int 10))))
+    (param-declaration (specifiers (type int)) l_k)
+    (param-declaration (specifiers (type int)) l_x)
+    (param-declaration
+      (specifiers (type int))
+      (sized-array r_a (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array r_b (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array r_c (array-sizes (const-int 10))))
+    (param-declaration (specifiers (type int)) r_k)
+    (param-declaration (specifiers (type int)) r_x))
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_i (initializer (const-int 0))))
+      (while
+        (< l_i (const-int 10))
+        (seq
+          (basic-block (= (index l_a l_i) (+ (index l_a l_i) l_k)))
+          (seq
+            (if-else
+              (< l_x (const-int 7))
+              (basic-block (= (index l_b l_i) (* (index l_a l_i) (index l_c l_i))))
+              (basic-block
+                (=
+                  (index l_b l_i)
+                  (* (index l_a (- l_i (const-int 1))) (index l_b (- l_i (const-int 1)))))))
+            (basic-block (= l_i (+ l_i (const-int 1))))))))
+    (if-else
+      (< r_x (const-int 7))
+      (seq
+        (basic-block
+          (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
+        (while
+          (< r_j (const-int 10))
+          (basic-block
+            (= (index r_a r_j) (+ (index r_a r_j) r_k))
+            (= (index r_b r_j) (* (index r_a r_j) (index r_c r_j)))
+            (= r_j (+ r_j (const-int 1))))))
+      (seq
+        (basic-block
+          (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
+        (while
+          (< r_j (const-int 10))
+          (basic-block
+            (= (index r_a r_j) (+ (index r_a r_j) r_k))
+            (=
+              (index r_b r_j)
+              (* (index r_a (- r_j (const-int 1))) (index r_b (- r_j (const-int 1)))))
+            (= r_j (+ r_j (const-int 1)))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+extern int arb_int();
+
+void main() {
+  int l_a[10];
+  int l_b[10];
+  int l_c[10];
+  int l_k = arb_int();
+  int l_x = arb_int();
+  int r_a[10];
+  int r_b[10];
+  int r_c[10];
+  int r_k = arb_int();
+  int r_x = arb_int();
+  assume((l_k == r_k) && (l_x == r_x));
+  int _i = 0;
+  while (_i < 10) {
+    assume((l_a[_i] == r_a[_i]) && ((l_b[_i] == r_b[_i]) && (l_c[_i] == r_c[_i])));
+    _i = (_i + 1);
+  }
+  int l_i = 0;
+  while (l_i < 10) {
+    l_a[l_i] = (l_a[l_i] + l_k);
+    if (l_x < 7) {
+      l_b[l_i] = (l_a[l_i] * l_c[l_i]);
+    } else {l_b[l_i] = (l_a[l_i - 1] * l_b[l_i - 1]);
+    }
+    l_i = (l_i + 1);
+  }
+  if (r_x < 7) {
+    int r_j = 0;
+    while (r_j < 10) {
+      r_a[r_j] = (r_a[r_j] + r_k);
+      r_b[r_j] = (r_a[r_j] * r_c[r_j]);
+      r_j = (r_j + 1);
+    }
+  } else {int r_j = 0;
+    while (r_j < 10) {
+      r_a[r_j] = (r_a[r_j] + r_k);
+      r_b[r_j] = (r_a[r_j - 1] * r_b[r_j - 1]);
+      r_j = (r_j + 1);
+    }
+  }
+  int _j = 0;
+  while (_j < 10) {
+    sassert((l_a[_j] == r_a[_j]) && ((l_b[_j] == r_b[_j]) && (l_c[_j] == r_c[_j])));
+    _j = (_j + 1);
+  }
+ }
+
+--------------------------
+Writing output to ./results/alignments/barthe/unaligned/loop-unswitching-una.c...
+Done
+
+real	0m0.027s
+user	0m0.023s
+sys	0m0.003s

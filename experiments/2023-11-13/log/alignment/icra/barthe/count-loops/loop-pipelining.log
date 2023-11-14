@@ -1,0 +1,238 @@
+
+Unaligned Product Program
+--------------------------
+
+void main(int l_a[10], int l_b[10], int l_c[10], int r_a[10], int r_b[10], int r_c[10]) {
+  int l_i = 0;
+  while (l_i < 10) {
+    l_a[l_i] = (l_a[l_i] + 1);
+    l_b[l_i] = (l_b[l_i] + l_a[l_i]);
+    l_c[l_i] = (l_c[l_i] + l_b[l_i]);
+    l_i = (l_i + 1);
+  }
+  int r_j = 0;
+  r_a[0] = (r_a[0] + 1);
+  r_b[0] = (r_b[0] + r_a[0]);
+  r_a[1] = (r_a[1] + 1);
+  while (r_j < (10 - 2)) {
+    r_a[r_j + 2] = (r_a[r_j + 2] + 1);
+    r_b[r_j + 1] = (r_b[r_j + 1] + r_a[r_j + 1]);
+    r_c[r_j] = (r_c[r_j] + r_b[r_j]);
+    r_j = (r_j + 1);
+  }
+  r_c[r_j] = (r_c[r_j] + r_b[r_j]);
+  r_b[r_j + 1] = (r_b[r_j + 1] + r_a[r_j + 1]);
+  r_c[r_j + 1] = (r_c[r_j + 1] + r_b[r_j + 1]);
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_a (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_b (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_c (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array r_a (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array r_b (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array r_c (array-sizes (const-int 10)))))
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_i (initializer (const-int 0))))
+      (while
+        (< l_i (const-int 10))
+        (basic-block
+          (= (index l_a l_i) (+ (index l_a l_i) (const-int 1)))
+          (= (index l_b l_i) (+ (index l_b l_i) (index l_a l_i)))
+          (= (index l_c l_i) (+ (index l_c l_i) (index l_b l_i)))
+          (= l_i (+ l_i (const-int 1))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_j (initializer (const-int 0)))
+        (= (index r_a (const-int 0)) (+ (index r_a (const-int 0)) (const-int 1)))
+        (=
+          (index r_b (const-int 0))
+          (+ (index r_b (const-int 0)) (index r_a (const-int 0))))
+        (= (index r_a (const-int 1)) (+ (index r_a (const-int 1)) (const-int 1))))
+      (seq
+        (while
+          (< r_j (- (const-int 10) (const-int 2)))
+          (basic-block
+            (=
+              (index r_a (+ r_j (const-int 2)))
+              (+ (index r_a (+ r_j (const-int 2))) (const-int 1)))
+            (=
+              (index r_b (+ r_j (const-int 1)))
+              (+ (index r_b (+ r_j (const-int 1))) (index r_a (+ r_j (const-int 1)))))
+            (= (index r_c r_j) (+ (index r_c r_j) (index r_b r_j)))
+            (= r_j (+ r_j (const-int 1)))))
+        (basic-block
+          (= (index r_c r_j) (+ (index r_c r_j) (index r_b r_j)))
+          (=
+            (index r_b (+ r_j (const-int 1)))
+            (+ (index r_b (+ r_j (const-int 1))) (index r_a (+ r_j (const-int 1)))))
+          (=
+            (index r_c (+ r_j (const-int 1)))
+            (+ (index r_c (+ r_j (const-int 1))) (index r_b (+ r_j (const-int 1))))))))))
+--------------------------
+Computed alignment by local loop counting.
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_a (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_b (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_c (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array r_a (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array r_b (array-sizes (const-int 10))))
+    (param-declaration
+      (specifiers (type int))
+      (sized-array r_c (array-sizes (const-int 10)))))
+  (seq
+    (seq
+      (<|>
+        (basic-block
+          (declaration (specifiers (type int)) l_i (initializer (const-int 0))))
+        (basic-block
+          (declaration (specifiers (type int)) r_j (initializer (const-int 0)))
+          (= (index r_a (const-int 0)) (+ (index r_a (const-int 0)) (const-int 1)))
+          (=
+            (index r_b (const-int 0))
+            (+ (index r_b (const-int 0)) (index r_a (const-int 0))))
+          (= (index r_a (const-int 1)) (+ (index r_a (const-int 1)) (const-int 1)))))
+      (while-lockstep
+        0
+        0
+        (< l_i (const-int 10))
+        (< r_j (- (const-int 10) (const-int 2)))
+        (basic-block
+          (= (index l_a l_i) (+ (index l_a l_i) (const-int 1)))
+          (= (index l_b l_i) (+ (index l_b l_i) (index l_a l_i)))
+          (= (index l_c l_i) (+ (index l_c l_i) (index l_b l_i)))
+          (= l_i (+ l_i (const-int 1))))
+        (basic-block
+          (=
+            (index r_a (+ r_j (const-int 2)))
+            (+ (index r_a (+ r_j (const-int 2))) (const-int 1)))
+          (=
+            (index r_b (+ r_j (const-int 1)))
+            (+ (index r_b (+ r_j (const-int 1))) (index r_a (+ r_j (const-int 1)))))
+          (= (index r_c r_j) (+ (index r_c r_j) (index r_b r_j)))
+          (= r_j (+ r_j (const-int 1))))
+        (<|>
+          (basic-block
+            (= (index l_a l_i) (+ (index l_a l_i) (const-int 1)))
+            (= (index l_b l_i) (+ (index l_b l_i) (index l_a l_i)))
+            (= (index l_c l_i) (+ (index l_c l_i) (index l_b l_i)))
+            (= l_i (+ l_i (const-int 1))))
+          (basic-block
+            (=
+              (index r_a (+ r_j (const-int 2)))
+              (+ (index r_a (+ r_j (const-int 2))) (const-int 1)))
+            (=
+              (index r_b (+ r_j (const-int 1)))
+              (+ (index r_b (+ r_j (const-int 1))) (index r_a (+ r_j (const-int 1)))))
+            (= (index r_c r_j) (+ (index r_c r_j) (index r_b r_j)))
+            (= r_j (+ r_j (const-int 1)))))))
+    (|>
+      (basic-block
+        (= (index r_c r_j) (+ (index r_c r_j) (index r_b r_j)))
+        (=
+          (index r_b (+ r_j (const-int 1)))
+          (+ (index r_b (+ r_j (const-int 1))) (index r_a (+ r_j (const-int 1)))))
+        (=
+          (index r_c (+ r_j (const-int 1)))
+          (+ (index r_c (+ r_j (const-int 1))) (index r_b (+ r_j (const-int 1)))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "assert.h"
+
+void main() {
+  int l_a[10];
+  int l_b[10];
+  int l_c[10];
+  int r_a[10];
+  int r_b[10];
+  int r_c[10];
+  int _i = 0;
+  while (_i < 10) {
+    __VERIFIER_assume((l_a[_i] == r_a[_i]) && ((l_b[_i] == r_b[_i]) && (l_c[_i] == r_c[_i])));
+    _i = (_i + 1);
+  }
+  int l_i = 0;
+  int r_j = 0;
+  r_a[0] = (r_a[0] + 1);
+  r_b[0] = (r_b[0] + r_a[0]);
+  r_a[1] = (r_a[1] + 1);
+  while ((l_i < 10) && (r_j < (10 - 2))) {
+    l_a[l_i] = (l_a[l_i] + 1);
+    l_b[l_i] = (l_b[l_i] + l_a[l_i]);
+    l_c[l_i] = (l_c[l_i] + l_b[l_i]);
+    l_i = (l_i + 1);
+    r_a[r_j + 2] = (r_a[r_j + 2] + 1);
+    r_b[r_j + 1] = (r_b[r_j + 1] + r_a[r_j + 1]);
+    r_c[r_j] = (r_c[r_j] + r_b[r_j]);
+    r_j = (r_j + 1);
+  }
+  while (l_i < 10) {
+    __VERIFIER_assume(!(r_j < (10 - 2)));
+    l_a[l_i] = (l_a[l_i] + 1);
+    l_b[l_i] = (l_b[l_i] + l_a[l_i]);
+    l_c[l_i] = (l_c[l_i] + l_b[l_i]);
+    l_i = (l_i + 1);
+  }
+  while (r_j < (10 - 2)) {
+    __VERIFIER_assume(!(l_i < 10));
+    r_a[r_j + 2] = (r_a[r_j + 2] + 1);
+    r_b[r_j + 1] = (r_b[r_j + 1] + r_a[r_j + 1]);
+    r_c[r_j] = (r_c[r_j] + r_b[r_j]);
+    r_j = (r_j + 1);
+  }
+  r_c[r_j] = (r_c[r_j] + r_b[r_j]);
+  r_b[r_j + 1] = (r_b[r_j + 1] + r_a[r_j + 1]);
+  r_c[r_j + 1] = (r_c[r_j + 1] + r_b[r_j + 1]);
+  int _j = 0;
+  while (_j < 10) {
+    __VERIFIER_assert((l_a[_j] == r_a[_j]) && ((l_b[_j] == r_b[_j]) && (l_c[_j] == r_c[_j])));
+    _j = (_j + 1);
+  }
+ }
+
+--------------------------
+Writing output to ./results/alignments/barthe/count-loops/loop-pipelining-cou.c...
+Done
+
+real	0m0.028s
+user	0m0.018s
+sys	0m0.010s

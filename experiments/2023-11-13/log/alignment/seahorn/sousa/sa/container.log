@@ -1,0 +1,420 @@
+
+Unaligned Product Program
+--------------------------
+
+void main() {
+  int l_rv;
+  if (left_o1_departureTime < left_o2_departureTime) {
+    l_rv = (-1);
+  } else {if (left_o2_departureTime < left_o1_departureTime) {
+      l_rv = 1;
+    } else {l_rv = 0;
+    }
+  }
+  if (l_rv == 0) {
+    if (left_o1_departureMaxDuration < left_o2_departureMaxDuration) {
+      l_rv = (-1);
+    } else {if (left_o1_departureMaxDuration > left_o2_departureMaxDuration) {
+        l_rv = 1;
+      } else {if (left_o1_departureTransportCompany < left_o2_departureTransportCompany) {
+          l_rv = (-1);
+        } else {if (left_o2_departureTransportCompany < left_o1_departureTransportCompany) {
+            l_rv = 1;
+          } else {l_rv = 0;
+          }
+        }
+        if (l_rv == 0) {
+          if (left_o1_departureTransportType < left_o2_departureTransportType) {
+            l_rv = (-1);
+          } else {if (left_o2_departureTransportType < left_o1_departureTransportType) {
+              l_rv = 1;
+            } else {l_rv = 0;
+            }
+          }
+        }
+      }
+    }
+  }
+  int r_rv;
+  if (right_o1_departureTime < right_o2_departureTime) {
+    r_rv = (-1);
+  } else {if (right_o2_departureTime < right_o1_departureTime) {
+      r_rv = 1;
+    } else {r_rv = 0;
+    }
+  }
+  if (r_rv == 0) {
+    if (right_o1_departureMaxDuration < right_o2_departureMaxDuration) {
+      r_rv = (-1);
+    } else {if (right_o1_departureMaxDuration > right_o2_departureMaxDuration) {
+        r_rv = 1;
+      } else {if (right_o1_departureTransportCompany < right_o2_departureTransportCompany) {
+          r_rv = (-1);
+        } else {if (right_o2_departureTransportCompany < right_o1_departureTransportCompany) {
+            r_rv = 1;
+          } else {r_rv = 0;
+          }
+        }
+        if (r_rv == 0) {
+          if (right_o1_departureTransportType < right_o2_departureTransportType) {
+            r_rv = (-1);
+          } else {if (right_o2_departureTransportType < right_o1_departureTransportType) {
+              r_rv = 1;
+            } else {r_rv = 0;
+            }
+          }
+        }
+      }
+    }
+  }
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  params
+  (<|>
+    (seq
+      (basic-block (declaration (specifiers (type int)) l_rv no-initializer))
+      (seq
+        (if-else
+          (< left_o1_departureTime left_o2_departureTime)
+          (basic-block (= l_rv (neg (const-int 1))))
+          (if-else
+            (< left_o2_departureTime left_o1_departureTime)
+            (basic-block (= l_rv (const-int 1)))
+            (basic-block (= l_rv (const-int 0)))))
+        (if
+          (== l_rv (const-int 0))
+          (if-else
+            (< left_o1_departureMaxDuration left_o2_departureMaxDuration)
+            (basic-block (= l_rv (neg (const-int 1))))
+            (if-else
+              (> left_o1_departureMaxDuration left_o2_departureMaxDuration)
+              (basic-block (= l_rv (const-int 1)))
+              (seq
+                (if-else
+                  (< left_o1_departureTransportCompany left_o2_departureTransportCompany)
+                  (basic-block (= l_rv (neg (const-int 1))))
+                  (if-else
+                    (< left_o2_departureTransportCompany left_o1_departureTransportCompany)
+                    (basic-block (= l_rv (const-int 1)))
+                    (basic-block (= l_rv (const-int 0)))))
+                (if
+                  (== l_rv (const-int 0))
+                  (if-else
+                    (< left_o1_departureTransportType left_o2_departureTransportType)
+                    (basic-block (= l_rv (neg (const-int 1))))
+                    (if-else
+                      (< left_o2_departureTransportType left_o1_departureTransportType)
+                      (basic-block (= l_rv (const-int 1)))
+                      (basic-block (= l_rv (const-int 0))))))))))))
+    (seq
+      (basic-block (declaration (specifiers (type int)) r_rv no-initializer))
+      (seq
+        (if-else
+          (< right_o1_departureTime right_o2_departureTime)
+          (basic-block (= r_rv (neg (const-int 1))))
+          (if-else
+            (< right_o2_departureTime right_o1_departureTime)
+            (basic-block (= r_rv (const-int 1)))
+            (basic-block (= r_rv (const-int 0)))))
+        (if
+          (== r_rv (const-int 0))
+          (if-else
+            (< right_o1_departureMaxDuration right_o2_departureMaxDuration)
+            (basic-block (= r_rv (neg (const-int 1))))
+            (if-else
+              (> right_o1_departureMaxDuration right_o2_departureMaxDuration)
+              (basic-block (= r_rv (const-int 1)))
+              (seq
+                (if-else
+                  (< right_o1_departureTransportCompany right_o2_departureTransportCompany)
+                  (basic-block (= r_rv (neg (const-int 1))))
+                  (if-else
+                    (< right_o2_departureTransportCompany right_o1_departureTransportCompany)
+                    (basic-block (= r_rv (const-int 1)))
+                    (basic-block (= r_rv (const-int 0)))))
+                (if
+                  (== r_rv (const-int 0))
+                  (if-else
+                    (< right_o1_departureTransportType right_o2_departureTransportType)
+                    (basic-block (= r_rv (neg (const-int 1))))
+                    (if-else
+                      (< right_o2_departureTransportType right_o1_departureTransportType)
+                      (basic-block (= r_rv (const-int 1)))
+                      (basic-block (= r_rv (const-int 0))))))))))))))
+--------------------------
+
+Pre-SA Initial Alignment
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  params
+  (seq
+    (<|>
+      (seq
+        (basic-block (declaration (specifiers (type int)) l_rv no-initializer))
+        (if-else
+          (< left_o1_departureTime left_o2_departureTime)
+          (basic-block (= l_rv (neg (const-int 1))))
+          (if-else
+            (< left_o2_departureTime left_o1_departureTime)
+            (basic-block (= l_rv (const-int 1)))
+            (basic-block (= l_rv (const-int 0))))))
+      (basic-block (declaration (specifiers (type int)) r_rv no-initializer)))
+    (<|>
+      (if
+        (== l_rv (const-int 0))
+        (if-else
+          (< left_o1_departureMaxDuration left_o2_departureMaxDuration)
+          (basic-block (= l_rv (neg (const-int 1))))
+          (if-else
+            (> left_o1_departureMaxDuration left_o2_departureMaxDuration)
+            (basic-block (= l_rv (const-int 1)))
+            (seq
+              (if-else
+                (< left_o1_departureTransportCompany left_o2_departureTransportCompany)
+                (basic-block (= l_rv (neg (const-int 1))))
+                (if-else
+                  (< left_o2_departureTransportCompany left_o1_departureTransportCompany)
+                  (basic-block (= l_rv (const-int 1)))
+                  (basic-block (= l_rv (const-int 0)))))
+              (if
+                (== l_rv (const-int 0))
+                (if-else
+                  (< left_o1_departureTransportType left_o2_departureTransportType)
+                  (basic-block (= l_rv (neg (const-int 1))))
+                  (if-else
+                    (< left_o2_departureTransportType left_o1_departureTransportType)
+                    (basic-block (= l_rv (const-int 1)))
+                    (basic-block (= l_rv (const-int 0))))))))))
+      (seq
+        (if-else
+          (< right_o1_departureTime right_o2_departureTime)
+          (basic-block (= r_rv (neg (const-int 1))))
+          (if-else
+            (< right_o2_departureTime right_o1_departureTime)
+            (basic-block (= r_rv (const-int 1)))
+            (basic-block (= r_rv (const-int 0)))))
+        (if
+          (== r_rv (const-int 0))
+          (if-else
+            (< right_o1_departureMaxDuration right_o2_departureMaxDuration)
+            (basic-block (= r_rv (neg (const-int 1))))
+            (if-else
+              (> right_o1_departureMaxDuration right_o2_departureMaxDuration)
+              (basic-block (= r_rv (const-int 1)))
+              (seq
+                (if-else
+                  (< right_o1_departureTransportCompany right_o2_departureTransportCompany)
+                  (basic-block (= r_rv (neg (const-int 1))))
+                  (if-else
+                    (< right_o2_departureTransportCompany right_o1_departureTransportCompany)
+                    (basic-block (= r_rv (const-int 1)))
+                    (basic-block (= r_rv (const-int 0)))))
+                (if
+                  (== r_rv (const-int 0))
+                  (if-else
+                    (< right_o1_departureTransportType right_o2_departureTransportType)
+                    (basic-block (= r_rv (neg (const-int 1))))
+                    (if-else
+                      (< right_o2_departureTransportType right_o1_departureTransportType)
+                      (basic-block (= r_rv (const-int 1)))
+                      (basic-block (= r_rv (const-int 0))))))))))))))
+--------------------------
+Starting simulated annealing...
+Initial score: 0.06952381
+Score 0.06619049 at temperature 0.91717356
+Score 0.04571429 at temperature 0.84334636
+Simulated annealing complete.
+Saw 3844 configurations
+Best score: 0.04571429
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  params
+  (seq
+    (seq
+      (seq
+        (<|>
+          (basic-block (declaration (specifiers (type int)) l_rv no-initializer))
+          (basic-block (declaration (specifiers (type int)) r_rv no-initializer)))
+        (<|>
+          (if-else
+            (< left_o1_departureTime left_o2_departureTime)
+            (basic-block (= l_rv (neg (const-int 1))))
+            (if-else
+              (< left_o2_departureTime left_o1_departureTime)
+              (basic-block (= l_rv (const-int 1)))
+              (basic-block (= l_rv (const-int 0)))))
+          (if-else
+            (< right_o1_departureTime right_o2_departureTime)
+            (basic-block (= r_rv (neg (const-int 1))))
+            (if-else
+              (< right_o2_departureTime right_o1_departureTime)
+              (basic-block (= r_rv (const-int 1)))
+              (basic-block (= r_rv (const-int 0)))))))
+      (<|
+        (if
+          (== l_rv (const-int 0))
+          (if-else
+            (< left_o1_departureMaxDuration left_o2_departureMaxDuration)
+            (basic-block (= l_rv (neg (const-int 1))))
+            (if-else
+              (> left_o1_departureMaxDuration left_o2_departureMaxDuration)
+              (basic-block (= l_rv (const-int 1)))
+              (seq
+                (if-else
+                  (< left_o1_departureTransportCompany left_o2_departureTransportCompany)
+                  (basic-block (= l_rv (neg (const-int 1))))
+                  (if-else
+                    (< left_o2_departureTransportCompany left_o1_departureTransportCompany)
+                    (basic-block (= l_rv (const-int 1)))
+                    (basic-block (= l_rv (const-int 0)))))
+                (if
+                  (== l_rv (const-int 0))
+                  (if-else
+                    (< left_o1_departureTransportType left_o2_departureTransportType)
+                    (basic-block (= l_rv (neg (const-int 1))))
+                    (if-else
+                      (< left_o2_departureTransportType left_o1_departureTransportType)
+                      (basic-block (= l_rv (const-int 1)))
+                      (basic-block (= l_rv (const-int 0))))))))))))
+    (|>
+      (if
+        (== r_rv (const-int 0))
+        (if-else
+          (< right_o1_departureMaxDuration right_o2_departureMaxDuration)
+          (basic-block (= r_rv (neg (const-int 1))))
+          (if-else
+            (> right_o1_departureMaxDuration right_o2_departureMaxDuration)
+            (basic-block (= r_rv (const-int 1)))
+            (seq
+              (if-else
+                (< right_o1_departureTransportCompany right_o2_departureTransportCompany)
+                (basic-block (= r_rv (neg (const-int 1))))
+                (if-else
+                  (< right_o2_departureTransportCompany right_o1_departureTransportCompany)
+                  (basic-block (= r_rv (const-int 1)))
+                  (basic-block (= r_rv (const-int 0)))))
+              (if
+                (== r_rv (const-int 0))
+                (if-else
+                  (< right_o1_departureTransportType right_o2_departureTransportType)
+                  (basic-block (= r_rv (neg (const-int 1))))
+                  (if-else
+                    (< right_o2_departureTransportType right_o1_departureTransportType)
+                    (basic-block (= r_rv (const-int 1)))
+                    (basic-block (= r_rv (const-int 0)))))))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+extern int arb_int();
+int left_o1_departureTimeIsBefore;
+int left_o1_departureTime;
+int left_o1_departureMaxDuration;
+int left_o1_departureTransportCompany;
+int left_o1_departureTransportType;
+int left_o2_departureTimeIsBefore;
+int left_o2_departureTime;
+int left_o2_departureMaxDuration;
+int left_o2_departureTransportCompany;
+int left_o2_departureTransportType;
+int right_o1_departureTimeIsBefore;
+int right_o1_departureTime;
+int right_o1_departureMaxDuration;
+int right_o1_departureTransportCompany;
+int right_o1_departureTransportType;
+int right_o2_departureTimeIsBefore;
+int right_o2_departureTime;
+int right_o2_departureMaxDuration;
+int right_o2_departureTransportCompany;
+int right_o2_departureTransportType;
+
+void main() {
+  assume((left_o1_departureTimeIsBefore == right_o2_departureTimeIsBefore) && ((left_o1_departureTime == right_o2_departureTime) && ((left_o1_departureMaxDuration == right_o2_departureMaxDuration) && ((left_o1_departureTransportCompany == right_o2_departureTransportCompany) && ((left_o1_departureTransportType == right_o2_departureTransportType) && ((left_o2_departureTimeIsBefore == right_o1_departureTimeIsBefore) && ((left_o2_departureTime == right_o1_departureTime) && ((left_o2_departureMaxDuration == right_o1_departureMaxDuration) && ((left_o2_departureTransportCompany == right_o1_departureTransportCompany) && (left_o2_departureTransportType == right_o1_departureTransportType))))))))));
+  int l_rv;
+  int r_rv;
+  if (left_o1_departureTime < left_o2_departureTime) {
+    l_rv = (-1);
+  } else {if (left_o2_departureTime < left_o1_departureTime) {
+      l_rv = 1;
+    } else {l_rv = 0;
+    }
+  }
+  if (right_o1_departureTime < right_o2_departureTime) {
+    r_rv = (-1);
+  } else {if (right_o2_departureTime < right_o1_departureTime) {
+      r_rv = 1;
+    } else {r_rv = 0;
+    }
+  }
+  if (l_rv == 0) {
+    if (left_o1_departureMaxDuration < left_o2_departureMaxDuration) {
+      l_rv = (-1);
+    } else {if (left_o1_departureMaxDuration > left_o2_departureMaxDuration) {
+        l_rv = 1;
+      } else {if (left_o1_departureTransportCompany < left_o2_departureTransportCompany) {
+          l_rv = (-1);
+        } else {if (left_o2_departureTransportCompany < left_o1_departureTransportCompany) {
+            l_rv = 1;
+          } else {l_rv = 0;
+          }
+        }
+        if (l_rv == 0) {
+          if (left_o1_departureTransportType < left_o2_departureTransportType) {
+            l_rv = (-1);
+          } else {if (left_o2_departureTransportType < left_o1_departureTransportType) {
+              l_rv = 1;
+            } else {l_rv = 0;
+            }
+          }
+        }
+      }
+    }
+  }
+  if (r_rv == 0) {
+    if (right_o1_departureMaxDuration < right_o2_departureMaxDuration) {
+      r_rv = (-1);
+    } else {if (right_o1_departureMaxDuration > right_o2_departureMaxDuration) {
+        r_rv = 1;
+      } else {if (right_o1_departureTransportCompany < right_o2_departureTransportCompany) {
+          r_rv = (-1);
+        } else {if (right_o2_departureTransportCompany < right_o1_departureTransportCompany) {
+            r_rv = 1;
+          } else {r_rv = 0;
+          }
+        }
+        if (r_rv == 0) {
+          if (right_o1_departureTransportType < right_o2_departureTransportType) {
+            r_rv = (-1);
+          } else {if (right_o2_departureTransportType < right_o1_departureTransportType) {
+              r_rv = 1;
+            } else {r_rv = 0;
+            }
+          }
+        }
+      }
+    }
+  }
+  sassert(l_rv == (-1 * r_rv));
+ }
+
+--------------------------
+Writing output to ./results/alignments/sousa/sa/container-sa.c...
+Done
+
+real	0m5.832s
+user	0m5.798s
+sys	0m0.020s

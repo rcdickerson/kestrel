@@ -1,0 +1,102 @@
+
+Unaligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main() {
+  int l_i = 1;
+  while (l_i <= N) {
+    b_1[l_i] = a_1[l_i];
+    d_1[l_i] = b_1[l_i - 1];
+    l_i = (l_i + 1);
+  }
+  int r_j = 1;
+  d_2[1] = b_2[0];
+  while (r_j <= (N - 1)) {
+    b_2[r_j] = a_2[r_j];
+    d_2[r_j + 1] = b_2[r_j];
+    r_j = (r_j + 1);
+  }
+  b_2[N] = a_2[N];
+ }
+
+--------------------------
+Treating naive product as final alignment.
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  params
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_i (initializer (const-int 1))))
+      (while
+        (<= l_i N)
+        (basic-block
+          (= (index b_1 l_i) (index a_1 l_i))
+          (= (index d_1 l_i) (index b_1 (- l_i (const-int 1))))
+          (= l_i (+ l_i (const-int 1))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_j (initializer (const-int 1)))
+        (= (index d_2 (const-int 1)) (index b_2 (const-int 0))))
+      (seq
+        (while
+          (<= r_j (- N (const-int 1)))
+          (basic-block
+            (= (index b_2 r_j) (index a_2 r_j))
+            (= (index d_2 (+ r_j (const-int 1))) (index b_2 r_j))
+            (= r_j (+ r_j (const-int 1)))))
+        (basic-block (= (index b_2 N) (index a_2 N)))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+const int N = 20;
+int a_1[N + 1];
+int b_1[N + 1];
+int d_1[N + 1];
+int a_2[N + 1];
+int b_2[N + 1];
+int d_2[N + 1];
+
+void main() {
+  int _i = 0;
+  while (_i < N) {
+    assume((a_1[_i] == a_2[_i]) && (b_1[0] == b_2[0]));
+  }
+  int l_i = 1;
+  while (l_i <= N) {
+    b_1[l_i] = a_1[l_i];
+    d_1[l_i] = b_1[l_i - 1];
+    l_i = (l_i + 1);
+  }
+  int r_j = 1;
+  d_2[1] = b_2[0];
+  while (r_j <= (N - 1)) {
+    b_2[r_j] = a_2[r_j];
+    d_2[r_j + 1] = b_2[r_j];
+    r_j = (r_j + 1);
+  }
+  b_2[N] = a_2[N];
+  int _j = 1;
+  while (_j < N) {
+    sassert(d_1[_j] == d_2[_j]);
+  }
+ }
+
+--------------------------
+Writing output to ./results/barthe/unaligned/loop-alignment.c...
+Done
+
+real	0m0.050s
+user	0m0.009s
+sys	0m0.020s

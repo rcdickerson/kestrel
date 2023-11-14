@@ -1,0 +1,100 @@
+
+Unaligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main() {
+  int l_x = 0;
+  while (l_x < (N * M)) {
+    a_1[l_x] = f[l_x];
+    l_x = (l_x + 1);
+  }
+  int r_i = 0;
+  while (r_i < N) {
+    int r_j = 0;
+    while (r_j < M) {
+      a_2[r_i][r_j] = f[(r_i * M) + r_j];
+      r_j = (r_j + 1);
+    }
+    r_i = (r_i + 1);
+  }
+ }
+
+--------------------------
+Treating naive product as final alignment.
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  params
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_x (initializer (const-int 0))))
+      (while
+        (< l_x (* N M))
+        (basic-block (= (index a_1 l_x) (index f l_x)) (= l_x (+ l_x (const-int 1))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_i (initializer (const-int 0))))
+      (while
+        (< r_i N)
+        (seq
+          (basic-block
+            (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
+          (seq
+            (while
+              (< r_j M)
+              (basic-block
+                (= (index (index a_2 r_i) r_j) (index f (+ (* r_i M) r_j)))
+                (= r_j (+ r_j (const-int 1)))))
+            (basic-block (= r_i (+ r_i (const-int 1))))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+const int M = 10;
+const int N = 10;
+int a_1[N * M];
+int a_2[N][M];
+int f[N * M];
+
+void main() {
+  assume(1);
+  int l_x = 0;
+  while (l_x < (N * M)) {
+    a_1[l_x] = f[l_x];
+    l_x = (l_x + 1);
+  }
+  int r_i = 0;
+  while (r_i < N) {
+    int r_j = 0;
+    while (r_j < M) {
+      a_2[r_i][r_j] = f[(r_i * M) + r_j];
+      r_j = (r_j + 1);
+    }
+    r_i = (r_i + 1);
+  }
+  int i = 0;
+  while (i < N) {
+    int j = 0;
+    while (j < M) {
+      sassert(a_1[i * (M + j)] == a_2[i][j]);
+    }
+  }
+ }
+
+--------------------------
+Writing output to ./results/antonopoulos/unaligned/loop-tiling.c...
+Done
+
+real	0m0.042s
+user	0m0.015s
+sys	0m0.007s

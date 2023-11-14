@@ -1,0 +1,176 @@
+
+Unaligned Product Program
+--------------------------
+
+void main(int l_high, int l_low, int r_high, int r_low) {
+  int l_tick = 0;
+  int l_i;
+  if (l_high == 0) {
+    l_i = 0;
+    while (l_i < l_low) {
+      l_i = (l_i + 1);
+      l_tick = (l_tick + 1);
+    }
+  } else {l_i = l_low;
+    while (l_i > 0) {
+      l_i = (l_i - 1);
+      l_tick = (l_tick + 1);
+    }
+  }
+  int r_tick = 0;
+  int r_i;
+  if (r_high == 0) {
+    r_i = 0;
+    while (r_i < r_low) {
+      r_i = (r_i + 1);
+      r_tick = (r_tick + 1);
+    }
+  } else {r_i = r_low;
+    while (r_i > 0) {
+      r_i = (r_i - 1);
+      r_tick = (r_tick + 1);
+    }
+  }
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_high)
+    (param-declaration (specifiers (type int)) l_low)
+    (param-declaration (specifiers (type int)) r_high)
+    (param-declaration (specifiers (type int)) r_low))
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_tick (initializer (const-int 0)))
+        (declaration (specifiers (type int)) l_i no-initializer))
+      (if-else
+        (== l_high (const-int 0))
+        (seq
+          (basic-block (= l_i (const-int 0)))
+          (while
+            (< l_i l_low)
+            (basic-block (= l_i (+ l_i (const-int 1))) (= l_tick (+ l_tick (const-int 1))))))
+        (seq
+          (basic-block (= l_i l_low))
+          (while
+            (> l_i (const-int 0))
+            (basic-block (= l_i (- l_i (const-int 1))) (= l_tick (+ l_tick (const-int 1))))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_tick (initializer (const-int 0)))
+        (declaration (specifiers (type int)) r_i no-initializer))
+      (if-else
+        (== r_high (const-int 0))
+        (seq
+          (basic-block (= r_i (const-int 0)))
+          (while
+            (< r_i r_low)
+            (basic-block (= r_i (+ r_i (const-int 1))) (= r_tick (+ r_tick (const-int 1))))))
+        (seq
+          (basic-block (= r_i r_low))
+          (while
+            (> r_i (const-int 0))
+            (basic-block (= r_i (- r_i (const-int 1))) (= r_tick (+ r_tick (const-int 1))))))))))
+--------------------------
+Treating naive product as final alignment.
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_high)
+    (param-declaration (specifiers (type int)) l_low)
+    (param-declaration (specifiers (type int)) r_high)
+    (param-declaration (specifiers (type int)) r_low))
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_tick (initializer (const-int 0)))
+        (declaration (specifiers (type int)) l_i no-initializer))
+      (if-else
+        (== l_high (const-int 0))
+        (seq
+          (basic-block (= l_i (const-int 0)))
+          (while
+            (< l_i l_low)
+            (basic-block (= l_i (+ l_i (const-int 1))) (= l_tick (+ l_tick (const-int 1))))))
+        (seq
+          (basic-block (= l_i l_low))
+          (while
+            (> l_i (const-int 0))
+            (basic-block (= l_i (- l_i (const-int 1))) (= l_tick (+ l_tick (const-int 1))))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_tick (initializer (const-int 0)))
+        (declaration (specifiers (type int)) r_i no-initializer))
+      (if-else
+        (== r_high (const-int 0))
+        (seq
+          (basic-block (= r_i (const-int 0)))
+          (while
+            (< r_i r_low)
+            (basic-block (= r_i (+ r_i (const-int 1))) (= r_tick (+ r_tick (const-int 1))))))
+        (seq
+          (basic-block (= r_i r_low))
+          (while
+            (> r_i (const-int 0))
+            (basic-block (= r_i (- r_i (const-int 1))) (= r_tick (+ r_tick (const-int 1))))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "assert.h"
+
+void main() {
+  int l_high = nondet();
+  int l_low = nondet();
+  int r_high = nondet();
+  int r_low = nondet();
+  __VERIFIER_assume(l_low == r_low);
+  int l_tick = 0;
+  int l_i;
+  if (l_high == 0) {
+    l_i = 0;
+    while (l_i < l_low) {
+      l_i = (l_i + 1);
+      l_tick = (l_tick + 1);
+    }
+  } else {l_i = l_low;
+    while (l_i > 0) {
+      l_i = (l_i - 1);
+      l_tick = (l_tick + 1);
+    }
+  }
+  int r_tick = 0;
+  int r_i;
+  if (r_high == 0) {
+    r_i = 0;
+    while (r_i < r_low) {
+      r_i = (r_i + 1);
+      r_tick = (r_tick + 1);
+    }
+  } else {r_i = r_low;
+    while (r_i > 0) {
+      r_i = (r_i - 1);
+      r_tick = (r_tick + 1);
+    }
+  }
+  __VERIFIER_assert(l_tick == r_tick);
+ }
+
+--------------------------
+Writing output to ./results/alignments/icra/unaligned/AGHKTW2017_foo-una.c...
+Done
+
+real	0m0.025s
+user	0m0.014s
+sys	0m0.011s

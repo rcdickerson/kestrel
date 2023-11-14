@@ -1,0 +1,234 @@
+
+Unaligned Product Program
+--------------------------
+
+void main(int l_f11, int l_f12, int l_n1, int l_k1, int l_l1, int r_f21, int r_f22, int r_n2, int r_k2, int r_l2) {
+  while (l_n1 > 0) {
+    l_f11 = (l_f11 + l_f12);
+    l_f12 = (l_f11 - l_f12);
+    l_n1 = (l_n1 - 1);
+  }
+  if (l_f11 > l_k1) {
+    l_l1 = 1;
+  } else {l_l1 = 0;
+  }
+  while (r_n2 > 0) {
+    r_f21 = (r_f21 + r_f22);
+    r_f22 = (r_f21 - r_f22);
+    r_n2 = (r_n2 - 1);
+  }
+  if (r_f21 > r_k2) {
+    r_l2 = 1;
+  } else {r_l2 = 0;
+  }
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_f11)
+    (param-declaration (specifiers (type int)) l_f12)
+    (param-declaration (specifiers (type int)) l_n1)
+    (param-declaration (specifiers (type int)) l_k1)
+    (param-declaration (specifiers (type int)) l_l1)
+    (param-declaration (specifiers (type int)) r_f21)
+    (param-declaration (specifiers (type int)) r_f22)
+    (param-declaration (specifiers (type int)) r_n2)
+    (param-declaration (specifiers (type int)) r_k2)
+    (param-declaration (specifiers (type int)) r_l2))
+  (<|>
+    (seq
+      (while
+        (> l_n1 (const-int 0))
+        (basic-block
+          (= l_f11 (+ l_f11 l_f12))
+          (= l_f12 (- l_f11 l_f12))
+          (= l_n1 (- l_n1 (const-int 1)))))
+      (if-else
+        (> l_f11 l_k1)
+        (basic-block (= l_l1 (const-int 1)))
+        (basic-block (= l_l1 (const-int 0)))))
+    (seq
+      (while
+        (> r_n2 (const-int 0))
+        (basic-block
+          (= r_f21 (+ r_f21 r_f22))
+          (= r_f22 (- r_f21 r_f22))
+          (= r_n2 (- r_n2 (const-int 1)))))
+      (if-else
+        (> r_f21 r_k2)
+        (basic-block (= r_l2 (const-int 1)))
+        (basic-block (= r_l2 (const-int 0)))))))
+--------------------------
+
+Pre-SA Initial Alignment
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_f11)
+    (param-declaration (specifiers (type int)) l_f12)
+    (param-declaration (specifiers (type int)) l_n1)
+    (param-declaration (specifiers (type int)) l_k1)
+    (param-declaration (specifiers (type int)) l_l1)
+    (param-declaration (specifiers (type int)) r_f21)
+    (param-declaration (specifiers (type int)) r_f22)
+    (param-declaration (specifiers (type int)) r_n2)
+    (param-declaration (specifiers (type int)) r_k2)
+    (param-declaration (specifiers (type int)) r_l2))
+  (seq
+    (while-lockstep
+      0
+      0
+      (> l_n1 (const-int 0))
+      (> r_n2 (const-int 0))
+      (basic-block
+        (= l_f11 (+ l_f11 l_f12))
+        (= l_f12 (- l_f11 l_f12))
+        (= l_n1 (- l_n1 (const-int 1))))
+      (basic-block
+        (= r_f21 (+ r_f21 r_f22))
+        (= r_f22 (- r_f21 r_f22))
+        (= r_n2 (- r_n2 (const-int 1))))
+      (<|>
+        (basic-block
+          (= l_f11 (+ l_f11 l_f12))
+          (= l_f12 (- l_f11 l_f12))
+          (= l_n1 (- l_n1 (const-int 1))))
+        (basic-block
+          (= r_f21 (+ r_f21 r_f22))
+          (= r_f22 (- r_f21 r_f22))
+          (= r_n2 (- r_n2 (const-int 1))))))
+    (<|>
+      (if-else
+        (> l_f11 l_k1)
+        (basic-block (= l_l1 (const-int 1)))
+        (basic-block (= l_l1 (const-int 0))))
+      (if-else
+        (> r_f21 r_k2)
+        (basic-block (= r_l2 (const-int 1)))
+        (basic-block (= r_l2 (const-int 0)))))))
+--------------------------
+Starting simulated annealing...
+Initial score: 0.7241777
+Score 0.7159111 at temperature 0.9999167
+Score 0.68939525 at temperature 0.99925005
+Score 0.6737556 at temperature 0.9990001
+Simulated annealing complete.
+Saw 135 configurations
+Best score: 0.6737556
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_f11)
+    (param-declaration (specifiers (type int)) l_f12)
+    (param-declaration (specifiers (type int)) l_n1)
+    (param-declaration (specifiers (type int)) l_k1)
+    (param-declaration (specifiers (type int)) l_l1)
+    (param-declaration (specifiers (type int)) r_f21)
+    (param-declaration (specifiers (type int)) r_f22)
+    (param-declaration (specifiers (type int)) r_n2)
+    (param-declaration (specifiers (type int)) r_k2)
+    (param-declaration (specifiers (type int)) r_l2))
+  (seq
+    (while-lockstep
+      0
+      0
+      (> l_n1 (const-int 0))
+      (> r_n2 (const-int 0))
+      (basic-block
+        (= l_f11 (+ l_f11 l_f12))
+        (= l_f12 (- l_f11 l_f12))
+        (= l_n1 (- l_n1 (const-int 1))))
+      (basic-block
+        (= r_f21 (+ r_f21 r_f22))
+        (= r_f22 (- r_f21 r_f22))
+        (= r_n2 (- r_n2 (const-int 1))))
+      (seq
+        (|>
+          (basic-block
+            (= r_f21 (+ r_f21 r_f22))
+            (= r_f22 (- r_f21 r_f22))
+            (= r_n2 (- r_n2 (const-int 1)))))
+        (<|
+          (basic-block
+            (= l_f11 (+ l_f11 l_f12))
+            (= l_f12 (- l_f11 l_f12))
+            (= l_n1 (- l_n1 (const-int 1)))))))
+    (seq
+      (|>
+        (if-else
+          (> r_f21 r_k2)
+          (basic-block (= r_l2 (const-int 1)))
+          (basic-block (= r_l2 (const-int 0)))))
+      (<|
+        (if-else
+          (> l_f11 l_k1)
+          (basic-block (= l_l1 (const-int 1)))
+          (basic-block (= l_l1 (const-int 0))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "assert.h"
+
+void main() {
+  int l_f11 = nondet();
+  int l_f12 = nondet();
+  int l_n1 = nondet();
+  int l_k1 = nondet();
+  int l_l1 = nondet();
+  int r_f21 = nondet();
+  int r_f22 = nondet();
+  int r_n2 = nondet();
+  int r_k2 = nondet();
+  int r_l2 = nondet();
+  __VERIFIER_assume((l_f11 == r_f21) && ((l_f12 == r_f22) && ((l_n1 == r_n2) && ((l_k1 == r_k2) && (l_l1 == r_l2)))));
+  while ((l_n1 > 0) && (r_n2 > 0)) {
+    r_f21 = (r_f21 + r_f22);
+    r_f22 = (r_f21 - r_f22);
+    r_n2 = (r_n2 - 1);
+    l_f11 = (l_f11 + l_f12);
+    l_f12 = (l_f11 - l_f12);
+    l_n1 = (l_n1 - 1);
+  }
+  while (l_n1 > 0) {
+    __VERIFIER_assume(!(r_n2 > 0));
+    l_f11 = (l_f11 + l_f12);
+    l_f12 = (l_f11 - l_f12);
+    l_n1 = (l_n1 - 1);
+  }
+  while (r_n2 > 0) {
+    __VERIFIER_assume(!(l_n1 > 0));
+    r_f21 = (r_f21 + r_f22);
+    r_f22 = (r_f21 - r_f22);
+    r_n2 = (r_n2 - 1);
+  }
+  if (r_f21 > r_k2) {
+    r_l2 = 1;
+  } else {r_l2 = 0;
+  }
+  if (l_f11 > l_k1) {
+    l_l1 = 1;
+  } else {l_l1 = 0;
+  }
+  __VERIFIER_assert(l_l1 == r_l2);
+ }
+
+--------------------------
+Writing output to ./results/alignments/icra/sa/TA2005_fib-sa.c...
+Done
+
+real	0m3.387s
+user	0m3.371s
+sys	0m0.010s

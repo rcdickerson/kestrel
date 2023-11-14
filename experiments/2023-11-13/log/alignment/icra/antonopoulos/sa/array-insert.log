@@ -1,0 +1,268 @@
+
+Unaligned Product Program
+--------------------------
+
+void main(int l_A[A_SIZE], int l_val, int r_A[A_SIZE], int r_val) {
+  int l_i = 0;
+  while ((l_i < A_SIZE) && (l_A[l_i] < l_val)) {
+    l_i = (l_i + 1);
+  }
+  int l_len = A_SIZE + 1;
+  l_A[l_i] = l_val;
+  while (l_i < l_len) {
+    l_i = (l_i + 1);
+  }
+  int r_j = 0;
+  while ((r_j < A_SIZE) && (r_A[r_j] < r_val)) {
+    r_j = (r_j + 1);
+  }
+  int r_len = A_SIZE + 1;
+  r_A[r_j] = r_val;
+  while (r_j < r_len) {
+    r_j = (r_j + 1);
+  }
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_A (array-sizes A_SIZE)))
+    (param-declaration (specifiers (type int)) l_val)
+    (param-declaration
+      (specifiers (type int))
+      (sized-array r_A (array-sizes A_SIZE)))
+    (param-declaration (specifiers (type int)) r_val))
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_i (initializer (const-int 0))))
+      (seq
+        (while
+          (&& (< l_i A_SIZE) (< (index l_A l_i) l_val))
+          (basic-block (= l_i (+ l_i (const-int 1)))))
+        (seq
+          (basic-block
+            (declaration
+              (specifiers (type int))
+              l_len
+              (initializer (+ A_SIZE (const-int 1))))
+            (= (index l_A l_i) l_val))
+          (while (< l_i l_len) (basic-block (= l_i (+ l_i (const-int 1))))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
+      (seq
+        (while
+          (&& (< r_j A_SIZE) (< (index r_A r_j) r_val))
+          (basic-block (= r_j (+ r_j (const-int 1)))))
+        (seq
+          (basic-block
+            (declaration
+              (specifiers (type int))
+              r_len
+              (initializer (+ A_SIZE (const-int 1))))
+            (= (index r_A r_j) r_val))
+          (while (< r_j r_len) (basic-block (= r_j (+ r_j (const-int 1))))))))))
+--------------------------
+
+Pre-SA Initial Alignment
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_A (array-sizes A_SIZE)))
+    (param-declaration (specifiers (type int)) l_val)
+    (param-declaration
+      (specifiers (type int))
+      (sized-array r_A (array-sizes A_SIZE)))
+    (param-declaration (specifiers (type int)) r_val))
+  (seq
+    (seq
+      (<|>
+        (basic-block
+          (declaration (specifiers (type int)) l_i (initializer (const-int 0))))
+        (basic-block
+          (declaration (specifiers (type int)) r_j (initializer (const-int 0)))))
+      (while-lockstep
+        0
+        0
+        (&& (< l_i A_SIZE) (< (index l_A l_i) l_val))
+        (&& (< r_j A_SIZE) (< (index r_A r_j) r_val))
+        (basic-block (= l_i (+ l_i (const-int 1))))
+        (basic-block (= r_j (+ r_j (const-int 1))))
+        (<|>
+          (basic-block (= l_i (+ l_i (const-int 1))))
+          (basic-block (= r_j (+ r_j (const-int 1)))))))
+    (seq
+      (<|>
+        (basic-block
+          (declaration
+            (specifiers (type int))
+            l_len
+            (initializer (+ A_SIZE (const-int 1))))
+          (= (index l_A l_i) l_val))
+        (basic-block
+          (declaration
+            (specifiers (type int))
+            r_len
+            (initializer (+ A_SIZE (const-int 1))))
+          (= (index r_A r_j) r_val)))
+      (while-lockstep
+        0
+        0
+        (< l_i l_len)
+        (< r_j r_len)
+        (basic-block (= l_i (+ l_i (const-int 1))))
+        (basic-block (= r_j (+ r_j (const-int 1))))
+        (<|>
+          (basic-block (= l_i (+ l_i (const-int 1))))
+          (basic-block (= r_j (+ r_j (const-int 1)))))))))
+--------------------------
+Starting simulated annealing...
+Initial score: 0.7627766
+Score 0.7452151 at temperature 0.9987501
+Score 0.73729056 at temperature 0.99800014
+Score 0.73665655 at temperature 0.9927506
+Score 0.73653394 at temperature 0.9924173
+Score 0.73307836 at temperature 0.9910841
+Score 0.73020047 at temperature 0.98100156
+Score 0.7270573 at temperature 0.980585
+Score 0.7266169 at temperature 0.9585868
+Score 0.71482635 at temperature 0.939755
+Simulated annealing complete.
+Saw 2643 configurations
+Best score: 0.71482635
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration
+      (specifiers (type int))
+      (sized-array l_A (array-sizes A_SIZE)))
+    (param-declaration (specifiers (type int)) l_val)
+    (param-declaration
+      (specifiers (type int))
+      (sized-array r_A (array-sizes A_SIZE)))
+    (param-declaration (specifiers (type int)) r_val))
+  (seq
+    (seq
+      (|>
+        (basic-block
+          (declaration (specifiers (type int)) r_j (initializer (const-int 0)))))
+      (<|
+        (basic-block
+          (declaration (specifiers (type int)) l_i (initializer (const-int 0))))))
+    (seq
+      (while-lockstep
+        0
+        2
+        (&& (< l_i A_SIZE) (< (index l_A l_i) l_val))
+        (&& (< r_j A_SIZE) (< (index r_A r_j) r_val))
+        (basic-block (= l_i (+ l_i (const-int 1))))
+        (basic-block (= r_j (+ r_j (const-int 1))))
+        (seq
+          (|> (basic-block (= r_j (+ r_j (const-int 1)))))
+          (<| (basic-block (= l_i (+ l_i (const-int 1)))))))
+      (seq
+        (<|>
+          (basic-block
+            (declaration
+              (specifiers (type int))
+              l_len
+              (initializer (+ A_SIZE (const-int 1))))
+            (= (index l_A l_i) l_val))
+          (basic-block
+            (declaration
+              (specifiers (type int))
+              r_len
+              (initializer (+ A_SIZE (const-int 1))))
+            (= (index r_A r_j) r_val)))
+        (while-lockstep
+          0
+          2
+          (< l_i l_len)
+          (< r_j r_len)
+          (basic-block (= l_i (+ l_i (const-int 1))))
+          (basic-block (= r_j (+ r_j (const-int 1))))
+          (seq
+            (|> (basic-block (= r_j (+ r_j (const-int 1)))))
+            (<| (basic-block (= l_i (+ l_i (const-int 1)))))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "assert.h"
+const int A_SIZE = 10;
+extern int shiftArray(int* A, int idx, int amt);
+
+void main() {
+  int l_A[A_SIZE];
+  int l_val = nondet();
+  int r_A[A_SIZE];
+  int r_val = nondet();
+  __VERIFIER_assume((l_val > 0) && (r_val > 0));
+  int r_j = 0;
+  int l_i = 0;
+  if ((r_j < A_SIZE) && (r_A[r_j] < r_val)) {
+    r_j = (r_j + 1);
+  }
+  if ((r_j < A_SIZE) && (r_A[r_j] < r_val)) {
+    r_j = (r_j + 1);
+  }
+  while (((l_i < A_SIZE) && (l_A[l_i] < l_val)) && ((r_j < A_SIZE) && (r_A[r_j] < r_val))) {
+    r_j = (r_j + 1);
+    l_i = (l_i + 1);
+  }
+  while ((l_i < A_SIZE) && (l_A[l_i] < l_val)) {
+    __VERIFIER_assume(!((r_j < A_SIZE) && (r_A[r_j] < r_val)));
+    l_i = (l_i + 1);
+  }
+  while ((r_j < A_SIZE) && (r_A[r_j] < r_val)) {
+    __VERIFIER_assume(!((l_i < A_SIZE) && (l_A[l_i] < l_val)));
+    r_j = (r_j + 1);
+  }
+  int l_len = A_SIZE + 1;
+  l_A[l_i] = l_val;
+  int r_len = A_SIZE + 1;
+  r_A[r_j] = r_val;
+  if (r_j < r_len) {
+    r_j = (r_j + 1);
+  }
+  if (r_j < r_len) {
+    r_j = (r_j + 1);
+  }
+  while ((l_i < l_len) && (r_j < r_len)) {
+    r_j = (r_j + 1);
+    l_i = (l_i + 1);
+  }
+  while (l_i < l_len) {
+    __VERIFIER_assume(!(r_j < r_len));
+    l_i = (l_i + 1);
+  }
+  while (r_j < r_len) {
+    __VERIFIER_assume(!(l_i < l_len));
+    r_j = (r_j + 1);
+  }
+  __VERIFIER_assert(l_i == r_j);
+ }
+
+--------------------------
+Writing output to ./results/alignments/antonopoulos/sa/array-insert-sa.c...
+Done
+
+real	0m5.480s
+user	0m5.457s
+sys	0m0.016s

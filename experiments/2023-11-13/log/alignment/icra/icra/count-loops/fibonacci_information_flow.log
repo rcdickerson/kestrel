@@ -1,0 +1,200 @@
+
+Unaligned Product Program
+--------------------------
+
+void main(int l_n, int l_high, int r_n, int r_high) {
+  int l_f1 = 1;
+  int l_f2 = 0;
+  int l_temp = 0;
+  if (l_high) {
+    while (l_n > 0) {
+      l_f1 = (l_f1 + l_f2);
+      l_f2 = (l_f1 - l_f2);
+      l_n = (l_n - 1);
+    }
+  } else {while (l_n > 0) {
+      l_temp = l_f2;
+      l_f2 = l_f1;
+      l_f1 = (l_f2 + l_temp);
+      l_n = (l_n - 1);
+    }
+  }
+  int r_f1 = 1;
+  int r_f2 = 0;
+  int r_temp = 0;
+  if (r_high) {
+    while (r_n > 0) {
+      r_f1 = (r_f1 + r_f2);
+      r_f2 = (r_f1 - r_f2);
+      r_n = (r_n - 1);
+    }
+  } else {while (r_n > 0) {
+      r_temp = r_f2;
+      r_f2 = r_f1;
+      r_f1 = (r_f2 + r_temp);
+      r_n = (r_n - 1);
+    }
+  }
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_n)
+    (param-declaration (specifiers (type int)) l_high)
+    (param-declaration (specifiers (type int)) r_n)
+    (param-declaration (specifiers (type int)) r_high))
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_f1 (initializer (const-int 1)))
+        (declaration (specifiers (type int)) l_f2 (initializer (const-int 0)))
+        (declaration (specifiers (type int)) l_temp (initializer (const-int 0))))
+      (if-else
+        l_high
+        (while
+          (> l_n (const-int 0))
+          (basic-block
+            (= l_f1 (+ l_f1 l_f2))
+            (= l_f2 (- l_f1 l_f2))
+            (= l_n (- l_n (const-int 1)))))
+        (while
+          (> l_n (const-int 0))
+          (basic-block
+            (= l_temp l_f2)
+            (= l_f2 l_f1)
+            (= l_f1 (+ l_f2 l_temp))
+            (= l_n (- l_n (const-int 1)))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_f1 (initializer (const-int 1)))
+        (declaration (specifiers (type int)) r_f2 (initializer (const-int 0)))
+        (declaration (specifiers (type int)) r_temp (initializer (const-int 0))))
+      (if-else
+        r_high
+        (while
+          (> r_n (const-int 0))
+          (basic-block
+            (= r_f1 (+ r_f1 r_f2))
+            (= r_f2 (- r_f1 r_f2))
+            (= r_n (- r_n (const-int 1)))))
+        (while
+          (> r_n (const-int 0))
+          (basic-block
+            (= r_temp r_f2)
+            (= r_f2 r_f1)
+            (= r_f1 (+ r_f2 r_temp))
+            (= r_n (- r_n (const-int 1)))))))))
+--------------------------
+Computed alignment by local loop counting.
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_n)
+    (param-declaration (specifiers (type int)) l_high)
+    (param-declaration (specifiers (type int)) r_n)
+    (param-declaration (specifiers (type int)) r_high))
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_f1 (initializer (const-int 1)))
+        (declaration (specifiers (type int)) l_f2 (initializer (const-int 0)))
+        (declaration (specifiers (type int)) l_temp (initializer (const-int 0))))
+      (if-else
+        l_high
+        (while
+          (> l_n (const-int 0))
+          (basic-block
+            (= l_f1 (+ l_f1 l_f2))
+            (= l_f2 (- l_f1 l_f2))
+            (= l_n (- l_n (const-int 1)))))
+        (while
+          (> l_n (const-int 0))
+          (basic-block
+            (= l_temp l_f2)
+            (= l_f2 l_f1)
+            (= l_f1 (+ l_f2 l_temp))
+            (= l_n (- l_n (const-int 1)))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_f1 (initializer (const-int 1)))
+        (declaration (specifiers (type int)) r_f2 (initializer (const-int 0)))
+        (declaration (specifiers (type int)) r_temp (initializer (const-int 0))))
+      (if-else
+        r_high
+        (while
+          (> r_n (const-int 0))
+          (basic-block
+            (= r_f1 (+ r_f1 r_f2))
+            (= r_f2 (- r_f1 r_f2))
+            (= r_n (- r_n (const-int 1)))))
+        (while
+          (> r_n (const-int 0))
+          (basic-block
+            (= r_temp r_f2)
+            (= r_f2 r_f1)
+            (= r_f1 (+ r_f2 r_temp))
+            (= r_n (- r_n (const-int 1)))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "assert.h"
+
+void main() {
+  int l_n = nondet();
+  int l_high = nondet();
+  int r_n = nondet();
+  int r_high = nondet();
+  __VERIFIER_assume(l_n == r_n);
+  int l_f1 = 1;
+  int l_f2 = 0;
+  int l_temp = 0;
+  if (l_high) {
+    while (l_n > 0) {
+      l_f1 = (l_f1 + l_f2);
+      l_f2 = (l_f1 - l_f2);
+      l_n = (l_n - 1);
+    }
+  } else {while (l_n > 0) {
+      l_temp = l_f2;
+      l_f2 = l_f1;
+      l_f1 = (l_f2 + l_temp);
+      l_n = (l_n - 1);
+    }
+  }
+  int r_f1 = 1;
+  int r_f2 = 0;
+  int r_temp = 0;
+  if (r_high) {
+    while (r_n > 0) {
+      r_f1 = (r_f1 + r_f2);
+      r_f2 = (r_f1 - r_f2);
+      r_n = (r_n - 1);
+    }
+  } else {while (r_n > 0) {
+      r_temp = r_f2;
+      r_f2 = r_f1;
+      r_f1 = (r_f2 + r_temp);
+      r_n = (r_n - 1);
+    }
+  }
+  __VERIFIER_assert(l_f1 == r_f1);
+ }
+
+--------------------------
+Writing output to ./results/alignments/icra/count-loops/fibonacci_information_flow-cou.c...
+Done
+
+real	0m0.025s
+user	0m0.014s
+sys	0m0.011s

@@ -1,0 +1,228 @@
+
+Unaligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main(int l_o1_null, int l_o2_null, int l_o1_fileName_null, int l_o2_fileName_null, int l_o1_fileName, int l_o2_fileName, int r_o1_null, int r_o2_null, int r_o1_fileName_null, int r_o2_fileName_null, int r_o1_fileName, int r_o2_fileName) {
+  int l_result = -999;
+  if (l_o1_null) {
+    if (l_o2_null) {
+      l_result = 0;
+    } else {l_result = 1;
+    }
+  } else {if (l_o2_null) {
+      l_result = (-1);
+    }
+  }
+  if (l_result == (-999)) {
+    int l_n1 = l_o1_fileName;
+    int l_n2 = l_o2_fileName;
+    if (l_o1_fileName_null) {
+      if (l_o2_fileName_null) {
+        l_result = 0;
+      } else {l_result = 1;
+      }
+    } else {if (l_o2_fileName_null) {
+        l_result = (-1);
+      }
+    }
+    l_result = (l_n1 - l_n2);
+  }
+  int r_result = -999;
+  if (r_o1_null) {
+    if (r_o2_null) {
+      r_result = 0;
+    } else {r_result = 1;
+    }
+  } else {if (r_o2_null) {
+      r_result = (-1);
+    }
+  }
+  if (r_result == (-999)) {
+    int r_n1 = r_o1_fileName;
+    int r_n2 = r_o2_fileName;
+    if (r_o1_fileName_null) {
+      if (r_o2_fileName_null) {
+        r_result = 0;
+      } else {r_result = 1;
+      }
+    } else {if (r_o2_fileName_null) {
+        r_result = (-1);
+      }
+    }
+    r_result = (r_n1 - r_n2);
+  }
+ }
+
+--------------------------
+Starting simulated annealing...
+Score 0.2111111 at temperature 0.9301397
+Simulated annealing complete.
+Saw 496 configurations
+Best score: 0.2111111
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_o1_null)
+    (param-declaration (specifiers (type int)) l_o2_null)
+    (param-declaration (specifiers (type int)) l_o1_fileName_null)
+    (param-declaration (specifiers (type int)) l_o2_fileName_null)
+    (param-declaration (specifiers (type int)) l_o1_fileName)
+    (param-declaration (specifiers (type int)) l_o2_fileName)
+    (param-declaration (specifiers (type int)) r_o1_null)
+    (param-declaration (specifiers (type int)) r_o2_null)
+    (param-declaration (specifiers (type int)) r_o1_fileName_null)
+    (param-declaration (specifiers (type int)) r_o2_fileName_null)
+    (param-declaration (specifiers (type int)) r_o1_fileName)
+    (param-declaration (specifiers (type int)) r_o2_fileName))
+  (seq
+    (seq
+      (<|
+        (basic-block
+          (declaration
+            (specifiers (type int))
+            l_result
+            (initializer (neg (const-int 999))))))
+      (seq
+        (<|
+          (if-else
+            l_o1_null
+            (if-else
+              l_o2_null
+              (basic-block (= l_result (const-int 0)))
+              (basic-block (= l_result (const-int 1))))
+            (if l_o2_null (basic-block (= l_result (neg (const-int 1)))))))
+        (<|
+          (if
+            (== l_result (neg (const-int 999)))
+            (seq
+              (seq
+                (basic-block
+                  (declaration (specifiers (type int)) l_n1 (initializer l_o1_fileName))
+                  (declaration (specifiers (type int)) l_n2 (initializer l_o2_fileName)))
+                (if-else
+                  l_o1_fileName_null
+                  (if-else
+                    l_o2_fileName_null
+                    (basic-block (= l_result (const-int 0)))
+                    (basic-block (= l_result (const-int 1))))
+                  (if l_o2_fileName_null (basic-block (= l_result (neg (const-int 1)))))))
+              (basic-block (= l_result (- l_n1 l_n2))))))))
+    (seq
+      (|>
+        (basic-block
+          (declaration
+            (specifiers (type int))
+            r_result
+            (initializer (neg (const-int 999))))))
+      (seq
+        (|>
+          (if-else
+            r_o1_null
+            (if-else
+              r_o2_null
+              (basic-block (= r_result (const-int 0)))
+              (basic-block (= r_result (const-int 1))))
+            (if r_o2_null (basic-block (= r_result (neg (const-int 1)))))))
+        (|>
+          (if
+            (== r_result (neg (const-int 999)))
+            (seq
+              (basic-block
+                (declaration (specifiers (type int)) r_n1 (initializer r_o1_fileName))
+                (declaration (specifiers (type int)) r_n2 (initializer r_o2_fileName)))
+              (seq
+                (if-else
+                  r_o1_fileName_null
+                  (if-else
+                    r_o2_fileName_null
+                    (basic-block (= r_result (const-int 0)))
+                    (basic-block (= r_result (const-int 1))))
+                  (if r_o2_fileName_null (basic-block (= r_result (neg (const-int 1))))))
+                (basic-block (= r_result (- r_n1 r_n2)))))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "seahorn/seahorn.h"
+
+extern int arb_int();
+
+void main() {
+  int l_o1_null = arb_int();
+  int l_o2_null = arb_int();
+  int l_o1_fileName_null = arb_int();
+  int l_o2_fileName_null = arb_int();
+  int l_o1_fileName = arb_int();
+  int l_o2_fileName = arb_int();
+  int r_o1_null = arb_int();
+  int r_o2_null = arb_int();
+  int r_o1_fileName_null = arb_int();
+  int r_o2_fileName_null = arb_int();
+  int r_o1_fileName = arb_int();
+  int r_o2_fileName = arb_int();
+  assume((l_o1_null == r_o2_null) && ((l_o1_fileName_null == r_o2_fileName_null) && ((l_o1_fileName == r_o2_fileName) && ((l_o2_null == r_o1_null) && ((l_o2_fileName_null == r_o1_fileName_null) && (l_o2_fileName == r_o1_fileName))))));
+  int l_result = -999;
+  if (l_o1_null) {
+    if (l_o2_null) {
+      l_result = 0;
+    } else {l_result = 1;
+    }
+  } else {if (l_o2_null) {
+      l_result = (-1);
+    }
+  }
+  if (l_result == (-999)) {
+    int l_n1 = l_o1_fileName;
+    int l_n2 = l_o2_fileName;
+    if (l_o1_fileName_null) {
+      if (l_o2_fileName_null) {
+        l_result = 0;
+      } else {l_result = 1;
+      }
+    } else {if (l_o2_fileName_null) {
+        l_result = (-1);
+      }
+    }
+    l_result = (l_n1 - l_n2);
+  }
+  int r_result = -999;
+  if (r_o1_null) {
+    if (r_o2_null) {
+      r_result = 0;
+    } else {r_result = 1;
+    }
+  } else {if (r_o2_null) {
+      r_result = (-1);
+    }
+  }
+  if (r_result == (-999)) {
+    int r_n1 = r_o1_fileName;
+    int r_n2 = r_o2_fileName;
+    if (r_o1_fileName_null) {
+      if (r_o2_fileName_null) {
+        r_result = 0;
+      } else {r_result = 1;
+      }
+    } else {if (r_o2_fileName_null) {
+        r_result = (-1);
+      }
+    }
+    r_result = (r_n1 - r_n2);
+  }
+  sassert(l_result == (-1 * r_result));
+ }
+
+--------------------------
+Writing output to ./results/sousa/sa/file-item.c...
+Done
+
+real	0m25.535s
+user	0m25.504s
+sys	0m0.013s

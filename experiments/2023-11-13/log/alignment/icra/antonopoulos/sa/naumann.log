@@ -1,0 +1,213 @@
+
+Unaligned Product Program
+--------------------------
+
+void main(int l_x, int r_x) {
+  int l_y = l_x;
+  int l_z = 24;
+  int l_w = 0;
+  while (l_y > 4) {
+    if ((l_w % 2) == 0) {
+      l_z = (l_z * l_y);
+      l_y = (l_y - 1);
+    }
+    l_w = (l_w + 1);
+  }
+  int r_y = r_x;
+  int r_z = 16;
+  int r_w = 0;
+  while (r_y > 4) {
+    if ((r_w % 3) == 0) {
+      r_z = (r_z * 2);
+      r_y = (r_y - 1);
+    }
+    r_w = (r_w + 1);
+  }
+ }
+
+--------------------------
+
+Unaligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_x)
+    (param-declaration (specifiers (type int)) r_x))
+  (<|>
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) l_y (initializer l_x))
+        (declaration (specifiers (type int)) l_z (initializer (const-int 24)))
+        (declaration (specifiers (type int)) l_w (initializer (const-int 0))))
+      (while
+        (> l_y (const-int 4))
+        (seq
+          (if
+            (== (mod l_w (const-int 2)) (const-int 0))
+            (basic-block (= l_z (* l_z l_y)) (= l_y (- l_y (const-int 1)))))
+          (basic-block (= l_w (+ l_w (const-int 1)))))))
+    (seq
+      (basic-block
+        (declaration (specifiers (type int)) r_y (initializer r_x))
+        (declaration (specifiers (type int)) r_z (initializer (const-int 16)))
+        (declaration (specifiers (type int)) r_w (initializer (const-int 0))))
+      (while
+        (> r_y (const-int 4))
+        (seq
+          (if
+            (== (mod r_w (const-int 3)) (const-int 0))
+            (basic-block (= r_z (* r_z (const-int 2))) (= r_y (- r_y (const-int 1)))))
+          (basic-block (= r_w (+ r_w (const-int 1)))))))))
+--------------------------
+
+Pre-SA Initial Alignment
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_x)
+    (param-declaration (specifiers (type int)) r_x))
+  (seq
+    (<|>
+      (basic-block
+        (declaration (specifiers (type int)) l_y (initializer l_x))
+        (declaration (specifiers (type int)) l_z (initializer (const-int 24)))
+        (declaration (specifiers (type int)) l_w (initializer (const-int 0))))
+      (basic-block
+        (declaration (specifiers (type int)) r_y (initializer r_x))
+        (declaration (specifiers (type int)) r_z (initializer (const-int 16)))
+        (declaration (specifiers (type int)) r_w (initializer (const-int 0)))))
+    (while-lockstep
+      0
+      0
+      (> l_y (const-int 4))
+      (> r_y (const-int 4))
+      (seq
+        (if
+          (== (mod l_w (const-int 2)) (const-int 0))
+          (basic-block (= l_z (* l_z l_y)) (= l_y (- l_y (const-int 1)))))
+        (basic-block (= l_w (+ l_w (const-int 1)))))
+      (seq
+        (if
+          (== (mod r_w (const-int 3)) (const-int 0))
+          (basic-block (= r_z (* r_z (const-int 2))) (= r_y (- r_y (const-int 1)))))
+        (basic-block (= r_w (+ r_w (const-int 1)))))
+      (seq
+        (<|>
+          (if
+            (== (mod l_w (const-int 2)) (const-int 0))
+            (basic-block (= l_z (* l_z l_y)) (= l_y (- l_y (const-int 1)))))
+          (if
+            (== (mod r_w (const-int 3)) (const-int 0))
+            (basic-block (= r_z (* r_z (const-int 2))) (= r_y (- r_y (const-int 1))))))
+        (<|>
+          (basic-block (= l_w (+ l_w (const-int 1))))
+          (basic-block (= r_w (+ r_w (const-int 1)))))))))
+--------------------------
+Starting simulated annealing...
+Initial score: 0.28057897
+Simulated annealing complete.
+Saw 1930 configurations
+Best score: 0.28057897
+
+Aligned Eggroll
+--------------------------
+(fundef
+  (specifiers (type void))
+  main
+  (params
+    (param-declaration (specifiers (type int)) l_x)
+    (param-declaration (specifiers (type int)) r_x))
+  (seq
+    (<|>
+      (basic-block
+        (declaration (specifiers (type int)) l_y (initializer l_x))
+        (declaration (specifiers (type int)) l_z (initializer (const-int 24)))
+        (declaration (specifiers (type int)) l_w (initializer (const-int 0))))
+      (basic-block
+        (declaration (specifiers (type int)) r_y (initializer r_x))
+        (declaration (specifiers (type int)) r_z (initializer (const-int 16)))
+        (declaration (specifiers (type int)) r_w (initializer (const-int 0)))))
+    (while-lockstep
+      0
+      0
+      (> l_y (const-int 4))
+      (> r_y (const-int 4))
+      (seq
+        (if
+          (== (mod l_w (const-int 2)) (const-int 0))
+          (basic-block (= l_z (* l_z l_y)) (= l_y (- l_y (const-int 1)))))
+        (basic-block (= l_w (+ l_w (const-int 1)))))
+      (seq
+        (if
+          (== (mod r_w (const-int 3)) (const-int 0))
+          (basic-block (= r_z (* r_z (const-int 2))) (= r_y (- r_y (const-int 1)))))
+        (basic-block (= r_w (+ r_w (const-int 1)))))
+      (seq
+        (<|>
+          (if
+            (== (mod l_w (const-int 2)) (const-int 0))
+            (basic-block (= l_z (* l_z l_y)) (= l_y (- l_y (const-int 1)))))
+          (if
+            (== (mod r_w (const-int 3)) (const-int 0))
+            (basic-block (= r_z (* r_z (const-int 2))) (= r_y (- r_y (const-int 1))))))
+        (<|>
+          (basic-block (= l_w (+ l_w (const-int 1))))
+          (basic-block (= r_w (+ r_w (const-int 1)))))))))
+--------------------------
+
+Aligned Product Program
+--------------------------
+#include "assert.h"
+
+void main() {
+  int l_x = nondet();
+  int r_x = nondet();
+  __VERIFIER_assume(l_x == r_x);
+  int l_y = l_x;
+  int l_z = 24;
+  int l_w = 0;
+  int r_y = r_x;
+  int r_z = 16;
+  int r_w = 0;
+  while ((l_y > 4) && (r_y > 4)) {
+    if ((l_w % 2) == 0) {
+      l_z = (l_z * l_y);
+      l_y = (l_y - 1);
+    }
+    if ((r_w % 3) == 0) {
+      r_z = (r_z * 2);
+      r_y = (r_y - 1);
+    }
+    l_w = (l_w + 1);
+    r_w = (r_w + 1);
+  }
+  while (l_y > 4) {
+    __VERIFIER_assume(!(r_y > 4));
+    if ((l_w % 2) == 0) {
+      l_z = (l_z * l_y);
+      l_y = (l_y - 1);
+    }
+    l_w = (l_w + 1);
+  }
+  while (r_y > 4) {
+    __VERIFIER_assume(!(l_y > 4));
+    if ((r_w % 3) == 0) {
+      r_z = (r_z * 2);
+      r_y = (r_y - 1);
+    }
+    r_w = (r_w + 1);
+  }
+  __VERIFIER_assert(l_z > r_z);
+ }
+
+--------------------------
+Writing output to ./results/alignments/antonopoulos/sa/naumann-sa.c...
+Done
+
+real	0m2.611s
+user	0m2.599s
+sys	0m0.007s

@@ -34,8 +34,8 @@ do
   do
     # Make the output and log directories
     output_base_dir="./results"
-    output_dir="$output_base_dir/alignments/$group_name/$technique"
-    log_dir="$output_base_dir/log/alignment/$group_name/$technique"
+    output_dir="$output_base_dir/alignments/$out_mode/$group_name/$technique"
+    log_dir="$output_base_dir/log/alignment/$out_mode/$group_name/$technique"
     echo "Storing results in $output_dir"
     mkdir -p "$output_dir"
     echo "Storing logs in in $log_dir"

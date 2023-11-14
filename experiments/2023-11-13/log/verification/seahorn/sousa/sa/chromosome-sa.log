@@ -1,19 +1,19 @@
-/usr/bin/clang-14 -c -emit-llvm -D__SEAHORN__ -fdeclspec -O1 -Xclang -disable-llvm-optzns -fgnu89-inline -m64 -I/home/usea/seahorn/include -o /tmp/sea-6nkl8hyj/chromosome-sa.bc ./results/alignments/sousa/sa/chromosome-sa.c
-./results/alignments/sousa/sa/chromosome-sa.c:4:1: warning: return type of 'main' is not 'int' [-Wmain-return-type]
+/usr/bin/clang-14 -c -emit-llvm -D__SEAHORN__ -fdeclspec -O1 -Xclang -disable-llvm-optzns -fgnu89-inline -m64 -I/home/usea/seahorn/include -o /tmp/sea-9h0a940k/chromosome-sa.bc ./results/alignments/seahorn/sousa/sa/chromosome-sa.c
+./results/alignments/seahorn/sousa/sa/chromosome-sa.c:4:1: warning: return type of 'main' is not 'int' [-Wmain-return-type]
 void main() {
 ^
-./results/alignments/sousa/sa/chromosome-sa.c:4:1: note: change return type to 'int'
+./results/alignments/seahorn/sousa/sa/chromosome-sa.c:4:1: note: change return type to 'int'
 void main() {
 ^~~~
 int
-./results/alignments/sousa/sa/chromosome-sa.c:30:7: error: 'break' statement not in loop or switch statement
+./results/alignments/seahorn/sousa/sa/chromosome-sa.c:30:7: error: 'break' statement not in loop or switch statement
       break;
       ^
-./results/alignments/sousa/sa/chromosome-sa.c:44:7: error: 'break' statement not in loop or switch statement
+./results/alignments/seahorn/sousa/sa/chromosome-sa.c:44:7: error: 'break' statement not in loop or switch statement
       break;
       ^
 1 warning and 2 errors generated.
 
 real	0m0.068s
-user	0m0.044s
-sys	0m0.025s
+user	0m0.055s
+sys	0m0.013s

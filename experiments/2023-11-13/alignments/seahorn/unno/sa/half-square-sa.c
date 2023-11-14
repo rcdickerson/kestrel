@@ -13,6 +13,14 @@ void main() {
   int r_i = 0;
   int r_y = 0;
   int r_v = 0;
+  if (r_h > r_i) {
+    r_i = (r_i + 1);
+    r_y = (r_y + r_y);
+  }
+  if (r_h > r_i) {
+    r_i = (r_i + 1);
+    r_y = (r_y + r_y);
+  }
   while ((l_h > l_i) && (r_h > r_i)) {
     l_i = (l_i + 1);
     l_y = (l_y + l_y);
@@ -31,6 +39,10 @@ void main() {
   }
   l_v = 1;
   r_v = 1;
+  if (l_low > l_i) {
+    l_i = (l_i + 1);
+    l_y = (l_y + l_y);
+  }
   while ((l_low > l_i) && (r_low > r_i)) {
     l_i = (l_i + 1);
     l_y = (l_y + l_y);

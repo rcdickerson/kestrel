@@ -245,9 +245,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/sousa/unaligned/col_item-una.c...
+Writing output to ./results/alignments/seahorn/sousa/unaligned/col_item-una.c...
 Done
 
-real	0m0.025s
-user	0m0.019s
-sys	0m0.007s
+real	0m0.029s
+user	0m0.014s
+sys	0m0.015s

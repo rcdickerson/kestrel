@@ -95,9 +95,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/unaligned/BCK2011_gauss-una.c...
+Writing output to ./results/alignments/seahorn/icra/unaligned/BCK2011_gauss-una.c...
 Done
 
-real	0m0.024s
-user	0m0.017s
-sys	0m0.007s
+real	0m0.026s
+user	0m0.013s
+sys	0m0.012s

@@ -168,10 +168,10 @@ Pre-SA Initial Alignment
             (= r_j (+ r_j (const-int 1)))))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.7480953
+Initial score: 0.7476191
 Simulated annealing complete.
 Saw 180 configurations
-Best score: 0.7480953
+Best score: 0.7476191
 
 Aligned Eggroll
 --------------------------
@@ -295,9 +295,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/sa/loop-unswitching-sa.c...
+Writing output to ./results/alignments/seahorn/barthe/sa/loop-unswitching-sa.c...
 Done
 
-real	0m4.681s
-user	0m4.665s
-sys	0m0.010s
+real	0m4.790s
+user	0m4.774s
+sys	0m0.007s

@@ -72,13 +72,12 @@ Pre-SA Initial Alignment
         (basic-block (= r_x (+ r_x r_i)) (= r_i (+ r_i (const-int 1))))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.3753016
-Score 0.34995666 at temperature 0.98975086
-Score 0.33 at temperature 0.9867511
-Score 0.29 at temperature 0.98216814
+Initial score: 0.35774606
+Score 0.29 at temperature 0.99925005
+Score 0.25666666 at temperature 0.99350053
 Simulated annealing complete.
 Saw 135 configurations
-Best score: 0.29
+Best score: 0.25666666
 
 Aligned Eggroll
 --------------------------
@@ -145,9 +144,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/sa/unroll-sa.c...
+Writing output to ./results/alignments/seahorn/barthe/sa/unroll-sa.c...
 Done
 
-real	0m1.865s
-user	0m1.845s
-sys	0m0.010s
+real	0m1.482s
+user	0m1.463s
+sys	0m0.016s

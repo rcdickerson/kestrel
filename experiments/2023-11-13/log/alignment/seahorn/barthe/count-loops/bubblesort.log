@@ -298,9 +298,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/count-loops/bubblesort-cou.c...
+Writing output to ./results/alignments/seahorn/barthe/count-loops/bubblesort-cou.c...
 Done
 
-real	0m0.050s
-user	0m0.043s
-sys	0m0.007s
+real	0m0.049s
+user	0m0.036s
+sys	0m0.013s

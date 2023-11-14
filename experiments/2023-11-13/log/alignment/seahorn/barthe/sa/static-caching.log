@@ -294,15 +294,16 @@ Pre-SA Initial Alignment
             (= r_i (+ r_i (const-int 1)))))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.7993589
-Score 0.78626364 at temperature 0.99983335
-Score 0.78002566 at temperature 0.9984168
-Score 0.76673996 at temperature 0.9981668
-Score 0.7523809 at temperature 0.9945838
-Score 0.7137255 at temperature 0.9943338
-Score 0.6755556 at temperature 0.97325224
-Score 0.63039213 at temperature 0.9712524
+Initial score: 0.79935896
+Score 0.79602563 at temperature 1
+Score 0.7930257 at temperature 0.9994167
+Score 0.7788033 at temperature 0.9993334
+Score 0.7726922 at temperature 0.9991667
+Score 0.7675939 at temperature 0.9967503
+Score 0.7203921 at temperature 0.9965003
+Score 0.7200001 at temperature 0.98966753
+Score 0.7 at temperature 0.9760853
 
-real	10m0.002s
-user	9m59.484s
-sys	0m0.033s
+real	10m0.006s
+user	9m59.379s
+sys	0m0.043s

@@ -24,6 +24,7 @@ int right_o2_cardType;
 void main() {
   assume((left_o1 == right_o2) && ((left_o1_getCardSet == right_o2_getCardSet) && ((left_o1_getCardRarity == right_o2_getCardRarity) && ((left_o1_getCardId == right_o2_getCardId) && ((left_o1_cardType == right_o2_cardType) && ((left_o2 == right_o1) && ((left_o2_getCardSet == right_o1_getCardSet) && ((left_o2_getCardRarity == right_o1_getCardRarity) && ((left_o2_getCardId == right_o1_getCardId) && (left_o2_cardType == right_o1_cardType))))))))));
   int l_ret;
+  int r_ret;
   if (left_o1 == left_o2) {
     l_ret = 0;
   } else {if (left_o1_getCardSet > left_o2_getCardSet) {
@@ -46,7 +47,6 @@ void main() {
       }
     }
   }
-  int r_ret;
   if (right_o1 == right_o2) {
     r_ret = 0;
   } else {if (right_o1_getCardSet > right_o2_getCardSet) {

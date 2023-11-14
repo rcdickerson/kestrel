@@ -174,12 +174,11 @@ Pre-SA Initial Alignment
 --------------------------
 Starting simulated annealing...
 Initial score: 0.7613334
-Score 0.7533333 at temperature 1
-Score 0.69403505 at temperature 0.99575037
-Score 0.69333327 at temperature 0.9931672
-Score 0.6266666 at temperature 0.9908341
+Score 0.7022223 at temperature 0.9994167
+Score 0.6346666 at temperature 0.9993334
+Score 0.6266666 at temperature 0.9824181
 Simulated annealing complete.
-Saw 1231 configurations
+Saw 1318 configurations
 Best score: 0.6266666
 
 Aligned Eggroll
@@ -207,19 +206,19 @@ Aligned Eggroll
       (specifiers (type int))
       (sized-array r_c (array-sizes (const-int 10)))))
   (seq
+    (<|
+      (basic-block
+        (declaration (specifiers (type int)) l_i (initializer (const-int 0)))))
     (seq
-      (<|
+      (|>
         (basic-block
-          (declaration (specifiers (type int)) l_i (initializer (const-int 0)))))
+          (declaration (specifiers (type int)) r_j (initializer (const-int 0)))
+          (= (index r_a (const-int 0)) (+ (index r_a (const-int 0)) (const-int 1)))
+          (=
+            (index r_b (const-int 0))
+            (+ (index r_b (const-int 0)) (index r_a (const-int 0))))
+          (= (index r_a (const-int 1)) (+ (index r_a (const-int 1)) (const-int 1)))))
       (seq
-        (|>
-          (basic-block
-            (declaration (specifiers (type int)) r_j (initializer (const-int 0)))
-            (= (index r_a (const-int 0)) (+ (index r_a (const-int 0)) (const-int 1)))
-            (=
-              (index r_b (const-int 0))
-              (+ (index r_b (const-int 0)) (index r_a (const-int 0))))
-            (= (index r_a (const-int 1)) (+ (index r_a (const-int 1)) (const-int 1)))))
         (while-lockstep
           2
           0
@@ -253,16 +252,16 @@ Aligned Eggroll
                 (index r_b (+ r_j (const-int 1)))
                 (+ (index r_b (+ r_j (const-int 1))) (index r_a (+ r_j (const-int 1)))))
               (= (index r_c r_j) (+ (index r_c r_j) (index r_b r_j)))
-              (= r_j (+ r_j (const-int 1))))))))
-    (|>
-      (basic-block
-        (= (index r_c r_j) (+ (index r_c r_j) (index r_b r_j)))
-        (=
-          (index r_b (+ r_j (const-int 1)))
-          (+ (index r_b (+ r_j (const-int 1))) (index r_a (+ r_j (const-int 1)))))
-        (=
-          (index r_c (+ r_j (const-int 1)))
-          (+ (index r_c (+ r_j (const-int 1))) (index r_b (+ r_j (const-int 1)))))))))
+              (= r_j (+ r_j (const-int 1))))))
+        (|>
+          (basic-block
+            (= (index r_c r_j) (+ (index r_c r_j) (index r_b r_j)))
+            (=
+              (index r_b (+ r_j (const-int 1)))
+              (+ (index r_b (+ r_j (const-int 1))) (index r_a (+ r_j (const-int 1)))))
+            (=
+              (index r_c (+ r_j (const-int 1)))
+              (+ (index r_c (+ r_j (const-int 1))) (index r_b (+ r_j (const-int 1)))))))))))
 --------------------------
 
 Aligned Product Program
@@ -334,9 +333,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/sa/loop-pipelining-sa.c...
+Writing output to ./results/alignments/seahorn/barthe/sa/loop-pipelining-sa.c...
 Done
 
-real	0m6.932s
-user	0m6.908s
-sys	0m0.017s
+real	0m7.697s
+user	0m7.686s
+sys	0m0.000s

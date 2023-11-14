@@ -155,9 +155,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/antonopoulos/unaligned/array-insert-una.c...
+Writing output to ./results/alignments/seahorn/antonopoulos/unaligned/array-insert-una.c...
 Done
 
 real	0m0.026s
-user	0m0.012s
-sys	0m0.014s
+user	0m0.015s
+sys	0m0.011s

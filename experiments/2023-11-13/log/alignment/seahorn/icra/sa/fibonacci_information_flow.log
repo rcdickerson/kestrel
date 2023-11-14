@@ -145,11 +145,11 @@ Pre-SA Initial Alignment
             (= r_n (- r_n (const-int 1)))))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.62
-Score 0.57799995 at temperature 0.9975002
+Initial score: 0.65999997
+Score 0.6244999 at temperature 0.9913341
 Simulated annealing complete.
-Saw 1928 configurations
-Best score: 0.57799995
+Saw 1992 configurations
+Best score: 0.6244999
 
 Aligned Eggroll
 --------------------------
@@ -251,9 +251,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/sa/fibonacci_information_flow-sa.c...
+Writing output to ./results/alignments/seahorn/icra/sa/fibonacci_information_flow-sa.c...
 Done
 
-real	0m1.695s
-user	0m1.689s
-sys	0m0.003s
+real	0m1.983s
+user	0m1.971s
+sys	0m0.010s

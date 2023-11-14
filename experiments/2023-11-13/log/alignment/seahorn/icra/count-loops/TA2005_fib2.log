@@ -225,9 +225,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/count-loops/TA2005_fib2-cou.c...
+Writing output to ./results/alignments/seahorn/icra/count-loops/TA2005_fib2-cou.c...
 Done
 
-real	0m0.031s
-user	0m0.024s
-sys	0m0.006s
+real	0m0.032s
+user	0m0.027s
+sys	0m0.004s

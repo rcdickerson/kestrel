@@ -9,6 +9,8 @@ void main() {
   assume(l_low == r_low);
   int l_tick = 0;
   int l_i;
+  int r_tick = 0;
+  int r_i;
   if (l_high == 0) {
     l_i = 0;
     while (l_i < l_low) {
@@ -21,8 +23,6 @@ void main() {
       l_tick = (l_tick + 1);
     }
   }
-  int r_tick = 0;
-  int r_i;
   if (r_high == 0) {
     r_i = 0;
     while (r_i < r_low) {

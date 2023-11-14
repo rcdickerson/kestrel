@@ -132,12 +132,11 @@ Pre-SA Initial Alignment
     (|> (basic-block (= (index r_b (const-int 20)) (index r_a (const-int 20)))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.6889206
-Score 0.62662125 at temperature 0.99950004
-Score 0.6243968 at temperature 0.988251
+Initial score: 0.69396824
+Score 0.6294444 at temperature 0.9990001
 Simulated annealing complete.
-Saw 1252 configurations
-Best score: 0.6243968
+Saw 1192 configurations
+Best score: 0.6294444
 
 Aligned Eggroll
 --------------------------
@@ -158,21 +157,21 @@ Aligned Eggroll
       (specifiers (type int))
       (sized-array r_b (array-sizes (+ (const-int 20) (const-int 1))))))
   (seq
-    (<|>
-      (basic-block
-        (declaration (specifiers (type int)) l_i (initializer (const-int 1)))
-        (declaration
-          (specifiers (type int))
-          (sized-array l_d (array-sizes (+ (const-int 20) (const-int 1))))
-          no-initializer))
-      (basic-block
-        (declaration (specifiers (type int)) r_j (initializer (const-int 1)))
-        (declaration
-          (specifiers (type int))
-          (sized-array r_d (array-sizes (+ (const-int 20) (const-int 1))))
-          no-initializer)
-        (= (index r_d (const-int 1)) (index r_b (const-int 0)))))
     (seq
+      (<|>
+        (basic-block
+          (declaration (specifiers (type int)) l_i (initializer (const-int 1)))
+          (declaration
+            (specifiers (type int))
+            (sized-array l_d (array-sizes (+ (const-int 20) (const-int 1))))
+            no-initializer))
+        (basic-block
+          (declaration (specifiers (type int)) r_j (initializer (const-int 1)))
+          (declaration
+            (specifiers (type int))
+            (sized-array r_d (array-sizes (+ (const-int 20) (const-int 1))))
+            no-initializer)
+          (= (index r_d (const-int 1)) (index r_b (const-int 0)))))
       (while-lockstep
         1
         0
@@ -194,8 +193,8 @@ Aligned Eggroll
           (basic-block
             (= (index r_b r_j) (index r_a r_j))
             (= (index r_d (+ r_j (const-int 1))) (index r_b r_j))
-            (= r_j (+ r_j (const-int 1))))))
-      (|> (basic-block (= (index r_b (const-int 20)) (index r_a (const-int 20))))))))
+            (= r_j (+ r_j (const-int 1)))))))
+    (|> (basic-block (= (index r_b (const-int 20)) (index r_a (const-int 20)))))))
 --------------------------
 
 Aligned Product Program
@@ -252,9 +251,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/sa/loop-alignment-sa.c...
+Writing output to ./results/alignments/seahorn/barthe/sa/loop-alignment-sa.c...
 Done
 
-real	0m11.695s
-user	0m11.670s
-sys	0m0.013s
+real	0m11.054s
+user	0m11.034s
+sys	0m0.007s

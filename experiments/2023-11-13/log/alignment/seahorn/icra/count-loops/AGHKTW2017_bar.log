@@ -197,9 +197,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/count-loops/AGHKTW2017_bar-cou.c...
+Writing output to ./results/alignments/seahorn/icra/count-loops/AGHKTW2017_bar-cou.c...
 Done
 
 real	0m0.025s
-user	0m0.015s
-sys	0m0.010s
+user	0m0.012s
+sys	0m0.013s

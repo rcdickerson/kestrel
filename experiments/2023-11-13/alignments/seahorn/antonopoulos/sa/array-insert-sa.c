@@ -11,15 +11,15 @@ void main() {
   assume((l_val > 0) && (r_val > 0));
   int l_i = 0;
   int r_j = 0;
-  if ((r_j < A_SIZE) && (r_A[r_j] < r_val)) {
-    r_j = (r_j + 1);
+  if ((l_i < A_SIZE) && (l_A[l_i] < l_val)) {
+    l_i = (l_i + 1);
   }
-  if ((r_j < A_SIZE) && (r_A[r_j] < r_val)) {
-    r_j = (r_j + 1);
+  if ((l_i < A_SIZE) && (l_A[l_i] < l_val)) {
+    l_i = (l_i + 1);
   }
   while (((l_i < A_SIZE) && (l_A[l_i] < l_val)) && ((r_j < A_SIZE) && (r_A[r_j] < r_val))) {
-    r_j = (r_j + 1);
     l_i = (l_i + 1);
+    r_j = (r_j + 1);
   }
   while ((l_i < A_SIZE) && (l_A[l_i] < l_val)) {
     assume(!((r_j < A_SIZE) && (r_A[r_j] < r_val)));
@@ -33,15 +33,9 @@ void main() {
   l_A[l_i] = l_val;
   int r_len = A_SIZE + 1;
   r_A[r_j] = r_val;
-  if (r_j < r_len) {
-    r_j = (r_j + 1);
-  }
-  if (r_j < r_len) {
-    r_j = (r_j + 1);
-  }
   while ((l_i < l_len) && (r_j < r_len)) {
-    r_j = (r_j + 1);
     l_i = (l_i + 1);
+    r_j = (r_j + 1);
   }
   while (l_i < l_len) {
     assume(!(r_j < r_len));

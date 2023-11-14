@@ -210,11 +210,10 @@ Pre-SA Initial Alignment
               (basic-block (= r_ret (const-int 0))))))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.2636111
-Score 0.24800003 at temperature 0.99625033
-Score 0.06666667 at temperature 0.98941755
+Initial score: 0.2508135
+Score 0.06666667 at temperature 0.94275475
 Simulated annealing complete.
-Saw 2108 configurations
+Saw 2681 configurations
 Best score: 0.06666667
 
 Aligned Eggroll
@@ -224,24 +223,24 @@ Aligned Eggroll
   main
   params
   (seq
+    (<|>
+      (basic-block
+        (declaration (specifiers (type int)) l_ret (initializer (neg (const-int 999))))
+        (declaration (specifiers (type int)) l_index no-initializer)
+        (declaration (specifiers (type int)) l_aentry no-initializer)
+        (declaration (specifiers (type int)) l_bentry no-initializer)
+        (= l_index (const-int 0)))
+      (basic-block
+        (declaration (specifiers (type int)) r_ret (initializer (neg (const-int 999))))
+        (declaration (specifiers (type int)) r_index no-initializer)
+        (declaration (specifiers (type int)) r_aentry no-initializer)
+        (declaration (specifiers (type int)) r_bentry no-initializer)
+        (= r_index (const-int 0))))
     (seq
-      (<|>
-        (basic-block
-          (declaration (specifiers (type int)) l_ret (initializer (neg (const-int 999))))
-          (declaration (specifiers (type int)) l_index no-initializer)
-          (declaration (specifiers (type int)) l_aentry no-initializer)
-          (declaration (specifiers (type int)) l_bentry no-initializer)
-          (= l_index (const-int 0)))
-        (basic-block
-          (declaration (specifiers (type int)) r_ret (initializer (neg (const-int 999))))
-          (declaration (specifiers (type int)) r_index no-initializer)
-          (declaration (specifiers (type int)) r_aentry no-initializer)
-          (declaration (specifiers (type int)) r_bentry no-initializer)
-          (= r_index (const-int 0))))
       (seq
         (while-lockstep
-          0
           2
+          0
           (&& (< l_index left_o1_length) (< l_index left_o2_length))
           (&& (< r_index right_o1_length) (< r_index right_o2_length))
           (seq
@@ -249,60 +248,58 @@ Aligned Eggroll
               (basic-block
                 (= l_aentry (index left_o1 l_index))
                 (= l_bentry (index left_o2 l_index)))
-              (if (< l_aentry l_bentry) (basic-block (= l_ret (neg (const-int 1))) break)))
-            (seq
-              (if (> l_aentry l_bentry) (basic-block (= l_ret (const-int 1)) break))
-              (basic-block (= l_index (+ l_index (const-int 1))))))
+              (seq
+                (if (< l_aentry l_bentry) (basic-block (= l_ret (neg (const-int 1))) break))
+                (if (> l_aentry l_bentry) (basic-block (= l_ret (const-int 1)) break))))
+            (basic-block (= l_index (+ l_index (const-int 1)))))
           (seq
+            (basic-block
+              (= r_aentry (index right_o1 r_index))
+              (= r_bentry (index right_o2 r_index)))
             (seq
-              (basic-block
-                (= r_aentry (index right_o1 r_index))
-                (= r_bentry (index right_o2 r_index)))
-              (if (< r_aentry r_bentry) (basic-block (= r_ret (neg (const-int 1))) break)))
-            (seq
-              (if (> r_aentry r_bentry) (basic-block (= r_ret (const-int 1)) break))
-              (basic-block (= r_index (+ r_index (const-int 1))))))
+              (if (< r_aentry r_bentry) (basic-block (= r_ret (neg (const-int 1))) break))
+              (seq
+                (if (> r_aentry r_bentry) (basic-block (= r_ret (const-int 1)) break))
+                (basic-block (= r_index (+ r_index (const-int 1)))))))
           (seq
             (seq
               (<|>
                 (basic-block
                   (= l_aentry (index left_o1 l_index))
                   (= l_bentry (index left_o2 l_index)))
-                (basic-block
-                  (= r_aentry (index right_o1 r_index))
-                  (= r_bentry (index right_o2 r_index))))
-              (|>
-                (if (< r_aentry r_bentry) (basic-block (= r_ret (neg (const-int 1))) break))))
-            (seq
+                (seq
+                  (basic-block
+                    (= r_aentry (index right_o1 r_index))
+                    (= r_bentry (index right_o2 r_index)))
+                  (if (< r_aentry r_bentry) (basic-block (= r_ret (neg (const-int 1))) break))))
               (seq
-                (<|
-                  (if (< l_aentry l_bentry) (basic-block (= l_ret (neg (const-int 1))) break)))
-                (|> (if (> r_aentry r_bentry) (basic-block (= r_ret (const-int 1)) break))))
-              (seq
-                (<| (if (> l_aentry l_bentry) (basic-block (= l_ret (const-int 1)) break)))
                 (<|>
-                  (basic-block (= l_index (+ l_index (const-int 1))))
-                  (basic-block (= r_index (+ r_index (const-int 1)))))))))
+                  (if (< l_aentry l_bentry) (basic-block (= l_ret (neg (const-int 1))) break))
+                  (if (> r_aentry r_bentry) (basic-block (= r_ret (const-int 1)) break)))
+                (seq
+                  (<| (if (> l_aentry l_bentry) (basic-block (= l_ret (const-int 1)) break)))
+                  (<| (basic-block (= l_index (+ l_index (const-int 1))))))))
+            (|> (basic-block (= r_index (+ r_index (const-int 1)))))))
         (|>
           (if
             (== r_ret (neg (const-int 999)))
             (seq
-              (if
-                (< right_o1_length right_o2_length)
-                (basic-block (= r_ret (neg (const-int 1)))))
               (seq
-                (if (> right_o1_length right_o2_length) (basic-block (= r_ret (const-int 1))))
-                (basic-block (= r_ret (const-int 0)))))))))
-    (<|
-      (if
-        (== l_ret (neg (const-int 999)))
-        (seq
-          (if
-            (< left_o1_length left_o2_length)
-            (basic-block (= l_ret (neg (const-int 1)))))
+                (if
+                  (< right_o1_length right_o2_length)
+                  (basic-block (= r_ret (neg (const-int 1)))))
+                (if (> right_o1_length right_o2_length) (basic-block (= r_ret (const-int 1)))))
+              (basic-block (= r_ret (const-int 0)))))))
+      (<|
+        (if
+          (== l_ret (neg (const-int 999)))
           (seq
-            (if (> left_o1_length left_o2_length) (basic-block (= l_ret (const-int 1))))
-            (basic-block (= l_ret (const-int 0)))))))))
+            (if
+              (< left_o1_length left_o2_length)
+              (basic-block (= l_ret (neg (const-int 1)))))
+            (seq
+              (if (> left_o1_length left_o2_length) (basic-block (= l_ret (const-int 1))))
+              (basic-block (= l_ret (const-int 0))))))))))
 --------------------------
 
 Aligned Product Program
@@ -339,31 +336,31 @@ void main() {
   int r_aentry;
   int r_bentry;
   r_index = 0;
-  if ((r_index < right_o1_length) && (r_index < right_o2_length)) {
-    r_aentry = right_o1[r_index];
-    r_bentry = right_o2[r_index];
-    if (r_aentry < r_bentry) {
-      r_ret = (-1);
+  if ((l_index < left_o1_length) && (l_index < left_o2_length)) {
+    l_aentry = left_o1[l_index];
+    l_bentry = left_o2[l_index];
+    if (l_aentry < l_bentry) {
+      l_ret = (-1);
       break;
     }
-    if (r_aentry > r_bentry) {
-      r_ret = 1;
+    if (l_aentry > l_bentry) {
+      l_ret = 1;
       break;
     }
-    r_index = (r_index + 1);
+    l_index = (l_index + 1);
   }
-  if ((r_index < right_o1_length) && (r_index < right_o2_length)) {
-    r_aentry = right_o1[r_index];
-    r_bentry = right_o2[r_index];
-    if (r_aentry < r_bentry) {
-      r_ret = (-1);
+  if ((l_index < left_o1_length) && (l_index < left_o2_length)) {
+    l_aentry = left_o1[l_index];
+    l_bentry = left_o2[l_index];
+    if (l_aentry < l_bentry) {
+      l_ret = (-1);
       break;
     }
-    if (r_aentry > r_bentry) {
-      r_ret = 1;
+    if (l_aentry > l_bentry) {
+      l_ret = 1;
       break;
     }
-    r_index = (r_index + 1);
+    l_index = (l_index + 1);
   }
   while (((l_index < left_o1_length) && (l_index < left_o2_length)) && ((r_index < right_o1_length) && (r_index < right_o2_length))) {
     l_aentry = left_o1[l_index];
@@ -439,9 +436,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/sousa/sa/array-int-sa.c...
+Writing output to ./results/alignments/seahorn/sousa/sa/array-int-sa.c...
 Done
 
-real	0m2.640s
-user	0m2.616s
-sys	0m0.020s
+real	0m3.967s
+user	0m3.945s
+sys	0m0.017s

@@ -20,6 +20,7 @@ void main() {
       l_max = l_a[l_i];
       l_maxi = l_i;
     }
+    l_i = (l_i + 1);
     if (r_j == 0) {
       r_max = r_a[0];
       r_maxi = 0;
@@ -33,7 +34,6 @@ void main() {
       r_a[10] = r_max;
       r_a[r_maxi] = r_t;
     }
-    l_i = (l_i + 1);
     r_j = (r_j + 1);
   }
   while (l_i < 10) {

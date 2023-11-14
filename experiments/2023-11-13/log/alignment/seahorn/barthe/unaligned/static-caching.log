@@ -304,9 +304,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/unaligned/static-caching-una.c...
+Writing output to ./results/alignments/seahorn/barthe/unaligned/static-caching-una.c...
 Done
 
-real	0m0.027s
+real	0m0.026s
 user	0m0.013s
 sys	0m0.013s

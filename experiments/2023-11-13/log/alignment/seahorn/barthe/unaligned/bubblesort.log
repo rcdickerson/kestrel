@@ -204,9 +204,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/unaligned/bubblesort-una.c...
+Writing output to ./results/alignments/seahorn/barthe/unaligned/bubblesort-una.c...
 Done
 
-real	0m0.053s
-user	0m0.043s
-sys	0m0.009s
+real	0m0.045s
+user	0m0.038s
+sys	0m0.007s

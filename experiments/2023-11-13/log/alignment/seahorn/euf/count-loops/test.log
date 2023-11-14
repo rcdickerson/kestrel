@@ -124,9 +124,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/euf/count-loops/test-cou.c...
+Writing output to ./results/alignments/seahorn/euf/count-loops/test-cou.c...
 Done
 
-real	0m0.026s
-user	0m0.016s
-sys	0m0.009s
+real	0m0.024s
+user	0m0.018s
+sys	0m0.006s

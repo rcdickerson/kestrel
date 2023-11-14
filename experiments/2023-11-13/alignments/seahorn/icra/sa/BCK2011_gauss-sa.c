@@ -13,6 +13,10 @@ void main() {
     l_x = (l_x + l_i);
     l_i = (l_i + 1);
   }
+  if (l_i <= l_n) {
+    l_x = (l_x + l_i);
+    l_i = (l_i + 1);
+  }
   while ((l_i <= l_n) && (r_j <= r_n)) {
     r_y = (r_y + r_j);
     r_j = (r_j + 1);

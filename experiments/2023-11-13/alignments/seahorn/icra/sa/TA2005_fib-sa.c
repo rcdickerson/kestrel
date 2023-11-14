@@ -13,18 +13,13 @@ void main() {
   int r_k2 = arb_int();
   int r_l2 = arb_int();
   assume((l_f11 == r_f21) && ((l_f12 == r_f22) && ((l_n1 == r_n2) && ((l_k1 == r_k2) && (l_l1 == r_l2)))));
-  if (r_n2 > 0) {
+  while ((l_n1 > 0) && (r_n2 > 0)) {
     r_f21 = (r_f21 + r_f22);
     r_f22 = (r_f21 - r_f22);
     r_n2 = (r_n2 - 1);
-  }
-  while ((l_n1 > 0) && (r_n2 > 0)) {
     l_f11 = (l_f11 + l_f12);
     l_f12 = (l_f11 - l_f12);
     l_n1 = (l_n1 - 1);
-    r_f21 = (r_f21 + r_f22);
-    r_f22 = (r_f21 - r_f22);
-    r_n2 = (r_n2 - 1);
   }
   while (l_n1 > 0) {
     assume(!(r_n2 > 0));

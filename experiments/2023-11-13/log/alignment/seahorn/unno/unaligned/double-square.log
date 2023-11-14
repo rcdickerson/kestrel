@@ -109,7 +109,7 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/unno/unaligned/double-square-una.c...
+Writing output to ./results/alignments/seahorn/unno/unaligned/double-square-una.c...
 Done
 
 real	0m0.025s

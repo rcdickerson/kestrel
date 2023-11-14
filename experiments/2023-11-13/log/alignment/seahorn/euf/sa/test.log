@@ -88,10 +88,10 @@ Pre-SA Initial Alignment
           (= r_y (+ r_y (call r_f (args r_y)))))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.14383622
+Initial score: 0.14034176
 Simulated annealing complete.
 Saw 135 configurations
-Best score: 0.14383622
+Best score: 0.14034176
 
 Aligned Eggroll
 --------------------------
@@ -166,9 +166,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/euf/sa/test-sa.c...
+Writing output to ./results/alignments/seahorn/euf/sa/test-sa.c...
 Done
 
-real	0m1.586s
-user	0m1.574s
-sys	0m0.010s
+real	0m2.245s
+user	0m2.154s
+sys	0m0.013s

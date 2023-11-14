@@ -116,13 +116,13 @@ Pre-SA Initial Alignment
         (basic-block (= r_l2 (const-int 0)))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.65571105
-Score 0.6330635 at temperature 1
-Score 0.6108556 at temperature 0.9999167
-Score 0.56806195 at temperature 0.9994167
+Initial score: 0.52935237
+Score 0.5108095 at temperature 1
+Score 0.5037376 at temperature 0.99983335
+Score 0.49267617 at temperature 0.99975
 Simulated annealing complete.
 Saw 135 configurations
-Best score: 0.56806195
+Best score: 0.49267617
 
 Aligned Eggroll
 --------------------------
@@ -141,41 +141,41 @@ Aligned Eggroll
     (param-declaration (specifiers (type int)) r_k2)
     (param-declaration (specifiers (type int)) r_l2))
   (seq
+    (while-lockstep
+      0
+      0
+      (> l_n1 (const-int 0))
+      (> r_n2 (const-int 0))
+      (basic-block
+        (= l_f11 (+ l_f11 l_f12))
+        (= l_f12 (- l_f11 l_f12))
+        (= l_n1 (- l_n1 (const-int 1))))
+      (basic-block
+        (= r_f21 (+ r_f21 r_f22))
+        (= r_f22 (- r_f21 r_f22))
+        (= r_n2 (- r_n2 (const-int 1))))
+      (seq
+        (|>
+          (basic-block
+            (= r_f21 (+ r_f21 r_f22))
+            (= r_f22 (- r_f21 r_f22))
+            (= r_n2 (- r_n2 (const-int 1)))))
+        (<|
+          (basic-block
+            (= l_f11 (+ l_f11 l_f12))
+            (= l_f12 (- l_f11 l_f12))
+            (= l_n1 (- l_n1 (const-int 1)))))))
     (seq
-      (while-lockstep
-        0
-        1
-        (> l_n1 (const-int 0))
-        (> r_n2 (const-int 0))
-        (basic-block
-          (= l_f11 (+ l_f11 l_f12))
-          (= l_f12 (- l_f11 l_f12))
-          (= l_n1 (- l_n1 (const-int 1))))
-        (basic-block
-          (= r_f21 (+ r_f21 r_f22))
-          (= r_f22 (- r_f21 r_f22))
-          (= r_n2 (- r_n2 (const-int 1))))
-        (seq
-          (<|
-            (basic-block
-              (= l_f11 (+ l_f11 l_f12))
-              (= l_f12 (- l_f11 l_f12))
-              (= l_n1 (- l_n1 (const-int 1)))))
-          (|>
-            (basic-block
-              (= r_f21 (+ r_f21 r_f22))
-              (= r_f22 (- r_f21 r_f22))
-              (= r_n2 (- r_n2 (const-int 1)))))))
       (|>
         (if-else
           (> r_f21 r_k2)
           (basic-block (= r_l2 (const-int 1)))
-          (basic-block (= r_l2 (const-int 0))))))
-    (<|
-      (if-else
-        (> l_f11 l_k1)
-        (basic-block (= l_l1 (const-int 1)))
-        (basic-block (= l_l1 (const-int 0)))))))
+          (basic-block (= r_l2 (const-int 0)))))
+      (<|
+        (if-else
+          (> l_f11 l_k1)
+          (basic-block (= l_l1 (const-int 1)))
+          (basic-block (= l_l1 (const-int 0))))))))
 --------------------------
 
 Aligned Product Program
@@ -195,18 +195,13 @@ void main() {
   int r_k2 = arb_int();
   int r_l2 = arb_int();
   assume((l_f11 == r_f21) && ((l_f12 == r_f22) && ((l_n1 == r_n2) && ((l_k1 == r_k2) && (l_l1 == r_l2)))));
-  if (r_n2 > 0) {
+  while ((l_n1 > 0) && (r_n2 > 0)) {
     r_f21 = (r_f21 + r_f22);
     r_f22 = (r_f21 - r_f22);
     r_n2 = (r_n2 - 1);
-  }
-  while ((l_n1 > 0) && (r_n2 > 0)) {
     l_f11 = (l_f11 + l_f12);
     l_f12 = (l_f11 - l_f12);
     l_n1 = (l_n1 - 1);
-    r_f21 = (r_f21 + r_f22);
-    r_f22 = (r_f21 - r_f22);
-    r_n2 = (r_n2 - 1);
   }
   while (l_n1 > 0) {
     assume(!(r_n2 > 0));
@@ -232,9 +227,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/sa/TA2005_fib-sa.c...
+Writing output to ./results/alignments/seahorn/icra/sa/TA2005_fib-sa.c...
 Done
 
-real	0m2.643s
-user	0m2.626s
-sys	0m0.015s
+real	0m2.189s
+user	0m2.177s
+sys	0m0.010s

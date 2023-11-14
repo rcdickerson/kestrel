@@ -193,9 +193,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/count-loops/fibonacci_information_flow-cou.c...
+Writing output to ./results/alignments/seahorn/icra/count-loops/fibonacci_information_flow-cou.c...
 Done
 
-real	0m0.025s
-user	0m0.018s
-sys	0m0.007s
+real	0m0.024s
+user	0m0.020s
+sys	0m0.004s

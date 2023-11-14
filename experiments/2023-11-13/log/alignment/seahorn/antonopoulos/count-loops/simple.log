@@ -106,9 +106,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/antonopoulos/count-loops/simple-cou.c...
+Writing output to ./results/alignments/seahorn/antonopoulos/count-loops/simple-cou.c...
 Done
 
-real	0m0.025s
-user	0m0.012s
-sys	0m0.013s
+real	0m0.026s
+user	0m0.017s
+sys	0m0.010s

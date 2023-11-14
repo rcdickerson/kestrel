@@ -153,9 +153,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/unno/unaligned/half-square-una.c...
+Writing output to ./results/alignments/seahorn/unno/unaligned/half-square-una.c...
 Done
 
-real	0m0.026s
-user	0m0.016s
-sys	0m0.010s
+real	0m0.025s
+user	0m0.008s
+sys	0m0.017s

@@ -10,10 +10,6 @@ void main() {
   assume(1);
   int l_x = 0;
   int r_i = 0;
-  if (l_x < (N * M)) {
-    l_a[l_x] = f(l_x);
-    l_x = (l_x + 1);
-  }
   while ((l_x < (N * M)) && (r_i < N)) {
     int r_j = 0;
     while (r_j < M) {

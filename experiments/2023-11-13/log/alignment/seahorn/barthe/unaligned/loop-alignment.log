@@ -163,9 +163,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/unaligned/loop-alignment-una.c...
+Writing output to ./results/alignments/seahorn/barthe/unaligned/loop-alignment-una.c...
 Done
 
 real	0m0.026s
-user	0m0.020s
-sys	0m0.006s
+user	0m0.014s
+sys	0m0.011s

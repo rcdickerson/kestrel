@@ -325,9 +325,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/sousa/count-loops/container-cou.c...
+Writing output to ./results/alignments/seahorn/sousa/count-loops/container-cou.c...
 Done
 
-real	0m0.028s
-user	0m0.011s
-sys	0m0.017s
+real	0m0.030s
+user	0m0.020s
+sys	0m0.010s

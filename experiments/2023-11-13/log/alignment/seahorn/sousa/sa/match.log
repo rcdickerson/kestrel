@@ -139,7 +139,7 @@ Pre-SA Initial Alignment
 Starting simulated annealing...
 Initial score: 0.02857143
 Simulated annealing complete.
-Saw 1900 configurations
+Saw 1889 configurations
 Best score: 0.02857143
 
 Aligned Eggroll
@@ -244,9 +244,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/sousa/sa/match-sa.c...
+Writing output to ./results/alignments/seahorn/sousa/sa/match-sa.c...
 Done
 
-real	1m40.349s
-user	1m40.206s
-sys	0m0.036s
+real	0m47.449s
+user	0m47.397s
+sys	0m0.017s

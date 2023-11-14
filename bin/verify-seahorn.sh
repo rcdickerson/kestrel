@@ -37,7 +37,7 @@ do
     do
       echo "$file..."
       file_basename=$(basename $file .c)
-      (time timeout 2m sea pf -m64 --horn-strictly-la=false $file) > "$log_dir/$file_basename".log 2>&1
+      (time timeout 10m sea pf -m64 --horn-strictly-la=false $file) > "$log_dir/$file_basename".log 2>&1
     done
   done
 done

@@ -209,10 +209,10 @@ Pre-SA Initial Alignment
           (basic-block (= r_i (+ r_i (const-int 1)))))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.23993495
+Initial score: 0.23823324
 Simulated annealing complete.
-Saw 1953 configurations
-Best score: 0.23993495
+Saw 1950 configurations
+Best score: 0.23823324
 
 Aligned Eggroll
 --------------------------
@@ -417,9 +417,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/sa/bubblesort-sa.c...
+Writing output to ./results/alignments/seahorn/barthe/sa/bubblesort-sa.c...
 Done
 
-real	0m33.699s
-user	0m33.643s
-sys	0m0.007s
+real	0m33.676s
+user	0m33.627s
+sys	0m0.008s

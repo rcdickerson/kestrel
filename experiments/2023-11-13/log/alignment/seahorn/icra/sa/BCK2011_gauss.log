@@ -72,16 +72,13 @@ Pre-SA Initial Alignment
         (basic-block (= r_y (+ r_y r_j)) (= r_j (+ r_j (const-int 1))))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.88561743
-Score 0.8616025 at temperature 1
-Score 0.8094754 at temperature 0.99975
-Score 0.801231 at temperature 0.99958336
-Score 0.7851783 at temperature 0.9955837
-Score 0.7553517 at temperature 0.9940838
-Score 0.7466667 at temperature 0.9940005
+Initial score: 0.76077783
+Score 0.6699809 at temperature 0.99950004
+Score 0.6266667 at temperature 0.9993334
+Score 0.55333334 at temperature 0.9981668
 Simulated annealing complete.
 Saw 135 configurations
-Best score: 0.7466667
+Best score: 0.55333334
 
 Aligned Eggroll
 --------------------------
@@ -102,7 +99,7 @@ Aligned Eggroll
           (declaration (specifiers (type int)) l_x (initializer (const-int 0)))
           (declaration (specifiers (type int)) l_i (initializer (const-int 0)))))
       (while-lockstep
-        1
+        2
         0
         (<= l_i l_n)
         (<= r_j r_n)
@@ -130,6 +127,10 @@ void main() {
     l_x = (l_x + l_i);
     l_i = (l_i + 1);
   }
+  if (l_i <= l_n) {
+    l_x = (l_x + l_i);
+    l_i = (l_i + 1);
+  }
   while ((l_i <= l_n) && (r_j <= r_n)) {
     r_y = (r_y + r_j);
     r_j = (r_j + 1);
@@ -150,9 +151,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/sa/BCK2011_gauss-sa.c...
+Writing output to ./results/alignments/seahorn/icra/sa/BCK2011_gauss-sa.c...
 Done
 
-real	0m1.646s
-user	0m1.630s
-sys	0m0.013s
+real	0m1.289s
+user	0m1.270s
+sys	0m0.018s

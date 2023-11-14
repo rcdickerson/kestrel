@@ -180,9 +180,9 @@ Pre-SA Initial Alignment
 --------------------------
 Starting simulated annealing...
 Initial score: 0.6266666
-Score 0.56666666 at temperature 0.98341805
+Score 0.56666666 at temperature 0.9911674
 Simulated annealing complete.
-Saw 2081 configurations
+Saw 1984 configurations
 Best score: 0.56666666
 
 Aligned Eggroll
@@ -309,9 +309,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/sa/AGHKTW2017_loopAndBranch_safe-sa.c...
+Writing output to ./results/alignments/seahorn/icra/sa/AGHKTW2017_loopAndBranch_safe-sa.c...
 Done
 
-real	0m3.182s
-user	0m3.157s
-sys	0m0.017s
+real	0m3.017s
+user	0m2.995s
+sys	0m0.010s

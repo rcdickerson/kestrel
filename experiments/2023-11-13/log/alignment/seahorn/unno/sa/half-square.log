@@ -117,10 +117,13 @@ Pre-SA Initial Alignment
           (basic-block (= r_i (+ r_i (const-int 1))) (= r_y (+ r_y r_y))))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.2513143
+Initial score: 0.36478728
+Score 0.34358728 at temperature 0.9981668
+Score 0.34245715 at temperature 0.91559035
+Score 0.3331238 at temperature 0.84959584
 Simulated annealing complete.
-Saw 1932 configurations
-Best score: 0.2513143
+Saw 3690 configurations
+Best score: 0.3331238
 
 Aligned Eggroll
 --------------------------
@@ -143,28 +146,30 @@ Aligned Eggroll
           (declaration (specifiers (type int)) r_i (initializer (const-int 0)))
           (declaration (specifiers (type int)) r_y (initializer (const-int 0)))
           (declaration (specifiers (type int)) r_v (initializer (const-int 0)))))
-      (while-lockstep
-        0
-        0
-        (> l_h l_i)
-        (> r_h r_i)
-        (basic-block (= l_i (+ l_i (const-int 1))) (= l_y (+ l_y l_y)))
-        (basic-block (= r_i (+ r_i (const-int 1))) (= r_y (+ r_y r_y)))
-        (<|>
+      (seq
+        (while-lockstep
+          0
+          2
+          (> l_h l_i)
+          (> r_h r_i)
           (basic-block (= l_i (+ l_i (const-int 1))) (= l_y (+ l_y l_y)))
-          (basic-block (= r_i (+ r_i (const-int 1))) (= r_y (+ r_y r_y))))))
-    (seq
-      (<|> (basic-block (= l_v (const-int 1))) (basic-block (= r_v (const-int 1))))
-      (while-lockstep
-        0
-        0
-        (> l_low l_i)
-        (> r_low r_i)
+          (basic-block (= r_i (+ r_i (const-int 1))) (= r_y (+ r_y r_y)))
+          (<|>
+            (basic-block (= l_i (+ l_i (const-int 1))) (= l_y (+ l_y l_y)))
+            (basic-block (= r_i (+ r_i (const-int 1))) (= r_y (+ r_y r_y)))))
+        (seq
+          (<| (basic-block (= l_v (const-int 1))))
+          (|> (basic-block (= r_v (const-int 1)))))))
+    (while-lockstep
+      1
+      0
+      (> l_low l_i)
+      (> r_low r_i)
+      (basic-block (= l_i (+ l_i (const-int 1))) (= l_y (+ l_y l_y)))
+      (basic-block (= r_i (+ r_i (const-int 1))) (= r_y (+ r_y r_y)))
+      (<|>
         (basic-block (= l_i (+ l_i (const-int 1))) (= l_y (+ l_y l_y)))
-        (basic-block (= r_i (+ r_i (const-int 1))) (= r_y (+ r_y r_y)))
-        (<|>
-          (basic-block (= l_i (+ l_i (const-int 1))) (= l_y (+ l_y l_y)))
-          (basic-block (= r_i (+ r_i (const-int 1))) (= r_y (+ r_y r_y))))))))
+        (basic-block (= r_i (+ r_i (const-int 1))) (= r_y (+ r_y r_y)))))))
 --------------------------
 
 Aligned Product Program
@@ -184,6 +189,14 @@ void main() {
   int r_i = 0;
   int r_y = 0;
   int r_v = 0;
+  if (r_h > r_i) {
+    r_i = (r_i + 1);
+    r_y = (r_y + r_y);
+  }
+  if (r_h > r_i) {
+    r_i = (r_i + 1);
+    r_y = (r_y + r_y);
+  }
   while ((l_h > l_i) && (r_h > r_i)) {
     l_i = (l_i + 1);
     l_y = (l_y + l_y);
@@ -202,6 +215,10 @@ void main() {
   }
   l_v = 1;
   r_v = 1;
+  if (l_low > l_i) {
+    l_i = (l_i + 1);
+    l_y = (l_y + l_y);
+  }
   while ((l_low > l_i) && (r_low > r_i)) {
     l_i = (l_i + 1);
     l_y = (l_y + l_y);
@@ -222,9 +239,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/unno/sa/half-square-sa.c...
+Writing output to ./results/alignments/seahorn/unno/sa/half-square-sa.c...
 Done
 
-real	0m2.877s
-user	0m2.857s
-sys	0m0.017s
+real	0m6.146s
+user	0m6.113s
+sys	0m0.026s

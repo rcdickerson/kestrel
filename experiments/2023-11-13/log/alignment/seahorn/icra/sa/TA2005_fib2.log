@@ -151,13 +151,15 @@ Pre-SA Initial Alignment
           (basic-block (= r_l2 (+ r_l2 r_x2)) (= r_i2 (+ r_i2 (const-int 1)))))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.61471206
-Score 0.5972434 at temperature 1
-Score 0.59111494 at temperature 0.9999167
-Score 0.5755985 at temperature 0.9233397
+Initial score: 0.65388405
+Score 0.639902 at temperature 0.99983335
+Score 0.6284338 at temperature 0.99266726
+Score 0.6267251 at temperature 0.9925006
+Score 0.61432475 at temperature 0.98225147
+Score 0.6126963 at temperature 0.9736689
 Simulated annealing complete.
-Saw 2863 configurations
-Best score: 0.5755985
+Saw 2274 configurations
+Best score: 0.6126963
 
 Aligned Eggroll
 --------------------------
@@ -180,20 +182,12 @@ Aligned Eggroll
     (param-declaration (specifiers (type int)) r_i2)
     (param-declaration (specifiers (type int)) r_h2))
   (seq
-    (while-lockstep
-      0
-      0
-      (> l_n1 (const-int 0))
-      (> r_n2 (const-int 0))
-      (basic-block
-        (= l_f11 (+ l_f11 l_f12))
-        (= l_f12 (- l_f11 l_f12))
-        (= l_n1 (- l_n1 (const-int 1))))
-      (basic-block
-        (= r_f21 (+ r_f21 r_f22))
-        (= r_f22 (- r_f21 r_f22))
-        (= r_n2 (- r_n2 (const-int 1))))
-      (<|>
+    (seq
+      (while-lockstep
+        0
+        0
+        (> l_n1 (const-int 0))
+        (> r_n2 (const-int 0))
         (basic-block
           (= l_f11 (+ l_f11 l_f12))
           (= l_f12 (- l_f11 l_f12))
@@ -201,17 +195,25 @@ Aligned Eggroll
         (basic-block
           (= r_f21 (+ r_f21 r_f22))
           (= r_f22 (- r_f21 r_f22))
-          (= r_n2 (- r_n2 (const-int 1))))))
+          (= r_n2 (- r_n2 (const-int 1))))
+        (<|>
+          (basic-block
+            (= l_f11 (+ l_f11 l_f12))
+            (= l_f12 (- l_f11 l_f12))
+            (= l_n1 (- l_n1 (const-int 1))))
+          (basic-block
+            (= r_f21 (+ r_f21 r_f22))
+            (= r_f22 (- r_f21 r_f22))
+            (= r_n2 (- r_n2 (const-int 1))))))
+      (<|>
+        (if l_h1 (basic-block (= l_x1 (const-int 1))))
+        (if r_h2 (basic-block (= r_x2 (const-int 1))))))
     (seq
-      (seq
-        (seq
-          (|> (if r_h2 (basic-block (= r_x2 (const-int 1)))))
-          (<| (if l_h1 (basic-block (= l_x1 (const-int 1))))))
-        (|> (if (not r_h2) (basic-block (= r_x2 (const-int 1))))))
+      (|> (if (not r_h2) (basic-block (= r_x2 (const-int 1)))))
       (seq
         (<| (if (not l_h1) (basic-block (= l_x1 (const-int 1)))))
         (while-lockstep
-          0
+          1
           0
           (< l_i1 l_f11)
           (< r_i2 r_f21)
@@ -263,17 +265,21 @@ void main() {
     r_f22 = (r_f21 - r_f22);
     r_n2 = (r_n2 - 1);
   }
-  if (r_h2) {
-    r_x2 = 1;
-  }
   if (l_h1) {
     l_x1 = 1;
+  }
+  if (r_h2) {
+    r_x2 = 1;
   }
   if (!r_h2) {
     r_x2 = 1;
   }
   if (!l_h1) {
     l_x1 = 1;
+  }
+  if (l_i1 < l_f11) {
+    l_l1 = (l_l1 + l_x1);
+    l_i1 = (l_i1 + 1);
   }
   while ((l_i1 < l_f11) && (r_i2 < r_f21)) {
     l_l1 = (l_l1 + l_x1);
@@ -295,9 +301,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/sa/TA2005_fib2-sa.c...
+Writing output to ./results/alignments/seahorn/icra/sa/TA2005_fib2-sa.c...
 Done
 
-real	1m34.364s
-user	1m34.200s
-sys	0m0.067s
+real	0m43.086s
+user	0m42.974s
+sys	0m0.050s

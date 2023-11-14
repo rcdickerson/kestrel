@@ -156,9 +156,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/antonopoulos/count-loops/naumann-cou.c...
+Writing output to ./results/alignments/seahorn/antonopoulos/count-loops/naumann-cou.c...
 Done
 
-real	0m0.027s
-user	0m0.013s
-sys	0m0.013s
+real	0m0.028s
+user	0m0.017s
+sys	0m0.011s

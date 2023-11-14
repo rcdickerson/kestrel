@@ -145,10 +145,10 @@ Pre-SA Initial Alignment
           (basic-block (= r_i (const-int 0)) (= r_i (+ r_i (const-int 1)))))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.595
+Initial score: 0.6750001
 Simulated annealing complete.
-Saw 1901 configurations
-Best score: 0.595
+Saw 1881 configurations
+Best score: 0.6750001
 
 Aligned Eggroll
 --------------------------
@@ -252,9 +252,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/sa/AGHKTW2017_bar-sa.c...
+Writing output to ./results/alignments/seahorn/icra/sa/AGHKTW2017_bar-sa.c...
 Done
 
-real	0m2.140s
-user	0m2.119s
-sys	0m0.017s
+real	0m2.333s
+user	0m2.312s
+sys	0m0.010s

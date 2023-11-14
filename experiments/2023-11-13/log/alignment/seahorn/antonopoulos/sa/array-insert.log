@@ -129,14 +129,13 @@ Pre-SA Initial Alignment
           (basic-block (= r_j (+ r_j (const-int 1)))))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.7298089
-Score 0.72446704 at temperature 0.99958336
-Score 0.7224382 at temperature 0.9990001
-Score 0.7066847 at temperature 0.99891675
-Score 0.6956786 at temperature 0.95125407
+Initial score: 0.7507839
+Score 0.7223562 at temperature 0.9999167
+Score 0.71364415 at temperature 0.99233395
+Score 0.7103507 at temperature 0.85376215
 Simulated annealing complete.
-Saw 2522 configurations
-Best score: 0.6956786
+Saw 3672 configurations
+Best score: 0.7103507
 
 Aligned Eggroll
 --------------------------
@@ -153,48 +152,48 @@ Aligned Eggroll
       (sized-array r_A (array-sizes A_SIZE)))
     (param-declaration (specifiers (type int)) r_val))
   (seq
-    (<|
-      (basic-block
-        (declaration (specifiers (type int)) l_i (initializer (const-int 0)))))
     (seq
       (seq
+        (<|
+          (basic-block
+            (declaration (specifiers (type int)) l_i (initializer (const-int 0)))))
+        (|>
+          (basic-block
+            (declaration (specifiers (type int)) r_j (initializer (const-int 0))))))
+      (while-lockstep
+        2
+        0
+        (&& (< l_i A_SIZE) (< (index l_A l_i) l_val))
+        (&& (< r_j A_SIZE) (< (index r_A r_j) r_val))
+        (basic-block (= l_i (+ l_i (const-int 1))))
+        (basic-block (= r_j (+ r_j (const-int 1))))
         (seq
-          (|>
-            (basic-block
-              (declaration (specifiers (type int)) r_j (initializer (const-int 0)))))
-          (while-lockstep
-            0
-            2
-            (&& (< l_i A_SIZE) (< (index l_A l_i) l_val))
-            (&& (< r_j A_SIZE) (< (index r_A r_j) r_val))
-            (basic-block (= l_i (+ l_i (const-int 1))))
-            (basic-block (= r_j (+ r_j (const-int 1))))
-            (seq
-              (|> (basic-block (= r_j (+ r_j (const-int 1)))))
-              (<| (basic-block (= l_i (+ l_i (const-int 1))))))))
-        (<|>
-          (basic-block
-            (declaration
-              (specifiers (type int))
-              l_len
-              (initializer (+ A_SIZE (const-int 1))))
-            (= (index l_A l_i) l_val))
-          (basic-block
-            (declaration
-              (specifiers (type int))
-              r_len
-              (initializer (+ A_SIZE (const-int 1))))
-            (= (index r_A r_j) r_val))))
+          (<| (basic-block (= l_i (+ l_i (const-int 1)))))
+          (|> (basic-block (= r_j (+ r_j (const-int 1))))))))
+    (seq
+      (<|>
+        (basic-block
+          (declaration
+            (specifiers (type int))
+            l_len
+            (initializer (+ A_SIZE (const-int 1))))
+          (= (index l_A l_i) l_val))
+        (basic-block
+          (declaration
+            (specifiers (type int))
+            r_len
+            (initializer (+ A_SIZE (const-int 1))))
+          (= (index r_A r_j) r_val)))
       (while-lockstep
         0
-        2
+        0
         (< l_i l_len)
         (< r_j r_len)
         (basic-block (= l_i (+ l_i (const-int 1))))
         (basic-block (= r_j (+ r_j (const-int 1))))
         (seq
-          (|> (basic-block (= r_j (+ r_j (const-int 1)))))
-          (<| (basic-block (= l_i (+ l_i (const-int 1))))))))))
+          (<| (basic-block (= l_i (+ l_i (const-int 1)))))
+          (|> (basic-block (= r_j (+ r_j (const-int 1))))))))))
 --------------------------
 
 Aligned Product Program
@@ -212,15 +211,15 @@ void main() {
   assume((l_val > 0) && (r_val > 0));
   int l_i = 0;
   int r_j = 0;
-  if ((r_j < A_SIZE) && (r_A[r_j] < r_val)) {
-    r_j = (r_j + 1);
+  if ((l_i < A_SIZE) && (l_A[l_i] < l_val)) {
+    l_i = (l_i + 1);
   }
-  if ((r_j < A_SIZE) && (r_A[r_j] < r_val)) {
-    r_j = (r_j + 1);
+  if ((l_i < A_SIZE) && (l_A[l_i] < l_val)) {
+    l_i = (l_i + 1);
   }
   while (((l_i < A_SIZE) && (l_A[l_i] < l_val)) && ((r_j < A_SIZE) && (r_A[r_j] < r_val))) {
-    r_j = (r_j + 1);
     l_i = (l_i + 1);
+    r_j = (r_j + 1);
   }
   while ((l_i < A_SIZE) && (l_A[l_i] < l_val)) {
     assume(!((r_j < A_SIZE) && (r_A[r_j] < r_val)));
@@ -234,15 +233,9 @@ void main() {
   l_A[l_i] = l_val;
   int r_len = A_SIZE + 1;
   r_A[r_j] = r_val;
-  if (r_j < r_len) {
-    r_j = (r_j + 1);
-  }
-  if (r_j < r_len) {
-    r_j = (r_j + 1);
-  }
   while ((l_i < l_len) && (r_j < r_len)) {
-    r_j = (r_j + 1);
     l_i = (l_i + 1);
+    r_j = (r_j + 1);
   }
   while (l_i < l_len) {
     assume(!(r_j < r_len));
@@ -256,9 +249,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/antonopoulos/sa/array-insert-sa.c...
+Writing output to ./results/alignments/seahorn/antonopoulos/sa/array-insert-sa.c...
 Done
 
-real	0m5.135s
-user	0m5.107s
-sys	0m0.014s
+real	0m7.760s
+user	0m7.720s
+sys	0m0.028s

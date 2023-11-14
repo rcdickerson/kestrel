@@ -270,9 +270,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/count-loops/code-sinking-cou.c...
+Writing output to ./results/alignments/seahorn/barthe/count-loops/code-sinking-cou.c...
 Done
 
-real	0m0.029s
-user	0m0.018s
-sys	0m0.010s
+real	0m0.028s
+user	0m0.016s
+sys	0m0.012s

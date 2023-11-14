@@ -393,9 +393,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/count-loops/static-caching-cou.c...
+Writing output to ./results/alignments/seahorn/barthe/count-loops/static-caching-cou.c...
 Done
 
 real	0m0.033s
-user	0m0.026s
-sys	0m0.006s
+user	0m0.023s
+sys	0m0.009s

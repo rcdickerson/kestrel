@@ -169,9 +169,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/unaligned/AGHKTW2017_foo-una.c...
+Writing output to ./results/alignments/seahorn/icra/unaligned/AGHKTW2017_foo-una.c...
 Done
 
-real	0m0.026s
-user	0m0.008s
-sys	0m0.017s
+real	0m0.024s
+user	0m0.011s
+sys	0m0.013s

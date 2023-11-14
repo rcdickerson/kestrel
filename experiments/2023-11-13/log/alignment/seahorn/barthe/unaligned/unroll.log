@@ -95,9 +95,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/unaligned/unroll-una.c...
+Writing output to ./results/alignments/seahorn/barthe/unaligned/unroll-una.c...
 Done
 
-real	0m0.025s
-user	0m0.016s
-sys	0m0.009s
+real	0m0.024s
+user	0m0.007s
+sys	0m0.016s

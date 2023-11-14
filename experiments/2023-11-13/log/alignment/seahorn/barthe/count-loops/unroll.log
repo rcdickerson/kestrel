@@ -106,9 +106,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/count-loops/unroll-cou.c...
+Writing output to ./results/alignments/seahorn/barthe/count-loops/unroll-cou.c...
 Done
 
 real	0m0.025s
-user	0m0.018s
-sys	0m0.007s
+user	0m0.011s
+sys	0m0.013s

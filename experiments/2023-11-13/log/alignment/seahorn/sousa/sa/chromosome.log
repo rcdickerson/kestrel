@@ -192,10 +192,11 @@ Pre-SA Initial Alignment
         (if (== r_ret (neg (const-int 999))) (= r_ret (const-int 0)))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.29679996
-Score 0.120000005 at temperature 0.988251
+Initial score: 0.2968
+Score 0.2731667 at temperature 0.9996667
+Score 0.120000005 at temperature 0.99925005
 Simulated annealing complete.
-Saw 2115 configurations
+Saw 1993 configurations
 Best score: 0.120000005
 
 Aligned Eggroll
@@ -217,16 +218,16 @@ Aligned Eggroll
       (specifiers (type float))
       (sized-array r_o2_score (array-sizes (const-int 10)))))
   (seq
-    (<|>
-      (basic-block
-        (declaration (specifiers (type int)) l_ret (initializer (neg (const-int 999))))
-        (declaration (specifiers (type int)) l_comp (initializer (const-int 0)))
-        (declaration (specifiers (type int)) l_i (initializer (const-int 0))))
-      (basic-block
-        (declaration (specifiers (type int)) r_ret (initializer (neg (const-int 999))))
-        (declaration (specifiers (type int)) r_comp (initializer (const-int 0)))
-        (declaration (specifiers (type int)) r_i (initializer (const-int 0)))))
     (seq
+      (<|>
+        (basic-block
+          (declaration (specifiers (type int)) l_ret (initializer (neg (const-int 999))))
+          (declaration (specifiers (type int)) l_comp (initializer (const-int 0)))
+          (declaration (specifiers (type int)) l_i (initializer (const-int 0))))
+        (basic-block
+          (declaration (specifiers (type int)) r_ret (initializer (neg (const-int 999))))
+          (declaration (specifiers (type int)) r_comp (initializer (const-int 0)))
+          (declaration (specifiers (type int)) r_i (initializer (const-int 0)))))
       (seq
         (while-lockstep
           2
@@ -234,16 +235,16 @@ Aligned Eggroll
           (< l_i (const-int 5))
           (< r_i (const-int 5))
           (seq
-            (seq
+            (if-else
+              (< (index l_o1_score l_i) (index l_o2_score l_i))
+              (basic-block (= l_comp (neg (const-int 1))))
               (if-else
-                (< (index l_o1_score l_i) (index l_o2_score l_i))
-                (basic-block (= l_comp (neg (const-int 1))))
-                (if-else
-                  (< (index l_o2_score l_i) (index l_o1_score l_i))
-                  (basic-block (= l_comp (const-int 1)))
-                  (basic-block (= l_comp (const-int 0)))))
-              (if (!= l_comp (const-int 0)) (basic-block (= l_ret l_comp) break)))
-            (basic-block (= l_i (+ l_i (const-int 1)))))
+                (< (index l_o2_score l_i) (index l_o1_score l_i))
+                (basic-block (= l_comp (const-int 1)))
+                (basic-block (= l_comp (const-int 0)))))
+            (seq
+              (if (!= l_comp (const-int 0)) (basic-block (= l_ret l_comp) break))
+              (basic-block (= l_i (+ l_i (const-int 1))))))
           (seq
             (if-else
               (< (index r_o1_score r_i) (index r_o2_score r_i))
@@ -256,8 +257,8 @@ Aligned Eggroll
               (if (!= r_comp (const-int 0)) (basic-block (= r_ret r_comp) break))
               (basic-block (= r_i (+ r_i (const-int 1))))))
           (seq
-            (seq
-              (<|>
+            (<|>
+              (seq
                 (if-else
                   (< (index l_o1_score l_i) (index l_o2_score l_i))
                   (basic-block (= l_comp (neg (const-int 1))))
@@ -265,21 +266,21 @@ Aligned Eggroll
                     (< (index l_o2_score l_i) (index l_o1_score l_i))
                     (basic-block (= l_comp (const-int 1)))
                     (basic-block (= l_comp (const-int 0)))))
+                (if (!= l_comp (const-int 0)) (basic-block (= l_ret l_comp) break)))
+              (if-else
+                (< (index r_o1_score r_i) (index r_o2_score r_i))
+                (basic-block (= r_comp (neg (const-int 1))))
                 (if-else
-                  (< (index r_o1_score r_i) (index r_o2_score r_i))
-                  (basic-block (= r_comp (neg (const-int 1))))
-                  (if-else
-                    (< (index r_o2_score r_i) (index r_o1_score r_i))
-                    (basic-block (= r_comp (const-int 1)))
-                    (basic-block (= r_comp (const-int 0))))))
-              (<|>
-                (if (!= l_comp (const-int 0)) (basic-block (= l_ret l_comp) break))
-                (if (!= r_comp (const-int 0)) (basic-block (= r_ret r_comp) break))))
-            (seq
-              (<| (basic-block (= l_i (+ l_i (const-int 1)))))
-              (|> (basic-block (= r_i (+ r_i (const-int 1))))))))
-        (|> (if (== r_ret (neg (const-int 999))) (= r_ret (const-int 0)))))
-      (<| (if (== l_ret (neg (const-int 999))) (= l_ret (const-int 0)))))))
+                  (< (index r_o2_score r_i) (index r_o1_score r_i))
+                  (basic-block (= r_comp (const-int 1)))
+                  (basic-block (= r_comp (const-int 0))))))
+            (<|>
+              (basic-block (= l_i (+ l_i (const-int 1))))
+              (seq
+                (if (!= r_comp (const-int 0)) (basic-block (= r_ret r_comp) break))
+                (basic-block (= r_i (+ r_i (const-int 1))))))))
+        (<| (if (== l_ret (neg (const-int 999))) (= l_ret (const-int 0))))))
+    (|> (if (== r_ret (neg (const-int 999))) (= r_ret (const-int 0))))))
 --------------------------
 
 Aligned Product Program
@@ -339,6 +340,10 @@ void main() {
       } else {l_comp = 0;
       }
     }
+    if (l_comp != 0) {
+      l_ret = l_comp;
+      break;
+    }
     if (r_o1_score[r_i] < r_o2_score[r_i]) {
       r_comp = (-1);
     } else {if (r_o2_score[r_i] < r_o1_score[r_i]) {
@@ -346,15 +351,11 @@ void main() {
       } else {r_comp = 0;
       }
     }
-    if (l_comp != 0) {
-      l_ret = l_comp;
-      break;
-    }
+    l_i = (l_i + 1);
     if (r_comp != 0) {
       r_ret = r_comp;
       break;
     }
-    l_i = (l_i + 1);
     r_i = (r_i + 1);
   }
   while (l_i < 5) {
@@ -387,19 +388,19 @@ void main() {
     }
     r_i = (r_i + 1);
   }
-  if (r_ret == (-999)) {
-    r_ret = 0;
-  }
   if (l_ret == (-999)) {
     l_ret = 0;
+  }
+  if (r_ret == (-999)) {
+    r_ret = 0;
   }
   sassert(l_ret == (-1 * r_ret));
  }
 
 --------------------------
-Writing output to ./results/alignments/sousa/sa/chromosome-sa.c...
+Writing output to ./results/alignments/seahorn/sousa/sa/chromosome-sa.c...
 Done
 
-real	0m2.045s
-user	0m2.032s
-sys	0m0.010s
+real	0m2.035s
+user	0m2.019s
+sys	0m0.014s

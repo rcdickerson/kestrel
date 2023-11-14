@@ -222,9 +222,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/unaligned/loop-unswitching-una.c...
+Writing output to ./results/alignments/seahorn/barthe/unaligned/loop-unswitching-una.c...
 Done
 
-real	0m0.027s
-user	0m0.023s
-sys	0m0.003s
+real	0m0.026s
+user	0m0.019s
+sys	0m0.007s

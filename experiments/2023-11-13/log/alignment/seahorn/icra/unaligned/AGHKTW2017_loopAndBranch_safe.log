@@ -241,9 +241,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/unaligned/AGHKTW2017_loopAndBranch_safe-una.c...
+Writing output to ./results/alignments/seahorn/icra/unaligned/AGHKTW2017_loopAndBranch_safe-una.c...
 Done
 
-real	0m0.027s
-user	0m0.026s
-sys	0m0.000s
+real	0m0.025s
+user	0m0.015s
+sys	0m0.010s

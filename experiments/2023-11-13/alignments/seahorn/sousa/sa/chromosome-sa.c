@@ -53,6 +53,10 @@ void main() {
       } else {l_comp = 0;
       }
     }
+    if (l_comp != 0) {
+      l_ret = l_comp;
+      break;
+    }
     if (r_o1_score[r_i] < r_o2_score[r_i]) {
       r_comp = (-1);
     } else {if (r_o2_score[r_i] < r_o1_score[r_i]) {
@@ -60,15 +64,11 @@ void main() {
       } else {r_comp = 0;
       }
     }
-    if (l_comp != 0) {
-      l_ret = l_comp;
-      break;
-    }
+    l_i = (l_i + 1);
     if (r_comp != 0) {
       r_ret = r_comp;
       break;
     }
-    l_i = (l_i + 1);
     r_i = (r_i + 1);
   }
   while (l_i < 5) {
@@ -101,11 +101,11 @@ void main() {
     }
     r_i = (r_i + 1);
   }
-  if (r_ret == (-999)) {
-    r_ret = 0;
-  }
   if (l_ret == (-999)) {
     l_ret = 0;
+  }
+  if (r_ret == (-999)) {
+    r_ret = 0;
   }
   sassert(l_ret == (-1 * r_ret));
  }

@@ -138,9 +138,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/antonopoulos/sa/simple-sa.c...
+Writing output to ./results/alignments/seahorn/antonopoulos/sa/simple-sa.c...
 Done
 
-real	0m1.651s
-user	0m1.639s
-sys	0m0.010s
+real	0m1.612s
+user	0m1.602s
+sys	0m0.007s

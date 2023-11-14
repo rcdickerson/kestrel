@@ -168,9 +168,10 @@ Pre-SA Initial Alignment
 --------------------------
 Starting simulated annealing...
 Initial score: 0.00952381
+Score 0.008571429 at temperature 0.97508544
 Simulated annealing complete.
-Saw 1898 configurations
-Best score: 0.00952381
+Saw 2186 configurations
+Best score: 0.008571429
 
 Aligned Eggroll
 --------------------------
@@ -178,9 +179,11 @@ Aligned Eggroll
   (specifiers (type void))
   main
   params
-  (<|>
-    (seq
+  (seq
+    (<|>
       (basic-block (declaration (specifiers (type int)) l_ret no-initializer))
+      (basic-block (declaration (specifiers (type int)) r_ret no-initializer)))
+    (<|>
       (if-else
         (== left_o1 left_o2)
         (basic-block (= l_ret (const-int 0)))
@@ -202,9 +205,7 @@ Aligned Eggroll
                   (if-else
                     (< left_o1_getCardId left_o2_getCardId)
                     (basic-block (= l_ret (neg (const-int 1))))
-                    (basic-block (= l_ret (- left_o1_cardType left_o2_cardType)))))))))))
-    (seq
-      (basic-block (declaration (specifiers (type int)) r_ret no-initializer))
+                    (basic-block (= l_ret (- left_o1_cardType left_o2_cardType))))))))))
       (if-else
         (== right_o1 right_o2)
         (basic-block (= r_ret (const-int 0)))
@@ -257,6 +258,7 @@ int right_o2_cardType;
 void main() {
   assume((left_o1 == right_o2) && ((left_o1_getCardSet == right_o2_getCardSet) && ((left_o1_getCardRarity == right_o2_getCardRarity) && ((left_o1_getCardId == right_o2_getCardId) && ((left_o1_cardType == right_o2_cardType) && ((left_o2 == right_o1) && ((left_o2_getCardSet == right_o1_getCardSet) && ((left_o2_getCardRarity == right_o1_getCardRarity) && ((left_o2_getCardId == right_o1_getCardId) && (left_o2_cardType == right_o1_cardType))))))))));
   int l_ret;
+  int r_ret;
   if (left_o1 == left_o2) {
     l_ret = 0;
   } else {if (left_o1_getCardSet > left_o2_getCardSet) {
@@ -279,7 +281,6 @@ void main() {
       }
     }
   }
-  int r_ret;
   if (right_o1 == right_o2) {
     r_ret = 0;
   } else {if (right_o1_getCardSet > right_o2_getCardSet) {
@@ -306,9 +307,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/sousa/sa/col_item-sa.c...
+Writing output to ./results/alignments/seahorn/sousa/sa/col_item-sa.c...
 Done
 
-real	0m1.750s
-user	0m1.732s
-sys	0m0.016s
+real	0m2.034s
+user	0m2.022s
+sys	0m0.010s

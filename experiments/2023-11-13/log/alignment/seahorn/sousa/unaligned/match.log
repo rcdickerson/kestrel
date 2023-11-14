@@ -189,9 +189,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/sousa/unaligned/match-una.c...
+Writing output to ./results/alignments/seahorn/sousa/unaligned/match-una.c...
 Done
 
-real	0m0.025s
-user	0m0.013s
-sys	0m0.012s
+real	0m0.029s
+user	0m0.024s
+sys	0m0.005s

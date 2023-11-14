@@ -229,9 +229,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/sousa/unaligned/chromosome-una.c...
+Writing output to ./results/alignments/seahorn/sousa/unaligned/chromosome-una.c...
 Done
 
 real	0m0.027s
-user	0m0.005s
-sys	0m0.021s
+user	0m0.014s
+sys	0m0.013s

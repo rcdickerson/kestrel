@@ -1,37 +1,37 @@
-/usr/bin/clang-14 -c -emit-llvm -D__SEAHORN__ -fdeclspec -O1 -Xclang -disable-llvm-optzns -fgnu89-inline -m64 -I/home/usea/seahorn/include -o /tmp/sea-dox7usep/array-int-sa.bc ./results/alignments/sousa/sa/array-int-sa.c
-./results/alignments/sousa/sa/array-int-sa.c:5:5: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+/usr/bin/clang-14 -c -emit-llvm -D__SEAHORN__ -fdeclspec -O1 -Xclang -disable-llvm-optzns -fgnu89-inline -m64 -I/home/usea/seahorn/include -o /tmp/sea-yp4efb8m/array-int-sa.bc ./results/alignments/seahorn/sousa/sa/array-int-sa.c
+./results/alignments/seahorn/sousa/sa/array-int-sa.c:5:5: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
 int left_o1[left_o1_length];
     ^
-./results/alignments/sousa/sa/array-int-sa.c:6:5: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+./results/alignments/seahorn/sousa/sa/array-int-sa.c:6:5: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
 int left_o2[left_o2_length];
     ^
-./results/alignments/sousa/sa/array-int-sa.c:9:5: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+./results/alignments/seahorn/sousa/sa/array-int-sa.c:9:5: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
 int right_o1[right_o1_length];
     ^
-./results/alignments/sousa/sa/array-int-sa.c:10:5: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
+./results/alignments/seahorn/sousa/sa/array-int-sa.c:10:5: warning: variable length array folded to constant array as an extension [-Wgnu-folding-constant]
 int right_o2[right_o2_length];
     ^
-./results/alignments/sousa/sa/array-int-sa.c:12:1: warning: return type of 'main' is not 'int' [-Wmain-return-type]
+./results/alignments/seahorn/sousa/sa/array-int-sa.c:12:1: warning: return type of 'main' is not 'int' [-Wmain-return-type]
 void main() {
 ^
-./results/alignments/sousa/sa/array-int-sa.c:12:1: note: change return type to 'int'
+./results/alignments/seahorn/sousa/sa/array-int-sa.c:12:1: note: change return type to 'int'
 void main() {
 ^~~~
 int
-./results/alignments/sousa/sa/array-int-sa.c:38:7: error: 'break' statement not in loop or switch statement
+./results/alignments/seahorn/sousa/sa/array-int-sa.c:38:7: error: 'break' statement not in loop or switch statement
       break;
       ^
-./results/alignments/sousa/sa/array-int-sa.c:42:7: error: 'break' statement not in loop or switch statement
+./results/alignments/seahorn/sousa/sa/array-int-sa.c:42:7: error: 'break' statement not in loop or switch statement
       break;
       ^
-./results/alignments/sousa/sa/array-int-sa.c:51:7: error: 'break' statement not in loop or switch statement
+./results/alignments/seahorn/sousa/sa/array-int-sa.c:51:7: error: 'break' statement not in loop or switch statement
       break;
       ^
-./results/alignments/sousa/sa/array-int-sa.c:55:7: error: 'break' statement not in loop or switch statement
+./results/alignments/seahorn/sousa/sa/array-int-sa.c:55:7: error: 'break' statement not in loop or switch statement
       break;
       ^
 5 warnings and 4 errors generated.
 
-real	0m0.070s
-user	0m0.046s
-sys	0m0.024s
+real	0m0.072s
+user	0m0.038s
+sys	0m0.034s

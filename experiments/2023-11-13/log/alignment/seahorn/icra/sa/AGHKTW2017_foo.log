@@ -126,9 +126,10 @@ Pre-SA Initial Alignment
 --------------------------
 Starting simulated annealing...
 Initial score: 0.54999995
+Score 0.5450001 at temperature 0.88875926
 Simulated annealing complete.
-Saw 1887 configurations
-Best score: 0.54999995
+Saw 3182 configurations
+Best score: 0.5450001
 
 Aligned Eggroll
 --------------------------
@@ -140,11 +141,15 @@ Aligned Eggroll
     (param-declaration (specifiers (type int)) l_low)
     (param-declaration (specifiers (type int)) r_high)
     (param-declaration (specifiers (type int)) r_low))
-  (<|>
-    (seq
+  (seq
+    (<|>
       (basic-block
         (declaration (specifiers (type int)) l_tick (initializer (const-int 0)))
         (declaration (specifiers (type int)) l_i no-initializer))
+      (basic-block
+        (declaration (specifiers (type int)) r_tick (initializer (const-int 0)))
+        (declaration (specifiers (type int)) r_i no-initializer)))
+    (<|>
       (if-else
         (== l_high (const-int 0))
         (seq
@@ -156,11 +161,7 @@ Aligned Eggroll
           (basic-block (= l_i l_low))
           (while
             (> l_i (const-int 0))
-            (basic-block (= l_i (- l_i (const-int 1))) (= l_tick (+ l_tick (const-int 1))))))))
-    (seq
-      (basic-block
-        (declaration (specifiers (type int)) r_tick (initializer (const-int 0)))
-        (declaration (specifiers (type int)) r_i no-initializer))
+            (basic-block (= l_i (- l_i (const-int 1))) (= l_tick (+ l_tick (const-int 1)))))))
       (if-else
         (== r_high (const-int 0))
         (seq
@@ -188,6 +189,8 @@ void main() {
   assume(l_low == r_low);
   int l_tick = 0;
   int l_i;
+  int r_tick = 0;
+  int r_i;
   if (l_high == 0) {
     l_i = 0;
     while (l_i < l_low) {
@@ -200,8 +203,6 @@ void main() {
       l_tick = (l_tick + 1);
     }
   }
-  int r_tick = 0;
-  int r_i;
   if (r_high == 0) {
     r_i = 0;
     while (r_i < r_low) {
@@ -218,9 +219,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/sa/AGHKTW2017_foo-sa.c...
+Writing output to ./results/alignments/seahorn/icra/sa/AGHKTW2017_foo-sa.c...
 Done
 
-real	0m1.384s
-user	0m1.361s
-sys	0m0.021s
+real	0m2.600s
+user	0m2.584s
+sys	0m0.013s

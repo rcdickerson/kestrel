@@ -109,9 +109,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/euf/unaligned/test-una.c...
+Writing output to ./results/alignments/seahorn/euf/unaligned/test-una.c...
 Done
 
-real	0m0.026s
-user	0m0.007s
-sys	0m0.019s
+real	0m0.025s
+user	0m0.016s
+sys	0m0.008s

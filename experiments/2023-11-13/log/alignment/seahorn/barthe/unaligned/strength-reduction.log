@@ -129,9 +129,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/unaligned/strength-reduction-una.c...
+Writing output to ./results/alignments/seahorn/barthe/unaligned/strength-reduction-una.c...
 Done
 
 real	0m0.025s
-user	0m0.018s
-sys	0m0.007s
+user	0m0.014s
+sys	0m0.010s

@@ -325,9 +325,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/sousa/unaligned/container-una.c...
+Writing output to ./results/alignments/seahorn/sousa/unaligned/container-una.c...
 Done
 
-real	0m0.026s
-user	0m0.017s
-sys	0m0.010s
+real	0m0.032s
+user	0m0.010s
+sys	0m0.022s

@@ -120,9 +120,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/unno/count-loops/double-square-cou.c...
+Writing output to ./results/alignments/seahorn/unno/count-loops/double-square-cou.c...
 Done
 
-real	0m0.025s
-user	0m0.012s
-sys	0m0.013s
+real	0m0.026s
+user	0m0.010s
+sys	0m0.016s

@@ -245,9 +245,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/sousa/count-loops/col_item-cou.c...
+Writing output to ./results/alignments/seahorn/sousa/count-loops/col_item-cou.c...
 Done
 
-real	0m0.027s
-user	0m0.021s
-sys	0m0.006s
+real	0m0.028s
+user	0m0.014s
+sys	0m0.015s

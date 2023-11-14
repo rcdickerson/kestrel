@@ -93,7 +93,7 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/unno/unaligned/square-sum-una.c...
+Writing output to ./results/alignments/seahorn/unno/unaligned/square-sum-una.c...
 Done
 
 real	0m0.024s

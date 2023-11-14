@@ -70,10 +70,10 @@ Pre-SA Initial Alignment
         (basic-block (= r_c (+ r_c (* r_a r_a))) (= r_a (+ r_a (const-int 1))))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.18903968
+Initial score: 0.11083333
 Simulated annealing complete.
 Saw 135 configurations
-Best score: 0.18903968
+Best score: 0.11083333
 
 Aligned Eggroll
 --------------------------
@@ -136,9 +136,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/unno/sa/square-sum-sa.c...
+Writing output to ./results/alignments/seahorn/unno/sa/square-sum-sa.c...
 Done
 
-real	0m1.191s
-user	0m1.176s
-sys	0m0.014s
+real	0m0.788s
+user	0m0.766s
+sys	0m0.013s

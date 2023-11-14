@@ -123,10 +123,10 @@ Pre-SA Initial Alignment
         (= r_ret (- right_o1_get_id right_o2_get_id))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.022356903
+Initial score: 0.022356905
 Simulated annealing complete.
-Saw 1985 configurations
-Best score: 0.022356903
+Saw 1981 configurations
+Best score: 0.022356905
 
 Aligned Eggroll
 --------------------------
@@ -220,9 +220,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/sousa/sa/node-sa.c...
+Writing output to ./results/alignments/seahorn/sousa/sa/node-sa.c...
 Done
 
-real	0m1.701s
-user	0m1.685s
-sys	0m0.014s
+real	0m1.817s
+user	0m1.802s
+sys	0m0.013s

@@ -148,9 +148,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/count-loops/strength-reduction-cou.c...
+Writing output to ./results/alignments/seahorn/barthe/count-loops/strength-reduction-cou.c...
 Done
 
 real	0m0.025s
-user	0m0.018s
-sys	0m0.007s
+user	0m0.016s
+sys	0m0.009s

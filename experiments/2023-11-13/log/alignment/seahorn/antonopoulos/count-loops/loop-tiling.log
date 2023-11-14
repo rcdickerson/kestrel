@@ -158,9 +158,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/antonopoulos/count-loops/loop-tiling-cou.c...
+Writing output to ./results/alignments/seahorn/antonopoulos/count-loops/loop-tiling-cou.c...
 Done
 
-real	0m0.027s
-user	0m0.014s
-sys	0m0.013s
+real	0m0.028s
+user	0m0.018s
+sys	0m0.010s

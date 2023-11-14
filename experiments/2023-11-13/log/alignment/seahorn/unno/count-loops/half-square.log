@@ -173,9 +173,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/unno/count-loops/half-square-cou.c...
+Writing output to ./results/alignments/seahorn/unno/count-loops/half-square-cou.c...
 Done
 
 real	0m0.031s
-user	0m0.014s
-sys	0m0.017s
+user	0m0.018s
+sys	0m0.013s

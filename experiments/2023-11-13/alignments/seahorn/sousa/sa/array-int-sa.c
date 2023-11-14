@@ -30,31 +30,31 @@ void main() {
   int r_aentry;
   int r_bentry;
   r_index = 0;
-  if ((r_index < right_o1_length) && (r_index < right_o2_length)) {
-    r_aentry = right_o1[r_index];
-    r_bentry = right_o2[r_index];
-    if (r_aentry < r_bentry) {
-      r_ret = (-1);
+  if ((l_index < left_o1_length) && (l_index < left_o2_length)) {
+    l_aentry = left_o1[l_index];
+    l_bentry = left_o2[l_index];
+    if (l_aentry < l_bentry) {
+      l_ret = (-1);
       break;
     }
-    if (r_aentry > r_bentry) {
-      r_ret = 1;
+    if (l_aentry > l_bentry) {
+      l_ret = 1;
       break;
     }
-    r_index = (r_index + 1);
+    l_index = (l_index + 1);
   }
-  if ((r_index < right_o1_length) && (r_index < right_o2_length)) {
-    r_aentry = right_o1[r_index];
-    r_bentry = right_o2[r_index];
-    if (r_aentry < r_bentry) {
-      r_ret = (-1);
+  if ((l_index < left_o1_length) && (l_index < left_o2_length)) {
+    l_aentry = left_o1[l_index];
+    l_bentry = left_o2[l_index];
+    if (l_aentry < l_bentry) {
+      l_ret = (-1);
       break;
     }
-    if (r_aentry > r_bentry) {
-      r_ret = 1;
+    if (l_aentry > l_bentry) {
+      l_ret = 1;
       break;
     }
-    r_index = (r_index + 1);
+    l_index = (l_index + 1);
   }
   while (((l_index < left_o1_length) && (l_index < left_o2_length)) && ((r_index < right_o1_length) && (r_index < right_o2_length))) {
     l_aentry = left_o1[l_index];

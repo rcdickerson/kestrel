@@ -108,14 +108,11 @@ Pre-SA Initial Alignment
 --------------------------
 Starting simulated annealing...
 Initial score: 0.8245455
-Score 0.774762 at temperature 0.99983335
-Score 0.77121943 at temperature 0.9975002
-Score 0.69903225 at temperature 0.99691695
-Score 0.69045454 at temperature 0.9769186
-Score 0.6890477 at temperature 0.9766686
+Score 0.69903225 at temperature 0.9999167
+Score 0.69045454 at temperature 0.9794184
 Simulated annealing complete.
-Saw 2171 configurations
-Best score: 0.6890477
+Saw 2153 configurations
+Best score: 0.69045454
 
 Aligned Eggroll
 --------------------------
@@ -128,13 +125,15 @@ Aligned Eggroll
       (sized-array l_a (array-sizes (* N M))))
     (param-declaration (specifiers (type int)) (sized-array r_a (array-sizes N M))))
   (seq
-    (<|>
-      (basic-block
-        (declaration (specifiers (type int)) l_x (initializer (const-int 0))))
-      (basic-block
-        (declaration (specifiers (type int)) r_i (initializer (const-int 0)))))
+    (seq
+      (<|
+        (basic-block
+          (declaration (specifiers (type int)) l_x (initializer (const-int 0)))))
+      (|>
+        (basic-block
+          (declaration (specifiers (type int)) r_i (initializer (const-int 0))))))
     (while-lockstep
-      1
+      0
       0
       (< l_x (* N M))
       (< r_i N)
@@ -142,15 +141,15 @@ Aligned Eggroll
         (= (index l_a l_x) (call f (args l_x)))
         (= l_x (+ l_x (const-int 1))))
       (seq
+        (basic-block
+          (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
         (seq
-          (basic-block
-            (declaration (specifiers (type int)) r_j (initializer (const-int 0))))
           (while
             (< r_j M)
             (basic-block
               (= (index (index r_a r_i) r_j) (call f (args (+ (* r_i N) r_j))))
-              (= r_j (+ r_j (const-int 1))))))
-        (basic-block (= r_i (+ r_i (const-int 1)))))
+              (= r_j (+ r_j (const-int 1)))))
+          (basic-block (= r_i (+ r_i (const-int 1))))))
       (seq
         (|>
           (seq
@@ -182,10 +181,6 @@ void main() {
   assume(1);
   int l_x = 0;
   int r_i = 0;
-  if (l_x < (N * M)) {
-    l_a[l_x] = f(l_x);
-    l_x = (l_x + 1);
-  }
   while ((l_x < (N * M)) && (r_i < N)) {
     int r_j = 0;
     while (r_j < M) {
@@ -222,9 +217,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/antonopoulos/sa/loop-tiling-sa.c...
+Writing output to ./results/alignments/seahorn/antonopoulos/sa/loop-tiling-sa.c...
 Done
 
-real	0m35.994s
-user	0m32.172s
-sys	0m3.770s
+real	0m35.582s
+user	0m31.116s
+sys	0m4.420s

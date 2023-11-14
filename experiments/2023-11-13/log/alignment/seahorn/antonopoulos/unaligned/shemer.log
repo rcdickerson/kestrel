@@ -109,9 +109,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/antonopoulos/unaligned/shemer-una.c...
+Writing output to ./results/alignments/seahorn/antonopoulos/unaligned/shemer-una.c...
 Done
 
 real	0m0.025s
-user	0m0.016s
-sys	0m0.009s
+user	0m0.013s
+sys	0m0.011s

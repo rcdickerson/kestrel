@@ -83,11 +83,11 @@ Pre-SA Initial Alignment
       (|> (basic-block (= r_y (* r_y (const-int 2))))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.41305557
-Score 0.3563889 at temperature 0.9519207
+Initial score: 0.3892778
+Score 0.31594443 at temperature 0.96733606
 Simulated annealing complete.
-Saw 1409 configurations
-Best score: 0.3563889
+Saw 1350 configurations
+Best score: 0.31594443
 
 Aligned Eggroll
 --------------------------
@@ -98,16 +98,16 @@ Aligned Eggroll
     (param-declaration (specifiers (type int)) l_x)
     (param-declaration (specifiers (type int)) r_x))
   (seq
+    (<|>
+      (basic-block
+        (declaration (specifiers (type int)) l_y (initializer (const-int 0)))
+        (declaration (specifiers (type int)) l_z (initializer (* (const-int 2) l_x)))
+        (declaration (specifiers (type int)) l_i (initializer (const-int 0))))
+      (basic-block
+        (declaration (specifiers (type int)) r_y (initializer (const-int 0)))
+        (declaration (specifiers (type int)) r_z (initializer r_x))
+        (declaration (specifiers (type int)) r_i (initializer (const-int 0)))))
     (seq
-      (<|>
-        (basic-block
-          (declaration (specifiers (type int)) l_y (initializer (const-int 0)))
-          (declaration (specifiers (type int)) l_z (initializer (* (const-int 2) l_x)))
-          (declaration (specifiers (type int)) l_i (initializer (const-int 0))))
-        (basic-block
-          (declaration (specifiers (type int)) r_y (initializer (const-int 0)))
-          (declaration (specifiers (type int)) r_z (initializer r_x))
-          (declaration (specifiers (type int)) r_i (initializer (const-int 0)))))
       (while-lockstep
         2
         0
@@ -117,8 +117,8 @@ Aligned Eggroll
         (basic-block (= r_y (+ r_y r_x)) (= r_i (+ r_i (const-int 1))))
         (<|>
           (basic-block (= l_y (+ l_y l_x)) (= l_i (+ l_i (const-int 1))))
-          (basic-block (= r_y (+ r_y r_x)) (= r_i (+ r_i (const-int 1)))))))
-    (|> (basic-block (= r_y (* r_y (const-int 2)))))))
+          (basic-block (= r_y (+ r_y r_x)) (= r_i (+ r_i (const-int 1))))))
+      (|> (basic-block (= r_y (* r_y (const-int 2))))))))
 --------------------------
 
 Aligned Product Program
@@ -165,9 +165,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/antonopoulos/sa/shemer-sa.c...
+Writing output to ./results/alignments/seahorn/antonopoulos/sa/shemer-sa.c...
 Done
 
-real	0m2.823s
-user	0m2.799s
-sys	0m0.021s
+real	0m2.258s
+user	0m2.251s
+sys	0m0.003s

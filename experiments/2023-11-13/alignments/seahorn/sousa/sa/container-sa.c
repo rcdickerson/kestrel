@@ -39,30 +39,6 @@ void main() {
     } else {r_rv = 0;
     }
   }
-  if (l_rv == 0) {
-    if (left_o1_departureMaxDuration < left_o2_departureMaxDuration) {
-      l_rv = (-1);
-    } else {if (left_o1_departureMaxDuration > left_o2_departureMaxDuration) {
-        l_rv = 1;
-      } else {if (left_o1_departureTransportCompany < left_o2_departureTransportCompany) {
-          l_rv = (-1);
-        } else {if (left_o2_departureTransportCompany < left_o1_departureTransportCompany) {
-            l_rv = 1;
-          } else {l_rv = 0;
-          }
-        }
-        if (l_rv == 0) {
-          if (left_o1_departureTransportType < left_o2_departureTransportType) {
-            l_rv = (-1);
-          } else {if (left_o2_departureTransportType < left_o1_departureTransportType) {
-              l_rv = 1;
-            } else {l_rv = 0;
-            }
-          }
-        }
-      }
-    }
-  }
   if (r_rv == 0) {
     if (right_o1_departureMaxDuration < right_o2_departureMaxDuration) {
       r_rv = (-1);
@@ -81,6 +57,30 @@ void main() {
           } else {if (right_o2_departureTransportType < right_o1_departureTransportType) {
               r_rv = 1;
             } else {r_rv = 0;
+            }
+          }
+        }
+      }
+    }
+  }
+  if (l_rv == 0) {
+    if (left_o1_departureMaxDuration < left_o2_departureMaxDuration) {
+      l_rv = (-1);
+    } else {if (left_o1_departureMaxDuration > left_o2_departureMaxDuration) {
+        l_rv = 1;
+      } else {if (left_o1_departureTransportCompany < left_o2_departureTransportCompany) {
+          l_rv = (-1);
+        } else {if (left_o2_departureTransportCompany < left_o1_departureTransportCompany) {
+            l_rv = 1;
+          } else {l_rv = 0;
+          }
+        }
+        if (l_rv == 0) {
+          if (left_o1_departureTransportType < left_o2_departureTransportType) {
+            l_rv = (-1);
+          } else {if (left_o2_departureTransportType < left_o1_departureTransportType) {
+              l_rv = 1;
+            } else {l_rv = 0;
             }
           }
         }

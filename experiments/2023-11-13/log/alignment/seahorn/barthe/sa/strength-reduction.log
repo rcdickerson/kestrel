@@ -104,10 +104,10 @@ Pre-SA Initial Alignment
           (= r_i (+ r_i (const-int 1))))))))
 --------------------------
 Starting simulated annealing...
-Initial score: 0.20959787
+Initial score: 0.22978306
 Simulated annealing complete.
 Saw 135 configurations
-Best score: 0.20959787
+Best score: 0.22978306
 
 Aligned Eggroll
 --------------------------
@@ -198,9 +198,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/barthe/sa/strength-reduction-sa.c...
+Writing output to ./results/alignments/seahorn/barthe/sa/strength-reduction-sa.c...
 Done
 
-real	0m2.129s
-user	0m2.110s
-sys	0m0.017s
+real	0m2.842s
+user	0m2.826s
+sys	0m0.013s

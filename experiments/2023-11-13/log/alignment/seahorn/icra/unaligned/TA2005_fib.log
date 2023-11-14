@@ -147,9 +147,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/unaligned/TA2005_fib-una.c...
+Writing output to ./results/alignments/seahorn/icra/unaligned/TA2005_fib-una.c...
 Done
 
 real	0m0.024s
-user	0m0.004s
-sys	0m0.020s
+user	0m0.011s
+sys	0m0.013s

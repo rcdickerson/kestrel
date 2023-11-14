@@ -280,9 +280,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/sousa/count-loops/chromosome-cou.c...
+Writing output to ./results/alignments/seahorn/sousa/count-loops/chromosome-cou.c...
 Done
 
-real	0m0.031s
-user	0m0.025s
-sys	0m0.007s
+real	0m0.037s
+user	0m0.029s
+sys	0m0.008s

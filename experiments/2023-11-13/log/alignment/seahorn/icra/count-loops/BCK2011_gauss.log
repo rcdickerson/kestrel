@@ -106,9 +106,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/count-loops/BCK2011_gauss-cou.c...
+Writing output to ./results/alignments/seahorn/icra/count-loops/BCK2011_gauss-cou.c...
 Done
 
 real	0m0.025s
-user	0m0.018s
-sys	0m0.007s
+user	0m0.015s
+sys	0m0.010s

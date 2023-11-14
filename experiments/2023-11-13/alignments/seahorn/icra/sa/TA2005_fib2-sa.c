@@ -37,17 +37,21 @@ void main() {
     r_f22 = (r_f21 - r_f22);
     r_n2 = (r_n2 - 1);
   }
-  if (r_h2) {
-    r_x2 = 1;
-  }
   if (l_h1) {
     l_x1 = 1;
+  }
+  if (r_h2) {
+    r_x2 = 1;
   }
   if (!r_h2) {
     r_x2 = 1;
   }
   if (!l_h1) {
     l_x1 = 1;
+  }
+  if (l_i1 < l_f11) {
+    l_l1 = (l_l1 + l_x1);
+    l_i1 = (l_i1 + 1);
   }
   while ((l_i1 < l_f11) && (r_i2 < r_f21)) {
     l_l1 = (l_l1 + l_x1);

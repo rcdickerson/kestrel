@@ -169,9 +169,9 @@ void main() {
  }
 
 --------------------------
-Writing output to ./results/alignments/icra/count-loops/AGHKTW2017_foo-cou.c...
+Writing output to ./results/alignments/seahorn/icra/count-loops/AGHKTW2017_foo-cou.c...
 Done
 
-real	0m0.026s
-user	0m0.007s
-sys	0m0.019s
+real	0m0.024s
+user	0m0.011s
+sys	0m0.013s

@@ -4,9 +4,9 @@ use sexp::{Atom, Sexp};
 
 pub fn eggroll_to_crel(eggroll: &String, options: Option<output_mode::Options>) -> CRel {
   let options = options.unwrap_or(output_mode::Options {
-    assert_name: "assert".to_string(),
-    assume_name: "assume".to_string(),
-    nondet_name: "nondet".to_string(),
+    assert_name: None,
+    assume_name: None,
+    nondet_name: None,
   });
   match sexp::parse(eggroll.as_str()) {
     Err(msg) => panic!("{}", msg),
@@ -248,26 +248,32 @@ fn expect_statement(sexp: &Sexp, options: &output_mode::Options) -> Statement {
         };
 
         let body1 = expect_statement(&sexps[5], options);
-        let runoff_body_1 = Statement::Compound(vec!(
-          BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
-            callee: Box::new(Expression::Identifier{name: options.assume_name.clone()}),
-            args: vec!(Expression::Unop{
-              expr: Box::new(cond2.clone()),
-              op: UnaryOp::Not}),
-          }))),
-          BlockItem::Statement(body1.clone()),
-        ));
+        let runoff_body_1 = match options.assume_name.clone() {
+          None => body1.clone(),
+          Some(assume_name) => Statement::Compound(vec!(
+            BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
+              callee: Box::new(Expression::Identifier{name: assume_name}),
+              args: vec!(Expression::Unop{
+                expr: Box::new(cond2.clone()),
+                op: UnaryOp::Not}),
+            }))),
+            BlockItem::Statement(body1.clone()),
+          )),
+        };
 
         let body2 = expect_statement(&sexps[6], options);
-        let runoff_body_2 = Statement::Compound(vec!(
-          BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
-            callee: Box::new(Expression::Identifier{name: options.assume_name.clone()}),
-            args: vec!(Expression::Unop{
-              expr: Box::new(cond1.clone()),
-              op: UnaryOp::Not}),
-          }))),
-          BlockItem::Statement(body2.clone()),
-        ));
+        let runoff_body_2 = match options.assume_name.clone() {
+          None => body2.clone(),
+          Some(assume_name) => Statement::Compound(vec!(
+            BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
+              callee: Box::new(Expression::Identifier{name: assume_name}),
+              args: vec!(Expression::Unop{
+                expr: Box::new(cond1.clone()),
+                op: UnaryOp::Not}),
+            }))),
+            BlockItem::Statement(body2.clone()),
+          )),
+        };
         let body = expect_statement(&sexps[7], options);
 
         let mut unrolls1 = Vec::new();

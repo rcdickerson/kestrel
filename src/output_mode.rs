@@ -4,15 +4,17 @@ use crate::spec::{*, to_crel::*};
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum OutputMode {
+  /*TODO: Dafny*/
+  Daikon,
   Icra,
   Seahorn,
   SvComp,
 }
 
 pub struct Options {
-  pub assert_name: String,
-  pub assume_name: String,
-  pub nondet_name: String,
+  pub assert_name: Option<String>,
+  pub assume_name: Option<String>,
+  pub nondet_name: Option<String>,
 }
 
 impl OutputMode {
@@ -25,23 +27,28 @@ impl OutputMode {
     let (_, fundefs) = crate::crel::fundef::extract_fundefs(crel);
     let main_fun = fundefs.get("main").expect("No main function found");
 
-    let mut param_inits = self.build_param_inits(&main_fun.params);
-    let preconds = BlockItem::Statement(
-      spec.pre.to_crel(StatementKind{crel_name: options.assume_name}));
-    let postconds = BlockItem::Statement(
-      spec.post.to_crel(StatementKind{crel_name: options.assert_name}));
+    let param_inits = self.build_param_inits(&main_fun.params);
+    let preconds = options.assume_name.map(|name| {
+      BlockItem::Statement(spec.pre.to_crel(StatementKind{crel_name: name}))
+    });
+    let postconds = options.assert_name.map(|name| {
+      BlockItem::Statement(spec.post.to_crel(StatementKind{crel_name: name}))
+    });
 
     let mut body_items: Vec<BlockItem> = Vec::new();
-    body_items.append(&mut param_inits);
-    body_items.push(preconds);
+    param_inits.clone().map(|mut param_inits| body_items.append(&mut param_inits));
+    preconds.map(|preconds| body_items.push(preconds));
     body_items.push(BlockItem::Statement(main_fun.body.clone()));
-    body_items.push(postconds);
+    postconds.map(|postconds| body_items.push(postconds));
     let new_body = Statement::Compound(body_items);
 
     let new_main = CRel::FunctionDefinition {
       specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
       name: "main".to_string(),
-      params: Vec::new(),
+      params: match param_inits {
+        None => main_fun.params.clone(),
+        Some(_) => Vec::new(),
+      },
       body: Box::new(new_body),
     };
 
@@ -54,6 +61,9 @@ impl OutputMode {
 
   fn top(&self, filename: &Option<String>) -> String {
     match self {
+      OutputMode::Daikon => {
+        "#include \"assert.h\"".to_string()
+      }
       OutputMode::Icra => {
         "#include \"assert.h\"".to_string()
       }
@@ -88,37 +98,45 @@ impl OutputMode {
 
   pub fn options(&self) -> Options {
     match self {
+      OutputMode::Daikon => {
+        Options {
+          assert_name: None,
+          assume_name: None,
+          nondet_name: None,
+        }
+      },
       OutputMode::Icra => {
         Options {
-          assert_name: "__VERIFIER_assert".to_string(),
-          assume_name: "__VERIFIER_assume".to_string(),
-          nondet_name: "nondet".to_string(),
+          assert_name: Some("__VERIFIER_assert".to_string()),
+          assume_name: Some("__VERIFIER_assume".to_string()),
+          nondet_name: Some("nondet".to_string()),
         }
       },
       OutputMode::Seahorn => {
         Options {
-          assert_name: "sassert".to_string(),
-          assume_name: "assume".to_string(),
-          nondet_name: "arb_int".to_string(),
+          assert_name: Some("sassert".to_string()),
+          assume_name: Some("assume".to_string()),
+          nondet_name: Some("arb_int".to_string()),
         }
       },
       OutputMode::SvComp => {
         Options {
-          assert_name: "sassert".to_string(),
-          assume_name: "assume".to_string(),
-          nondet_name: "arb_int".to_string(),
+          assert_name: Some("sassert".to_string()),
+          assume_name: Some("assume".to_string()),
+          nondet_name: Some("arb_int".to_string()),
         }
       },
     }
   }
 
-  fn build_param_inits(&self, params: &Vec<ParameterDeclaration>) -> Vec<BlockItem> {
+  fn build_param_inits(&self, params: &Vec<ParameterDeclaration>) -> Option<Vec<BlockItem>> {
     let options = self.options();
+    let nondet_name = options.nondet_name?;
     let call_nondet_int = Expression::Call {
-      callee: Box::new(Expression::Identifier{name: options.nondet_name}),
+      callee: Box::new(Expression::Identifier{name: nondet_name}),
       args: Vec::new(),
     };
-    params.iter()
+    Some(params.iter()
       .filter(|param| param.declarator.is_some())
       .map(|param| {
         let c_param = param.to_c();
@@ -138,6 +156,6 @@ impl OutputMode {
           }
         )
       })
-      .collect()
+      .collect())
   }
 }

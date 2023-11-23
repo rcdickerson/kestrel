@@ -189,15 +189,12 @@ fn main() {
   println!("{}", aligned_eggroll.pretty(80));
   println!("--------------------------");
 
-  let aligned_crel =
-    kestrel::eggroll::to_crel::eggroll_to_crel(&aligned_eggroll.to_string(),
-                                               &args.output_mode.crel_config());
   let filename = args.output.as_ref().map(|outpath| {
     let path = Path::new(outpath);
     path.file_name().unwrap().to_str().unwrap().to_string()
   });
-  let aligned_c = args.output_mode.crel_to_c(
-    &aligned_crel, &spec, unaligned_crel.global_decls, &filename);
+  let aligned_c = args.output_mode.eggroll_to_c(&aligned_eggroll, &spec,
+      unaligned_crel.global_decls, &filename);
   println!("\nAligned Product Program");
   println!("--------------------------");
   println!("{}", aligned_c);

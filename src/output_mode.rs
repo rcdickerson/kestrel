@@ -1,7 +1,8 @@
 use clap::ValueEnum;
 use crate::crel::ast::*;
-use crate::eggroll::to_crel;
+use crate::eggroll::{ast::*, to_crel};
 use crate::spec::{*, to_crel::*};
+use egg::RecExpr;
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum OutputMode {
@@ -13,6 +14,20 @@ pub enum OutputMode {
 }
 
 impl OutputMode {
+
+  pub fn eggroll_to_c(&self,
+                      eggroll: &RecExpr<Eggroll>,
+                      spec: &KestrelSpec,
+                      global_decls: Vec<Declaration>,
+                      filename: &Option<String>) -> String {
+    let crel = self.eggroll_to_crel(&eggroll);
+    self.crel_to_c(&crel, spec, global_decls, filename)
+  }
+
+  pub fn eggroll_to_crel(&self, eggroll: &RecExpr<Eggroll>) -> CRel {
+    to_crel::eggroll_to_crel(&eggroll.to_string(), &self.crel_config())
+  }
+
   pub fn crel_to_c(&self,
                    crel: &CRel,
                    spec: &KestrelSpec,

@@ -2,6 +2,7 @@ use crate::crel::count_loops::*;
 use crate::crel::ast::CRel;
 use crate::crel::eval::*;
 use crate::eggroll::ast::*;
+use crate::eggroll::to_crel;
 use egg::*;
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -319,7 +320,7 @@ fn score_loop_executions(program: &CRel, trace: &Trace) -> f32 {
 }
 
 pub fn sa_score(trace_states: &Vec<State>, trace_fuel: usize, expr: RecExpr<Eggroll>) -> f32 {
-  let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string(), None);
+  let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string(), &to_crel::Config::default());
   let body = crate::crel::fundef::extract_fundefs(&crel).1
     .get(&"main".to_string())
     .expect("Missing main function")

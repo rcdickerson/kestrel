@@ -191,7 +191,7 @@ fn main() {
 
   let aligned_crel =
     kestrel::eggroll::to_crel::eggroll_to_crel(&aligned_eggroll.to_string(),
-                                               Some(args.output_mode.options()));
+                                               &args.output_mode.crel_config());
   let filename = args.output.as_ref().map(|outpath| {
     let path = Path::new(outpath);
     path.file_name().unwrap().to_str().unwrap().to_string()

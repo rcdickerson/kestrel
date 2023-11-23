@@ -1,5 +1,6 @@
 use clap::ValueEnum;
 use crate::crel::ast::*;
+use crate::eggroll::to_crel;
 use crate::spec::{*, to_crel::*};
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
@@ -11,27 +12,20 @@ pub enum OutputMode {
   SvComp,
 }
 
-pub struct Options {
-  pub assert_name: Option<String>,
-  pub assume_name: Option<String>,
-  pub nondet_name: Option<String>,
-}
-
 impl OutputMode {
   pub fn crel_to_c(&self,
                    crel: &CRel,
                    spec: &KestrelSpec,
                    global_decls: Vec<Declaration>,
                    filename: &Option<String>) -> String {
-    let options = self.options();
     let (_, fundefs) = crate::crel::fundef::extract_fundefs(crel);
     let main_fun = fundefs.get("main").expect("No main function found");
 
     let param_inits = self.build_param_inits(&main_fun.params);
-    let preconds = options.assume_name.map(|name| {
+    let preconds = self.assume_name().map(|name| {
       BlockItem::Statement(spec.pre.to_crel(StatementKind{crel_name: name}))
     });
-    let postconds = options.assert_name.map(|name| {
+    let postconds = self.assert_name().map(|name| {
       BlockItem::Statement(spec.post.to_crel(StatementKind{crel_name: name}))
     });
 
@@ -96,42 +90,43 @@ impl OutputMode {
     }
   }
 
-  pub fn options(&self) -> Options {
+  pub fn crel_config(&self) -> to_crel::Config {
+    to_crel::Config {
+      assert_name: self.assert_name(),
+      assume_name: self.assume_name(),
+      nondet_name: self.nondet_name(),
+    }
+  }
+
+  pub fn assert_name(&self) -> Option<String> {
     match self {
-      OutputMode::Daikon => {
-        Options {
-          assert_name: None,
-          assume_name: None,
-          nondet_name: None,
-        }
-      },
-      OutputMode::Icra => {
-        Options {
-          assert_name: Some("__VERIFIER_assert".to_string()),
-          assume_name: Some("__VERIFIER_assume".to_string()),
-          nondet_name: Some("nondet".to_string()),
-        }
-      },
-      OutputMode::Seahorn => {
-        Options {
-          assert_name: Some("sassert".to_string()),
-          assume_name: Some("assume".to_string()),
-          nondet_name: Some("arb_int".to_string()),
-        }
-      },
-      OutputMode::SvComp => {
-        Options {
-          assert_name: Some("sassert".to_string()),
-          assume_name: Some("assume".to_string()),
-          nondet_name: Some("arb_int".to_string()),
-        }
-      },
+      OutputMode::Daikon => None,
+      OutputMode::Icra => Some("__VERIFIER_assert".to_string()),
+      OutputMode::Seahorn => Some("sassert".to_string()),
+      OutputMode::SvComp => Some("sassert".to_string()),
+    }
+  }
+
+  pub fn assume_name(&self) -> Option<String> {
+    match self {
+      OutputMode::Daikon => None,
+      OutputMode::Icra => Some("__VERIFIER_assume".to_string()),
+      OutputMode::Seahorn => Some("assume".to_string()),
+      OutputMode::SvComp => Some("assume".to_string()),
+    }
+  }
+
+  pub fn nondet_name(&self) -> Option<String> {
+    match self {
+      OutputMode::Daikon => None,
+      OutputMode::Icra => Some("nondet".to_string()),
+      OutputMode::Seahorn => Some("arb_int".to_string()),
+      OutputMode::SvComp => Some("arb_int".to_string()),
     }
   }
 
   fn build_param_inits(&self, params: &Vec<ParameterDeclaration>) -> Option<Vec<BlockItem>> {
-    let options = self.options();
-    let nondet_name = options.nondet_name?;
+    let nondet_name = self.nondet_name()?;
     let call_nondet_int = Expression::Call {
       callee: Box::new(Expression::Identifier{name: nondet_name}),
       args: Vec::new(),

@@ -18,7 +18,7 @@ impl ParameterDeclaration {
 fn crel_to_c(crel: &CRel, source: &mut C::Source) {
   match crel {
     CRel::Declaration(decl) => {
-      source.declare_variable(&declaration_to_c(&decl));
+      source.declare_variable(&declaration_to_c(decl));
     },
     CRel::FunctionDefinition{specifiers, name, params, body} => {
       source.push_function(&fun_to_c(specifiers, name, params, body));
@@ -60,7 +60,7 @@ fn fun_to_c(specifiers: &Vec<DeclarationSpecifier>,
     }
   }
 
-  let mut fun = C::Function::new(&name, fun_ty);
+  let mut fun = C::Function::new(name, fun_ty);
   for param in params.iter()
     .filter(|param| param.declarator.is_some())
     .map(decl_to_param) {
@@ -77,7 +77,7 @@ fn decl_to_param(decl: &ParameterDeclaration) -> C::FunctionParameter {
   for spec in &decl.specifiers {
     builder.visit_specifier(spec);
   }
-  decl.declarator.as_ref().map(|decl| builder.visit_declarator(&decl));
+  if let Some(decl) = decl.declarator.as_ref() { builder.visit_declarator(decl) }
   builder.build_param()
 }
 
@@ -159,10 +159,7 @@ fn statement_to_c(stmt: &Statement) -> C::Statement {
       C::Statement::If {
         condition: Box::new(expression_to_c(condition)),
         then: Box::new(statement_to_c(then)),
-        els: match els {
-          None => None,
-          Some(stmt) => Some(Box::new(statement_to_c(stmt))),
-        }
+        els: els.as_ref().map(|stmt| Box::new(statement_to_c(stmt)))
       }
     },
     Statement::None => C::Statement::Seq(Vec::new()),
@@ -175,10 +172,7 @@ fn statement_to_c(stmt: &Statement) -> C::Statement {
     },
     Statement::While{condition, body} => {
       let condition = Box::new(expression_to_c(condition));
-      let body = match body {
-        None => None,
-        Some(stmt) => { Some(Box::new(statement_to_c(stmt))) }
-      };
+      let body = body.as_ref().map(|stmt| Box::new(statement_to_c(stmt)));
       C::Statement::While{condition, body}
     }
   }
@@ -187,7 +181,7 @@ fn statement_to_c(stmt: &Statement) -> C::Statement {
 fn block_item_to_c(item: &BlockItem) -> C::Statement {
   match item {
     BlockItem::Declaration(decl) => {
-      C::Statement::Variable(declaration_to_c(&decl))
+      C::Statement::Variable(declaration_to_c(decl))
     },
     BlockItem::Statement(stmt) => statement_to_c(stmt),
   }
@@ -254,12 +248,12 @@ impl DeclarationBuilder {
   }
 
   fn visit_init_declarator(&mut self, decl: &Declaration) {
-    for spec in &decl.specifiers { self.visit_specifier(&spec); }
+    for spec in &decl.specifiers { self.visit_specifier(spec); }
     self.visit_declarator(&decl.declarator);
     match &decl.initializer {
       None => (),
       Some(expr) => {
-        self.val = Some(expression_to_c(&expr));
+        self.val = Some(expression_to_c(expr));
       }
     }
   }
@@ -272,12 +266,12 @@ impl DeclarationBuilder {
       Declarator::Array{name, sizes} => {
         self.name = Some(name.clone());
         self.is_array = true;
-        self.array_sizes = sizes.iter().map(|expr| expression_to_c(&expr)).collect();
+        self.array_sizes = sizes.iter().map(expression_to_c).collect();
       },
       Declarator::Function{name, params} => {
         self.name = Some(name.clone());
         self.is_function = true;
-        self.function_params = Some(params.iter().map(|p| param_decl_to_param(&p)).collect())
+        self.function_params = Some(params.iter().map(param_decl_to_param).collect())
       },
       Declarator::Pointer(decl) => {
         self.is_pointer = true;
@@ -296,7 +290,7 @@ impl DeclarationBuilder {
     var.set_array_sizes(&self.array_sizes);
     var.set_function(self.is_function);
     self.function_params.as_ref().map(|params| var.set_function_params(params.clone()));
-    self.val.as_ref().map(|expr| var.set_value(&expr));
+    self.val.as_ref().map(|expr| var.set_value(expr));
     var.set_pointer(self.is_pointer);
     var
   }

@@ -30,7 +30,7 @@ pub fn extract_fundefs(crel: &CRel) -> (Vec<Declaration>, HashMap<String, FunDef
     },
     CRel::Seq(crels) => {
       let (decls, defs): (Vec<_>, Vec<_>) = crels.iter()
-        .map(|c| extract_fundefs(c))
+        .map(extract_fundefs)
         .unzip();
       let decls: Vec<_> = decls.iter().flatten().map(|c| (*c).clone()).collect();
       let mut def_union = HashMap::new();

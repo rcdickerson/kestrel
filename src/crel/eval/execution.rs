@@ -48,7 +48,6 @@ impl Execution {
     self.current_state.store_loc(location, value);
     if self.trace.len() >= self.max_trace_size {
       self.flag_out_of_fuel = true;
-      return;
     }
   }
 

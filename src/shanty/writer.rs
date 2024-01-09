@@ -20,7 +20,7 @@ impl Writer {
   }
 
   pub fn write(&mut self, item: &str) -> &mut Self {
-    if self.cur_line.len() == 0 {
+    if self.cur_line.is_empty() {
       self.cur_line.push(format!("{:indent$}", "", indent=self.indent_level))
     }
     self.cur_line.push(item.to_string());

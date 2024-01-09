@@ -25,7 +25,7 @@ impl SAScore {
     let update_matching = score_rel_update_left_right_match(&rel_change_summary);
     let (loop_head_matching, loop_double_updates) =
       score_loop_head_similarity(&loop_change_summaries);
-    let loop_executions = score_loop_executions(&program, &trace);
+    let loop_executions = score_loop_executions(program, trace);
     SAScore {
       relation_size,
       update_matching,
@@ -164,7 +164,7 @@ fn relations_change_summary(trace: &Trace) -> VariableChangeSummary {
       Tag::RelationStart => start_state = Some(&item.state),
       Tag::RelationEnd => match start_state {
         None => panic!("Saw RelationEnd without a RelationStart"),
-        Some(start_state) => states.push((&start_state, &item.state)),
+        Some(start_state) => states.push((start_state, &item.state)),
       },
       _ => (),
     }
@@ -189,7 +189,7 @@ fn loop_change_summaries(trace: &Trace) -> Vec<VariableChangeSummary> {
         Some(cur_start_state) => match &mut cur_states {
           None => panic!("Saw LoopHead before LoopStart"),
           Some(states) => {
-            states.push((&cur_start_state, &item.state));
+            states.push((cur_start_state, &item.state));
             start_state = Some(&item.state);
           },
         }
@@ -228,7 +228,7 @@ fn score_avg_rel_size(summary: &VariableChangeSummary) -> f32 {
     }
     change_counts.push(count);
   }
-  if change_counts.len() == 0 { return 0.0 }
+  if change_counts.is_empty() { return 0.0 }
   return (change_counts.iter().sum::<i32>() as f32) / (num_rels as f32) / (total_vars as f32)
 }
 
@@ -249,7 +249,7 @@ fn score_rel_update_left_right_match(summary: &VariableChangeSummary) -> f32 {
       ratios.push((num_double_changes as f32) / (num_changes as f32));
     }
   }
-  if ratios.len() == 0 { 0.0 } else {
+  if ratios.is_empty() { 0.0 } else {
     1.0 - (ratios.iter().sum::<f32>() / (ratios.len() as f32))
   }
 }
@@ -266,7 +266,7 @@ fn score_loop_head_similarity(summaries: &Vec<VariableChangeSummary>) -> (f32, f
   let mut exact_ratios: Vec<f32> = Vec::new();
   let mut double_update_ratios: Vec<f32> = Vec::new();
   for loop_summary in summaries {
-    if loop_summary.changed_vars.len() == 0 { continue; }
+    if loop_summary.changed_vars.is_empty() { continue; }
     let l_seqs = loop_summary.change_sequences(Side::Left);
     let r_seqs = loop_summary.change_sequences(Side::Right);
     let mut exact_count = 0;
@@ -299,10 +299,10 @@ fn score_loop_head_similarity(summaries: &Vec<VariableChangeSummary>) -> (f32, f
     exact_ratios.push((exact_count as f32) / (loop_summary.changed_vars.len() as f32));
     double_update_ratios.push((num_double_updates as f32) / (loop_summary.changed_vars.len() as f32));
   }
-  let exact_avg = if exact_ratios.len() == 0 {1.0} else {
+  let exact_avg = if exact_ratios.is_empty() {1.0} else {
     exact_ratios.iter().sum::<f32>() / (exact_ratios.len() as f32)
   };
-  let double_update_avg = if double_update_ratios.len() == 0 {1.0} else {
+  let double_update_avg = if double_update_ratios.is_empty() {1.0} else {
     double_update_ratios.iter().sum::<f32>() / (double_update_ratios.len() as f32)
   };
   (1.0 - exact_avg, 1.0 - double_update_avg)

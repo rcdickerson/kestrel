@@ -135,7 +135,7 @@ impl State {
   pub fn read_var(&self, var: &String) -> VarRead {
     let (loc, size) = self.vars.get(var).unwrap();
     match size {
-      1 => VarRead::Value(self.read_loc(&loc)),
+      1 => VarRead::Value(self.read_loc(loc)),
       _ => {
         let heap_loc = loc.to_index();
         VarRead::Array(&self.heap[heap_loc..heap_loc + size])
@@ -160,7 +160,7 @@ impl State {
         let end = self.clookup(end).int();
         for i in start..end {
           let mut with_idx = self.clone();
-          with_idx.alloc(index_var, 1 as usize, HeapValue::Int(i));
+          with_idx.alloc(index_var, 1_usize, HeapValue::Int(i));
           if !with_idx.satisfies(&body.clone()) {return false;}
         }
         true
@@ -175,7 +175,7 @@ impl State {
           let crel = cond.to_crel();
           let stmt = Statement::Expression(Box::new(crel));
           let result = run(&stmt, self.clone(), 1000).value_int();
-          if result == 0 { false } else { true }
+          result != 0
         },
         CondBExpr::BinopB{lhs, rhs, op} => {
           let lhs = &KestrelCond::BExpr(lhs.as_ref().clone());
@@ -194,7 +194,7 @@ impl State {
 
   fn clookup(&self, aexp: &CondAExpr) -> VarRead {
     match aexp {
-      CondAExpr::Var(id) => self.read_var(&id),
+      CondAExpr::Var(id) => self.read_var(id),
       CondAExpr::QualifiedVar{exec, name} => {
         let var = qualified_state_var(exec, name);
         self.read_var(&var)
@@ -238,14 +238,14 @@ impl State {
   fn alloc_from_decl(&self, declarator: &Declarator, initializer: &Option<Expression>, fuel: usize) -> Self {
     let mut state = self.clone();
     match &declarator {
-      Declarator::Identifier{name} => { state.alloc(&name, 1, HeapValue::Int(0)); },
-      Declarator::Array{name, sizes} if sizes.len() > 0 => {
+      Declarator::Identifier{name} => { state.alloc(name, 1, HeapValue::Int(0)); },
+      Declarator::Array{name, sizes} if !sizes.is_empty() => {
         let mut alloc_size = 1;
         for size_expr in sizes {
           let stmt = Statement::Expression(Box::new(size_expr.clone()));
           alloc_size *= run(&stmt, state.clone(), fuel).value_int();
         }
-        state.alloc(&name, alloc_size as usize, HeapValue::Int(0));
+        state.alloc(name, alloc_size as usize, HeapValue::Int(0));
       },
       _ => ()
     }
@@ -322,7 +322,7 @@ pub fn rand_states_satisfying(num: usize,
       }
       state = run(&generator.body, state.clone(), fuel).current_state.clone();
     }
-    if state.satisfies(&cond) {
+    if state.satisfies(cond) {
       states.push(state);
     }
   }

@@ -161,7 +161,7 @@ mod test {
       })
     };
 
-    let expected = vec!("foo", "w", "x", "y", "z").iter()
+    let expected = ["foo", "w", "x", "y", "z"].iter()
       .map(|v| v.to_string())
       .collect::<HashSet<String>>();
 

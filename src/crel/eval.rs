@@ -225,7 +225,7 @@ fn eval_declaration(decl: &Declaration, exec: &mut Execution) {
       Declarator::Array{name, sizes} => {
         let mut alloc_size = 1;
         for size in sizes {
-          eval_expression(&size, exec);
+          eval_expression(size, exec);
           alloc_size *= exec.value_int() as usize;
         }
         exec.push_alloc(name.clone(), alloc_size, HeapValue::Int(0));
@@ -238,8 +238,8 @@ fn eval_declaration(decl: &Declaration, exec: &mut Execution) {
         panic!("Unsupported: initializer for array.");
       }
       Declarator::Identifier{name} => {
-        eval_expression(&expr, exec);
-        exec.push_update_by_name(&name, exec.current_value());
+        eval_expression(expr, exec);
+        exec.push_update_by_name(name, exec.current_value());
       }
       Declarator::Function{name:_, params:_} => {
         panic!("Unsupported: initializer for function declaration.");
@@ -404,7 +404,7 @@ mod test {
   fn body(crel: CRel) -> Statement {
     match crel {
       CRel::FunctionDefinition{specifiers:_, name:_, params:_, body} => *body,
-      CRel::Seq(crels) if crels.len() > 0 => body(crels[0].clone()),
+      CRel::Seq(crels) if !crels.is_empty() => body(crels[0].clone()),
       _ => panic!("Expected function definition, got: {:?}", crel),
     }
   }

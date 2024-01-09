@@ -31,7 +31,7 @@ impl Expression {
         writer.write(&f.to_string());
       },
       Expression::Identifier{name} => {
-        writer.write(&name);
+        writer.write(name);
       },
       Expression::FnCall{name, args} => {
         name.emit(writer, false);
@@ -45,18 +45,18 @@ impl Expression {
         writer.write(")");
       },
       Expression::StringLiteral(s) => {
-        writer.write(&s);
+        writer.write(s);
       },
       Expression::UnOp{expr, op} => {
         if subexp { writer.write("("); }
-        writer.write(&op);
+        writer.write(op);
         expr.emit(writer, true);
         if subexp { writer.write(")"); }
       },
       Expression::BinOp{lhs, rhs, op} => {
         if subexp { writer.write("("); }
         lhs.emit(writer, true);
-        writer.write(" ").write(&op).write(" ");
+        writer.write(" ").write(op).write(" ");
         rhs.emit(writer, true);
         if subexp { writer.write(")"); }
       },

@@ -177,7 +177,7 @@ fn declaration_to_eggroll(decl: &Declaration) -> String {
   match decl.initializer.as_ref() {
     None => format!("(declaration (specifiers {}) {} no-initializer)", specs_egg, decl_egg),
     Some(init) => {
-      let init_egg = expression_to_eggroll(&init);
+      let init_egg = expression_to_eggroll(init);
       format!("(declaration (specifiers {}) {} (initializer {}))",
               specs_egg, decl_egg, init_egg)
 

@@ -43,7 +43,7 @@ impl<'a> MilpExtractor<'a> {
           };
           choices.push(Choice { index,
                                 col: model.add_binary(),
-                                cost: cost,
+                                cost,
                                 required: Vec::new() })
         }
         let cgroup = ChoiceGroup { class_id: class.id, col: model.add_binary(), choices };

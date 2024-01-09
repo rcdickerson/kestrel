@@ -112,11 +112,11 @@ fn trans_declarator(decl: &Node<c::Declarator>) -> Declarator {
         c::ArraySize::VariableUnknown => is_array = true,
         c::ArraySize::VariableExpression(expr) => {
           is_array = true;
-          array_sizes.push(trans_expression(&*expr));
+          array_sizes.push(trans_expression(expr));
         },
         c::ArraySize::StaticExpression(expr) => {
           is_array = true;
-          array_sizes.push(trans_expression(&*expr));
+          array_sizes.push(trans_expression(expr));
         },
       },
       c::DerivedDeclarator::Function(fundecl) => {
@@ -154,10 +154,7 @@ fn trans_parameter_declaration(decl: &Node<c::ParameterDeclaration>) -> Paramete
   let specifiers = decl.node.specifiers.iter()
     .map(trans_declaration_specifier)
     .collect();
-  let declarator = match &decl.node.declarator {
-    None => None,
-    Some(decl) => Some(trans_declarator(&decl)),
-  };
+  let declarator = decl.node.declarator.as_ref().map(trans_declarator);
   ParameterDeclaration{specifiers, declarator}
 }
 
@@ -168,13 +165,10 @@ fn trans_init_declarator(decl: &Node<c::InitDeclarator>) -> (Declarator, Option<
 }
 
 fn trans_initializer(initializer: &Option<Node<c::Initializer>>) -> Option<Expression> {
-  match &initializer {
-    None => None,
-    Some(init) => Some( match &init.node {
-      c::Initializer::Expression(expr) => trans_expression(&*expr),
+  initializer.as_ref().map(|init| match &init.node {
+      c::Initializer::Expression(expr) => trans_expression(expr),
       _ => panic!("Unsupported initalizer: {:?}", init),
     })
-  }
 }
 
 fn trans_type_specifier(type_spec: c::TypeSpecifier) -> Type {
@@ -203,25 +197,22 @@ fn trans_statement(stmt: &Node<c::Statement>) -> Statement {
     },
     c::Statement::Expression(expr) => match expr {
       None => Statement::None,
-      Some(expr) => Statement::Expression(Box::new(trans_expression(&*expr))),
+      Some(expr) => Statement::Expression(Box::new(trans_expression(expr))),
     },
     c::Statement::If(stmt) => {
       let condition = Box::new(trans_expression(&stmt.node.condition));
       let then = Box::new(trans_statement(&stmt.node.then_statement));
-      let els = match &stmt.node.else_statement {
-        None => None,
-        Some(else_stmt) => Some(Box::new(trans_statement(&else_stmt))),
-      };
+      let els = stmt.node.else_statement.as_ref().map(|else_stmt| Box::new(trans_statement(else_stmt)));
       Statement::If{condition, then, els}
     },
     c::Statement::Return(node) => match node {
       None => Statement::Return(None),
       Some(expr) => {
-        let texpr = trans_expression(&expr);
+        let texpr = trans_expression(expr);
         Statement::Return(Some(Box::new(texpr)))
       },
     },
-    c::Statement::While(node) => trans_while_statement(&node),
+    c::Statement::While(node) => trans_while_statement(node),
     _ => panic!("Unsupported statement: {:?}", stmt),
   }
 }
@@ -229,18 +220,18 @@ fn trans_statement(stmt: &Node<c::Statement>) -> Statement {
 fn trans_expression(expr: &Node<c::Expression>) -> Expression {
   match &expr.node {
     c::Expression::UnaryOperator(unop) => {
-      let expr = Box::new(trans_expression(&*unop.node.operand));
+      let expr = Box::new(trans_expression(&unop.node.operand));
       let op = trans_unary_operator(&unop.node.operator.node);
       Expression::Unop{ expr, op }
     },
     c::Expression::BinaryOperator(binop) => {
-      let lhs = Box::new(trans_expression(&*binop.node.lhs));
-      let rhs = Box::new(trans_expression(&*binop.node.rhs));
+      let lhs = Box::new(trans_expression(&binop.node.lhs));
+      let rhs = Box::new(trans_expression(&binop.node.rhs));
       let op = trans_binary_operator(&binop.node.operator.node);
       Expression::Binop{ lhs, rhs, op }
     },
     c::Expression::Call(call) => trans_call_expression(call),
-    c::Expression::Constant(cnst) => trans_constant(&*cnst),
+    c::Expression::Constant(cnst) => trans_constant(cnst),
     c::Expression::Identifier(id) => Expression::Identifier{ name: id.node.name.clone() },
     _ => panic!("Unsupported expression: {:?}", expr),
   }
@@ -287,12 +278,12 @@ fn trans_constant(cnst: &Node<c::Constant>) -> Expression {
 fn trans_block_item(item: &Node<c::BlockItem>) -> Vec<BlockItem> {
   match &item.node {
     c::BlockItem::Declaration(node) => {
-      trans_declaration(&node).iter().map(|decl| {
+      trans_declaration(node).iter().map(|decl| {
         BlockItem::Declaration(decl.clone())
       }).collect()
     },
     c::BlockItem::Statement(node) => {
-      vec!(BlockItem::Statement(trans_statement(&node)))
+      vec!(BlockItem::Statement(trans_statement(node)))
     },
     _ => panic!("Unsupported block item: {:?}", item.node),
   }
@@ -300,7 +291,7 @@ fn trans_block_item(item: &Node<c::BlockItem>) -> Vec<BlockItem> {
 
 fn trans_while_statement(expr: &Node<c::WhileStatement>) -> Statement {
   let condition = Box::new(trans_expression(&expr.node.expression));
-  let body = match trans_statement(&*expr.node.statement) {
+  let body = match trans_statement(&expr.node.statement) {
     Statement::None => None,
     stmt => Some(Box::new(stmt)),
   };
@@ -308,7 +299,7 @@ fn trans_while_statement(expr: &Node<c::WhileStatement>) -> Statement {
 }
 
 fn trans_call_expression(expr: &Node<c::CallExpression>) -> Expression {
-  let callee = trans_expression(&*expr.node.callee);
+  let callee = trans_expression(&expr.node.callee);
   let args = expr.node.arguments.iter()
     .map(trans_expression)
     .collect();

@@ -68,10 +68,7 @@ impl MapVars for Statement {
       Statement::If{condition, then, els} => Statement::If {
         condition: Box::new(condition.map_vars(f)),
         then: Box::new(then.map_vars(f)),
-        els: match els {
-          None => None,
-          Some(e) => Some(Box::new(e.map_vars(f))),
-        }
+        els: els.as_ref().map(|e| Box::new(e.map_vars(f)))
       },
       Statement::None => Statement::None,
       Statement::Relation{lhs, rhs} => Statement::Relation {
@@ -79,17 +76,11 @@ impl MapVars for Statement {
         rhs: Box::new(rhs.map_vars(f)),
       },
       Statement::Return(expr) => {
-        Statement::Return(match expr {
-          None => None,
-          Some(expr) => Some(Box::new(expr.map_vars(f))),
-        })
+        Statement::Return(expr.as_ref().map(|expr| Box::new(expr.map_vars(f))))
       },
       Statement::While{condition, body} => Statement::While {
         condition: Box::new(condition.map_vars(f)),
-        body: match body {
-          None => None,
-          Some(body) => Some(Box::new(body.map_vars(f))),
-        }
+        body: body.as_ref().map(|body| Box::new(body.map_vars(f)))
       },
     }
   }
@@ -187,7 +178,7 @@ mod test {
     };
 
     let prog2 = prog.map_vars(&|s: String| {
-      if s == "foo".to_string() {
+      if s == *"foo" {
         s.clone()
       } else {
         format!("{}2", s)

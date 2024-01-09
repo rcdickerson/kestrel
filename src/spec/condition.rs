@@ -48,8 +48,7 @@ impl CondAExpr {
       CondAExpr::Float(_) => HashSet::new(),
       CondAExpr::Unop{aexp, op:_} => aexp.state_vars(),
       CondAExpr::Binop{lhs, rhs, op:_} => {
-        lhs.state_vars().union(&rhs.state_vars())
-          .map(|s| s.clone())
+        lhs.state_vars().union(&rhs.state_vars()).cloned()
           .collect()
       },
     }
@@ -95,13 +94,11 @@ impl CondBExpr {
       CondBExpr::False => HashSet::new(),
       CondBExpr::Unop{bexp, op:_} => bexp.state_vars(),
       CondBExpr::BinopA{lhs, rhs, op:_} => {
-        lhs.state_vars().union(&rhs.state_vars())
-          .map(|s| s.clone())
+        lhs.state_vars().union(&rhs.state_vars()).cloned()
           .collect()
       },
       CondBExpr::BinopB{lhs, rhs, op:_} => {
-        lhs.state_vars().union(&rhs.state_vars())
-          .map(|s| s.clone())
+        lhs.state_vars().union(&rhs.state_vars()).cloned()
           .collect()
       },
     }

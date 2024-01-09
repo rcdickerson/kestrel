@@ -45,10 +45,7 @@ impl Blockify for Statement {
         Statement::If {
           condition: condition.clone(),
           then: Box::new(then.blockify()),
-          els: match els {
-            None => None,
-            Some(stmt) => Some(Box::new(stmt.blockify()))
-          }
+          els: els.as_ref().map(|stmt| Box::new(stmt.blockify()))
         }
       },
       Statement::None => Statement::None,
@@ -62,10 +59,7 @@ impl Blockify for Statement {
       Statement::While{condition, body} => {
         Statement::While {
           condition: condition.clone(),
-          body: match body {
-            None => None,
-            Some(stmt) => Some(Box::new(stmt.blockify())),
-          }
+          body: body.as_ref().map(|stmt| Box::new(stmt.blockify()))
         }
       },
     }
@@ -82,7 +76,7 @@ fn blockify_items(items: &Vec<BlockItem>) -> Vec<BlockItem> {
         Statement::BasicBlock(items) => current_block.append(&mut items.clone()),
         Statement::Break => current_block.push(BlockItem::Statement(Statement::Break)),
         Statement::Compound(items) => {
-          if current_block.len() > 0 {
+          if !current_block.is_empty() {
             blocks.push(BlockItem::Statement(Statement::BasicBlock(current_block.clone())));
             current_block = vec!{};
           }
@@ -92,7 +86,7 @@ fn blockify_items(items: &Vec<BlockItem>) -> Vec<BlockItem> {
           current_block.push(BlockItem::Statement(Statement::Expression(expr)))
         },
         Statement::If{condition, then, els} => {
-          if current_block.len() > 0 {
+          if !current_block.is_empty() {
             blocks.push(BlockItem::Statement(Statement::BasicBlock(current_block.clone())));
             current_block = vec!{};
           }
@@ -100,7 +94,7 @@ fn blockify_items(items: &Vec<BlockItem>) -> Vec<BlockItem> {
         },
         Statement::None => current_block.push(item.clone()),
         Statement::Relation{lhs, rhs} => {
-          if current_block.len() > 0 {
+          if !current_block.is_empty() {
             blocks.push(BlockItem::Statement(Statement::BasicBlock(current_block.clone())));
             current_block = vec!{};
           }
@@ -110,7 +104,7 @@ fn blockify_items(items: &Vec<BlockItem>) -> Vec<BlockItem> {
           current_block.push(BlockItem::Statement(Statement::Return(expr)))
         },
         Statement::While{condition, body} => {
-          if current_block.len() > 0 {
+          if !current_block.is_empty() {
             blocks.push(BlockItem::Statement(Statement::BasicBlock(current_block.clone())));
             current_block = vec!{};
           }
@@ -119,7 +113,7 @@ fn blockify_items(items: &Vec<BlockItem>) -> Vec<BlockItem> {
       },
     }
   };
-  if current_block.len() > 0 {
+  if !current_block.is_empty() {
     blocks.push(BlockItem::Statement(Statement::BasicBlock(current_block.clone())))
   }
   blocks

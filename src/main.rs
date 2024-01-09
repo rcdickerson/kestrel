@@ -55,7 +55,7 @@ enum ExtractorArg {
   /// Local cost function extractor that minimizes total number of loops.
   CountLoops,
 
-  /// Non-local extraction which optimizes an objective function via
+ /// Non-local extraction which optimizes an objective function via
   /// mixed-integer linear programming.
   MILP,
 
@@ -69,7 +69,7 @@ enum ExtractorArg {
 
 fn write_file(contents: &String, location: &str) {
   let path = Path::new(location);
-  let mut dot_file = match File::create(&path) {
+  let mut dot_file = match File::create(path) {
     Err(_) => panic!("Could not create file: {}", location),
     Ok(f)  => f,
   };
@@ -203,7 +203,7 @@ fn main() {
   args.output.map(|path| {
     println!("Writing output to {}...", path);
     let mut file = File::create(&path)
-      .expect(format!("Error creating file: {}", path).as_ref());
+      .unwrap_or_else(|_| panic!("Error creating file: {}", path));
     match file.write_all(aligned_c.as_bytes()) {
       Ok(_) => println!("Done"),
       Err(err) => panic!("Error writing output file: {}", err),
@@ -213,8 +213,8 @@ fn main() {
       yaml_pathbuf.set_extension("yml");
       let yaml_path = yaml_pathbuf.to_str().unwrap();
       println!("Writing yaml to {}...", yaml_path);
-      let mut file = File::create(&yaml_path)
-        .expect(format!("Error creating file: {}", yaml_path).as_ref());
+      let mut file = File::create(yaml_path)
+        .unwrap_or_else(|_| panic!("Error creating file: {}", yaml_path));
       match file.write_all(svcomp_yaml(&filename.unwrap()).as_bytes()) {
         Ok(_) => println!("Done"),
         Err(err) => panic!("Error writing output file: {}", err),
@@ -244,7 +244,7 @@ fn space_size(egraph: &EGraph<kestrel::eggroll::ast::Eggroll, ()>,
   }
   seen.insert(class);
   let mut total = 0;
-  for node in egraph[class.clone()].clone().nodes {
+  for node in egraph[class].clone().nodes {
     let mut node_total = 1;
     for child in node.children() {
       match space_size(egraph, *child, seen) {

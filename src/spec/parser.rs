@@ -120,7 +120,7 @@ fn aexp_index(i: &str) -> IResult<&str, CondAExpr> {
   Ok((i, aexpr))
 }
 
-fn aexpr_binop<'a>(op_str: &'a str, op: CondABinop) -> impl Fn(&str) -> IResult<&str, CondAExpr> + 'a {
+fn aexpr_binop(op_str: &str, op: CondABinop) -> impl Fn(&str) -> IResult<&str, CondAExpr> + '_ {
   move |i: &str| {
     let (i, _)   = multispace0(i)?;
     let (i, lhs) = aexpr_lhs(i)?;
@@ -195,7 +195,7 @@ fn bexpr_false(i: &str) -> IResult<&str, CondBExpr> {
   Ok((i, CondBExpr::False))
 }
 
-fn bexpr_binop_a<'a>(op_str: &'a str, op: CondBBinopA) -> impl Fn(&str) -> IResult<&str, CondBExpr> + 'a {
+fn bexpr_binop_a(op_str: &str, op: CondBBinopA) -> impl Fn(&str) -> IResult<&str, CondBExpr> + '_ {
   move |i: &str| {
     let (i, _)   = multispace0(i)?;
     let (i, lhs) = aexpr(i)?;
@@ -207,7 +207,7 @@ fn bexpr_binop_a<'a>(op_str: &'a str, op: CondBBinopA) -> impl Fn(&str) -> IResu
   }
 }
 
-fn bexpr_binop_b<'a>(op_str: &'a str, op: CondBBinopB) -> impl Fn(&str) -> IResult<&str, CondBExpr> + 'a {
+fn bexpr_binop_b(op_str: &str, op: CondBBinopB) -> impl Fn(&str) -> IResult<&str, CondBExpr> + '_ {
   move |i: &str| {
     let (i, _)   = multispace0(i)?;
     let (i, lhs) = bexpr_lhs(i)?;
@@ -219,7 +219,7 @@ fn bexpr_binop_b<'a>(op_str: &'a str, op: CondBBinopB) -> impl Fn(&str) -> IResu
   }
 }
 
-fn bexpr_unop<'a>(op_str: &'a str, op: CondBUnop) -> impl Fn(&str) -> IResult<&str, CondBExpr> + 'a {
+fn bexpr_unop(op_str: &str, op: CondBUnop) -> impl Fn(&str) -> IResult<&str, CondBExpr> + '_ {
   move |i: &str| {
     let (i, _)    = multispace0(i)?;
     let (i, _)    = tag(op_str)(i)?;
@@ -438,7 +438,7 @@ mod test {
       }),
       op: CondBBinopB::And
     };
-    assert_eq!(bexpr(&input), Ok(("", expected)));
+    assert_eq!(bexpr(input), Ok(("", expected)));
   }
 
   #[test]
@@ -451,7 +451,7 @@ mod test {
       rhs: Box::new(a_2),
       op: CondABinop::Sub,
     };
-    assert_eq!(aexpr(&input), Ok(("", expected)));
+    assert_eq!(aexpr(input), Ok(("", expected)));
   }
 
   #[test]
@@ -468,7 +468,7 @@ mod test {
       rhs: CondAExpr::Var("epsilon".to_string()),
       op: CondBBinopA:: Lt,
     };
-    assert_eq!(bexpr(&input), Ok(("", expected)));
+    assert_eq!(bexpr(input), Ok(("", expected)));
   }
 
   #[test]
@@ -493,7 +493,7 @@ mod test {
       }),
       op: CondBBinopB::And
     };
-    assert_eq!(bexpr(&input), Ok(("", expected)));
+    assert_eq!(bexpr(input), Ok(("", expected)));
   }
 
   #[test]
@@ -526,7 +526,7 @@ mod test {
       }),
       op: CondBBinopB::And
     };
-    assert_eq!(bexpr(&input), Ok(("", expected)));
+    assert_eq!(bexpr(input), Ok(("", expected)));
   }
 
   #[test]
@@ -570,7 +570,7 @@ mod test {
         op: CondBBinopB::And,
       }))
     };
-    assert_eq!(kestrel_cond(&input), Ok(("", expected)));
+    assert_eq!(kestrel_cond(input), Ok(("", expected)));
   }
 
   #[test]
@@ -601,7 +601,7 @@ mod test {
         })),
       }),
     };
-    assert_eq!(kestrel_cond(&input), Ok(("", expected)));
+    assert_eq!(kestrel_cond(input), Ok(("", expected)));
   }
 
   #[test]
@@ -616,6 +616,6 @@ mod test {
       rhs: Box::new(CondAExpr::Var("j".to_string())),
       op: CondABinop::Index,
     };
-    assert_eq!(aexpr(&input), Ok(("", expected)));
+    assert_eq!(aexpr(input), Ok(("", expected)));
   }
 }

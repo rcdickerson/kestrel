@@ -40,7 +40,7 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
       if k - last_best_at > 2000 { break; }
 
       let mut selections = selection.selections.iter()
-        .map( |(k, v)| (k.clone(), v.clone()))
+        .map( |(k, v)| (*k, *v))
         .collect::<Vec<(egg::Id, usize)>>();
       selections.sort();
       seen_selections.insert(selections);
@@ -62,7 +62,7 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
         // println!("best: {}", best_score);
         // println!("current: {}", score);
         // println!("neighbor: {}", n_score);
-        ((score - n_score) as f32 / temp).exp() > rng.gen()
+        ((score - n_score) / temp).exp() > rng.gen()
       };
       if transition {
         selection = neighbor;
@@ -165,10 +165,10 @@ impl<'a, L: Language, N: Analysis<L>> Selection<'a, L, N> {
     let mut rng = rand::thread_rng();
 
     // Find the used class IDs with other available options and select one at random.
-    let keys = self.options.keys().map(|i| i.clone()).collect::<HashSet<egg::Id>>();
+    let keys = self.options.keys().copied().collect::<HashSet<egg::Id>>();
     //let mut changeable = keys.intersection(&used_ids).collect::<Vec<&egg::Id>>();
     let mut changeable = keys.iter().collect::<Vec<&egg::Id>>();
-    if changeable.len() == 0 {
+    if changeable.is_empty() {
       // TODO: Not sure what to do when there are no choices to change?
       return Selection::random(self.egraph)
     }
@@ -186,7 +186,7 @@ impl<'a, L: Language, N: Analysis<L>> Selection<'a, L, N> {
     //       self.egraph[*change_index].nodes[new_selection]);
 
     let mut updated_selections = self.selections.clone();
-    updated_selections.insert(change_index.clone(), new_selection);
+    updated_selections.insert(*change_index, new_selection);
     Selection {
       egraph: self.egraph,
       options: self.options.clone(),

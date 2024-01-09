@@ -67,7 +67,7 @@ impl ParameterDeclaration {
   }
 
   pub fn as_declaration(&self) -> Option<Declaration> {
-    if self.declarator.is_none() { return None; }
+    self.declarator.as_ref()?;
     Some(Declaration {
       specifiers: self.specifiers.clone(),
       declarator: self.declarator.as_ref().unwrap().clone(),

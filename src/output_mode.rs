@@ -20,7 +20,7 @@ impl OutputMode {
                       spec: &KestrelSpec,
                       global_decls: Vec<Declaration>,
                       filename: &Option<String>) -> String {
-    let crel = self.eggroll_to_crel(&eggroll);
+    let crel = self.eggroll_to_crel(eggroll);
     self.crel_to_c(&crel, spec, global_decls, filename)
   }
 
@@ -45,10 +45,10 @@ impl OutputMode {
     });
 
     let mut body_items: Vec<BlockItem> = Vec::new();
-    param_inits.clone().map(|mut param_inits| body_items.append(&mut param_inits));
-    preconds.map(|preconds| body_items.push(preconds));
+    if let Some(mut param_inits) = param_inits.clone() { body_items.append(&mut param_inits) }
+    if let Some(preconds) = preconds { body_items.push(preconds) }
     body_items.push(BlockItem::Statement(main_fun.body.clone()));
-    postconds.map(|postconds| body_items.push(postconds));
+    if let Some(postconds) = postconds { body_items.push(postconds) }
     let new_body = Statement::Compound(body_items);
 
     let new_main = CRel::FunctionDefinition {

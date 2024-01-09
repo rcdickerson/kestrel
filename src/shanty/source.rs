@@ -17,7 +17,7 @@ impl Source {
   }
 
   pub fn include(&mut self, include: &str) -> &Self {
-    self.items.push(Item::Include(Include::new(&include.to_string())));
+    self.items.push(Item::Include(Include::new(include)));
     self
   }
 

@@ -64,7 +64,7 @@ impl FunctionParameter {
     if self.is_pointer {
       writer.write("*");
     }
-    self.name.as_ref().map(|name| writer.write(" ").write(&name));
+    self.name.as_ref().map(|name| writer.write(" ").write(name));
     if self.is_array {
       writer.write("[");
       let mut delimit = "";

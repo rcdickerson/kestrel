@@ -15,9 +15,9 @@ impl UnalignedCRel {
     let (global_decls, fundefs) = crate::crel::fundef::extract_fundefs(crel);
 
     let left_fun = fundefs.get(&spec.left)
-      .expect(format!("Function not found: {}", spec.left).as_str());
+      .unwrap_or_else(|| panic!("Function not found: {}", spec.left));
     let right_fun = fundefs.get(&spec.right)
-      .expect(format!("Function not found: {}", spec.right).as_str());
+      .unwrap_or_else(|| panic!("Function not found: {}", spec.right));
 
     let mut globals = global_vars(&global_decls);
     for f_seahorn in ["assume", "assert", "sassert"] {
@@ -53,8 +53,7 @@ impl UnalignedCRel {
 
   pub fn global_decls_and_params(&self) -> Vec<Declaration> {
     let param_decls = self.params.iter()
-      .map(|p| p.as_declaration())
-      .flatten();
+      .filter_map(|p| p.as_declaration());
     let mut all_decls = self.global_decls.clone();
     all_decls.extend(param_decls);
     all_decls
@@ -74,6 +73,6 @@ fn declarator_name(decl: &Declarator) -> String {
     Declarator::Identifier{name} => name.clone(),
     Declarator::Array{name, sizes:_} => name.clone(),
     Declarator::Function{name, params:_} => name.clone(),
-    Declarator::Pointer(decl) => declarator_name(&decl),
+    Declarator::Pointer(decl) => declarator_name(decl),
   }
 }

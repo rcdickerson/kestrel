@@ -19,7 +19,7 @@ impl Config {
 pub fn eggroll_to_crel(eggroll: &String, config: &Config) -> CRel {
   match sexp::parse(eggroll.as_str()) {
     Err(msg) => panic!("{}", msg),
-    Ok(sexp) => expect_crel(&sexp, &config),
+    Ok(sexp) => expect_crel(&sexp, config),
   }
 }
 
@@ -62,7 +62,7 @@ fn expect_expression(sexp: &Sexp, config: &Config) -> Expression {
       },
       Sexp::Atom(Atom::S(s)) if s == "const-int" => {
         match &sexps[1] {
-          Sexp::Atom(Atom::I(i)) => Expression::ConstInt(i32::try_from(i.clone()).unwrap()),
+          Sexp::Atom(Atom::I(i)) => Expression::ConstInt(i32::try_from(*i).unwrap()),
           _ => panic!("Cannot convert to integer from {:?}", sexps[1]),
         }
       },
@@ -320,11 +320,11 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
         Statement::Compound(stmts)
       },
       Sexp::Atom(Atom::S(s)) if s == "while-scheduled" => {
-        expect_while_scheduled(&sexps, config)
+        expect_while_scheduled(sexps, config)
       },
-      _ => Statement::Expression(Box::new(expect_expression(&sexp, config)))
+      _ => Statement::Expression(Box::new(expect_expression(sexp, config)))
     },
-    _ => Statement::Expression(Box::new(expect_expression(&sexp, config)))
+    _ => Statement::Expression(Box::new(expect_expression(sexp, config)))
   }
 }
 
@@ -338,14 +338,6 @@ fn expect_while_scheduled(sexps: &[Sexp], config: &Config) -> Statement {
   let conj = Expression::Binop {
     lhs: Box::new(cond1.clone()),
     rhs: Box::new(cond2.clone()),
-    op: BinaryOp::And,
-  };
-
-  Expression::Binop {
-    lhs: Box::new(cond1.clone()),
-    rhs: Box::new(Expression::Unop{
-      expr: Box::new(cond2.clone()),
-      op: UnaryOp::Not}),
     op: BinaryOp::And,
   };
 
@@ -551,7 +543,7 @@ fn expect_declarator(sexp: &Sexp, config: &Config) -> Declarator {
       },
       Sexp::Atom(Atom::S(s)) if s == "sized-array" => {
         let sizes = expect_array_sizes(&sexps[2], config);
-        Declarator::Array{name: expect_string(&sexps[1]), sizes: sizes}
+        Declarator::Array{name: expect_string(&sexps[1]), sizes}
       },
       Sexp::Atom(Atom::S(s)) if s == "fun-declarator" => {
         let params = expect_param_decls(&sexps[2], config);
@@ -602,7 +594,7 @@ fn expect_param_declaration(sexp: &Sexp, config: &Config) -> ParameterDeclaratio
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "param-declaration" => {
         let specifiers = expect_specifiers(&sexps[1]);
-        let declarator = if *&sexps.len() > 2 {
+        let declarator = if sexps.len() > 2 {
           Some(expect_declarator(&sexps[2], config))
         } else { None };
         ParameterDeclaration{specifiers, declarator}
@@ -635,9 +627,9 @@ fn expect_block_item(sexp: &Sexp, config: &Config) -> BlockItem {
         let declaration = expect_declaration(sexp, config);
         BlockItem::Declaration(declaration)
       },
-      _ => BlockItem::Statement(expect_statement(&sexp, config)),
+      _ => BlockItem::Statement(expect_statement(sexp, config)),
     },
-    _ => BlockItem::Statement(expect_statement(&sexp, config)),
+    _ => BlockItem::Statement(expect_statement(sexp, config)),
   }
 }
 

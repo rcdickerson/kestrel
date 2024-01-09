@@ -3,8 +3,8 @@
      (left.a[_i] >= right.a[_i] || right.a[_i] - left.a[_i] < epsilon) &&
      (left.a[_i] <  right.a[_i] || left.a[_i] - right.a[_i] < epsilon)
    };
- * left: left;
- * right: right;
+ * left: sort;
+ * right: sort;
  * post: for _j in (1..10) {
      (left.a[_j] >= right.a[_j] || right.a[_j] - left.a[_j] < epsilon) &&
      (left.a[_j] <  right.a[_j] || left.a[_j] - right.a[_j] < epsilon)
@@ -31,23 +31,7 @@ void _generator(float _arr[N]) {
   }
 }
 
-void left(float a[N]) {
-  int i = 0;
-  while (i < N) {
-    int j = N - 1;
-    while (j > i) {
-      if (a[j - 1] > a[j]) {
-        float temp = a[j];
-        a[j] = a[j - 1];
-        a[j - 1] = temp;
-      }
-      j = j - 1;
-    }
-    i = i + 1;
-  }
-}
-
-void right(float a[N]) {
+void sort(float a[N]) {
   int i = 0;
   while (i < N) {
     int j = N - 1;

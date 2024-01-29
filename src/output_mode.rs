@@ -22,14 +22,15 @@ impl OutputMode {
                       filename: &Option<String>) -> String {
     let crel = to_crel::eggroll_to_crel(&eggroll.to_string(), &self.crel_config());
     match self {
-      OutputMode::Dafny => self.crel_to_dafny(&crel, spec),
+      OutputMode::Dafny => self.crel_to_dafny(&crel, spec, filename),
       _ => self.crel_to_c(&crel, spec, global_decls, filename),
     }
   }
 
   pub fn crel_to_dafny(&self,
                        crel: &CRel,
-                       spec: &KestrelSpec) -> String {
+                       spec: &KestrelSpec,
+                       filename: &Option<String>) -> String {
     let (_, fundefs) = crate::crel::fundef::extract_fundefs(crel);
     let main_fun = fundefs.get("main").expect("No main function found");
 
@@ -52,7 +53,7 @@ impl OutputMode {
       params: main_fun.params.clone(),
       body: Box::new(new_body),
     };
-    new_main.to_dafny()
+    format!("{}\n{}", self.top(filename), new_main.to_dafny())
   }
 
   pub fn crel_to_c(&self,
@@ -101,7 +102,9 @@ impl OutputMode {
         "#include \"assert.h\"".to_string()
       }
       OutputMode::Dafny => {
-        "".to_string()
+        ["function store(list: int, index: int, value: int): int",
+         "function read(list: int, index: int): int",
+        ].join("\n")
       }
       OutputMode::Icra => {
         "#include \"assert.h\"".to_string()

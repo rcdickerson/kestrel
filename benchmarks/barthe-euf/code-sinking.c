@@ -7,9 +7,10 @@
 // TODO: Specs should be universally quantified over list size.
 
 int read(int, int);
-void store(int, int, int);
+int store(int, int, int);
 
-void left(int a, int size) {
+void left(int a_in, int size) {
+  int a = a_in;
   int max = read(a, 0);
   int maxi = 0;
   int i = 0;
@@ -21,11 +22,12 @@ void left(int a, int size) {
     i = i + 1;
   }
   int t = read(a, size);
-  store(a, size, max);
-  store(a, maxi, t);
+  a = store(a, size, max);
+  a = store(a, maxi, t);
 }
 
-void right(int a, int size) {
+void right(int a_in, int size) {
+  int a = a_in;
   int j = 0;
   int max;
   int maxi;
@@ -40,8 +42,8 @@ void right(int a, int size) {
     }
     if (j == size) {
       int t = read(a, size);
-      store(a, size, max);
-      store(a, maxi, t);
+      a = store(a, size, max);
+      a = store(a, maxi, t);
     }
     j = j + 1;
   }

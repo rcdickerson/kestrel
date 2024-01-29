@@ -193,7 +193,7 @@ fn main() {
     let path = Path::new(outpath);
     path.file_name().unwrap().to_str().unwrap().to_string()
   });
-  let aligned_c = args.output_mode.eggroll_to_c(&aligned_eggroll, &spec,
+  let aligned_c = args.output_mode.eggroll_to_output(&aligned_eggroll, &spec,
       unaligned_crel.global_decls, &filename);
   println!("\nAligned Product Program");
   println!("--------------------------");

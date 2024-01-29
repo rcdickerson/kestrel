@@ -1,8 +1,8 @@
 /* @KESTREL
- * pre: for _i in (0..10) { left.a[_i] == right.a[_i] && left.b[_i] == right.b[_i] && left.c[_i] == right.c[_i] };
+ * pre: for p_i in (0..10) { left.a[p_i] == right.a[p_i] && left.b[p_i] == right.b[p_i] && left.c[p_i] == right.c[p_i] };
  * left: left;
  * right: right;
- * post: for _j in (0..10) { left.a[_j] == right.a[_j] && left.b[_j] == right.b[_j] && left.c[_j] == right.c[_j] };
+ * post: for p_j in (0..10) { left.a[p_j] == right.a[p_j] && left.b[p_j] == right.b[p_j] && left.c[p_j] == right.c[p_j] };
  */
 // TODO: Specs should be universally quantified over list size.
 

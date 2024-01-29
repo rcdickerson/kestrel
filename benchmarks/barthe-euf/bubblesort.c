@@ -1,13 +1,13 @@
 /* @KESTREL
- * pre: for _i in (1..10) {
-     (left.a[_i] >= right.a[_i] || right.a[_i] - left.a[_i] < epsilon) &&
-     (left.a[_i] <  right.a[_i] || left.a[_i] - right.a[_i] < epsilon)
+ * pre: for p_i in (1..10) {
+     (left.a[p_i] >= right.a[_i] || right.a[p_i] - left.a[p_i] < epsilon) &&
+     (left.a[p_i] <  right.a[_i] || left.a[p_i] - right.a[p_i] < epsilon)
    };
  * left: sort;
  * right: sort;
- * post: for _j in (1..10) {
-     (left.a[_j] >= right.a[_j] || right.a[_j] - left.a[_j] < epsilon) &&
-     (left.a[_j] <  right.a[_j] || left.a[_j] - right.a[_j] < epsilon)
+ * post: for p_j in (1..10) {
+     (left.a[p_j] >= right.a[p_j] || right.a[p_j] - left.a[p_j] < epsilon) &&
+     (left.a[p_j] <  right.a[p_j] || left.a[p_j] - right.a[p_j] < epsilon)
    };
  */
 // TODO: Specs should be universally quantified over list size.
@@ -25,9 +25,10 @@ void sort(int list, int size) {
       float prev = read(list, j - 1);
       float cur  = read(list, j);
       if (prev > cur) {
-        float temp = read(list, j);
-        store(list, j, read(list, j-1));
-        store(list, j - 1, temp);
+        float val = read(list, j);
+        float prev_val = read(list, j-1);
+        store(list, j, prev_val);
+        store(list, j - 1, val);
       }
       j = j - 1;
     }

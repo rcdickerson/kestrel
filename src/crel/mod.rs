@@ -7,4 +7,5 @@ pub mod fundef;
 pub mod map_vars;
 pub mod parser;
 pub mod to_c;
+pub mod to_dafny;
 pub mod to_eggroll;

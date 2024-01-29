@@ -8,6 +8,7 @@ default-run = "kestrel"
 clap = { version = "4.2.1", features = ["derive"] }
 coin_cbc = "0.1.7"
 egg = "0.9.3"
+either = "1.9"
 lang-c = "0.15"
 log = "0.4.17"
 nom = "7"

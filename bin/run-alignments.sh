@@ -47,7 +47,12 @@ do
         echo "$file..."
         file_basename=$(basename $file .c)
 
-        output_file="$output_dir/$file_basename-${technique:0:3}".c
+        if [ $out_mode == "dafny" ]; then
+            output_file="$output_dir/$file_basename-${technique:0:3}".dfy
+        else
+            output_file="$output_dir/$file_basename-${technique:0:3}".c
+        fi
+
         (time timeout 10m $kestrel_exec -i $file -o $output_file --output-mode=$out_mode $technique --sa-max-iterations=12000) > "$log_dir/$file_basename".log 2>&1
     done
   done

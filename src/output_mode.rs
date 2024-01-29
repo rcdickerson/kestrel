@@ -6,8 +6,8 @@ use egg::RecExpr;
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum OutputMode {
-  /*TODO: Dafny*/
   Daikon,
+  Dafny,
   Icra,
   Seahorn,
   SvComp,
@@ -15,17 +15,44 @@ pub enum OutputMode {
 
 impl OutputMode {
 
-  pub fn eggroll_to_c(&self,
+  pub fn eggroll_to_output(&self,
                       eggroll: &RecExpr<Eggroll>,
                       spec: &KestrelSpec,
                       global_decls: Vec<Declaration>,
                       filename: &Option<String>) -> String {
-    let crel = self.eggroll_to_crel(eggroll);
-    self.crel_to_c(&crel, spec, global_decls, filename)
+    let crel = to_crel::eggroll_to_crel(&eggroll.to_string(), &self.crel_config());
+    match self {
+      OutputMode::Dafny => self.crel_to_dafny(&crel, spec),
+      _ => self.crel_to_c(&crel, spec, global_decls, filename),
+    }
   }
 
-  pub fn eggroll_to_crel(&self, eggroll: &RecExpr<Eggroll>) -> CRel {
-    to_crel::eggroll_to_crel(&eggroll.to_string(), &self.crel_config())
+  pub fn crel_to_dafny(&self,
+                       crel: &CRel,
+                       spec: &KestrelSpec) -> String {
+    let (_, fundefs) = crate::crel::fundef::extract_fundefs(crel);
+    let main_fun = fundefs.get("main").expect("No main function found");
+
+    let preconds = self.assume_name().map(|name| {
+      BlockItem::Statement(spec.pre.to_crel(StatementKind{crel_name: name}))
+    });
+    let postconds = self.assert_name().map(|name| {
+      BlockItem::Statement(spec.post.to_crel(StatementKind{crel_name: name}))
+    });
+
+    let mut body_items: Vec<BlockItem> = Vec::new();
+//    if let Some(preconds) = preconds { body_items.push(preconds) }
+    body_items.push(BlockItem::Statement(main_fun.body.clone()));
+//    if let Some(postconds) = postconds { body_items.push(postconds) }
+    let new_body = Statement::Compound(body_items);
+
+    let new_main = CRel::FunctionDefinition {
+      specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
+      name: "Main".to_string(),
+      params: main_fun.params.clone(),
+      body: Box::new(new_body),
+    };
+    new_main.to_dafny()
   }
 
   pub fn crel_to_c(&self,
@@ -73,6 +100,9 @@ impl OutputMode {
       OutputMode::Daikon => {
         "#include \"assert.h\"".to_string()
       }
+      OutputMode::Dafny => {
+        "".to_string()
+      }
       OutputMode::Icra => {
         "#include \"assert.h\"".to_string()
       }
@@ -116,6 +146,7 @@ impl OutputMode {
   pub fn assert_name(&self) -> Option<String> {
     match self {
       OutputMode::Daikon => None,
+      OutputMode::Dafny => Some("assert".to_string()),
       OutputMode::Icra => Some("__VERIFIER_assert".to_string()),
       OutputMode::Seahorn => Some("sassert".to_string()),
       OutputMode::SvComp => Some("sassert".to_string()),
@@ -125,6 +156,7 @@ impl OutputMode {
   pub fn assume_name(&self) -> Option<String> {
     match self {
       OutputMode::Daikon => None,
+      OutputMode::Dafny => Some("assume".to_string()),
       OutputMode::Icra => Some("__VERIFIER_assume".to_string()),
       OutputMode::Seahorn => Some("assume".to_string()),
       OutputMode::SvComp => Some("assume".to_string()),
@@ -134,6 +166,7 @@ impl OutputMode {
   pub fn nondet_name(&self) -> Option<String> {
     match self {
       OutputMode::Daikon => None,
+      OutputMode::Dafny => None,
       OutputMode::Icra => Some("nondet".to_string()),
       OutputMode::Seahorn => Some("arb_int".to_string()),
       OutputMode::SvComp => Some("arb_int".to_string()),

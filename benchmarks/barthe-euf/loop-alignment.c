@@ -7,7 +7,7 @@
 // TODO: Specs should be universally quantified over list size.
 
 int read(int, int);
-void store(int, int, int);
+int store(int, int, int);
 
 void left(int a, int b, int size) {
   int i = 1;

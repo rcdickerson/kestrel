@@ -42,9 +42,9 @@ impl OutputMode {
     });
 
     let mut body_items: Vec<BlockItem> = Vec::new();
-//    if let Some(preconds) = preconds { body_items.push(preconds) }
+    if let Some(preconds) = preconds { body_items.push(preconds) }
     body_items.push(BlockItem::Statement(main_fun.body.clone()));
-//    if let Some(postconds) = postconds { body_items.push(postconds) }
+    if let Some(postconds) = postconds { body_items.push(postconds) }
     let new_body = Statement::Compound(body_items);
 
     let new_main = CRel::FunctionDefinition {

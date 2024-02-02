@@ -66,7 +66,8 @@ impl KCondToCRel for KestrelCond {
           crel::BlockItem::Statement(lhs.to_crel(kind.clone())),
           crel::BlockItem::Statement(rhs.to_crel(kind.clone())),
         ))
-      }
+      },
+      KestrelCond::Forall{..} => panic!("CRel cannot represent forall statements."),
     }
   }
 }

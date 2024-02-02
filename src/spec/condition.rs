@@ -1,3 +1,4 @@
+use crate::crel::ast::Type;
 use std::collections::HashSet;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -13,6 +14,11 @@ pub enum KestrelCond {
     lhs: Box<KestrelCond>,
     rhs: Box<KestrelCond>,
   },
+  Forall {
+    pred_var: String,
+    pred_type: Type,
+    condition: Box<KestrelCond>,
+  }
 }
 impl KestrelCond {
   pub fn state_vars(&self) -> HashSet<String> {
@@ -21,6 +27,11 @@ impl KestrelCond {
       KestrelCond::BExpr(bexpr) => bexpr.state_vars(),
       KestrelCond::And{lhs, rhs} => crate::names::union_all(
         vec!(lhs.state_vars(), rhs.state_vars())),
+      KestrelCond::Forall{pred_var, pred_type:_, condition} => {
+        let mut vars = condition.state_vars();
+        vars.remove(pred_var);
+        vars
+      }
     }
   }
 }

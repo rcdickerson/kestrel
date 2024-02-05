@@ -1,4 +1,3 @@
-use crate::crel::ast::Type;
 use std::collections::HashSet;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -14,11 +13,6 @@ pub enum KestrelCond {
     lhs: Box<KestrelCond>,
     rhs: Box<KestrelCond>,
   },
-  Forall {
-    pred_var: String,
-    pred_type: Type,
-    condition: Box<KestrelCond>,
-  }
 }
 impl KestrelCond {
   pub fn state_vars(&self) -> HashSet<String> {
@@ -27,13 +21,13 @@ impl KestrelCond {
       KestrelCond::BExpr(bexpr) => bexpr.state_vars(),
       KestrelCond::And{lhs, rhs} => crate::names::union_all(
         vec!(lhs.state_vars(), rhs.state_vars())),
-      KestrelCond::Forall{pred_var, pred_type:_, condition} => {
-        let mut vars = condition.state_vars();
-        vars.remove(pred_var);
-        vars
-      }
     }
   }
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum KestrelType {
+  Int,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -96,6 +90,7 @@ pub enum CondBExpr {
   Unop{bexp: Box<CondBExpr>, op: CondBUnop},
   BinopA{lhs: CondAExpr, rhs: CondAExpr, op: CondBBinopA},
   BinopB{lhs: Box<CondBExpr>, rhs: Box<CondBExpr>, op: CondBBinopB},
+  Forall{pred_var: String, pred_type: KestrelType, condition: Box<CondBExpr>},
 }
 
 impl CondBExpr {
@@ -111,6 +106,11 @@ impl CondBExpr {
       CondBExpr::BinopB{lhs, rhs, op:_} => {
         lhs.state_vars().union(&rhs.state_vars()).cloned()
           .collect()
+      },
+      CondBExpr::Forall{pred_var, condition, ..} => {
+        let mut vars = condition.state_vars();
+        vars.remove(pred_var);
+        vars
       },
     }
   }

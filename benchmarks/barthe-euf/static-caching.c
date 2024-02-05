@@ -1,11 +1,10 @@
 /* @KESTREL
- * pre: for p_i in (0..24) { left.a[p_i] == right.a[p_i] }
-     && for p_i2 in (0..2) { left.s[p_i2] == right.s[p_i2] };
+ * pre: (forall i: int :: left.a[i] == right.a[i])
+     && (forall i2: int :: left.s[i2] == right.s[i2]);
  * left: left;
  * right: right;
- * post: for p_j in (0..6) { left.s[p_j] == right.s[p_j] };
+ * post: forall j: int :: left.s[j] == right.s[j];
  */
-// TODO: Specs should be universally quantified over list size.
 
 int read(int, int);
 void store(int, int, int);

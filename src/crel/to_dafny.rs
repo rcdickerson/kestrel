@@ -39,8 +39,6 @@ fn fun_to_daf(specifiers: &Vec<DeclarationSpecifier>,
               name: &String,
               params: &Vec<ParameterDeclaration>,
               body: &Statement) -> Daf::Method {
-  let mut fun_extern = false;
-  let mut fun_const = false;
   let mut ret_type = None;
   for spec in specifiers {
     match spec {
@@ -126,6 +124,13 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
         BinaryOp::Or        => Daf::Expression::BinOp{lhs, rhs, op: "||".to_string()},
       }
     },
+    Expression::Forall { pred_var, pred_type, condition } => {
+      Daf::Expression::Forall {
+        pred_var: pred_var.to_string(),
+        pred_type: type_to_daf(pred_type).unwrap(),
+        condition: Box::new(expression_to_daf(condition))
+      }
+    }
     Expression::Statement(stmt) => {
       Daf::Expression::Statement(Box::new(statement_to_daf(stmt)))
     },

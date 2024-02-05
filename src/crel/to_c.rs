@@ -137,6 +137,7 @@ fn expression_to_c(expr: &Expression) -> C::Expression {
         BinaryOp::Or        => C::Expression::BinOp{lhs, rhs, op: "||".to_string()},
       }
     },
+    Expression::Forall{..} => panic!("Cannot convert forall expressions to C"),
     Expression::Statement(stmt) => {
       C::Expression::Statement(Box::new(statement_to_c(stmt)))
     },

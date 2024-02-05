@@ -124,6 +124,11 @@ pub enum Expression {
     rhs: Box<Expression>,
     op: BinaryOp,
   },
+  Forall {
+    pred_var: String,
+    pred_type: Type,
+    condition: Box<Expression>,
+  },
   Statement(Box<Statement>),
 }
 

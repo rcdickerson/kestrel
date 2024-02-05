@@ -26,6 +26,7 @@ impl CountLoops for Expression {
       Expression::Call{callee:_, args:_} => 0,
       Expression::Unop{expr, op: _} => expr.count_loops(),
       Expression::Binop{lhs, rhs, op: _} => lhs.count_loops() + rhs.count_loops(),
+      Expression::Forall{..} => 0,
       Expression::Statement(stmt) => stmt.count_loops(),
     }
   }

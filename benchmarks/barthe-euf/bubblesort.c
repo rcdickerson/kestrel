@@ -1,16 +1,13 @@
 /* @KESTREL
- * pre: for p_i in (1..10) {
-     (left.a[p_i] >= right.a[p_i] || right.a[p_i] - left.a[p_i] < epsilon) &&
-     (left.a[p_i] <  right.a[p_i] || left.a[p_i] - right.a[p_i] < epsilon)
-   };
+ * pre: forall i: int ::
+     (left.a[i] >= right.a[i] || right.a[i] - left.a[i] < epsilon) &&
+     (left.a[i] <  right.a[i] || left.a[i] - right.a[i] < epsilon);
  * left: sort;
  * right: sort;
- * post: for p_j in (1..10) {
+ * post: forall p_j: int ::
      (left.a[p_j] >= right.a[p_j] || right.a[p_j] - left.a[p_j] < epsilon) &&
-     (left.a[p_j] <  right.a[p_j] || left.a[p_j] - right.a[p_j] < epsilon)
-   };
+     (left.a[p_j] <  right.a[p_j] || left.a[p_j] - right.a[p_j] < epsilon);
  */
-// TODO: Specs should be universally quantified over list size.
 
 const float epsilon = 0.01;
 

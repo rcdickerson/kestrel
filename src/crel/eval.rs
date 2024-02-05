@@ -98,8 +98,11 @@ fn eval_expression(expr: &Expression, exec: &mut Execution) {
     Expression::Call{callee: _, args: _} => {
       //panic!("Function calls unimplemented")
     },
-    Expression::Unop {expr, op} => eval_unop(expr, op, exec),
-    Expression::Binop {lhs, rhs, op} => eval_binop(lhs, rhs, op, exec),
+    Expression::Unop{expr, op} => eval_unop(expr, op, exec),
+    Expression::Binop{lhs, rhs, op} => eval_binop(lhs, rhs, op, exec),
+    Expression::Forall{..} => {
+      //panic!("Forall unimplemented")
+    }
     Expression::Statement(stmt) => eval_statement(stmt, exec),
   }
 }

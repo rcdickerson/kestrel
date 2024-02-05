@@ -67,7 +67,6 @@ impl KCondToCRel for KestrelCond {
           crel::BlockItem::Statement(rhs.to_crel(kind.clone())),
         ))
       },
-      KestrelCond::Forall{..} => panic!("CRel cannot represent forall statements."),
     }
   }
 }
@@ -149,7 +148,16 @@ impl CondToCRel for CondBExpr {
             CondBBinopB::Or => crel::BinaryOp::Or,
           }
         }
-      }
+      },
+      CondBExpr::Forall{pred_var, pred_type, condition} => {
+        crel::Expression::Forall {
+          pred_var: pred_var.clone(),
+          pred_type: match pred_type {
+            KestrelType::Int => crel::Type::Int,
+          },
+          condition: Box::new(condition.to_crel()),
+        }
+      },
     }
   }
 }

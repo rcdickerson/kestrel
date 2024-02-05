@@ -43,6 +43,11 @@ impl MapVars for Expression {
         rhs: Box::new(rhs.map_vars(f)),
         op: op.clone(),
       },
+      Expression::Forall{pred_var, pred_type, condition} => Expression::Forall {
+        pred_var: f(pred_var.clone()),
+        pred_type: pred_type.clone(),
+        condition: Box::new(condition.clone().map_vars(f)),
+      },
       Expression::Statement(stmt) => {
         Expression::Statement(Box::new(stmt.map_vars(f)))
       }

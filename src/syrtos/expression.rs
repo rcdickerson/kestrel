@@ -1,4 +1,5 @@
 use crate::syrtos::Statement;
+use crate::syrtos::Type;
 use crate::syrtos::Writer;
 
 #[derive(Clone, Debug)]
@@ -11,6 +12,7 @@ pub enum Expression {
   StringLiteral(String),
   UnOp{expr: Box<Expression>, op: String},
   BinOp{lhs: Box<Expression>, rhs: Box<Expression>, op: String},
+  Forall{pred_var: String, pred_type: Type, condition: Box<Expression>},
   Statement(Box<Statement>),
 }
 
@@ -60,6 +62,12 @@ impl Expression {
         rhs.emit(writer, true);
         if subexp { writer.write(")"); }
       },
+      Expression::Forall{pred_var, pred_type, condition} => {
+        writer.write("forall ").write(pred_var).write(": ");
+        pred_type.emit(writer);
+        writer.write(" :: ");
+        condition.emit(writer, true);
+      }
       Expression::Statement(stmt) => {
         stmt.emit(writer);
       },

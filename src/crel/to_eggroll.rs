@@ -76,6 +76,7 @@ fn expression_to_eggroll(expr: &Expression) -> String {
       };
       format!("({} {} {})", op_egg, lhs_egg, rhs_egg)
     },
+    Expression::Forall{..} => panic!("Foralls unsupported in eggroll IR"),
     Expression::Statement(stmt) => statement_to_eggroll(stmt),
   }
 }

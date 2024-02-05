@@ -5,7 +5,7 @@ use nom::{
   character::complete::alpha1,
   character::complete::alphanumeric1,
   character::complete::digit1,
-  character::complete::{i32},
+  character::complete::i32,
   character::complete::multispace0,
   combinator::recognize,
   error::{Error, ErrorKind},
@@ -229,6 +229,28 @@ fn bexpr_unop(op_str: &str, op: CondBUnop) -> impl Fn(&str) -> IResult<&str, Con
   }
 }
 
+fn bexpr_forall(i: &str) -> IResult<&str, CondBExpr> {
+  let (i, _)         = multispace0(i)?;
+  let (i, _)         = tag("forall")(i)?;
+  let (i, _)         = multispace0(i)?;
+  let (i, pred_var)  = c_id(i)?;
+  let (i, _)         = multispace0(i)?;
+  let (i, _)         = tag(":")(i)?;
+  let (i, _)         = multispace0(i)?;
+  let (i, pred_type) = alpha1(i)?;
+  let (i, _)         = multispace0(i)?;
+  let (i, _)         = tag("::")(i)?;
+  let (i, _)         = multispace0(i)?;
+  let (i, condition) = bexpr(i)?;
+  match pred_type {
+      "int" => Ok((i, CondBExpr::Forall {
+        pred_var: pred_var.to_string(),
+        pred_type: KestrelType::Int,
+        condition: Box::new(condition)
+      })),
+      _ => Err(Err::Error(Error{input: i, code: ErrorKind::Fail})),
+  }}
+
 fn bexpr_lhs(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _) = multispace0(i)?;
   alt((
@@ -248,6 +270,7 @@ fn bexpr_lhs(i: &str) -> IResult<&str, CondBExpr> {
 fn bexpr(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _) = multispace0(i)?;
   alt((
+    bexpr_forall,
     bexpr_binop_b("&&", CondBBinopB::And),
     bexpr_binop_b("||", CondBBinopB::Or),
     bexpr_lhs,
@@ -302,8 +325,8 @@ fn kcond_bexpr(i: &str) -> IResult<&str, KestrelCond> {
 fn kestrel_cond(i: &str) -> IResult<&str, KestrelCond> {
   alt((
     kcond_and,
-    kcond_loop,
     kcond_bexpr,
+    kcond_loop,
   ))(i)
 }
 

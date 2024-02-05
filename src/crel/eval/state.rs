@@ -184,7 +184,8 @@ impl State {
             CondBBinopB::And => self.satisfies(lhs) && self.satisfies(rhs),
             CondBBinopB::Or  => self.satisfies(lhs) || self.satisfies(rhs),
           }
-        }
+        },
+        CondBExpr::Forall {..} => panic!("Unsupported: evaluating foralls"),
       },
       KestrelCond::And{lhs, rhs} => {
         self.satisfies(lhs) && self.satisfies(rhs)

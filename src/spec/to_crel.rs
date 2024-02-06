@@ -158,6 +158,12 @@ impl CondToCRel for CondBExpr {
           condition: Box::new(condition.to_crel()),
         }
       },
+      CondBExpr::Predicate{name, args} => {
+        crel::Expression::Call {
+          callee: Box::new(crel::Expression::Identifier{name: name.clone()}),
+          args: args.iter().map(|arg| crel::Expression::Identifier{name: arg.clone()}).collect(),
+        }
+      },
     }
   }
 }

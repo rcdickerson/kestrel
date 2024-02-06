@@ -91,6 +91,7 @@ pub enum CondBExpr {
   BinopA{lhs: CondAExpr, rhs: CondAExpr, op: CondBBinopA},
   BinopB{lhs: Box<CondBExpr>, rhs: Box<CondBExpr>, op: CondBBinopB},
   Forall{pred_var: String, pred_type: KestrelType, condition: Box<CondBExpr>},
+  Predicate{name: String, args: Vec<String>},
 }
 
 impl CondBExpr {
@@ -112,6 +113,11 @@ impl CondBExpr {
         vars.remove(pred_var);
         vars
       },
+      CondBExpr::Predicate{name, args} => {
+        let mut vars = args.iter().cloned().collect::<HashSet<String>>();
+        vars.insert(name.clone());
+        vars
+      }
     }
   }
 }

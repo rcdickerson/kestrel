@@ -1,6 +1,6 @@
 /* @KESTREL
  * pre: forall i: int ::
-     (left.a[i] >= right.a[i] || right.a[i] - left.a[i] < epsilon) &&
+     (read(left.a, i) >= right.a[i] || right.a[i] - left.a[i] < epsilon) &&
      (left.a[i] <  right.a[i] || left.a[i] - right.a[i] < epsilon);
  * left: sort;
  * right: sort;

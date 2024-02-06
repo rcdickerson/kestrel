@@ -251,11 +251,19 @@ fn bexpr_forall(i: &str) -> IResult<&str, CondBExpr> {
       _ => Err(Err::Error(Error{input: i, code: ErrorKind::Fail})),
   }}
 
+fn bexpr_predicate(i: &str) -> IResult<&str, CondBExpr> {
+  let (i, _)         = multispace0(i)?;
+  let (i, name)      = c_id(i)?;
+  Ok((i, CondBExpr::Predicate{name: name.to_string(), args: Vec::new()}))
+}
+
 fn bexpr_lhs(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _) = multispace0(i)?;
   alt((
+    bexpr_predicate,
     bexpr_true,
     bexpr_false,
+    bexpr_forall,
     bexpr_unop("!", CondBUnop::Not),
     bexpr_binop_a("==", CondBBinopA::Eq),
     bexpr_binop_a("!=", CondBBinopA::Neq),
@@ -270,7 +278,6 @@ fn bexpr_lhs(i: &str) -> IResult<&str, CondBExpr> {
 fn bexpr(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _) = multispace0(i)?;
   alt((
-    bexpr_forall,
     bexpr_binop_b("&&", CondBBinopB::And),
     bexpr_binop_b("||", CondBBinopB::Or),
     bexpr_lhs,

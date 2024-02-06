@@ -185,7 +185,15 @@ impl State {
             CondBBinopB::Or  => self.satisfies(lhs) || self.satisfies(rhs),
           }
         },
-        CondBExpr::Forall {..} => panic!("Unsupported: evaluating foralls"),
+        CondBExpr::Forall{..} => panic!("Unsupported: evaluating foralls"),
+        CondBExpr::Predicate{name, args} => {
+          let stmt = Statement::Expression(Box::new(Expression::Call{
+            callee: Box::new(Expression::Identifier{name: name.clone()}),
+            args: args.iter().map(|arg| Expression::Identifier{name: arg.clone()}).collect(),
+          }));
+          let result = run(&stmt, self.clone(), 1000).value_int();
+          result != 0
+        }
       },
       KestrelCond::And{lhs, rhs} => {
         self.satisfies(lhs) && self.satisfies(rhs)

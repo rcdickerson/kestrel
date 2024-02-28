@@ -171,7 +171,7 @@ impl State {
         CondBExpr::Unop{bexp, op} => match op {
           CondBUnop::Not => !self.satisfies(&KestrelCond::BExpr(bexp.as_ref().clone()))
         },
-        CondBExpr::BinopA{lhs:_, rhs:_, op:_} => {
+        CondBExpr::BinopA{..} => {
           let crel = cond.to_crel();
           let stmt = Statement::Expression(Box::new(crel));
           let result = run(&stmt, self.clone(), 1000).value_int();
@@ -189,7 +189,7 @@ impl State {
         CondBExpr::Predicate{name, args} => {
           let stmt = Statement::Expression(Box::new(Expression::Call{
             callee: Box::new(Expression::Identifier{name: name.clone()}),
-            args: args.iter().map(|arg| Expression::Identifier{name: arg.clone()}).collect(),
+            args: args.iter().map(|arg| arg.to_crel()).collect(),
           }));
           let result = run(&stmt, self.clone(), 1000).value_int();
           result != 0

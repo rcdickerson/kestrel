@@ -9,6 +9,7 @@ use nom::{
   character::complete::multispace0,
   combinator::recognize,
   error::{Error, ErrorKind},
+  multi::many0,
   multi::many0_count,
   multi::many1,
   multi::many1_count,
@@ -254,7 +255,8 @@ fn bexpr_forall(i: &str) -> IResult<&str, CondBExpr> {
 fn bexpr_predicate(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _)         = multispace0(i)?;
   let (i, name)      = c_id(i)?;
-  Ok((i, CondBExpr::Predicate{name: name.to_string(), args: Vec::new()}))
+  let (i, args)      = delimited(tag("("), many0(aexpr), tag(")"))(i)?;
+  Ok((i, CondBExpr::Predicate{name: name.to_string(), args}))
 }
 
 fn bexpr_lhs(i: &str) -> IResult<&str, CondBExpr> {

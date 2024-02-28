@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use crate::names::union_all;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum KestrelCond {
@@ -17,7 +18,7 @@ pub enum KestrelCond {
 impl KestrelCond {
   pub fn state_vars(&self) -> HashSet<String> {
     match self {
-      KestrelCond::ForLoop{index_var:_, start:_, end:_, body} => body.state_vars(),
+      KestrelCond::ForLoop{body, ..} => body.state_vars(),
       KestrelCond::BExpr(bexpr) => bexpr.state_vars(),
       KestrelCond::And{lhs, rhs} => crate::names::union_all(
         vec!(lhs.state_vars(), rhs.state_vars())),
@@ -91,7 +92,7 @@ pub enum CondBExpr {
   BinopA{lhs: CondAExpr, rhs: CondAExpr, op: CondBBinopA},
   BinopB{lhs: Box<CondBExpr>, rhs: Box<CondBExpr>, op: CondBBinopB},
   Forall{pred_var: String, pred_type: KestrelType, condition: Box<CondBExpr>},
-  Predicate{name: String, args: Vec<String>},
+  Predicate{name: String, args: Vec<CondAExpr>},
 }
 
 impl CondBExpr {
@@ -114,7 +115,9 @@ impl CondBExpr {
         vars
       },
       CondBExpr::Predicate{name, args} => {
-        let mut vars = args.iter().cloned().collect::<HashSet<String>>();
+        let mut vars = union_all(args.iter()
+          .map(|arg| arg.state_vars())
+          .collect::<Vec<HashSet<String>>>());
         vars.insert(name.clone());
         vars
       }

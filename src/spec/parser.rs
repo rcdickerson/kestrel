@@ -9,10 +9,10 @@ use nom::{
   character::complete::multispace0,
   combinator::recognize,
   error::{Error, ErrorKind},
-  multi::many0,
   multi::many0_count,
   multi::many1,
   multi::many1_count,
+  multi::separated_list0,
   number::complete::float,
   sequence::delimited,
   sequence::pair,
@@ -137,11 +137,21 @@ fn aexpr_binop(op_str: &str, op: CondABinop) -> impl Fn(&str) -> IResult<&str, C
   }
 }
 
+fn aexp_funcall(i: &str) -> IResult<&str, CondAExpr> {
+  let (i, _)         = multispace0(i)?;
+  let (i, name)      = c_id(i)?;
+  let (i, args)      = delimited(tag("("),
+                                 separated_list0(tag(","), aexpr),
+                                 tag(")"))(i)?;
+  Ok((i, CondAExpr::FunCall{name: name.to_string(), args}))
+}
+
 fn aexpr_lhs(i: &str) -> IResult<&str, CondAExpr> {
   let (i, _) = multispace0(i)?;
   alt((
     aexp_int,
     aexp_float,
+    aexp_funcall,
     aexp_index,
     aexp_qualified_var,
     aexp_var,
@@ -158,6 +168,7 @@ fn aexpr(i: &str) -> IResult<&str, CondAExpr> {
     aexpr_binop("/", CondABinop::Div),
     aexp_int,
     aexp_float,
+    aexp_funcall,
     aexp_index,
     aexp_qualified_var,
     aexp_var,
@@ -175,6 +186,7 @@ fn aexpr_no_float(i: &str) -> IResult<&str, CondAExpr> {
     aexpr_binop("%", CondABinop::Mod),
     aexp_int,
     aexp_index,
+    aexp_funcall,
     aexp_qualified_var,
     aexp_var,
     delimited(tag("("), aexpr_no_float, tag(")")),
@@ -255,17 +267,17 @@ fn bexpr_forall(i: &str) -> IResult<&str, CondBExpr> {
 fn bexpr_predicate(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _)         = multispace0(i)?;
   let (i, name)      = c_id(i)?;
-  let (i, args)      = delimited(tag("("), many0(aexpr), tag(")"))(i)?;
+  let (i, args)      = delimited(tag("("),
+                                 separated_list0(tag(","), aexpr),
+                                 tag(")"))(i)?;
   Ok((i, CondBExpr::Predicate{name: name.to_string(), args}))
 }
 
 fn bexpr_lhs(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _) = multispace0(i)?;
   alt((
-    bexpr_predicate,
     bexpr_true,
     bexpr_false,
-    bexpr_forall,
     bexpr_unop("!", CondBUnop::Not),
     bexpr_binop_a("==", CondBBinopA::Eq),
     bexpr_binop_a("!=", CondBBinopA::Neq),
@@ -273,6 +285,8 @@ fn bexpr_lhs(i: &str) -> IResult<&str, CondBExpr> {
     bexpr_binop_a("<=", CondBBinopA::Lte),
     bexpr_binop_a(">", CondBBinopA::Gt),
     bexpr_binop_a(">=", CondBBinopA::Gte),
+    bexpr_forall,
+    bexpr_predicate,
     delimited(tag("("), bexpr, tag(")")),
   ))(i)
 }

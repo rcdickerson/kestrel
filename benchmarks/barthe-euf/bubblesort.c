@@ -1,12 +1,12 @@
 /* @KESTREL
  * pre: forall i: int ::
-     (read(left.a, i) >= right.a[i] || right.a[i] - left.a[i] < epsilon) &&
-     (left.a[i] <  right.a[i] || left.a[i] - right.a[i] < epsilon);
+     (read(l_list_in, i) >= read(r_list_in, i) || read(r_list_in, i) - read(l_list_in, i) < epsilon) &&
+     (read(l_list_in, i) <  read(r_list_in, i) || read(l_list_in, i) - read(r_list_in, i) < epsilon);
  * left: sort;
  * right: sort;
- * post: forall p_j: int ::
-     (left.a[p_j] >= right.a[p_j] || right.a[p_j] - left.a[p_j] < epsilon) &&
-     (left.a[p_j] <  right.a[p_j] || left.a[p_j] - right.a[p_j] < epsilon);
+ * post: forall j: int ::
+     (read(l_list_in, j) >= read(r_list_in, j) || read(r_list_in, j) - read(l_list_in, j) < epsilon) &&
+     (read(l_list_in, j) <  read(r_list_in, j) || read(l_list_in, j) - read(r_list_in, j) < epsilon);
  */
 
 const float epsilon = 0.01;

@@ -39,6 +39,7 @@ pub enum CondAExpr {
   Float(f32),
   Unop{aexp: Box<CondAExpr>, op: CondAUnop},
   Binop{lhs: Box<CondAExpr>, rhs: Box<CondAExpr>, op: CondABinop},
+  FunCall{name: String, args: Vec<CondAExpr>},
 }
 impl CondAExpr {
   pub fn state_vars(&self) -> HashSet<String> {
@@ -56,6 +57,13 @@ impl CondAExpr {
       CondAExpr::Binop{lhs, rhs, op:_} => {
         lhs.state_vars().union(&rhs.state_vars()).cloned()
           .collect()
+      },
+      CondAExpr::FunCall {name, args} => {
+        let mut vars = union_all(args.iter()
+          .map(|arg| arg.state_vars())
+          .collect::<Vec<HashSet<String>>>());
+        vars.insert(name.clone());
+        vars
       },
     }
   }

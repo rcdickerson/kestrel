@@ -108,6 +108,12 @@ impl CondToCRel for CondAExpr {
           }
         }
       },
+      CondAExpr::FunCall{name, args} => {
+        crel::Expression::Call {
+          callee: Box::new(crel::Expression::Identifier{name: name.clone()}),
+          args: args.iter().map(|arg| arg.to_crel()).collect(),
+        }
+      },
     }
   }
 }

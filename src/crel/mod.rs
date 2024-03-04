@@ -2,6 +2,7 @@ pub mod ast;
 pub mod blockify;
 pub mod collect_vars;
 pub mod count_loops;
+pub mod daikon_converter;
 pub mod eval;
 pub mod fundef;
 pub mod map_vars;

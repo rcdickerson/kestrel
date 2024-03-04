@@ -1,5 +1,7 @@
 use clap::ValueEnum;
 use crate::crel::ast::*;
+use crate::crel::daikon_converter;
+use crate::crel::daikon_converter::*;
 use crate::eggroll::{ast::*, to_crel};
 use crate::spec::{*, to_crel::*};
 use egg::RecExpr;
@@ -22,7 +24,9 @@ impl OutputMode {
                       filename: &Option<String>) -> String {
     let crel = to_crel::eggroll_to_crel(&eggroll.to_string(), &self.crel_config());
     match self {
+      // TODO: Refactor these crel_to_* methods to exploit commonalities.
       OutputMode::Dafny => self.crel_to_dafny(&crel, spec, filename),
+      OutputMode::Daikon => self.crel_to_daikon(&crel, spec, global_decls, filename),
       _ => self.crel_to_c(&crel, spec, global_decls, filename),
     }
   }
@@ -54,6 +58,29 @@ impl OutputMode {
       body: Box::new(new_body),
     };
     format!("{}\n{}", self.top(filename), new_main.to_dafny())
+  }
+
+  pub fn crel_to_daikon(&self,
+                   crel: &CRel,
+                   spec: &KestrelSpec,
+                   global_decls: Vec<Declaration>,
+                   filename: &Option<String>) -> String {
+    let (_, fundefs) = crate::crel::fundef::extract_fundefs(crel);
+    let main_fun = fundefs.get("main").expect("No main function found");
+    let (daikon_body, loop_head_funs) = DaikonConverter::new(main_fun.body.clone()).convert();
+
+    let new_main = CRel::FunctionDefinition {
+      specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
+      name: "main".to_string(),
+      params: main_fun.params.clone(),
+      body: Box::new(daikon_body),
+    };
+
+    let mut new_seq: Vec<CRel> = global_decls.iter()
+      .map(|decl| CRel::Declaration(decl.clone()))
+      .collect();
+    new_seq.push(new_main);
+    format!("{}\n{}", self.top(filename), CRel::Seq(new_seq).to_c())
   }
 
   pub fn crel_to_c(&self,

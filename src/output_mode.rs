@@ -79,6 +79,7 @@ impl OutputMode {
     let mut new_seq: Vec<CRel> = global_decls.iter()
       .map(|decl| CRel::Declaration(decl.clone()))
       .collect();
+    new_seq.push(CRel::Seq(loop_head_funs));
     new_seq.push(new_main);
     format!("{}\n{}", self.top(filename), CRel::Seq(new_seq).to_c())
   }

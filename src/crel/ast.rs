@@ -26,6 +26,15 @@ impl Declarator {
       _ => panic!("Expected function declarator, got: {:?}", self),
     }
   }
+
+  pub fn name(&self) -> String {
+    match &self {
+      Declarator::Identifier{name} => name.clone(),
+      Declarator::Array{name, ..} => name.clone(),
+      Declarator::Function{name, ..} => name.clone(),
+      Declarator::Pointer(inner) => inner.name(),
+    }
+  }
 }
 
 #[derive(Clone, Debug, PartialEq)]

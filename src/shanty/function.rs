@@ -70,7 +70,7 @@ impl Function {
         writer.indent();
         stmt.emit(writer);
         writer.dedent();
-        writer.write(" }").new_line();
+        writer.write("}").new_line();
       },
     }
   }

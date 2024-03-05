@@ -1,10 +1,10 @@
 use clap::ValueEnum;
 use crate::crel::ast::*;
-use crate::crel::daikon_converter;
 use crate::crel::daikon_converter::*;
 use crate::eggroll::{ast::*, to_crel};
 use crate::spec::{*, to_crel::*};
 use egg::RecExpr;
+use rand::Rng;
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum OutputMode {
@@ -71,9 +71,41 @@ impl OutputMode {
 
     let new_main = CRel::FunctionDefinition {
       specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
-      name: "main".to_string(),
+      name: "_main".to_string(),
       params: main_fun.params.clone(),
       body: Box::new(daikon_body),
+    };
+
+    let mut rng = rand::thread_rng();
+    let mut test_cases = Vec::new();
+    for _ in 0..100 {
+      let mut args = Vec::new();
+      for param in &main_fun.params {
+        let arg = match param.get_type() {
+          None => panic!("Parameter without type in main function."),
+          Some(ty) => match ty {
+            Type::Bool => Expression::ConstInt(rng.gen_range(0..1)),
+            Type::Int => Expression::ConstInt(rng.gen()),
+            Type::Float => Expression::ConstFloat(rng.gen()),
+            _ => panic!("Unsupported: randomly generated {:?}", ty),
+          }
+        };
+        args.push(arg);
+      }
+      test_cases.push(BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
+        callee: Box::new(Expression::Identifier{name: "_main".to_string()}),
+        args
+      }))));
+    }
+
+    let driver = CRel::FunctionDefinition {
+      specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
+      name: "main".to_string(),
+      params: Vec::new(),
+      body: Box::new(Statement::Compound(vec![
+        BlockItem::Statement(Statement::Compound(test_cases)),
+        BlockItem::Statement(Statement::Return(Some(Box::new(Expression::ConstInt(0)))))
+      ])),
     };
 
     let mut new_seq: Vec<CRel> = global_decls.iter()
@@ -81,6 +113,7 @@ impl OutputMode {
       .collect();
     new_seq.push(CRel::Seq(loop_head_funs));
     new_seq.push(new_main);
+    new_seq.push(driver);
     format!("{}\n{}", self.top(filename), CRel::Seq(new_seq).to_c())
   }
 

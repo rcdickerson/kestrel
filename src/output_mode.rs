@@ -85,49 +85,28 @@ impl OutputMode {
 
     let mut rng = rand::thread_rng();
     let mut test_cases = Vec::new();
-    match fundefs.get(TEST_GEN_FUN_NAME) {
-      Option::None => {
-        for _ in 0..100 {
-          let mut args = Vec::new();
-          for param in &main_fun.params {
-            let arg = match param.get_type() {
-              None => panic!("Parameter without type in main function."),
-              Some(ty) => match ty {
-                Type::Bool => Expression::ConstInt(rng.gen_range(0..1)),
-                Type::Int => Expression::ConstInt(rng.gen()),
-                Type::Float => Expression::ConstFloat(rng.gen()),
-                _ => panic!("Unsupported: randomly generated {:?}", ty),
-              }
-            };
-            args.push(arg);
+    let (test_fun_name, test_fun) = match fundefs.get(TEST_GEN_FUN_NAME) {
+      Option::None => ("_main", main_fun),
+      Option::Some(f) => (TEST_GEN_FUN_NAME, f),
+    };
+    for _ in 0..100 {
+      let mut args = Vec::new();
+      for param in &test_fun.params {
+        let arg = match param.get_type() {
+          None => panic!("Parameter without type in main function."),
+          Some(ty) => match ty {
+            Type::Bool => Expression::ConstInt(rng.gen_range(0..1)),
+            Type::Int => Expression::ConstInt(rng.gen()),
+            Type::Float => Expression::ConstFloat(rng.gen()),
+            _ => panic!("Unsupported: randomly generated {:?}", ty),
           }
-          test_cases.push(BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
-            callee: Box::new(Expression::Identifier{name: "_main".to_string()}),
-            args
-          }))));
-        }
-      },
-      Option::Some(gen_fun) => {
-        for _ in 0..100 {
-          let mut args = Vec::new();
-          for param in &gen_fun.params {
-            let arg = match param.get_type() {
-              None => panic!("Parameter without type in daikon generator function."),
-              Some(ty) => match ty {
-                Type::Bool => Expression::ConstInt(rng.gen_range(0..1)),
-                Type::Int => Expression::ConstInt(rng.gen()),
-                Type::Float => Expression::ConstFloat(rng.gen()),
-                _ => panic!("Unsupported: randomly generated {:?}", ty),
-              }
-            };
-            args.push(arg);
-          }
-          test_cases.push(BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
-            callee: Box::new(Expression::Identifier{name: TEST_GEN_FUN_NAME.to_string()}),
-            args
-          }))));
-        }
-      },
+        };
+        args.push(arg);
+      }
+      test_cases.push(BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
+        callee: Box::new(Expression::Identifier{name: test_fun_name.to_string()}),
+        args
+      }))));
     }
 
     let driver = CRel::FunctionDefinition {

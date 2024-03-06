@@ -1,10 +1,12 @@
 use clap::ValueEnum;
 use crate::crel::ast::*;
 use crate::crel::daikon_converter::*;
+use crate::crel::fundef::*;
 use crate::eggroll::{ast::*, to_crel};
 use crate::spec::{*, to_crel::*};
 use egg::RecExpr;
 use rand::Rng;
+use std::collections::HashMap;
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum OutputMode {
@@ -21,12 +23,13 @@ impl OutputMode {
                       eggroll: &RecExpr<Eggroll>,
                       spec: &KestrelSpec,
                       global_decls: Vec<Declaration>,
+                      fundefs: HashMap<String, FunDef>,
                       filename: &Option<String>) -> String {
     let crel = to_crel::eggroll_to_crel(&eggroll.to_string(), &self.crel_config());
     match self {
       // TODO: Refactor these crel_to_* methods to exploit commonalities.
       OutputMode::Dafny => self.crel_to_dafny(&crel, spec, filename),
-      OutputMode::Daikon => self.crel_to_daikon(&crel, spec, global_decls, filename),
+      OutputMode::Daikon => self.crel_to_daikon(&crel, spec, global_decls, fundefs, filename),
       _ => self.crel_to_c(&crel, spec, global_decls, filename),
     }
   }
@@ -64,9 +67,13 @@ impl OutputMode {
                    crel: &CRel,
                    spec: &KestrelSpec,
                    global_decls: Vec<Declaration>,
+                   fundefs: HashMap<String, FunDef>,
                    filename: &Option<String>) -> String {
-    let (_, fundefs) = crate::crel::fundef::extract_fundefs(crel);
-    let main_fun = fundefs.get("main").expect("No main function found");
+
+    const TEST_GEN_FUN_NAME: &str = "_test_gen";
+
+    let (_, crel_fundefs) = crate::crel::fundef::extract_fundefs(crel);
+    let main_fun = crel_fundefs.get("main").expect("No main function found");
     let (daikon_body, loop_head_funs) = DaikonConverter::new(main_fun.body.clone()).convert();
 
     let new_main = CRel::FunctionDefinition {
@@ -78,24 +85,49 @@ impl OutputMode {
 
     let mut rng = rand::thread_rng();
     let mut test_cases = Vec::new();
-    for _ in 0..100 {
-      let mut args = Vec::new();
-      for param in &main_fun.params {
-        let arg = match param.get_type() {
-          None => panic!("Parameter without type in main function."),
-          Some(ty) => match ty {
-            Type::Bool => Expression::ConstInt(rng.gen_range(0..1)),
-            Type::Int => Expression::ConstInt(rng.gen()),
-            Type::Float => Expression::ConstFloat(rng.gen()),
-            _ => panic!("Unsupported: randomly generated {:?}", ty),
+    match fundefs.get(TEST_GEN_FUN_NAME) {
+      Option::None => {
+        for _ in 0..100 {
+          let mut args = Vec::new();
+          for param in &main_fun.params {
+            let arg = match param.get_type() {
+              None => panic!("Parameter without type in main function."),
+              Some(ty) => match ty {
+                Type::Bool => Expression::ConstInt(rng.gen_range(0..1)),
+                Type::Int => Expression::ConstInt(rng.gen()),
+                Type::Float => Expression::ConstFloat(rng.gen()),
+                _ => panic!("Unsupported: randomly generated {:?}", ty),
+              }
+            };
+            args.push(arg);
           }
-        };
-        args.push(arg);
-      }
-      test_cases.push(BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
-        callee: Box::new(Expression::Identifier{name: "_main".to_string()}),
-        args
-      }))));
+          test_cases.push(BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
+            callee: Box::new(Expression::Identifier{name: "_main".to_string()}),
+            args
+          }))));
+        }
+      },
+      Option::Some(gen_fun) => {
+        for _ in 0..100 {
+          let mut args = Vec::new();
+          for param in &gen_fun.params {
+            let arg = match param.get_type() {
+              None => panic!("Parameter without type in daikon generator function."),
+              Some(ty) => match ty {
+                Type::Bool => Expression::ConstInt(rng.gen_range(0..1)),
+                Type::Int => Expression::ConstInt(rng.gen()),
+                Type::Float => Expression::ConstFloat(rng.gen()),
+                _ => panic!("Unsupported: randomly generated {:?}", ty),
+              }
+            };
+            args.push(arg);
+          }
+          test_cases.push(BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
+            callee: Box::new(Expression::Identifier{name: TEST_GEN_FUN_NAME.to_string()}),
+            args
+          }))));
+        }
+      },
     }
 
     let driver = CRel::FunctionDefinition {
@@ -113,6 +145,15 @@ impl OutputMode {
       .collect();
     new_seq.push(CRel::Seq(loop_head_funs));
     new_seq.push(new_main);
+    fundefs.get(TEST_GEN_FUN_NAME).map(|f| {
+      let gen_fun = CRel::FunctionDefinition {
+        specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
+        name: TEST_GEN_FUN_NAME.to_string(),
+        params: f.params.clone(),
+        body: Box::new(f.body.clone()),
+      };
+      new_seq.push(gen_fun)
+    });
     new_seq.push(driver);
     format!("{}\n{}", self.top(filename), CRel::Seq(new_seq).to_c())
   }

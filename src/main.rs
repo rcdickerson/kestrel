@@ -194,7 +194,7 @@ fn main() {
     path.file_name().unwrap().to_str().unwrap().to_string()
   });
   let aligned_c = args.output_mode.eggroll_to_output(&aligned_eggroll, &spec,
-      unaligned_crel.global_decls, &filename);
+      unaligned_crel.global_decls, unaligned_crel.fundefs, &filename);
   println!("\nAligned Product Program");
   println!("--------------------------");
   println!("{}", aligned_c);

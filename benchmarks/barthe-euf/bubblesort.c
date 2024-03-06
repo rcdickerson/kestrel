@@ -14,6 +14,12 @@ const float epsilon = 0.01;
 float read(int, int);
 int store(int, int, float);
 
+void _test_gen(int list_id, int size) {
+  if (size < 0) { size = size * -1; }
+  size = size % 100;
+  _main(list_id, size, list_id, size);
+}
+
 void sort(int list_in, int size) {
   int list = list_in;
   int i = 0;

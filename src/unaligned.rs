@@ -1,11 +1,13 @@
 use crate::crel::ast::*;
 use crate::crel::blockify::*;
+use crate::crel::fundef::FunDef;
 use crate::names::*;
 use crate::spec::KestrelSpec;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 pub struct UnalignedCRel {
   pub global_decls: Vec<Declaration>,
+  pub fundefs: HashMap<String, FunDef>,
   pub params: Vec<ParameterDeclaration>,
   pub main: CRel,
 }
@@ -46,6 +48,7 @@ impl UnalignedCRel {
 
     UnalignedCRel {
       global_decls,
+      fundefs,
       params,
       main,
     }

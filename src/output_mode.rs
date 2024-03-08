@@ -88,7 +88,7 @@ impl OutputMode {
       Option::None => ("_main", main_fun),
       Option::Some(f) => (TEST_GEN_FUN_NAME, f),
     };
-    for _ in 0..100 {
+    for _ in 0..20 {
       let mut args = Vec::new();
       for param in &test_fun.params {
         let arg = match param.get_type() {

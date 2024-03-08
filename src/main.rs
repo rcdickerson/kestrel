@@ -8,9 +8,11 @@ use kestrel::spec::parser::parse_spec;
 use kestrel::unaligned::*;
 use egg::*;
 use std::collections::HashSet;
+use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -188,6 +190,49 @@ fn main() {
   println!("--------------------------");
   println!("{}", aligned_eggroll.pretty(80));
   println!("--------------------------");
+
+  // Output alignment as Daikon C.
+  let daikon_path = "daikon_output.c".to_string();
+  println!("Writing Daikon to {}...", daikon_path);
+  let daikon_output = OutputMode::Daikon.eggroll_to_output(&aligned_eggroll, &spec,
+      unaligned_crel.global_decls.clone(), unaligned_crel.fundefs.clone(),
+      &Some(daikon_path.clone()));
+  let mut file = File::create(&Path::new(daikon_path.clone().as_str()))
+    .unwrap_or_else(|_| panic!("Error creating file: {}", daikon_path));
+  match file.write_all(daikon_output.as_bytes()) {
+    Ok(_) => println!("Done"),
+    Err(err) => panic!("Error writing output file: {}", err),
+  }
+
+  // Compile and run Daikon.
+  println!("Compiling Daikon output...");
+  Command::new("gcc")
+    .args(["-gdwarf-2", "-O0", "-no-pie", "-o", "daikon_output", "daikon_output.c"])
+    .spawn()
+    .expect("failed to start gcc process")
+    .wait()
+    .expect("failed to compile daikon output");
+  println!("Running Kvasir...");
+  Command::new("kvasir-dtrace")
+    .args(["./daikon_output"])
+    .spawn()
+    .expect("failed to start kvasir")
+    .wait()
+    .expect("failed to run kvasir");
+  println!("Running Daikon...");
+  let daikon_output = Command::new("java")
+    .args(["-cp",
+           format!("{}/daikon.jar", env::var("DAIKONDIR").expect("$DAIKONDIR not set")).as_str(),
+           "daikon.Daikon",
+           "--config_option", "daikon.derive.Derivation.disable_derived_variables=true",
+           "daikon-output/daikon_output.decls",
+           "daikon-output/daikon_output.dtrace"])
+    .output()
+    .expect("failed to run daikon");
+  if !daikon_output.status.success() {
+    panic!("Daikon failure: {:?}", daikon_output);
+  }
+  std::io::stdout().write_all(&daikon_output.stdout).unwrap();
 
   let filename = args.output.as_ref().map(|outpath| {
     let path = Path::new(outpath);

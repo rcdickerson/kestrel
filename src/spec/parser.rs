@@ -9,6 +9,7 @@ use nom::{
   character::complete::multispace0,
   combinator::recognize,
   error::{Error, ErrorKind},
+  multi::many0,
   multi::many0_count,
   multi::many1,
   multi::many1_count,
@@ -58,7 +59,7 @@ fn c_id(i: &str) -> IResult<&str, &str> {
   let (i, _) = multispace0(i)?;
   recognize(pair(
     alt((alpha1, tag("_"))),
-    many0_count(alt((alphanumeric1, tag("_"))))
+    many0(alt((alphanumeric1, tag("_"))))
   ))(i)
 }
 
@@ -159,7 +160,7 @@ fn aexpr_lhs(i: &str) -> IResult<&str, CondAExpr> {
   ))(i)
 }
 
-fn aexpr(i: &str) -> IResult<&str, CondAExpr> {
+pub fn aexpr(i: &str) -> IResult<&str, CondAExpr> {
   let (i, _) = multispace0(i)?;
   alt((
     aexpr_binop("+", CondABinop::Add),
@@ -291,7 +292,7 @@ fn bexpr_lhs(i: &str) -> IResult<&str, CondBExpr> {
   ))(i)
 }
 
-fn bexpr(i: &str) -> IResult<&str, CondBExpr> {
+pub fn bexpr(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _) = multispace0(i)?;
   alt((
     bexpr_binop_b("&&", CondBBinopB::And),
@@ -345,7 +346,7 @@ fn kcond_bexpr(i: &str) -> IResult<&str, KestrelCond> {
   Ok((i, KestrelCond::BExpr(bexpr)))
 }
 
-fn kestrel_cond(i: &str) -> IResult<&str, KestrelCond> {
+pub fn kestrel_cond(i: &str) -> IResult<&str, KestrelCond> {
   alt((
     kcond_and,
     kcond_bexpr,

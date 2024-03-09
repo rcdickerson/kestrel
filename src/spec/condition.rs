@@ -133,6 +133,21 @@ impl CondBExpr {
   }
 }
 
+pub fn cond_and(conds: &mut Vec<CondBExpr>) -> CondBExpr {
+  match conds.len() {
+    0 => CondBExpr::True,
+    1 => conds.pop().unwrap(),
+    _ => {
+      let lhs = conds.pop().unwrap();
+      CondBExpr::BinopB {
+        lhs: Box::new(lhs),
+        rhs: Box::new(cond_and(conds)),
+        op: CondBBinopB::And,
+      }
+    }
+  }
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum CondBUnop {
   Not,

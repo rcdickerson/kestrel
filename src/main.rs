@@ -1,6 +1,7 @@
 use clap::{Parser, ValueEnum};
 use kestrel::annealer::*;
 use kestrel::crel::eval::*;
+use kestrel::daikon::invariant_parser::*;
 use kestrel::eggroll::cost_functions::{minloops::*, sa::*};
 use kestrel::eggroll::milp_extractor::*;
 use kestrel::output_mode::*;
@@ -220,7 +221,7 @@ fn main() {
     .wait()
     .expect("failed to run kvasir");
   println!("Running Daikon...");
-  let daikon_output = Command::new("java")
+  let daikon_result = Command::new("java")
     .args(["-cp",
            format!("{}/daikon.jar", env::var("DAIKONDIR").expect("$DAIKONDIR not set")).as_str(),
            "daikon.Daikon",
@@ -229,10 +230,16 @@ fn main() {
            "daikon-output/daikon_output.dtrace"])
     .output()
     .expect("failed to run daikon");
-  if !daikon_output.status.success() {
+  if !daikon_result.status.success() {
     panic!("Daikon failure: {:?}", daikon_output);
   }
-  std::io::stdout().write_all(&daikon_output.stdout).unwrap();
+  let daikon_output = match std::str::from_utf8(&daikon_result.stdout) {
+    Ok(s) => s,
+    Err(e) => panic!("Error reading daikon output: {}", e),
+  };
+  println!("Daikon output: {}", daikon_output);
+  let invariants = parse_invariants(daikon_output);
+  println!("Invariants: {:?}", invariants);
 
   let filename = args.output.as_ref().map(|outpath| {
     let path = Path::new(outpath);

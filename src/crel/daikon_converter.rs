@@ -1,7 +1,6 @@
 use crate::crel::ast::*;
 
 pub struct DaikonConverter {
-  lh_counter: u64,
   lh_decls: Vec<CRel>,
   cur_scope: Vec<ScopeItem>,
   cur_scope_checkpoint: u64,
@@ -17,7 +16,6 @@ impl DaikonConverter {
 
   pub fn new(statement: Statement) -> Self {
     DaikonConverter {
-      lh_counter: 0,
       lh_decls: Vec::new(),
       cur_scope: Vec::new(),
       cur_scope_checkpoint: 0,
@@ -30,8 +28,7 @@ impl DaikonConverter {
     (converted_statement, self.lh_decls.clone())
   }
 
-  fn add_loop_head(&mut self, id: Option<String>) -> (String, Expression) {
-    let name = id.unwrap_or(format!("_loop_head_{}", self.lh_counter));
+  fn add_loop_head(&mut self, name: String) -> (String, Expression) {
     let scope_vars = self.cur_scope_vars();
     let fundef = CRel::FunctionDefinition {
       specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
@@ -39,7 +36,6 @@ impl DaikonConverter {
       params: scope_vars.clone(),
       body: Box::new(Statement::None),
     };
-    self.lh_counter += 1;
     self.lh_decls.push(fundef.clone());
 
     (name.clone(), Expression::Call {
@@ -81,6 +77,9 @@ impl DaikonConverter {
   }
 
   fn convert_statement(&mut self, stmt: Statement) -> Statement {
+    let mut stmt = stmt.clone();
+    stmt.assign_loop_ids();
+
     match &stmt {
       Statement::BasicBlock(items) => {
         Statement::BasicBlock(items.iter()
@@ -123,7 +122,7 @@ impl DaikonConverter {
       })),
       Statement::While{loop_id, invariants: invariant, condition, body} => {
         let checkpoint = self.push_scope();
-        let (id, lh_call) = self.add_loop_head(loop_id.clone());
+        let (id, lh_call) = self.add_loop_head(loop_id.clone().unwrap());
         let new_body = match &body {
           Option::None => Statement::Expression(Box::new(lh_call)),
           Option::Some(b) => Statement::Compound(vec![

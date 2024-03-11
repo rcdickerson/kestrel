@@ -1,3 +1,5 @@
+use crate::spec::condition::CondBExpr;
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum CRel {
   Declaration(Declaration),
@@ -187,6 +189,8 @@ pub enum Statement {
   },
   Return(Option<Box<Expression>>),
   While {
+    loop_id: Option<String>,
+    invariant: Option<CondBExpr>,
     condition: Box<Expression>,
     body: Option<Box<Statement>>,
   },

@@ -171,7 +171,7 @@ fn statement_to_c(stmt: &Statement) -> C::Statement {
       None => { C::Statement::Return(None) },
       Some(ret) => { C::Statement::Return(Some(Box::new(expression_to_c(ret)))) },
     },
-    Statement::While{condition, body} => {
+    Statement::While{condition, body, ..} => {
       let condition = Box::new(expression_to_c(condition));
       let body = body.as_ref().map(|stmt| Box::new(statement_to_c(stmt)));
       C::Statement::While{condition, body}

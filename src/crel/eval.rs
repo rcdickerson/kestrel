@@ -61,7 +61,7 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
       }
       exec.set_return_flag();
     },
-    Statement::While{condition, body} => {
+    Statement::While{condition, body, ..} => {
       exec.push_tag(Tag::LoopStart);
       eval_expression(condition, exec);
       while exec.value_is_true() {

@@ -237,9 +237,8 @@ fn main() {
     Ok(s) => s,
     Err(e) => panic!("Error reading daikon output: {}", e),
   };
-  println!("Daikon output: {}", daikon_output);
   let invariants = parse_invariants(daikon_output);
-  println!("Invariants: {:?}", invariants);
+  println!("Daikon invariants: {:?}", invariants);
 
   let filename = args.output.as_ref().map(|outpath| {
     let path = Path::new(outpath);

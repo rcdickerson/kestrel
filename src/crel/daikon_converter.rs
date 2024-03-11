@@ -121,7 +121,7 @@ impl DaikonConverter {
       Statement::Return(expr) => Statement::Return(expr.clone().map(|e| {
         Box::new(self.convert_expression(*e))
       })),
-      Statement::While{condition, body} => {
+      Statement::While{loop_id, invariant, condition, body} => {
         let checkpoint = self.push_scope();
         let lh_call = self.add_loop_head();
         let new_body = match &body {
@@ -132,6 +132,8 @@ impl DaikonConverter {
         };
         self.pop_scope(checkpoint);
         Statement::While{
+          loop_id: loop_id.clone(),
+          invariant: invariant.clone(),
           condition: condition.clone(),
           body: Some(Box::new(new_body)),
         }

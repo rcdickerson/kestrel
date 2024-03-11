@@ -36,6 +36,8 @@ impl KCondToCRel for KestrelCond {
           initializer: Some(start.to_crel()),
         };
         let wloop = crel::Statement::While {
+          loop_id: None,
+          invariant: None,
           condition: Box::new(crel::Expression::Binop {
             lhs: Box::new(crel::Expression::Identifier{name: index_var.clone()}),
             rhs: Box::new(end.to_crel()),

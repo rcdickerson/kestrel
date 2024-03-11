@@ -164,7 +164,7 @@ fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
       None => { Daf::Statement::Return(None) },
       Some(ret) => { Daf::Statement::Return(Some(Box::new(expression_to_daf(ret)))) },
     },
-    Statement::While{condition, body} => {
+    Statement::While{condition, body, ..} => {
       let condition = Box::new(expression_to_daf(condition));
       let body = body.as_ref().map(|stmt| Box::new(statement_to_daf(stmt)));
       Daf::Statement::While{condition, body}

@@ -222,12 +222,12 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
       },
       Sexp::Atom(Atom::S(s)) if s == "while-no-body" => {
         let condition = Box::new(expect_expression(&sexps[1], config));
-        Statement::While{condition, body: None}
+        Statement::While{loop_id: None, invariant: None, condition, body: None}
       },
       Sexp::Atom(Atom::S(s)) if s == "while" => {
         let condition = Box::new(expect_expression(&sexps[1], config));
         let body = Some(Box::new(expect_statement(&sexps[2], config)));
-        Statement::While{condition, body}
+        Statement::While{loop_id: None, invariant: None, condition, body}
       },
       Sexp::Atom(Atom::S(s)) if s == "while-double" => {
         let condition = expect_expression(&sexps[1], config);
@@ -241,6 +241,8 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
           }),
         ));
         Statement::While {
+          loop_id: None,
+          invariant: None,
           condition: Box::new(condition),
           body: Some(Box::new(double_body))
         }
@@ -308,12 +310,18 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
           BlockItem::Statement(Statement::Compound(unrolls1)),
           BlockItem::Statement(Statement::Compound(unrolls2)),
           BlockItem::Statement(Statement::While {
+            loop_id: None,
+            invariant: None,
             condition: Box::new(conj),
             body: Some(Box::new(body))}),
           BlockItem::Statement(Statement::While {
+            loop_id: None,
+            invariant: None,
             condition: Box::new(cond1),
             body: Some(Box::new(runoff_body_1))}),
           BlockItem::Statement(Statement::While {
+            loop_id: None,
+            invariant: None,
             condition: Box::new(cond2),
             body: Some(Box::new(runoff_body_2))}),
         ];
@@ -422,12 +430,18 @@ fn expect_while_scheduled(sexps: &[Sexp], config: &Config) -> Statement {
     BlockItem::Statement(Statement::Compound(unrolls1)),
     BlockItem::Statement(Statement::Compound(unrolls2)),
     BlockItem::Statement(Statement::While {
+      loop_id: None,
+      invariant: None,
       condition: Box::new(conj),
       body: Some(Box::new(bodies))}),
     BlockItem::Statement(Statement::While {
+      loop_id: None,
+      invariant: None,
       condition: Box::new(cond1),
       body: Some(Box::new(runoff_body_1))}),
     BlockItem::Statement(Statement::While {
+      loop_id: None,
+      invariant: None,
       condition: Box::new(cond2),
       body: Some(Box::new(runoff_body_2))}),
   ];

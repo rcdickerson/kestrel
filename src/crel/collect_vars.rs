@@ -68,7 +68,7 @@ impl CollectVars for Statement {
           Some(expr) => expr.vars(),
         }
       },
-      Statement::While{condition, body} => {
+      Statement::While{condition, body, ..} => {
         match body {
           None => condition.vars(),
           Some(body) => union_all(vec!(condition.vars(), body.vars()))

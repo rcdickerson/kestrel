@@ -295,7 +295,12 @@ fn trans_while_statement(expr: &Node<c::WhileStatement>) -> Statement {
     Statement::None => None,
     stmt => Some(Box::new(stmt)),
   };
-  Statement::While { condition, body }
+  Statement::While {
+    loop_id: None,
+    invariant: None,
+    condition,
+    body
+  }
 }
 
 fn trans_call_expression(expr: &Node<c::CallExpression>) -> Expression {

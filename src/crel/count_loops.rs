@@ -50,7 +50,7 @@ impl CountLoops for Statement {
         lhs.count_loops() + rhs.count_loops()
       },
       Statement::Return(_) => 0,
-      Statement::While{condition, body} => {
+      Statement::While{condition, body, ..} => {
         1 + condition.count_loops() + match body {
           None => 0,
           Some(body) => body.count_loops(),

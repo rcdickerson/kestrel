@@ -118,7 +118,7 @@ fn statement_to_eggroll(stmt: &Statement) -> String {
       None => "return-none".to_string(),
       Some(ret) => format!("(return {})", expression_to_eggroll(ret)),
     },
-    Statement::While{condition, body} => {
+    Statement::While{condition, body, ..} => {
       match body {
         None => format!("(while-no-body {})", expression_to_eggroll(condition)),
         Some(stmt) => format!("(while {} {})",

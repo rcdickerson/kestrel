@@ -245,7 +245,7 @@ fn main() {
   };
   println!("Daikon invariants: {:?}", invariants);
 
-  //let decorated_crel = decorate_invariants(&aligned_crel, &invariants);
+  let decorated_crel = decorate_invariants(&aligned_crel, &invariants);
   //println!("Decorated crel: {:?}", decorated_crel);
 
   let filename = args.output.as_ref().map(|outpath| {

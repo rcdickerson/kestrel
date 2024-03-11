@@ -10,13 +10,7 @@ pub trait CRelVisitor {
   fn visit_declaration_specifier(&mut self, _: &mut DeclarationSpecifier) { }
   fn visit_statement(&mut self, _: &mut Statement) { }
   fn visit_expression(&mut self, _: &mut Expression) { }
-  fn visit_block_item(&mut self, item: &mut BlockItem) {
-    match item {
-      BlockItem::Declaration(decl) => self.visit_declaration(decl),
-      BlockItem::Statement(stmt) => self.visit_statement(stmt),
-    }
-  }
-
+  fn visit_block_item(&mut self, _: &mut BlockItem) { }
   fn visit_name(&mut self, _: &mut String) { }
 }
 

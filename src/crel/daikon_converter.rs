@@ -30,8 +30,8 @@ impl DaikonConverter {
     (converted_statement, self.lh_decls.clone())
   }
 
-  fn add_loop_head(&mut self) -> Expression {
-    let name = format!("_loop_head_{}", self.lh_counter);
+  fn add_loop_head(&mut self, id: Option<String>) -> (String, Expression) {
+    let name = id.unwrap_or(format!("_loop_head_{}", self.lh_counter));
     let scope_vars = self.cur_scope_vars();
     let fundef = CRel::FunctionDefinition {
       specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
@@ -42,14 +42,14 @@ impl DaikonConverter {
     self.lh_counter += 1;
     self.lh_decls.push(fundef.clone());
 
-    Expression::Call {
+    (name.clone(), Expression::Call {
       callee: Box::new(Expression::Identifier{name}),
       args: scope_vars.iter()
         .map(|v| Expression::Identifier {
           name: v.declarator.clone().expect("Parameter without declarator").name()
         })
         .collect(),
-    }
+    })
   }
 
   fn push_scope(&mut self) -> u64 {
@@ -121,9 +121,9 @@ impl DaikonConverter {
       Statement::Return(expr) => Statement::Return(expr.clone().map(|e| {
         Box::new(self.convert_expression(*e))
       })),
-      Statement::While{loop_id, invariant, condition, body} => {
+      Statement::While{loop_id, invariants: invariant, condition, body} => {
         let checkpoint = self.push_scope();
-        let lh_call = self.add_loop_head();
+        let (id, lh_call) = self.add_loop_head(loop_id.clone());
         let new_body = match &body {
           Option::None => Statement::Expression(Box::new(lh_call)),
           Option::Some(b) => Statement::Compound(vec![
@@ -132,8 +132,8 @@ impl DaikonConverter {
         };
         self.pop_scope(checkpoint);
         Statement::While{
-          loop_id: loop_id.clone(),
-          invariant: invariant.clone(),
+          loop_id: Some(id),
+          invariants: invariant.clone(),
           condition: condition.clone(),
           body: Some(Box::new(new_body)),
         }

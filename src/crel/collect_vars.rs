@@ -123,7 +123,7 @@ impl CollectVars for ParameterDeclaration {
   }
 }
 
-impl CollectVars for BlockItem {
+ impl CollectVars for BlockItem {
   fn vars(&self) -> HashSet<String> {
     match self {
       BlockItem::Declaration(decl) => decl.vars(),

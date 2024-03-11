@@ -190,7 +190,7 @@ pub enum Statement {
   Return(Option<Box<Expression>>),
   While {
     loop_id: Option<String>,
-    invariant: Option<CondBExpr>,
+    invariants: Option<Vec<CondBExpr>>,
     condition: Box<Expression>,
     body: Option<Box<Statement>>,
   },

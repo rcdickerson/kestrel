@@ -5,6 +5,7 @@ pub mod count_loops;
 pub mod daikon_converter;
 pub mod eval;
 pub mod fundef;
+pub mod invariant_decorator;
 pub mod map_vars;
 pub mod parser;
 pub mod to_c;

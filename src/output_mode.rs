@@ -2,9 +2,8 @@ use clap::ValueEnum;
 use crate::crel::ast::*;
 use crate::crel::daikon_converter::*;
 use crate::crel::fundef::*;
-use crate::eggroll::{ast::*, to_crel};
+use crate::eggroll::to_crel;
 use crate::spec::{*, to_crel::*};
-use egg::RecExpr;
 use rand::Rng;
 use std::collections::HashMap;
 
@@ -19,13 +18,12 @@ pub enum OutputMode {
 
 impl OutputMode {
 
-  pub fn eggroll_to_output(&self,
-                      eggroll: &RecExpr<Eggroll>,
-                      spec: &KestrelSpec,
-                      global_decls: Vec<Declaration>,
-                      fundefs: HashMap<String, FunDef>,
-                      filename: &Option<String>) -> String {
-    let crel = to_crel::eggroll_to_crel(&eggroll.to_string(), &self.crel_config());
+  pub fn crel_to_output(&self,
+                        crel: &CRel,
+                        spec: &KestrelSpec,
+                        global_decls: Vec<Declaration>,
+                        fundefs: HashMap<String, FunDef>,
+                        filename: &Option<String>) -> String {
     match self {
       // TODO: Refactor these crel_to_* methods to exploit commonalities.
       OutputMode::Dafny => self.crel_to_dafny(&crel, spec, filename),

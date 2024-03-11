@@ -297,7 +297,7 @@ fn trans_while_statement(expr: &Node<c::WhileStatement>) -> Statement {
   };
   Statement::While {
     loop_id: None,
-    invariant: None,
+    invariants: None,
     condition,
     body
   }

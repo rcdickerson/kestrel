@@ -1,9 +1,10 @@
 use clap::{Parser, ValueEnum};
 use kestrel::annealer::*;
 use kestrel::crel::eval::*;
+use kestrel::crel::invariant_decorator::*;
 use kestrel::daikon::invariant_parser::*;
 use kestrel::eggroll::cost_functions::{minloops::*, sa::*};
-use kestrel::eggroll::milp_extractor::*;
+use kestrel::eggroll::{milp_extractor::*, to_crel};
 use kestrel::output_mode::*;
 use kestrel::spec::parser::parse_spec;
 use kestrel::unaligned::*;
@@ -193,9 +194,10 @@ fn main() {
   println!("--------------------------");
 
   // Output alignment as Daikon C.
+  let aligned_crel = to_crel::eggroll_to_crel(&aligned_eggroll.to_string(), &to_crel::Config::default());
   let daikon_path = "daikon_output.c".to_string();
   println!("Writing Daikon to {}...", daikon_path);
-  let daikon_output = OutputMode::Daikon.eggroll_to_output(&aligned_eggroll, &spec,
+  let daikon_output = OutputMode::Daikon.crel_to_daikon(&aligned_crel,
       unaligned_crel.global_decls.clone(), unaligned_crel.fundefs.clone(),
       &Some(daikon_path.clone()));
   let mut file = File::create(&Path::new(daikon_path.clone().as_str()))
@@ -237,14 +239,20 @@ fn main() {
     Ok(s) => s,
     Err(e) => panic!("Error reading daikon output: {}", e),
   };
-  let invariants = parse_invariants(daikon_output);
+  let invariants = match parse_invariants(daikon_output) {
+    Result::Ok(map) => map,
+    Result::Err(err) => panic!("Error parsing Daikon invariants: {}", err),
+  };
   println!("Daikon invariants: {:?}", invariants);
+
+  //let decorated_crel = decorate_invariants(&aligned_crel, &invariants);
+  //println!("Decorated crel: {:?}", decorated_crel);
 
   let filename = args.output.as_ref().map(|outpath| {
     let path = Path::new(outpath);
     path.file_name().unwrap().to_str().unwrap().to_string()
   });
-  let aligned_c = args.output_mode.eggroll_to_output(&aligned_eggroll, &spec,
+  let aligned_c = args.output_mode.crel_to_output(&decorated_crel, &spec,
       unaligned_crel.global_decls, unaligned_crel.fundefs, &filename);
   println!("\nAligned Product Program");
   println!("--------------------------");

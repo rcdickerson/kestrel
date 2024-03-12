@@ -8,3 +8,4 @@ pub mod shanty;
 pub mod spec;
 pub mod syrtos;
 pub mod unaligned;
+pub mod workflow;

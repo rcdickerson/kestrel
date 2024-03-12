@@ -47,6 +47,6 @@ impl Writer {
 
 impl ToString for Writer {
   fn to_string(&self) -> String {
-    self.lines.concat()
+    self.lines.concat().trim().to_string()
   }
 }

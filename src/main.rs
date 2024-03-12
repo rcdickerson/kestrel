@@ -7,8 +7,8 @@ use kestrel::eggroll::{milp_extractor::*, to_crel};
 use kestrel::output_mode::*;
 use kestrel::spec::parser::parse_spec;
 use kestrel::unaligned::*;
+use kestrel::workflow::*;
 use egg::*;
-use std::collections::HashSet;
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
@@ -70,15 +70,6 @@ enum ExtractorArg {
   Unaligned,
 }
 
-fn write_file(contents: &String, location: &str) {
-  let path = Path::new(location);
-  let mut dot_file = match File::create(path) {
-    Err(_) => panic!("Could not create file: {}", location),
-    Ok(f)  => f,
-  };
-  dot_file.write_all(contents.as_bytes()).expect("Unable to write file.")
-}
-
 /// The high-level KestRel workflow is:
 ///   1. Read in a C file and parse its @KESTREL spec.
 ///   2. Convert the C into CRel. CRel is a C-like IR which can represent
@@ -97,43 +88,23 @@ fn write_file(contents: &String, location: &str) {
 fn main() {
   let args = Args::parse();
   let spec = parse_spec(&args.input).unwrap();
-
-  let crel = kestrel::crel::parser::parse_c_file(&args.input);
-  // println!("\nCRel");
-  // println!("--------------------------");
-  // println!("{:?}", crel);
-  // println!("--------------------------");
-
-  let unaligned_crel = UnalignedCRel::from(&crel, &spec);
-
-  let unaligned_c = unaligned_crel.main.to_c();
-  println!("\nUnaligned Product Program");
-  println!("--------------------------");
-  println!("{}", unaligned_c);
-  println!("--------------------------");
-
+  let raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
+  let unaligned_crel = UnalignedCRel::from(&raw_crel, &spec);
   let unaligned_eggroll = unaligned_crel.main.to_eggroll();
-  println!("\nUnaligned Eggroll");
-  println!("--------------------------");
-  let ue_expr: RecExpr<kestrel::eggroll::ast::Eggroll> = unaligned_eggroll.parse().unwrap();
-  println!("{}", ue_expr.pretty(80));
-  println!("--------------------------");
 
-  if args.dot {
-    println!("Writing egraph structure to egraph.dot");
-      let runner = Runner::default()
-        .with_expr(&unaligned_eggroll.parse().unwrap())
-        .run(&kestrel::eggroll::rewrite::rewrites(true));
-    write_file(&runner.egraph.dot().to_string(), "egraph.dot");
-  }
+  let mut context = Context::new();
+  context.spec = Some(&spec);
+  context.unaligned_crel = Some(&unaligned_crel);
+  context.unaligned_eggroll = Some(&unaligned_eggroll);
 
-  if args.space_size {
-    let runner = Runner::default()
-      .with_expr(&unaligned_eggroll.parse().unwrap())
-      .run(&kestrel::eggroll::rewrite::rewrites(true));
-    let seen = &mut HashSet::new();
-    println!("Alignment space size: {}", space_size(&runner.egraph, runner.roots[0], seen));
-  }
+  let mut workflow = Workflow::new(context);
+  workflow.add_task(PrintInfo::with_header("Unaligned Product Program", &|ctx| {
+    ctx.unaligned_crel().main.to_c().to_string()
+  }));
+  if args.dot { workflow.add_task(WriteDot::new()) }
+  if args.space_size { workflow.add_task(ComputeSpace::new()) }
+  workflow.execute();
+
 
   let aligned_eggroll = match args.extractor {
     ExtractorArg::Unaligned => {
@@ -176,7 +147,7 @@ fn main() {
       let runner = Runner::default()
         .with_expr(&init.clone().unwrap_or(unaligned_eggroll.parse().unwrap()))
         .run(&kestrel::eggroll::rewrite::rewrites(true));
-      let (_, fundefs) = kestrel::crel::fundef::extract_fundefs(&crel);
+      let (_, fundefs) = kestrel::crel::fundef::extract_fundefs(&raw_crel);
       let generator = fundefs.get(&"_generator".to_string());
       let decls = unaligned_crel.global_decls_and_params();
       let trace_states = rand_states_satisfying(
@@ -278,41 +249,6 @@ fn main() {
       }
     }
   });
-}
-
-enum SpaceSize {
-  Finite(usize),
-  Infinite,
-}
-impl std::fmt::Display for SpaceSize {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-    match self {
-      SpaceSize::Finite(size) => write!(f, "{}", size),
-      SpaceSize::Infinite => write!(f, "Infinite"),
-    }
-  }
-}
-
-fn space_size(egraph: &EGraph<kestrel::eggroll::ast::Eggroll, ()>,
-              class: Id,
-              seen: &mut HashSet<Id>) -> SpaceSize {
-  if seen.contains(&class) {
-    return SpaceSize::Infinite
-  }
-  seen.insert(class);
-  let mut total = 0;
-  for node in egraph[class].clone().nodes {
-    let mut node_total = 1;
-    for child in node.children() {
-      match space_size(egraph, *child, seen) {
-        SpaceSize::Infinite => return SpaceSize::Infinite,
-        SpaceSize::Finite(child_size) => node_total *= child_size,
-      }
-    }
-    total += node_total;
-  }
-  seen.remove(&class);
-  SpaceSize::Finite(total)
 }
 
 fn svcomp_yaml(filename: &String) -> String {

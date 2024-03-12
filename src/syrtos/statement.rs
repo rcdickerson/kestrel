@@ -16,6 +16,7 @@ pub enum Statement {
   Variable(Variable),
   While {
     condition: Box<Expression>,
+    invariants: Option<Vec<Expression>>,
     body: Option<Box<Statement>>,
   }
 }
@@ -67,10 +68,25 @@ impl Statement {
         var.emit(writer);
         writer.write(";").new_line();
       },
-      Statement::While{condition, body} => {
+      Statement::While{condition, invariants, body} => {
         writer.write("while (");
         condition.emit(writer, false);
-        writer.write(") {").new_line();
+        match invariants {
+          None => {
+            writer.write(") {").new_line();
+          },
+          Some(invars) => {
+            writer.write(")").new_line();
+            writer.indent();
+            for invar in invars {
+              writer.write("invar ");
+              invar.emit(writer, false);
+              writer.new_line();
+            }
+            writer.dedent();
+            writer.write("{");
+          },
+        }
         writer.indent();
         match body {
           None => (),

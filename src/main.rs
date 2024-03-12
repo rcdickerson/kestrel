@@ -244,10 +244,7 @@ fn main() {
     Result::Ok(map) => map,
     Result::Err(err) => panic!("Error parsing Daikon invariants: {}", err),
   };
-  println!("Daikon invariants: {:?}", invariants);
-
   aligned_crel.decorate_invariants(&invariants);
-  println!("Decorated crel: {:?}", aligned_crel);
 
   let filename = args.output.as_ref().map(|outpath| {
     let path = Path::new(outpath);

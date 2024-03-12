@@ -3,14 +3,14 @@ use std::borrow::BorrowMut;
 use crate::crel::ast::*;
 
 pub trait CRelVisitor {
-  fn visit_crel(&mut self, _: &mut CRel) { }
-  fn visit_declarator(&mut self, _: &mut Declarator) { }
-  fn visit_declaration(&mut self, _: &mut Declaration) { }
-  fn visit_parameter_declaration(&mut self, _: &mut ParameterDeclaration) { }
-  fn visit_declaration_specifier(&mut self, _: &mut DeclarationSpecifier) { }
-  fn visit_statement(&mut self, _: &mut Statement) { }
-  fn visit_expression(&mut self, _: &mut Expression) { }
-  fn visit_block_item(&mut self, _: &mut BlockItem) { }
+  fn visit_crel(&mut self, crel: &mut CRel) { crel.walk(self) }
+  fn visit_declarator(&mut self, decl: &mut Declarator) { decl.walk(self) }
+  fn visit_declaration(&mut self, decl: &mut Declaration) { decl.walk(self) }
+  fn visit_parameter_declaration(&mut self, pdecl: &mut ParameterDeclaration) { pdecl.walk(self) }
+  fn visit_declaration_specifier(&mut self, spec: &mut DeclarationSpecifier) { spec.walk(self) }
+  fn visit_statement(&mut self, stmt: &mut Statement) { stmt.walk(self) }
+  fn visit_expression(&mut self, expr: &mut Expression) { expr.walk(self) }
+  fn visit_block_item(&mut self, item: &mut BlockItem) { item.walk(self) }
   fn visit_name(&mut self, _: &mut String) { }
 }
 

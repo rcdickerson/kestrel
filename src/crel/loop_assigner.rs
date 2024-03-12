@@ -17,7 +17,6 @@ impl LoopIdAssigner {
 
 impl CRelVisitor for LoopIdAssigner {
   fn visit_statement(&mut self, statement: &mut Statement) {
-    println!("*** Visiting statement: {:?}", statement);
     match statement {
       Statement::While{loop_id, ..} => if loop_id.is_none() || self.overwrite {
         loop_id.replace(format!("_loop_head_{}", self.counter));

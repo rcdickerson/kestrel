@@ -79,12 +79,12 @@ impl Statement {
             writer.write(")").new_line();
             writer.indent();
             for invar in invars {
-              writer.write("invar ");
+              writer.write("invariant ");
               invar.emit(writer, false);
               writer.new_line();
             }
             writer.dedent();
-            writer.write("{");
+            writer.write("{").new_line();
           },
         }
         writer.indent();

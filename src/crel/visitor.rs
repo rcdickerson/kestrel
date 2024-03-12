@@ -3,28 +3,38 @@ use std::borrow::BorrowMut;
 use crate::crel::ast::*;
 
 pub trait CRelVisitor {
-  fn visit_crel(&mut self, crel: &mut CRel) { crel.walk(self) }
-  fn visit_declarator(&mut self, decl: &mut Declarator) { decl.walk(self) }
-  fn visit_declaration(&mut self, decl: &mut Declaration) { decl.walk(self) }
-  fn visit_parameter_declaration(&mut self, pdecl: &mut ParameterDeclaration) { pdecl.walk(self) }
-  fn visit_declaration_specifier(&mut self, spec: &mut DeclarationSpecifier) { spec.walk(self) }
-  fn visit_statement(&mut self, stmt: &mut Statement) { stmt.walk(self) }
-  fn visit_expression(&mut self, expr: &mut Expression) { expr.walk(self) }
-  fn visit_block_item(&mut self, item: &mut BlockItem) { item.walk(self) }
+  fn visit_crel(&mut self, _: &mut CRel) { }
+  fn visit_declarator(&mut self, _: &mut Declarator) { }
+  fn visit_declaration(&mut self, _: &mut Declaration) { }
+  fn visit_parameter_declaration(&mut self, _: &mut ParameterDeclaration) { }
+  fn visit_declaration_specifier(&mut self, _: &mut DeclarationSpecifier) { }
+  fn visit_statement(&mut self, _: &mut Statement) { }
+  fn visit_expression(&mut self, _: &mut Expression) { }
+  fn visit_block_item(&mut self, _: &mut BlockItem) { }
   fn visit_name(&mut self, _: &mut String) { }
 }
 
 impl CRel {
   pub fn walk(&mut self, visitor: &mut dyn CRelVisitor) {
     match self {
-      CRel::Declaration(decl) => visitor.visit_declaration(decl),
+      CRel::Declaration(decl) => {
+        visitor.visit_declaration(decl);
+        decl.walk(visitor);
+      },
       CRel::FunctionDefinition{specifiers, name, params, body, ..} => {
         for spec in specifiers { visitor.visit_declaration_specifier(spec) }
         visitor.visit_name(name);
-        for param in params { visitor.visit_parameter_declaration(param) }
+        for param in params {
+          visitor.visit_parameter_declaration(param);
+          param.walk(visitor);
+        }
         visitor.visit_statement(body);
+        body.walk(visitor);
       },
-      CRel::Seq(stmts) => for stmt in stmts { visitor.visit_crel(stmt) }
+      CRel::Seq(stmts) => for stmt in stmts {
+        visitor.visit_crel(stmt);
+        stmt.walk(visitor);
+      }
     }
   }
 }
@@ -35,13 +45,22 @@ impl Declarator {
       Declarator::Identifier{name} => visitor.visit_name(name),
       Declarator::Array{name, sizes} => {
         visitor.visit_name(name);
-        for expr in sizes { visitor.visit_expression(expr) }
+        for expr in sizes {
+          visitor.visit_expression(expr);
+          expr.walk(visitor);
+        }
       },
       Declarator::Function{name, params} => {
         visitor.visit_name(name);
-        for param in params { visitor.visit_parameter_declaration(param) }
+        for param in params {
+          visitor.visit_parameter_declaration(param);
+          param.walk(visitor);
+        }
       },
-      Declarator::Pointer(decl) => visitor.visit_declarator(decl),
+      Declarator::Pointer(decl) => {
+        visitor.visit_declarator(decl);
+        decl.walk(visitor);
+      },
     }
   }
 }
@@ -50,35 +69,65 @@ impl Declaration {
   pub fn walk(&mut self, visitor: &mut dyn CRelVisitor) {
     for spec in self.specifiers.iter_mut() { visitor.visit_declaration_specifier(spec) }
     visitor.visit_declarator(self.declarator.borrow_mut());
-    for init in self.initializer.iter_mut() { visitor.visit_expression(init) }
+    self.declarator.borrow_mut().walk(visitor);
+    for init in self.initializer.iter_mut() {
+      visitor.visit_expression(init);
+      init.walk(visitor);
+    }
   }
 }
 
 impl ParameterDeclaration {
   pub fn walk(&mut self, visitor: &mut dyn CRelVisitor) {
-    for spec in self.specifiers.iter_mut() { visitor.visit_declaration_specifier(spec) }
-    for decl in self.declarator.iter_mut() { visitor.visit_declarator(decl) }
+    for spec in self.specifiers.iter_mut() {
+      visitor.visit_declaration_specifier(spec);
+    }
+    for decl in self.declarator.iter_mut() {
+      visitor.visit_declarator(decl);
+      decl.walk(visitor);
+    }
   }
 }
 
 impl Statement {
   pub fn walk(&mut self, visitor: &mut dyn CRelVisitor) {
     match self {
-      Statement::BasicBlock(items) => for item in items { visitor.visit_block_item(item) },
+      Statement::BasicBlock(items) => for item in items {
+        visitor.visit_block_item(item);
+        item.walk(visitor);
+      },
       Statement::Break => (),
-      Statement::Compound(items) => for item in items { visitor.visit_block_item(item) },
-      Statement::Expression(expr) => visitor.visit_expression(expr),
+      Statement::Compound(items) => for item in items {
+        visitor.visit_block_item(item);
+        item.walk(visitor);
+      },
+      Statement::Expression(expr) => {
+        visitor.visit_expression(expr);
+        expr.walk(visitor);
+      },
       Statement::If{then, els, ..} => {
         visitor.visit_statement(then);
-        for e in els.iter_mut() { visitor.visit_statement(e) }
+        then.walk(visitor);
+        for e in els.iter_mut() {
+          visitor.visit_statement(e);
+          e.walk(visitor);
+        }
       },
       Statement::None => (),
       Statement::Relation{lhs, rhs} => {
         visitor.visit_statement(lhs);
+        lhs.walk(visitor);
         visitor.visit_statement(rhs);
+        rhs.walk(visitor);
       },
-      Statement::Return(expr) => for e in expr.iter_mut() { visitor.visit_expression(e) },
-      Statement::While{body, ..} => for b in body.iter_mut() { visitor.visit_statement(b) },
+      Statement::Return(expr) => for e in expr.iter_mut() {
+        visitor.visit_expression(e);
+        e.walk(visitor);
+      },
+      Statement::While{body, ..} => for b in body.iter_mut() {
+        visitor.visit_statement(b);
+        b.walk(visitor);
+      },
     }
   }
 }
@@ -92,18 +141,31 @@ impl Expression {
       Expression::StringLiteral(_) => (),
       Expression::Call{callee, args} => {
         visitor.visit_expression(callee);
-        for arg in args.iter_mut() { visitor.visit_expression(arg) }
+        callee.walk(visitor);
+        for arg in args.iter_mut() {
+          visitor.visit_expression(arg);
+          arg.walk(visitor);
+        }
       },
-      Expression::Unop{expr, ..} => visitor.visit_expression(expr),
+      Expression::Unop{expr, ..} => {
+        visitor.visit_expression(expr);
+        expr.walk(visitor);
+      },
       Expression::Binop{lhs, rhs, ..} => {
         visitor.visit_expression(lhs);
+        lhs.walk(visitor);
         visitor.visit_expression(rhs);
+        rhs.walk(visitor);
       },
       Expression::Forall{pred_var, condition, ..} => {
         visitor.visit_name(pred_var);
         visitor.visit_expression(condition);
+        condition.walk(visitor);
       },
-      Expression::Statement(stmt) => visitor.visit_statement(stmt),
+      Expression::Statement(stmt) => {
+        visitor.visit_statement(stmt);
+        stmt.walk(visitor);
+      },
     }
   }
 }
@@ -111,8 +173,14 @@ impl Expression {
 impl BlockItem {
   pub fn walk(&mut self, visitor: &mut dyn CRelVisitor) {
     match self {
-      BlockItem::Declaration(decl) => visitor.visit_declaration(decl),
-      BlockItem::Statement(stmt) => visitor.visit_statement(stmt),
+      BlockItem::Declaration(decl) => {
+        visitor.visit_declaration(decl);
+        decl.walk(visitor);
+      },
+      BlockItem::Statement(stmt) => {
+        visitor.visit_statement(stmt);
+        stmt.walk(visitor);
+      },
     }
   }
 }

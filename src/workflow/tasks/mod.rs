@@ -1,7 +1,23 @@
+pub mod align_count_loops;
+pub mod align_milp;
+pub mod align_none;
+pub mod align_sa;
+pub mod aligned_crel;
+pub mod aligned_output;
 pub mod compute_space;
+pub mod invars_daikon;
 pub mod print_info;
 pub mod write_dot;
+pub mod write_product;
 
+pub use align_count_loops::*;
+pub use align_milp::*;
+pub use align_none::*;
+pub use align_sa::*;
+pub use aligned_crel::*;
+pub use aligned_output::*;
 pub use compute_space::*;
+pub use invars_daikon::*;
 pub use print_info::*;
 pub use write_dot::*;
+pub use write_product::*;

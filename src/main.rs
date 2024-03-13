@@ -1,19 +1,8 @@
 use clap::{Parser, ValueEnum};
-use kestrel::annealer::*;
-use kestrel::crel::eval::*;
-use kestrel::daikon::invariant_parser::*;
-use kestrel::eggroll::cost_functions::{minloops::*, sa::*};
-use kestrel::eggroll::{milp_extractor::*, to_crel};
 use kestrel::output_mode::*;
 use kestrel::spec::parser::parse_spec;
 use kestrel::unaligned::*;
 use kestrel::workflow::*;
-use egg::*;
-use std::env;
-use std::fs::File;
-use std::io::prelude::*;
-use std::path::{Path, PathBuf};
-use std::process::Command;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -29,6 +18,10 @@ struct Args {
   /// Output format.
   #[arg(long, value_enum, default_value_t = OutputMode::Seahorn)]
   output_mode: OutputMode,
+
+  /// Verbose.
+  #[arg(short, long)]
+  verbose: bool,
 
   /// Output a dot file representation of the e-graph.
   #[arg(short, long)]
@@ -96,173 +89,31 @@ fn main() {
   context.spec = Some(&spec);
   context.unaligned_crel = Some(&unaligned_crel);
   context.unaligned_eggroll = Some(&unaligned_eggroll);
+  context.output_path = args.output.clone();
 
   let mut workflow = Workflow::new(context);
-  workflow.add_task(PrintInfo::with_header("Unaligned Product Program", &|ctx| {
-    ctx.unaligned_crel().main.to_c().to_string()
-  }));
+  if args.verbose {
+    workflow.add_task(PrintInfo::with_header("Unaligned Product Program", &|ctx| {
+      ctx.unaligned_crel().main.to_c().to_string()
+    }));
+  }
   if args.dot { workflow.add_task(WriteDot::new()) }
   if args.space_size { workflow.add_task(ComputeSpace::new()) }
+  match args.extractor {
+    ExtractorArg::Unaligned => workflow.add_task(AlignNone::new()),
+    ExtractorArg::CountLoops => workflow.add_task(AlignCountLoops::new()),
+    ExtractorArg::MILP => workflow.add_task(AlignMilp::new()),
+    ExtractorArg::SA => workflow.add_task(AlignSa::new(args.sa_start_random, args.sa_max_iterations)),
+  }
+  workflow.add_task(AlignedCRel::new());
+  workflow.add_task(InvarsDaikon::new());
+  workflow.add_task(AlignedOutput::new(args.output_mode));
+  match args.output {
+    Some(_) => workflow.add_task(WriteProduct::new(args.output_mode)),
+    None => workflow.add_task(PrintInfo::with_header("Aligned Product Program", &|ctx| {
+      ctx.aligned_output().clone()
+    })),
+  }
   workflow.execute();
-
-
-  let aligned_eggroll = match args.extractor {
-    ExtractorArg::Unaligned => {
-      println!("Treating naive product as final alignment.");
-      unaligned_eggroll.parse().unwrap()
-    },
-    ExtractorArg::CountLoops => {
-      let runner = Runner::default()
-        .with_expr(&unaligned_eggroll.parse().unwrap())
-        .run(&kestrel::eggroll::rewrite::rewrites(false));
-      let extractor = Extractor::new(&runner.egraph, MinLoops);
-      let (_, best) = extractor.find_best(runner.roots[0]);
-      println!("Computed alignment by local loop counting.");
-      best
-    },
-    ExtractorArg::MILP => {
-      let runner = Runner::default()
-        .with_expr(&unaligned_eggroll.parse().unwrap())
-        .run(&kestrel::eggroll::rewrite::rewrites(true));
-      let mut extractor = MilpExtractor::new(&runner.egraph);
-      extractor.solve(runner.roots[0])
-    },
-    ExtractorArg::SA => {
-      let num_trace_states = 10;
-      let trace_fuel = 10000;
-
-      let init_runner = Runner::default()
-        .with_expr(&unaligned_eggroll.parse().unwrap())
-        .run(&kestrel::eggroll::rewrite::rewrites(false));
-      let init = if args.sa_start_random { None } else {
-        let extractor = Extractor::new(&init_runner.egraph, MinLoops);
-        let (_, initial) = extractor.find_best(init_runner.roots[0]);
-        println!("\nPre-SA Initial Alignment");
-        println!("--------------------------");
-        println!("{}", initial.pretty(80));
-        println!("--------------------------");
-        Some(initial)
-      };
-
-      let runner = Runner::default()
-        .with_expr(&init.clone().unwrap_or(unaligned_eggroll.parse().unwrap()))
-        .run(&kestrel::eggroll::rewrite::rewrites(true));
-      let (_, fundefs) = kestrel::crel::fundef::extract_fundefs(&raw_crel);
-      let generator = fundefs.get(&"_generator".to_string());
-      let decls = unaligned_crel.global_decls_and_params();
-      let trace_states = rand_states_satisfying(
-        num_trace_states, &spec.pre, Some(&decls), generator, 1000);
-      let annealer = Annealer::new(&runner.egraph);
-      annealer.find_best(args.sa_max_iterations, runner.roots[0], init,
-                         |expr| { sa_score(&trace_states, trace_fuel, expr) })
-    },
-  };
-
-  println!("\nAligned Eggroll");
-  println!("--------------------------");
-  println!("{}", aligned_eggroll.pretty(80));
-  println!("--------------------------");
-
-  // Output alignment as Daikon C.
-  let mut aligned_crel = to_crel::eggroll_to_crel(&aligned_eggroll.to_string(), &to_crel::Config::default());
-  aligned_crel.assign_loop_ids();
-
-  let daikon_path = "daikon_output.c".to_string();
-  println!("Writing Daikon to {}...", daikon_path);
-  let daikon_output = OutputMode::Daikon.crel_to_daikon(&aligned_crel,
-      unaligned_crel.global_decls.clone(), unaligned_crel.fundefs.clone(),
-      &Some(daikon_path.clone()));
-  let mut file = File::create(&Path::new(daikon_path.clone().as_str()))
-    .unwrap_or_else(|_| panic!("Error creating file: {}", daikon_path));
-  match file.write_all(daikon_output.as_bytes()) {
-    Ok(_) => println!("Done"),
-    Err(err) => panic!("Error writing output file: {}", err),
-  }
-
-  // Compile and run Daikon.
-  println!("Compiling Daikon output...");
-  Command::new("gcc")
-    .args(["-gdwarf-2", "-O0", "-no-pie", "-o", "daikon_output", "daikon_output.c"])
-    .spawn()
-    .expect("failed to start gcc process")
-    .wait()
-    .expect("failed to compile daikon output");
-  println!("Running Kvasir...");
-  Command::new("kvasir-dtrace")
-    .args(["./daikon_output"])
-    .spawn()
-    .expect("failed to start kvasir")
-    .wait()
-    .expect("failed to run kvasir");
-  println!("Running Daikon...");
-  let daikon_result = Command::new("java")
-    .args(["-cp",
-           format!("{}/daikon.jar", env::var("DAIKONDIR").expect("$DAIKONDIR not set")).as_str(),
-           "daikon.Daikon",
-           "--config_option", "daikon.derive.Derivation.disable_derived_variables=true",
-           "daikon-output/daikon_output.decls",
-           "daikon-output/daikon_output.dtrace"])
-    .output()
-    .expect("failed to run daikon");
-  if !daikon_result.status.success() {
-    panic!("Daikon failure: {:?}", daikon_output);
-  }
-  let daikon_output = match std::str::from_utf8(&daikon_result.stdout) {
-    Ok(s) => s,
-    Err(e) => panic!("Error reading daikon output: {}", e),
-  };
-  let invariants = match parse_invariants(daikon_output) {
-    Result::Ok(map) => map,
-    Result::Err(err) => panic!("Error parsing Daikon invariants: {}", err),
-  };
-  aligned_crel.decorate_invariants(&invariants);
-
-  let filename = args.output.as_ref().map(|outpath| {
-    let path = Path::new(outpath);
-    path.file_name().unwrap().to_str().unwrap().to_string()
-  });
-  let aligned_c = args.output_mode.crel_to_output(&aligned_crel, &spec,
-      unaligned_crel.global_decls, unaligned_crel.fundefs, &filename);
-  println!("\nAligned Product Program");
-  println!("--------------------------");
-  println!("{}", aligned_c);
-  println!("--------------------------");
-
-  args.output.map(|path| {
-    println!("Writing output to {}...", path);
-    let mut file = File::create(&path)
-      .unwrap_or_else(|_| panic!("Error creating file: {}", path));
-    match file.write_all(aligned_c.as_bytes()) {
-      Ok(_) => println!("Done"),
-      Err(err) => panic!("Error writing output file: {}", err),
-    }
-    if args.output_mode == OutputMode::SvComp {
-      let mut yaml_pathbuf = PathBuf::from(path);
-      yaml_pathbuf.set_extension("yml");
-      let yaml_path = yaml_pathbuf.to_str().unwrap();
-      println!("Writing yaml to {}...", yaml_path);
-      let mut file = File::create(yaml_path)
-        .unwrap_or_else(|_| panic!("Error creating file: {}", yaml_path));
-      match file.write_all(svcomp_yaml(&filename.unwrap()).as_bytes()) {
-        Ok(_) => println!("Done"),
-        Err(err) => panic!("Error writing output file: {}", err),
-      }
-    }
-  });
-}
-
-fn svcomp_yaml(filename: &String) -> String {
-format!(
-"format_version: '2.0'
-
-input_files: '{}'
-
-properties:
-  - property_file: ../properties/unreach-call.prp
-    expected_verdict: true
-
-options:
-  language: C
-  data_model: ILP32
-", filename)
+  println!("Done!");
 }

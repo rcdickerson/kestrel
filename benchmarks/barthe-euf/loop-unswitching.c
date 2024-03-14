@@ -1,13 +1,19 @@
 /* @KESTREL
  * pre: left.k == right.k && left.x == right.x &&
-        forall i: int :: left.a[i] == right.a[i] && left.b[i] == right.b[i] && left.c[i] == right.c[i];
+        forall i: int :: read(left.a, i) == read(right.a, i) && read(left.b, i) == read(right.b, i) && read(left.c, i) == read(right.c, i);
  * left: left;
  * right: right;
- * post: forall j: int :: left.a[j] == right.a[j] && left.b[j] == right.b[j] && left.c[j] == right.c[j];
+ * post: forall j: int :: read(left.a, j) == read(right.a, j) && read(left.b, j) == read(right.b, j) && read(left.c, j) == read(right.c, j);
  */
 
 int read(int, int);
 int store(int, int, int);
+
+void _test_gen(int a, int b, int c, int k, int x, int size) {
+  if (size < 0) { size = size * -1; }
+  size = size % 100;
+  _main(a, b, c, k, x, size, a, b, c, k, x, size);
+}
 
 void left(int a_in, int b_in, int c, int k, int x, int size) {
   int i = 0;

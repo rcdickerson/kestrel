@@ -1,12 +1,12 @@
 /* @KESTREL
  * pre: forall i: int ::
-     (read(l_list_in, i) >= read(r_list_in, i) || read(r_list_in, i) - read(l_list_in, i) < epsilon) &&
-     (read(l_list_in, i) <  read(r_list_in, i) || read(l_list_in, i) - read(r_list_in, i) < epsilon);
+     (read(left.list_in, i) >= read(right.list_in, i) || read(right.list_in, i) - read(left.list_in, i) < epsilon) &&
+     (read(left.list_in, i) <  read(right.list_in, i) || read(left.list_in, i) - read(right.list_in, i) < epsilon);
  * left: sort;
  * right: sort;
  * post: forall j: int ::
-     (read(l_list_in, j) >= read(r_list_in, j) || read(r_list_in, j) - read(l_list_in, j) < epsilon) &&
-     (read(l_list_in, j) <  read(r_list_in, j) || read(l_list_in, j) - read(r_list_in, j) < epsilon);
+     (read(left.list_in, j) >= read(right.list_in, j) || read(right.list_in, j) - read(left.list_in, j) < epsilon) &&
+     (read(left.list_in, j) <  read(right.list_in, j) || read(left.list_in, j) - read(right.list_in, j) < epsilon);
  */
 
 const float epsilon = 0.01;
@@ -20,8 +20,9 @@ void _test_gen(int list_id, int size) {
   _main(list_id, size, list_id, size);
 }
 
-void sort(int list_in, int size) {
+void sort(int list_in, int size_in) {
   int list = list_in;
+  int size = size_in;
   int i = 0;
   while (i < size) {
     int j = size - 1;

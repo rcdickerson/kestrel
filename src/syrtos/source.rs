@@ -3,6 +3,7 @@ use crate::syrtos::Method;
 use crate::syrtos::Statement;
 use crate::syrtos::Variable;
 use crate::syrtos::Writer;
+use std::collections::HashMap;
 
 #[derive(Clone, Debug)]
 pub struct Source {
@@ -30,16 +31,18 @@ impl Source {
     self.items.push(Item::Method(method.clone()));
     self
   }
-}
 
-impl ToString for Source {
-  fn to_string(&self) -> String {
+  pub fn write(&self) -> (String, HashMap<String, (usize, usize)>) {
     let mut writer = Writer::new();
     for item in &self.items {
       item.emit(&mut writer);
     }
-    writer.to_string()
+    (writer.to_string(), writer.while_lines().clone())
   }
+}
+
+impl ToString for Source {
+  fn to_string(&self) -> String { self.write().0 }
 }
 
 #[derive(Clone, Debug)]

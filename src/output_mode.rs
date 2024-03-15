@@ -26,7 +26,7 @@ impl OutputMode {
                         filename: &Option<String>) -> String {
     match self {
       // TODO: Refactor these crel_to_* methods to exploit commonalities.
-      OutputMode::Dafny => self.crel_to_dafny(&crel, spec, filename),
+      OutputMode::Dafny => self.crel_to_dafny(&crel, spec, filename).0,
       OutputMode::Daikon => self.crel_to_daikon(&crel, global_decls, fundefs, filename),
       _ => self.crel_to_c(&crel, spec, global_decls, filename),
     }
@@ -35,7 +35,7 @@ impl OutputMode {
   pub fn crel_to_dafny(&self,
                        crel: &CRel,
                        spec: &KestrelSpec,
-                       filename: &Option<String>) -> String {
+                       filename: &Option<String>) -> (String, HashMap<String, (usize, usize)>) {
     let (_, fundefs) = crate::crel::fundef::extract_fundefs(crel);
     let main_fun = fundefs.get("main").expect("No main function found");
 
@@ -58,7 +58,13 @@ impl OutputMode {
       params: main_fun.params.clone(),
       body: Box::new(new_body),
     };
-    format!("{}\n{}", self.top(filename), new_main.to_dafny())
+    let (dafny_output, while_lines) = new_main.to_dafny();
+    let topmatter = self.top(filename);
+    let while_lines = while_lines.iter()
+      .map(|(id, (start, end))| (id.clone(), (start + topmatter.lines().count() + 1,
+                                              end   + topmatter.lines().count() + 1)))
+      .collect::<HashMap<_, _>>();
+    (format!("{}\n{}", topmatter, dafny_output), while_lines)
   }
 
   pub fn crel_to_daikon(&self,

@@ -1,12 +1,13 @@
 use crate::crel::ast::*;
 use crate::spec::condition::*;
 use crate::syrtos as Daf;
+use std::collections::HashMap;
 
 impl CRel {
-  pub fn to_dafny(&self) -> String {
+  pub fn to_dafny(&self) -> (String, HashMap<String, (usize, usize)>) {
     let mut source = Daf::Source::new();
     crel_to_daf(self, &mut source);
-    source.to_string()
+    source.write()
   }
 }
 
@@ -165,13 +166,13 @@ fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
       None => { Daf::Statement::Return(None) },
       Some(ret) => { Daf::Statement::Return(Some(Box::new(expression_to_daf(ret)))) },
     },
-    Statement::While{invariants, condition, body, ..} => {
+    Statement::While{loop_id, invariants, condition, body} => {
       let condition = Box::new(expression_to_daf(condition));
       let invariants = invariants.clone().map(|invars| {
         invars.iter().map(|invar| cond_bexpr_to_daf(invar)).collect()
       });
       let body = body.as_ref().map(|stmt| Box::new(statement_to_daf(stmt)));
-      Daf::Statement::While{invariants, condition, body}
+      Daf::Statement::While{loop_id: loop_id.clone(), invariants, condition, body}
     }
   }
 }

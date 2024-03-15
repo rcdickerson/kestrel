@@ -31,10 +31,10 @@ impl Task for AlignSa {
     let init = if self.start_random { None } else {
       let extractor = Extractor::new(&init_runner.egraph, MinLoops);
       let (_, initial) = extractor.find_best(init_runner.roots[0]);
-      println!("\nPre-SA Initial Alignment");
-      println!("--------------------------");
-      println!("{}", initial.pretty(80));
-      println!("--------------------------");
+      // println!("\nPre-SA Initial Alignment");
+      // println!("--------------------------");
+      // println!("{}", initial.pretty(80));
+      // println!("--------------------------");
       Some(initial)
     };
 

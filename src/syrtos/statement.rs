@@ -15,6 +15,7 @@ pub enum Statement {
   Seq(Vec<Statement>),
   Variable(Variable),
   While {
+    loop_id: Option<String>,
     condition: Box<Expression>,
     invariants: Option<Vec<Expression>>,
     body: Option<Box<Statement>>,
@@ -68,8 +69,9 @@ impl Statement {
         var.emit(writer);
         writer.write(";").new_line();
       },
-      Statement::While{condition, invariants, body} => {
+      Statement::While{loop_id, condition, invariants, body} => {
         writer.write("while (");
+        let start_line = writer.cur_line();
         condition.emit(writer, false);
         match invariants {
           None => {
@@ -93,6 +95,9 @@ impl Statement {
           Some(stmt) => { stmt.emit(writer); }
         }
         writer.dedent();
+        loop_id.as_ref().map(|id| {
+          writer.tag_while(id.clone(), start_line, writer.cur_line())
+        });
         writer.write("}").new_line();
       }
     }

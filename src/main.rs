@@ -107,6 +107,7 @@ fn main() {
   }
   workflow.add_task(AlignedCRel::new());
   workflow.add_task(InvarsDaikon::new());
+  workflow.add_task(Houdafny::new());
   workflow.add_task(AlignedOutput::new(args.output_mode));
   match args.output {
     Some(_) => workflow.add_task(WriteProduct::new(args.output_mode)),

@@ -18,6 +18,8 @@ impl InvarsDaikon {
 
 impl Task for InvarsDaikon {
   fn run(&self, context: &mut Context) {
+
+    // Write Daikon output to file.
     let daikon_path = "daikon_output.c".to_string();
     println!("Writing Daikon to {}...", daikon_path);
     let daikon_output = OutputMode::Daikon.crel_to_daikon(

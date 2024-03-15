@@ -1,16 +1,19 @@
+use std::collections::HashMap;
+
 pub struct Writer {
   lines: Vec<String>,
   cur_line: Vec<String>,
   indent_level: usize,
+  while_lines: HashMap<String, (usize, usize)>,
 }
 
 impl Writer {
-
   pub fn new() -> Self {
     Writer{
       lines: Vec::new(),
       cur_line: Vec::new(),
       indent_level: 0,
+      while_lines: HashMap::new(),
     }
   }
 
@@ -32,6 +35,18 @@ impl Writer {
     self.lines.push(self.cur_line.concat());
     self.cur_line = Vec::new();
     self
+  }
+
+  pub fn cur_line(&self) -> usize {
+    self.lines.len()
+  }
+
+  pub fn tag_while(&mut self, id: String, start: usize, end: usize) {
+    self.while_lines.insert(id, (start, end));
+  }
+
+  pub fn while_lines(&self) -> &HashMap<String, (usize, usize)> {
+    &self.while_lines
   }
 
   pub fn indent(&mut self) -> &mut Self {

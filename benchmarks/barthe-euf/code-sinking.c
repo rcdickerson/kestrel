@@ -1,8 +1,8 @@
 /* @KESTREL
- * pre: forall i: int :: read(left.a, i) == read(right.a, i);
+ * pre: forall i: int :: read(left.a_in, i) == read(right.a_in, i);
  * left: left;
  * right: right;
- * post: forall j: int :: read(left.a, j) == read(right.a, j);
+ * post: forall j: int :: read(left.a_in, j) == read(right.a_in, j);
  */
 
 int read(int, int);

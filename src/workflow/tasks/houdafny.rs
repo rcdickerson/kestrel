@@ -29,11 +29,6 @@ impl Task for Houdafny {
         context.spec(),
         &Some(dafny_path.clone()));
 
-
-      println!("Old dafny: {}", dafny_prog);
-
-
-
       println!("Writing Dafny to {}...", dafny_path);
       let mut file = File::create(&Path::new(dafny_path.clone().as_str()))
         .unwrap_or_else(|_| panic!("Error creating file: {}", dafny_path));
@@ -61,6 +56,7 @@ impl Task for Houdafny {
         println!("Dafny failure: {}", dafny_output) ;
         break;
       };
+      println!("{}", dafny_output);
 
       // We have bad invariants; remove them.
       let mut by_loop_id = HashMap::new();
@@ -74,13 +70,6 @@ impl Task for Houdafny {
       }
       context.aligned_crel.as_mut().expect("missing aligned CRel")
         .walk(&mut InvarRemover::new(&by_loop_id));
-
-
-      println!("Dafny output: {}", dafny_output);
-      println!("New dafny: {}", OutputMode::Dafny.crel_to_dafny(
-        &context.aligned_crel(),
-        context.spec(),
-        &Some(dafny_path.clone())).0);
     }
   }
 }

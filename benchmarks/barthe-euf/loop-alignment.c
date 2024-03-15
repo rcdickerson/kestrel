@@ -1,5 +1,5 @@
 /* @KESTREL
- * pre: forall i: int :: read(left.a, i) == read(right.a, i) && read(left.b, 0) == read(right.b, 0);
+ * pre: forall i: int :: read(left.a_in, i) == read(right.a_in, i) && read(left.b_in, 0) == read(right.b_in, 0);
  * left: left;
  * right: right;
  * post: forall j: int :: read(left.d, j) == read(right.d, j);
@@ -31,7 +31,7 @@ void right(int a_in, int b_in, int size) {
   int b = b_in;
   int j = 1;
   int d = a + b + 1; // "New list"
-  store(d, 1, read(b, 0));
+  d = store(d, 1, read(b, 0));
   while (j <= size - 1) {
     b = store(b, j, read(a, j));
     d = store(d, j+1, read(b, j));

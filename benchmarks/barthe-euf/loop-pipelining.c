@@ -1,5 +1,5 @@
 /* @KESTREL
- * pre: forall i: int :: read(left.a, i) == read(right.a, i) && read(left.b, i) == read(right.b, i) && read(left.c, i) == read(right.c, i);
+ * pre: forall i: int :: read(left.a_in, i) == read(right.a_in, i) && read(left.b_in, i) == read(right.b_in, i) && read(left.c_in, i) == read(right.c_in, i);
  * left: left;
  * right: right;
  * post: forall j: int :: read(left.a, j) == read(right.a, j) && read(left.b, j) == read(right.b, j) && read(left.c, j) == read(right.c, j);

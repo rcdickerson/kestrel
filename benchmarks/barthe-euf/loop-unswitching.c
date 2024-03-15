@@ -1,6 +1,6 @@
 /* @KESTREL
  * pre: left.k == right.k && left.x == right.x &&
-        forall i: int :: read(left.a, i) == read(right.a, i) && read(left.b, i) == read(right.b, i) && read(left.c, i) == read(right.c, i);
+        forall i: int :: read(left.a_in, i) == read(right.a_in, i) && read(left.b_in, i) == read(right.b_in, i) && read(left.c_in, i) == read(right.c_in, i);
  * left: left;
  * right: right;
  * post: forall j: int :: read(left.a, j) == read(right.a, j) && read(left.b, j) == read(right.b, j) && read(left.c, j) == read(right.c, j);
@@ -15,10 +15,11 @@ void _test_gen(int a, int b, int c, int k, int x, int size) {
   _main(a, b, c, k, x, size, a, b, c, k, x, size);
 }
 
-void left(int a_in, int b_in, int c, int k, int x, int size) {
+void left(int a_in, int b_in, int c_in, int k, int x, int size) {
   int i = 0;
   int a = a_in;
   int b = b_in;
+  int c = c_in;
   while (i < size) {
     int read_ai = read(a, i);
     a = store(a, i, read_ai + k);
@@ -35,9 +36,10 @@ void left(int a_in, int b_in, int c, int k, int x, int size) {
   }
 }
 
-void right(int a_in, int b_in, int c, int k, int x, int size) {
+void right(int a_in, int b_in, int c_in, int k, int x, int size) {
   int a = a_in;
   int b = b_in;
+  int c = c_in;
   if (x < 7) {
     int j = 0;
     while (j < size) {

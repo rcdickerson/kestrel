@@ -50,13 +50,10 @@ impl Task for Houdafny {
 
       // Check to see if we're done, either successfull verification or
       // some failure without bad invariants.
+      println!("{}", dafny_output);
       if dafny_result.status.success() { break; }
       let bad_invar_lines = parse_bad_invariants(dafny_output.to_string());
-      if bad_invar_lines.is_empty() {
-        println!("Dafny failure: {}", dafny_output) ;
-        break;
-      };
-      println!("{}", dafny_output);
+      if bad_invar_lines.is_empty() { break; }
 
       // We have bad invariants; remove them.
       let mut by_loop_id = HashMap::new();

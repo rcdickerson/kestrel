@@ -5,6 +5,7 @@ use crate::workflow::context::*;
 use crate::workflow::task::*;
 use regex::Regex;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
@@ -27,6 +28,11 @@ impl Task for Houdafny {
         &context.aligned_crel(),
         context.spec(),
         &Some(dafny_path.clone()));
+
+
+      println!("Old dafny: {}", dafny_prog);
+
+
 
       println!("Writing Dafny to {}...", dafny_path);
       let mut file = File::create(&Path::new(dafny_path.clone().as_str()))
@@ -52,7 +58,7 @@ impl Task for Houdafny {
       if dafny_result.status.success() { break; }
       let bad_invar_lines = parse_bad_invariants(dafny_output.to_string());
       if bad_invar_lines.is_empty() {
-        println!("Dafny failure: {:?}", dafny_result) ;
+        println!("Dafny failure: {}", dafny_output) ;
         break;
       };
 
@@ -68,6 +74,13 @@ impl Task for Houdafny {
       }
       context.aligned_crel.as_mut().expect("missing aligned CRel")
         .walk(&mut InvarRemover::new(&by_loop_id));
+
+
+      println!("Dafny output: {}", dafny_output);
+      println!("New dafny: {}", OutputMode::Dafny.crel_to_dafny(
+        &context.aligned_crel(),
+        context.spec(),
+        &Some(dafny_path.clone())).0);
     }
   }
 }
@@ -102,10 +115,16 @@ impl CRelVisitor for InvarRemover<'_> {
   }
 }
 
-fn parse_bad_invariants(output: String) -> Vec<usize> {
-  let re = Regex::new("").unwrap();
-  let bad_invars = Vec::new();
-
+fn parse_bad_invariants(output: String) -> HashSet<usize> {
+  let mut bad_invars = HashSet::new();
+  let entry_re = Regex::new(r"loop invariant could not be proved on entry\s*\|\s*(\d+)").unwrap();
+  for (_, [line_num]) in entry_re.captures_iter(output.as_str()).map(|c| c.extract()) {
+    bad_invars.insert(line_num.parse::<usize>().unwrap());
+  }
+  let violation_re = Regex::new(r"loop invariant violation\s*\|\s*(\d+)").unwrap();
+  for (_, [line_num]) in violation_re.captures_iter(output.as_str()).map(|c| c.extract()) {
+    bad_invars.insert(line_num.parse::<usize>().unwrap());
+  }
   bad_invars
 }
 
@@ -121,5 +140,5 @@ fn loop_id_for_line(while_lines: &HashMap<String, (usize, usize)>, line: usize)
       None => Some((id, offset)),
       Some((_, closest)) => if offset < closest { Some((id, offset)) } else { cur }
     })
-    .map(|(id, offset)| (id.clone(), offset))
+    .map(|(id, offset)| (id.clone(), offset - 1))
 }

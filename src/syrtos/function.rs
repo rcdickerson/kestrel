@@ -44,7 +44,7 @@ impl Function {
     self.ty.emit(writer);
 
     match &self.body {
-      None => { writer.write(";").new_line(); },
+      None => { writer.new_line(); },
       Some(stmt) => {
         writer.write(" {").new_line();
         writer.indent();

@@ -21,6 +21,7 @@ pub enum Declarator {
   Function{name: String, params: Vec<ParameterDeclaration>},
   Pointer(Box<Declarator>),
 }
+
 impl Declarator {
   pub fn expect_function(&self) -> (&String, &Vec<ParameterDeclaration>) {
     match self {

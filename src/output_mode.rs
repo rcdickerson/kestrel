@@ -26,7 +26,7 @@ impl OutputMode {
                         filename: &Option<String>) -> String {
     match self {
       // TODO: Refactor these crel_to_* methods to exploit commonalities.
-      OutputMode::Dafny => self.crel_to_dafny(&crel, spec, filename).0,
+      OutputMode::Dafny => self.crel_to_dafny(&crel, spec, global_decls, filename).0,
       OutputMode::Daikon => self.crel_to_daikon(&crel, global_decls, fundefs, filename),
       _ => self.crel_to_c(&crel, spec, global_decls, filename),
     }
@@ -35,6 +35,7 @@ impl OutputMode {
   pub fn crel_to_dafny(&self,
                        crel: &CRel,
                        spec: &KestrelSpec,
+                       global_decls: Vec<Declaration>,
                        filename: &Option<String>) -> (String, HashMap<String, (usize, usize)>) {
     let (_, fundefs) = crate::crel::fundef::extract_fundefs(crel);
     let main_fun = fundefs.get("main").expect("No main function found");
@@ -45,6 +46,11 @@ impl OutputMode {
     let postconds = self.assert_name().map(|name| {
       BlockItem::Statement(spec.post.to_crel(StatementKind{crel_name: name}))
     });
+
+    let globals = global_decls.iter()
+      .map(|decl| CRel::Declaration(decl.clone()).to_dafny().0)
+      .collect::<Vec<String>>()
+      .join("");
 
     let mut body_items: Vec<BlockItem> = Vec::new();
     if let Some(preconds) = preconds { body_items.push(preconds) }
@@ -59,12 +65,12 @@ impl OutputMode {
       body: Box::new(new_body),
     };
     let (dafny_output, while_lines) = new_main.to_dafny();
-    let topmatter = self.top(filename);
+    let topmatter = format!("{}{}", globals, self.top(filename));
     let while_lines = while_lines.iter()
       .map(|(id, (start, end))| (id.clone(), (start + topmatter.lines().count() + 1,
                                               end   + topmatter.lines().count() + 1)))
       .collect::<HashMap<_, _>>();
-    (format!("{}\n{}", topmatter, dafny_output), while_lines)
+    (format!("{}{}", topmatter, dafny_output), while_lines)
   }
 
   pub fn crel_to_daikon(&self,
@@ -251,9 +257,7 @@ impl OutputMode {
         "#include \"assert.h\"".to_string()
       }
       OutputMode::Dafny => {
-        ["function store(list: int, index: int, value: int): int",
-         "function read(list: int, index: int): int",
-        ].join("\n")
+        "".to_string()
       }
       OutputMode::Icra => {
         "#include \"assert.h\"".to_string()

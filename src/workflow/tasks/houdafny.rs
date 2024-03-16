@@ -27,6 +27,7 @@ impl Task for Houdafny {
       let (dafny_prog, while_lines) = OutputMode::Dafny.crel_to_dafny(
         &context.aligned_crel(),
         context.spec(),
+        context.unaligned_crel().global_decls.clone(),
         &Some(dafny_path.clone()));
 
       println!("Writing Dafny to {}...", dafny_path);

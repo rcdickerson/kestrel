@@ -20,7 +20,9 @@ impl ParameterDeclaration {
 fn crel_to_daf(crel: &CRel, source: &mut Daf::Source) {
   match crel {
     CRel::Declaration(decl) => {
-      source.declare_variable(&declaration_to_daf(decl));
+      let mut builder = DeclarationBuilder::new();
+      builder.visit_init_declarator(decl);
+      builder.build(source);
     },
     CRel::FunctionDefinition{specifiers, name, params, body} => {
       source.push_method(&fun_to_daf(specifiers, name, params, body));
@@ -29,12 +31,6 @@ fn crel_to_daf(crel: &CRel, source: &mut Daf::Source) {
       for crel in seq { crel_to_daf(crel, source) }
     }
   }
-}
-
-fn declaration_to_daf(decl: &Declaration) -> Daf::Variable {
-  let mut builder = DeclarationBuilder::new();
-  builder.visit_init_declarator(decl);
-  builder.build_variable()
 }
 
 fn fun_to_daf(specifiers: &Vec<DeclarationSpecifier>,
@@ -180,7 +176,9 @@ fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
 fn block_item_to_daf(item: &BlockItem) -> Daf::Statement {
   match item {
     BlockItem::Declaration(decl) => {
-      Daf::Statement::Variable(declaration_to_daf(decl))
+      let mut builder = DeclarationBuilder::new();
+      builder.visit_init_declarator(decl);
+      Daf::Statement::Variable(builder.build_variable())
     },
     BlockItem::Statement(stmt) => statement_to_daf(stmt),
   }
@@ -358,6 +356,24 @@ impl DeclarationBuilder {
         self.visit_declarator(decl);
       }
     }
+  }
+
+  fn build(&self, source: &mut Daf::Source) {
+    if self.is_function {
+      source.push_function(&self.build_function());
+    } else {
+      source.declare_variable(&self.build_variable());
+    }
+  }
+
+  fn build_function(&self) -> Daf::Function {
+    let mut fun = Daf::Function::new(
+      self.name.clone().expect("Variable declaration has no name").as_str(),
+      self.ty.clone().expect("Variable declaration has no type"));
+    if let Some(params) = &self.function_params {
+      for param in params { fun.push_param(&param); }
+    }
+    fun
   }
 
   fn build_variable(&self) -> Daf::Variable {

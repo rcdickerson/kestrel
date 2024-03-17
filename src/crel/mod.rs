@@ -8,6 +8,7 @@ pub mod fundef;
 pub mod invariant_decorator;
 pub mod loop_assigner;
 pub mod map_vars;
+pub mod mapper;
 pub mod parser;
 pub mod to_c;
 pub mod to_dafny;

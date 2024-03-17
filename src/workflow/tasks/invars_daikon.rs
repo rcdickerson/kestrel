@@ -1,7 +1,10 @@
+use crate::crel::ast::*;
+use crate::crel::mapper::*;
 use crate::daikon::invariant_parser::*;
 use crate::output_mode::*;
 use crate::workflow::context::*;
 use crate::workflow::task::*;
+use std::collections::HashSet;
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
@@ -70,8 +73,29 @@ impl Task for InvarsDaikon {
       Result::Ok(map) => map,
       Result::Err(err) => panic!("Error parsing Daikon invariants: {}", err),
     };
-    if let Some(crel) = context.aligned_crel.as_mut() {
-      crel.decorate_invariants(&invariants)
-    };
+    let mut remover = LoopRemover{keep_ids: invariants.keys().collect()};
+    let mut crel = context.aligned_crel().map(&mut remover);
+    crel.decorate_invariants(&invariants);
+    context.aligned_crel.replace(crel);
+  }
+}
+
+struct LoopRemover<'a> {
+  keep_ids: HashSet<&'a String>,
+}
+
+impl CRelMapper for LoopRemover<'_> {
+  fn map_statement(&mut self, stmt: &Statement) -> Statement {
+    match stmt {
+      Statement::While{loop_id, ..} => match loop_id {
+        None => stmt.clone(),
+        Some(id) => if self.keep_ids.contains(id) {
+          stmt.clone()
+        } else {
+          Statement::None
+        }
+      },
+      _ => stmt.clone(),
+    }
   }
 }

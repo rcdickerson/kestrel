@@ -85,7 +85,7 @@ impl <'a> InvarRemover<'a> {
 impl CRelVisitor for InvarRemover<'_> {
   fn visit_statement(&mut self, stmt: &mut Statement) {
     match stmt {
-      Statement::While { loop_id, invariants, .. } => {
+      Statement::While{loop_id, invariants, ..} => {
         if loop_id.is_some() && invariants.is_some() {
           self.bad_invars.get(loop_id.as_ref().unwrap()).map(|to_remove| {
             let mut to_remove = to_remove.clone();

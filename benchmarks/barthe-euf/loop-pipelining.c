@@ -1,8 +1,12 @@
 /* @KESTREL
- * pre: forall i: int :: read(left.a_in, i) == read(right.a_in, i) && read(left.b_in, i) == read(right.b_in, i) && read(left.c_in, i) == read(right.c_in, i);
+ * pre: left.a_in == right.a_in
+     && left.b_in == right.b_in
+     && left.c_in == right.c_in;
  * left: left;
  * right: right;
- * post: forall j: int :: read(left.a, j) == read(right.a, j) && read(left.b, j) == read(right.b, j) && read(left.c, j) == read(right.c, j);
+ * post: left.a == right.a
+      && left.b == right.b
+      && left.c == right.c;
  */
 
 void _test_gen(int a, int b, int c, int size) {
@@ -11,8 +15,8 @@ void _test_gen(int a, int b, int c, int size) {
   _main(a, b, c, size, a, b, c, size);
 }
 
-int read(int, int);
-int store(int, int, int);
+int read(int list_id, int index);
+int store(int list_id, int index, int value);
 
 void left(int a_in, int b_in, int c_in, int size) {
   int a = a_in;

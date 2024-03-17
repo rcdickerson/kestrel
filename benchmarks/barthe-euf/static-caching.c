@@ -1,13 +1,13 @@
 /* @KESTREL
- * pre: (forall i: int :: read(left.a, i) == read(right.a, i))
-     && (forall i2: int :: read(left.s, i2) == read(right.s, i2));
+ * pre: left.a_in == right.a_in
+     && left.s_in == right.s_in;
  * left: left;
  * right: right;
- * post: forall j: int :: read(left.s, j) == read(right.s, j);
+ * post: left.s == right.s;
  */
 
-int read(int, int);
-int store(int, int, int);
+int read(int list_id, int index);
+int store(int list_id, int index, int value);
 
 void _test_gen(int a, int s, int lM, int lN, int lL, int rM, int rN, int rL) {
   if (lM < 0) { lM = lM * -1; } lM = lM % 10;
@@ -18,12 +18,17 @@ void _test_gen(int a, int s, int lM, int lN, int lL, int rM, int rN, int rL) {
   if (rL < 0) { rL = rL * -1; } rL = rL % 10;
   if (lM < 2) { lM = lM + 5; }
   if (rM < 2) { rM = rM + 5; }
-  if (lM > lN) { int tmp = lM;  lM = lN; lN = tmp; }
-  if (rM > rN) { int tmp = rM;  rM = rN; rN = tmp; }
+//  if (lM > lN) { int tmp = lM;  lM = lN; lN = tmp; }
+//  if (rM > rN) { int tmp = rM;  rM = rN; rN = tmp; }
   _main(a, s, lM, lN, lL, a, s, rM, rN, rL);
 }
 
-void left(int a, int s, int M, int N, int L) {
+void left(int a_in, int s_in, int M_in, int N_in, int L_in) {
+  int a = a_in;
+  int s = s_in;
+  int M = M_in;
+  int N = N_in;
+  int L = L_in;
   int i = 0;
   while (i < N - M) {
     s = store(s, i, 0);
@@ -34,12 +39,19 @@ void left(int a, int s, int M, int N, int L) {
         s = store(s, i, read(s, i) + read(read(a, i + k), l));
         l = l + 1;
       }
+      k = k + 1;
     }
+    i = i + 1;
   }
 }
 
-void right(int a, int s, int M, int N, int L) {
-  store(s, 0, 0);
+void right(int a_in, int s_in, int M_in, int N_in, int L_in) {
+  int a = a_in;
+  int s = s_in;
+  int M = M_in;
+  int N = N_in;
+  int L = L_in;
+  s = store(s, 0, 0);
   int b = a + 1; // "new list"
   int k = 0;
   while (k <= M - 1) {

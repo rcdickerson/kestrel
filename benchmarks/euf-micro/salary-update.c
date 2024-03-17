@@ -1,12 +1,15 @@
 /* @KESTREL
- * pre: left.payments_in == right.payments_in
-     && left.ids_in == right.ids_in
+ * pre: left.ids_in == right.ids_in
      && left.salaries_in == right.salaries_in
-     && left.num_updates_in == right.num_updates_in;
+     && left.num_updates_in == right.num_updates_in
+     && left.payments_in == right.payments_in;
  * left: left;
  * right: right;
  * post: left.payments == right.payments;
  */
+
+// forall i: int :: (read(left.payments_in, i) == read(right.payments_in, i));
+
 
 // A mutating method payments.method(args) modeled as
 // payments = method(payments, args),

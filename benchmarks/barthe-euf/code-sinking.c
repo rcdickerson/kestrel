@@ -1,12 +1,12 @@
 /* @KESTREL
- * pre: forall i: int :: read(left.a_in, i) == read(right.a_in, i);
+ * pre: left.a_in == right.a_in;
  * left: left;
  * right: right;
- * post: forall j: int :: read(left.a_in, j) == read(right.a_in, j);
+ * post: left.a == right.a;
  */
 
-int read(int, int);
-int store(int, int, int);
+int read(int list_id, int index);
+int store(int list_id, int index, int value);
 
 void _test_gen(int list_id, int size) {
   if (size < 0) { size = size * -1; }

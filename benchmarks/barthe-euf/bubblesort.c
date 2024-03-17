@@ -5,14 +5,14 @@
  * left: sort;
  * right: sort;
  * post: forall j: int ::
-     (read(left.list_in, j) >= read(right.list_in, j) || read(right.list_in, j) - read(left.list_in, j) < epsilon) &&
-     (read(left.list_in, j) <  read(right.list_in, j) || read(left.list_in, j) - read(right.list_in, j) < epsilon);
+     (read(left.list, j) >= read(right.list, j) || read(right.list, j) - read(left.list, j) < epsilon) &&
+     (read(left.list, j) <  read(right.list, j) || read(left.list, j) - read(right.list, j) < epsilon);
  */
 
 const float epsilon = 0.01;
 
-float read(int, int);
-int store(int, int, float);
+float read(int list_id, int index);
+int store(int list_id, int index, float value);
 
 void _test_gen(int list_id, int size) {
   if (size < 0) { size = size * -1; }

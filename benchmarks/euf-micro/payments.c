@@ -5,13 +5,10 @@
      && left.payments_in == right.payments_in;
  * left: left;
  * right: right;
- * post: left.payments == right.payments;
+ * post: forall i: int :: (read(left.payments, i) == read(right.payments, i));
  */
 
-// forall i: int :: (read(left.payments_in, i) == read(right.payments_in, i));
-
-
-// A mutating method payments.method(args) modeled as
+// A mutating method payments.method(args) modeled as:
 // payments = method(payments, args),
 
 int send_paycheck(int payments, int id, int amount);

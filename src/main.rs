@@ -33,7 +33,7 @@ struct Args {
   extractor: ExtractorArg,
 
   /// How many iterations to use when running simulated annealing.
-  #[arg(long, default_value_t=1000)]
+  #[arg(long, default_value_t=3000)]
   sa_max_iterations: usize,
 
   /// Start simulated annealing from a random element instead of

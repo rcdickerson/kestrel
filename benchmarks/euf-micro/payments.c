@@ -8,8 +8,8 @@
  * post: forall i: int :: (read(left.payments, i) == read(right.payments, i));
  */
 
-// A mutating method payments.method(args) modeled as:
-// payments = method(payments, args),
+// A mutating method payments.method(args) is modeled as:
+// payments = method(payments, args)
 
 int send_paycheck(int payments, int id, int amount);
 int yearly_bonus(int year);

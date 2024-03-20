@@ -1,5 +1,4 @@
 use crate::crel::ast::*;
-use crate::spec::condition::*;
 use crate::syrtos as Daf;
 use std::collections::HashMap;
 
@@ -165,7 +164,7 @@ fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
     Statement::While{loop_id, invariants, condition, body} => {
       let condition = Box::new(expression_to_daf(condition));
       let invariants = invariants.clone().map(|invars| {
-        invars.iter().map(|invar| cond_bexpr_to_daf(invar)).collect()
+        invars.iter().map(|invar| expression_to_daf(invar)).collect()
       });
       let body = body.as_ref().map(|stmt| Box::new(statement_to_daf(stmt)));
       Daf::Statement::While{loop_id: loop_id.clone(), invariants, condition, body}
@@ -191,92 +190,6 @@ fn type_to_daf(ty: &Type) -> Option<Daf::Type> {
     Type::Float  => Some(Daf::Type::Real),
     Type::Int    => Some(Daf::Type::Int),
     Type::Void   => None,
-  }
-}
-
-fn cond_bexpr_to_daf(expr: &CondBExpr) -> Daf::Expression {
-  match expr {
-    CondBExpr::True => Daf::Expression::ConstTrue,
-    CondBExpr::False => Daf::Expression::ConstFalse,
-    CondBExpr::Unop{bexp, op} => Daf::Expression::UnOp {
-      expr: Box::new(cond_bexpr_to_daf(bexp)),
-      op: cond_unopb_to_daf(op),
-    },
-    CondBExpr::BinopA{lhs, rhs, op} => Daf::Expression::BinOp {
-      lhs: Box::new(cond_aexpr_to_daf(lhs)),
-      rhs: Box::new(cond_aexpr_to_daf(rhs)),
-      op: cond_binopa_to_daf(op),
-    },
-    CondBExpr::BinopB{lhs, rhs, op} => Daf::Expression::BinOp {
-      lhs: Box::new(cond_bexpr_to_daf(lhs)),
-      rhs: Box::new(cond_bexpr_to_daf(rhs)),
-      op: cond_binopb_to_daf(op),
-    },
-    _ => panic!("Unsupported BExpr: {:?}", expr),
-  }
-}
-
-fn cond_aexpr_to_daf(expr: &CondAExpr) -> Daf::Expression {
-  match expr {
-    CondAExpr::Var(name) => Daf::Expression::Identifier {
-      name: name.to_string()
-    },
-    CondAExpr::QualifiedVar{exec, name} => Daf::Expression::Identifier {
-      name: qualified_state_var(exec, name)
-    },
-    CondAExpr::Int(i) => Daf::Expression::ConstInt(*i),
-    CondAExpr::Float(f) => Daf::Expression::ConstFloat(*f),
-    CondAExpr::Unop{aexp, op} => Daf::Expression::UnOp {
-      expr: Box::new(cond_aexpr_to_daf(aexp)),
-      op: cond_unopa_to_daf(op),
-    },
-    CondAExpr::Binop{lhs, rhs, op} => Daf::Expression::BinOp {
-      lhs: Box::new(cond_aexpr_to_daf(lhs)),
-      rhs: Box::new(cond_aexpr_to_daf(rhs)),
-      op: cond_abinop_to_daf(op),
-    },
-    CondAExpr::FunCall{..} => panic!("Unsupported: function calls in CondAExpr when converting to Dafny."),
-  }
-}
-
-fn cond_unopa_to_daf(op: &CondAUnop) -> String {
-  match op {
-    CondAUnop::Neg => "-".to_string(),
-  }
-}
-
-fn cond_unopb_to_daf(op: &CondBUnop) -> String {
-  match op {
-    CondBUnop::Not => "!".to_string(),
-  }
-}
-
-fn cond_abinop_to_daf(op: &CondABinop) -> String {
-  match op {
-    CondABinop::Add   => "+".to_string(),
-    CondABinop::Sub   => "-".to_string(),
-    CondABinop::Mul   => "*".to_string(),
-    CondABinop::Div   => "/".to_string(),
-    CondABinop::Mod   => "%".to_string(),
-    CondABinop::Index => panic!("Unsupported: indexing in CondAExpr when converting to Dafny."),
-  }
-}
-
-fn cond_binopa_to_daf(op: &CondBBinopA) -> String {
-  match op {
-    CondBBinopA::Eq  => "==".to_string(),
-    CondBBinopA::Neq => "!=".to_string(),
-    CondBBinopA::Lt  => "<".to_string(),
-    CondBBinopA::Lte => "<=".to_string(),
-    CondBBinopA::Gt  => ">".to_string(),
-    CondBBinopA::Gte => ">=".to_string(),
-  }
-}
-
-fn cond_binopb_to_daf(op: &CondBBinopB) -> String {
-  match op {
-    CondBBinopB::And => "&&".to_string(),
-    CondBBinopB::Or  => "||".to_string(),
   }
 }
 

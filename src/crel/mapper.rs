@@ -90,18 +90,18 @@ impl ParameterDeclaration {
 impl Statement {
   pub fn map(&self, mapper: &mut dyn CRelMapper) -> Statement {
     match &self {
-      Statement::BasicBlock(items) => Statement::BasicBlock(
+      Statement::BasicBlock(items) => Statement::BasicBlock (
         items.iter().map(|item| {
           mapper.map_block_item(item).map(mapper)
         }).collect()
       ),
       Statement::Break => Statement::Break,
-      Statement::Compound(items) => Statement::Compound(
+      Statement::Compound(items) => Statement::Compound (
         items.iter().map(|item| {
           mapper.map_block_item(item).map(mapper)
         }).collect()
       ),
-      Statement::Expression(expr) => Statement::Expression(
+      Statement::Expression(expr) => Statement::Expression (
         Box::new(mapper.map_expression(expr).map(mapper))
       ),
       Statement::If{condition, then, els} => Statement::If {
@@ -116,10 +116,10 @@ impl Statement {
         lhs: Box::new(mapper.map_statement(lhs).map(mapper)),
         rhs: Box::new(mapper.map_statement(rhs).map(mapper)),
       },
-      Statement::Return(expr) => Statement::Return(
+      Statement::Return(expr) => Statement::Return (
         expr.as_ref().map(|expr| Box::new(mapper.map_expression(&expr).map(mapper)))
       ),
-      Statement::While{loop_id, invariants, condition, body} => Statement::While{
+      Statement::While{loop_id, invariants, condition, body} => Statement::While {
         loop_id: loop_id.clone(),
         invariants: invariants.as_ref().map(|invars| invars.clone()),
         condition: Box::new(mapper.map_expression(condition).map(mapper)),

@@ -2,9 +2,10 @@ use crate::crel::ast::*;
 use crate::crel::mapper::*;
 use crate::daikon::invariant_parser::*;
 use crate::output_mode::*;
+use crate::spec::to_crel::*;
 use crate::workflow::context::*;
 use crate::workflow::task::*;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
@@ -56,7 +57,7 @@ impl Task for InvarsDaikon {
     let daikon_result = Command::new("java")
       .args(["-cp",
              format!("{}/daikon.jar", env::var("DAIKONDIR").expect("$DAIKONDIR not set")).as_str(),
-           "daikon.Daikon",
+             "daikon.Daikon",
              "--config_option", "daikon.derive.Derivation.disable_derived_variables=true",
              "daikon-output/daikon_output.decls",
              "daikon-output/daikon_output.dtrace"])
@@ -70,10 +71,13 @@ impl Task for InvarsDaikon {
       Err(e) => panic!("Error reading daikon output: {}", e),
     };
     let invariants = match parse_invariants(daikon_output) {
-      Result::Ok(map) => map,
+      Result::Ok(map) => map.iter().map(|(key, val)| {
+        let crel_val = val.iter().map(|v| v.to_crel()).collect();
+        (key.clone(), crel_val)
+      }).collect::<HashMap<_, _>>(),
       Result::Err(err) => panic!("Error parsing Daikon invariants: {}", err),
     };
-    let mut remover = LoopRemover{keep_ids: invariants.keys().collect()};
+    let mut remover = LoopRemover::new(invariants.keys().collect());
     let mut crel = context.aligned_crel().map(&mut remover);
     crel.decorate_invariants(&invariants);
     context.aligned_crel.replace(crel);
@@ -82,18 +86,28 @@ impl Task for InvarsDaikon {
 
 struct LoopRemover<'a> {
   keep_ids: HashSet<&'a String>,
+  handled_ids: HashSet<String>,
+}
+
+impl <'a> LoopRemover<'a> {
+  fn new(keep_ids: HashSet<&'a String>) -> Self {
+    LoopRemover{keep_ids, handled_ids: HashSet::new()}
+  }
 }
 
 impl CRelMapper for LoopRemover<'_> {
   fn map_statement(&mut self, stmt: &Statement) -> Statement {
     match stmt {
-      Statement::While{loop_id, ..} => match loop_id {
+      Statement::While{loop_id, condition, ..} => match loop_id {
         None => stmt.clone(),
-        Some(id) => if self.keep_ids.contains(id) {
-          stmt.clone()
-        } else {
-          Statement::None
-        }
+        Some(id) => if !self.keep_ids.contains(id) && !self.handled_ids.contains(id) {
+          self.handled_ids.insert(id.clone());
+          Statement::If {
+            condition: condition.clone(),
+            then: Box::new(stmt.clone()),
+            els: None,
+          }
+        } else { stmt.clone() }
       },
       _ => stmt.clone(),
     }

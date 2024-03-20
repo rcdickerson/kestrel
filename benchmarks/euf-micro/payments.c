@@ -5,7 +5,7 @@
      && left.payments_in == right.payments_in;
  * left: left;
  * right: right;
- * post: forall i: int :: (read(left.payments, i) == read(right.payments, i));
+ * post: left.payments_in == right.payments_in;
  */
 
 // A mutating method payments.method(args) is modeled as:

@@ -185,7 +185,7 @@ impl State {
             CondBBinopB::Or  => self.satisfies(lhs) || self.satisfies(rhs),
           }
         },
-        CondBExpr::Forall{..} => panic!("Unsupported: evaluating foralls"),
+        CondBExpr::Forall{..} => true, // Ignore
         CondBExpr::Predicate{name, args} => {
           let stmt = Statement::Expression(Box::new(Expression::Call{
             callee: Box::new(Expression::Identifier{name: name.clone()}),

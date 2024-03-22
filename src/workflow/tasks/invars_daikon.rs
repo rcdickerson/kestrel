@@ -59,6 +59,7 @@ impl Task for InvarsDaikon {
              format!("{}/daikon.jar", env::var("DAIKONDIR").expect("$DAIKONDIR not set")).as_str(),
              "daikon.Daikon",
              "--config_option", "daikon.derive.Derivation.disable_derived_variables=true",
+             "--conf_limit", "0", // Bad invariants will be weeded out via Houdini.
              "daikon-output/daikon_output.decls",
              "daikon-output/daikon_output.dtrace"])
       .output()
@@ -70,32 +71,48 @@ impl Task for InvarsDaikon {
       Ok(s) => s,
       Err(e) => panic!("Error reading daikon output: {}", e),
     };
-    let invariants = match parse_invariants(daikon_output) {
+    let mut invariants = match parse_invariants(daikon_output) {
       Result::Ok(map) => map.iter().map(|(key, val)| {
-        let crel_val = val.iter().map(|v| v.to_crel()).collect();
+        let crel_val = val.iter().map(|v| v.to_crel()).collect::<Vec<_>>();
         (key.clone(), crel_val)
       }).collect::<HashMap<_, _>>(),
       Result::Err(err) => panic!("Error parsing Daikon invariants: {}", err),
     };
-    let mut remover = LoopRemover::new(invariants.keys().collect());
-    let mut crel = context.aligned_crel().map(&mut remover);
+    separate_eq(&mut invariants);
+    let mut skipper = LoopSkipper::new(invariants.keys().collect());
+    let mut crel = context.aligned_crel().map(&mut skipper);
     crel.decorate_invariants(&invariants);
     context.aligned_crel.replace(crel);
   }
 }
 
-struct LoopRemover<'a> {
+/// Reexpress equality (==) as a combination of <= and >=.
+fn separate_eq(invariants: &mut HashMap<String, Vec<Expression>>) {
+  for (_, invars) in invariants.iter_mut() {
+    *invars = invars.iter()
+      .flat_map(|invar| match invar {
+        Expression::Binop{lhs, rhs, op: BinaryOp::Equals} => vec!(
+          Expression::Binop{lhs: lhs.clone(), rhs: rhs.clone(), op: BinaryOp::Lte},
+          Expression::Binop{lhs: lhs.clone(), rhs: rhs.clone(), op: BinaryOp::Gte},
+        ),
+        _ => vec!(invar.clone())
+      })
+      .collect();
+  }
+}
+
+struct LoopSkipper<'a> {
   keep_ids: HashSet<&'a String>,
   handled_ids: HashSet<String>,
 }
 
-impl <'a> LoopRemover<'a> {
+impl <'a> LoopSkipper<'a> {
   fn new(keep_ids: HashSet<&'a String>) -> Self {
-    LoopRemover{keep_ids, handled_ids: HashSet::new()}
+    LoopSkipper{keep_ids, handled_ids: HashSet::new()}
   }
 }
 
-impl CRelMapper for LoopRemover<'_> {
+impl CRelMapper for LoopSkipper<'_> {
   fn map_statement(&mut self, stmt: &Statement) -> Statement {
     match stmt {
       Statement::While{loop_id, condition, ..} => match loop_id {

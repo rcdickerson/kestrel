@@ -27,12 +27,17 @@ RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y openjdk-8-jdk
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 
+# Daikon dependencies
+RUN apt-get install -y autotools-dev
+RUN apt-get install -y automake
+RUN apt-get install -y binutils-dev
+RUN apt-get install -y zlib1g-dev
 # Daikon
 RUN wget http://plse.cs.washington.edu/daikon/download/daikon-5.8.18.tar.gz
 RUN tar zxf daikon-5.8.18.tar.gz
 ENV DAIKONDIR="/daikon-5.8.18"
 RUN source $DAIKONDIR/scripts/daikon.bashrc
-RUN make -C $DAIKONDIR rebuild-everything
+RUN make -C $DAIKONDIR kvasir
 
 # Fetch and build KestRel.
 RUN git clone https://github.com/rcdickerson/kestrel.git

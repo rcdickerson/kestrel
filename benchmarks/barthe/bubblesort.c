@@ -15,7 +15,7 @@
 
 const float epsilon = 0.01;
 
-void _generator(float _arr[N]) {
+void _test_gen(float _arr[N]) {
   int _ai = 0;
   float l_a[N];
   float r_a[N];

@@ -25,8 +25,8 @@ int right_o1; int right_o1_getCardSet; int right_o1_getCardRarity; int right_o1_
 int right_o2; int right_o2_getCardSet; int right_o2_getCardRarity; int right_o2_getCardId; int right_o2_cardType;
 
 
-void _generator(int _o1, int _cardSet1, int _cardRarity1, int _cardId1, int _cardType1,
-                int _o2, int _cardSet2, int _cardRarity2, int _cardId2, int _cardType2) {
+void _test_gen(int _o1, int _cardSet1, int _cardRarity1, int _cardId1, int _cardType1,
+               int _o2, int _cardSet2, int _cardRarity2, int _cardId2, int _cardType2) {
   left_o1 = _o1;
   left_o1_getCardSet = _cardSet1;
   left_o1_getCardRarity = _cardRarity1;

@@ -10,7 +10,7 @@
  * post:  left.l1 == right.l2;
  */
 
-void _generator(int f1, int f2, int n, int l, int x, int i) {
+void _test_gen(int f1, int f2, int n, int l, int x, int i) {
   int l_f11 = f1;
   int r_f21 = f1;
   int l_f12 = f2;

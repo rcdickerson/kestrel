@@ -12,7 +12,7 @@
 
 #define N 10
 
-void _generator(int _arr1[N], int _arr2[N]) {
+void _test_gen(int _arr1[N], int _arr2[N]) {
   int _ai1 = 0;
   float l_o1_score[N];
   float r_o1_score[N];

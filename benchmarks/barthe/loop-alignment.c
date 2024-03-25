@@ -7,7 +7,7 @@
 
 #define N 20
 
-void _generator(int _arr[N], int _b) {
+void _test_gen(int _arr[N], int _b) {
   int _ai = 0;
   int l_a[N + 1];
   int l_b[N + 1];

@@ -5,7 +5,7 @@
  * post:  left.f1 == right.f1;
  */
 
-void _generator(int n) {
+void _test_gen(int n) {
   int l_n = n;
   int r_n = n;
 }

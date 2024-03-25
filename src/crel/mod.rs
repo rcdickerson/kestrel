@@ -1,4 +1,5 @@
 pub mod ast;
+pub mod auto_fun_impl;
 pub mod blockify;
 pub mod collect_vars;
 pub mod count_loops;

@@ -7,7 +7,7 @@
 
 #define N 10
 
-void _generator(int _arr1[N], int _arr2[N], int _arr3[N]) {
+void _test_gen(int _arr1[N], int _arr2[N], int _arr3[N]) {
   int _ai = 0;
   int l_a[N];
   int l_b[N];

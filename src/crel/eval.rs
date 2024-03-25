@@ -95,8 +95,17 @@ fn eval_expression(expr: &Expression, exec: &mut Execution) {
       exec.set_value(HeapValue::Float(*f));
     },
     Expression::StringLiteral(_) => (),
-    Expression::Call{callee: _, args: _} => {
-      //panic!("Function calls unimplemented")
+    Expression::Call{callee: _, args} => {
+      // Compute a simple hash of arguments.
+      let mut hash = 0 as u32;
+      for arg in args {
+        eval_expression(arg, exec);
+        match exec.current_value() {
+          HeapValue::Int(i) => hash = hash.wrapping_mul(31).wrapping_add(i as u32),
+          HeapValue::Float(f) => hash = hash.wrapping_mul(31).wrapping_add(f.to_bits()),
+        }
+      }
+      exec.set_value(HeapValue::Int(hash as i32));
     },
     Expression::Unop{expr, op} => eval_unop(expr, op, exec),
     Expression::Binop{lhs, rhs, op} => eval_binop(lhs, rhs, op, exec),

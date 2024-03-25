@@ -10,7 +10,7 @@
 #define N 6
 #define L 4
 
-void _generator(int _arr1[N*L], int _arr2[N - M + 1]) {
+void _test_gen(int _arr1[N*L], int _arr2[N - M + 1]) {
   int _ai = 0;
   int l_a[N*L];
   int r_a[N*L];

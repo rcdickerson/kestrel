@@ -21,7 +21,7 @@ const int right_o2_length = 10;
 int right_o1[right_o1_length];
 int right_o2[right_o2_length];
 
-void _generator(int _arr1[left_o1_length], int _arr2[left_o2_length]) {
+void _test_gen(int _arr1[left_o1_length], int _arr2[left_o2_length]) {
   int _ai1 = 0;
   while (_ai1 < left_o1_length) {
     left_o1[_ai1] = _arr1[_ai1];

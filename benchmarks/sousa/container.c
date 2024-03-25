@@ -36,16 +36,16 @@ int right_o2_departureMaxDuration;
 int right_o2_departureTransportCompany;
 int right_o2_departureTransportType;
 
-void _generator(int _departureTimeIsBefore1,
-                int _departureTime1,
-                int _departureMaxDuration1,
-                int _departureTransportCompany1,
-                int _departureTransportType1,
-                int _departureTimeIsBefore2,
-                int _departureTime2,
-                int _departureMaxDuration2,
-                int _departureTransportCompany2,
-                int _departureTransportType2) {
+void _test_gen(int _departureTimeIsBefore1,
+               int _departureTime1,
+               int _departureMaxDuration1,
+               int _departureTransportCompany1,
+               int _departureTransportType1,
+               int _departureTimeIsBefore2,
+               int _departureTime2,
+               int _departureMaxDuration2,
+               int _departureTransportCompany2,
+               int _departureTransportType2) {
   left_o1_departureTimeIsBefore = _departureTimeIsBefore1;
   left_o1_departureTime = _departureTime1;
   left_o1_departureMaxDuration = _departureMaxDuration1;

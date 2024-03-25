@@ -43,7 +43,7 @@ impl TraceStateValue {
 
   pub fn minus(&self, other: &TraceStateValue) -> TraceStateValue {
     match (self, other) {
-      (TraceStateValue::Int(i1), TraceStateValue::Int(i2)) => TraceStateValue::Int(i1 - i2),
+      (TraceStateValue::Int(i1), TraceStateValue::Int(i2)) => TraceStateValue::Int(i1.wrapping_sub(*i2)),
       (TraceStateValue::Float(f1), TraceStateValue::Float(f2)) => TraceStateValue::Float(f1 - f2),
       (TraceStateValue::Array(a1), TraceStateValue::Array(a2)) => {
         let mut arr = Vec::with_capacity(a1.len());

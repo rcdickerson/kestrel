@@ -23,7 +23,7 @@ int right_o1_get_id;
 int right_o2_contains_id;
 int right_o2_get_id;
 
-void _generator(int _contains_id1, int _contains_id2, int _get_id1, int _get_id2) {
+void _test_gen(int _contains_id1, int _contains_id2, int _get_id1, int _get_id2) {
   left_o1_contains_id = _contains_id1;
   left_o1_get_id = _get_id1;
   left_o2_contains_id = _contains_id2;

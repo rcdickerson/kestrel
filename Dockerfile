@@ -38,6 +38,7 @@ RUN tar zxf daikon-5.8.18.tar.gz
 ENV DAIKONDIR="/daikon-5.8.18"
 RUN source $DAIKONDIR/scripts/daikon.bashrc
 RUN make -C $DAIKONDIR kvasir
+ENV PATH="$PATH:$DAIKONDIR/scripts"
 
 # Fetch and build KestRel.
 RUN git clone https://github.com/rcdickerson/kestrel.git

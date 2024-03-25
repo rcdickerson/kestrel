@@ -53,7 +53,7 @@ cargo run -- --input benchmarks/antonopoulos/simple.c count-loops
 To use simulated annealing based extraction, include invariant
 inference, and output the product program in Dafny:
  ``` bash
-ecargo run -- --input benchmarks/antonopoulos/simple.c --infer-invariants --output-mode dafny sa
+cargo run -- --input benchmarks/antonopoulos/simple.c --infer-invariants --output-mode dafny sa
 ```
 
 To see all available KestRel options, run KestRel with the `--help` flag:

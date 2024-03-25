@@ -121,8 +121,11 @@ Once the image exists on your machine, you may run an interactive
 shell by saying:
 
 ``` bash
-docker run -it kestrel
+sudo docker run -it --ulimit nofile=262144:262144 kestrel
 ```
+
+(Note the increased file descriptor limit -- invariant inference may
+fail without this.)
 
 See the [docker run
 documentation](https://docs.docker.com/reference/cli/docker/container/run/)

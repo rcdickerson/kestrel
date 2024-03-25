@@ -5,6 +5,11 @@
  * post:  left.x == right.x;
  */
 
+void _test_gen(int n) {
+  n = n % 100;
+  _main(n, n);
+}
+
 void fun(int n) {
   int x = 0;
   int i = 0;

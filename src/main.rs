@@ -19,10 +19,6 @@ struct Args {
   #[arg(long, value_enum, default_value_t = OutputMode::Seahorn)]
   output_mode: OutputMode,
 
-  /// Verbose.
-  #[arg(short, long)]
-  verbose: bool,
-
   /// Output a dot file representation of the e-graph.
   #[arg(short, long)]
   dot: bool,
@@ -31,6 +27,10 @@ struct Args {
   /// saturated e-graph.
   #[arg(value_enum, default_value_t = ExtractorArg::CountLoops)]
   extractor: ExtractorArg,
+
+  /// If set, infers invariants via Houdini-style refinement.
+  #[arg(long)]
+  infer_invariants: bool,
 
   /// How many iterations to use when running simulated annealing.
   #[arg(long, default_value_t=3000)]
@@ -44,6 +44,11 @@ struct Args {
   /// Count and print the size of the alignment state space.
   #[arg(short, long)]
   space_size: bool,
+
+  /// Provide verbose output.
+  #[arg(short, long)]
+  verbose: bool,
+
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
@@ -106,8 +111,10 @@ fn main() {
     ExtractorArg::SA => workflow.add_task(AlignSa::new(args.sa_start_random, args.sa_max_iterations)),
   }
   workflow.add_task(AlignedCRel::new());
-  workflow.add_task(InvarsDaikon::new());
-  workflow.add_task(Houdafny::new());
+  if args.infer_invariants {
+    workflow.add_task(InvarsDaikon::new());
+    workflow.add_task(Houdafny::new());
+  }
   workflow.add_task(AlignedOutput::new(args.output_mode));
   match args.output {
     Some(_) => workflow.add_task(WriteProduct::new(args.output_mode)),

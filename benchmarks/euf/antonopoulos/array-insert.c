@@ -1,17 +1,34 @@
 /* @KESTREL
- * pre: left.val_in > 0 && right.val_in > 0;
+ * pre: left.val_in > 0
+     && right.val_in > 0
+     && left.len_in >= 0
+     && right.len_in >= 0;
  * left: left;
  * right: right;
  * post: left.i == right.j;
  */
 
-int read(int array, int index);
-int store(int array, int index, int value);
-int shift(int array, int idx, int amt);
+int read(int arr, int index);
+int store(int arr, int index, int value);
+int shift(int arr, int idx, int amt);
 
 void _test_gen(int a_left, int a_right, int len_left, int len_right, int val_left, int val_right) {
-  if (val_left < 0) { val_left = val_left * -1; } val_left = val_left + 1;
-  if (val_right < 0) { val_right = val_right * -1; } val_right = val_right + 1;
+  if (val_left < 0) { val_left = val_left * -1; }
+  val_left = val_left + 1;
+  val_left = val_left % 100;
+
+  if (len_left < 0) { len_left = len_left * -1; }
+  len_left = len_left + 1;
+  len_left = len_left % 100;
+
+  if (val_right < 0) { val_right = val_right * -1; }
+  val_right = val_right + 1;
+  val_right = val_right % 100;
+
+  if (len_right < 0) { len_right = len_right * -1; }
+  len_right = len_right + 1;
+  len_right = len_right % 100;
+
   _main(a_left, len_left, val_left, a_right, len_right, val_right);
 }
 

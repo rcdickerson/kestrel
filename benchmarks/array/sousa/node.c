@@ -1,8 +1,8 @@
 /* @KESTREL
  * pre: left_o1_contains_id == right_o2_contains_id &&
         left_o1_get_id      == right_o2_get_id &&
-        left_o1_contains_id == right_o2_contains_id &&
-        left_o1_get_id      == right_o2_get_id;
+        left_o2_contains_id == right_o1_contains_id &&
+        left_o2_get_id      == right_o1_get_id;
  * left: left;
  * right: right;
  * post: left.ret == -1 * right.ret;

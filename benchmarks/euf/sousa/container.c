@@ -30,16 +30,16 @@ void _test_gen(int departureTimeIsBefore1,
         departureTimeIsBefore1, departureTime1, departureMaxDuration1, departureTransportCompany1, departureTransportType1);
 }
 
-int left(int o1_departureTimeIsBefore,
-         int o1_departureTime,
-         int o1_departureMaxDuration,
-         int o1_departureTransportCompany,
-         int o1_departureTransportType,
-         int o2_departureTimeIsBefore,
-         int o2_departureTime,
-         int o2_departureMaxDuration,
-         int o2_departureTransportCompany,
-         int o2_departureTransportType) {
+int compare(int o1_departureTimeIsBefore,
+            int o1_departureTime,
+            int o1_departureMaxDuration,
+            int o1_departureTransportCompany,
+            int o1_departureTransportType,
+            int o2_departureTimeIsBefore,
+            int o2_departureTime,
+            int o2_departureMaxDuration,
+            int o2_departureTransportCompany,
+            int o2_departureTransportType) {
 
       int rv;
       // Times

@@ -10,8 +10,8 @@
  * Based on http://stackoverflow.com/questions/16809000/how-to-make-the-compareto-method-respect-the-general-contract
  */
 
-float read(int array, int index);
-int store(int array, int index, float value);
+float read(int arr, int index);
+int store(int arr, int index, float value);
 
 void _test_gen(int o1_scores, int o2_scores) {
   _main(o1_scores, o2_scores, o2_scores, o1_scores);

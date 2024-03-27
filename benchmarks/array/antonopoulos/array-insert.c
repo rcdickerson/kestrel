@@ -1,5 +1,8 @@
 /* @KESTREL
- * pre: left.val > 0 && right.val > 0;
+ * pre: left.val_in > 0
+     && right.val_in > 0
+     && left.len_in >= 0
+     && right.len_in >= 0;
  * left: left;
  * right: right;
  * post: left.i == right.j;

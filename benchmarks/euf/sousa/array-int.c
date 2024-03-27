@@ -3,8 +3,8 @@
      && left.len1_in == right.len2_in
      && left.o2_in == right.o1_in
      && left.len2_in == right.len1_in
-     && left.len1 >= 0
-     && left.len2 >= 0;
+     && left.len1_in >= 0
+     && left.len2_in >= 0;
  * left: compare;
  * right: compare;
  * post: left.ret == -1 * right.ret;
@@ -15,8 +15,8 @@
  *
  */
 
-int read(int array, int index);
-int store(int array, int index, int value);
+int read(int arr, int index);
+int store(int arr, int index, int value);
 
 void _test_gen(int arr1, int len1, int arr2, int len2) {
   if (len1 < 0) { len1 = len1 * -1; } len1 = len1 % 100;

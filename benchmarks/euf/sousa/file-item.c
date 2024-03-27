@@ -18,13 +18,13 @@ void cmp (int o1_null,
           int o2_fileName) {
   int result = -999;
 
-  if (o1_null){
-    if (o2_null){
+  if (o1_null != 0){
+    if (o2_null != 0){
       result = 0;
     } else {
       result = 1;
     }
-  } else if (o2_null) {
+  } else if (o2_null != 0) {
     result = -1;
   }
 
@@ -32,13 +32,13 @@ void cmp (int o1_null,
     int n1 = o1_fileName;
     int n2 = o2_fileName;
 
-    if (o1_fileName_null) {
-      if (o2_fileName_null) {
+    if (o1_fileName_null != 0) {
+      if (o2_fileName_null != 0) {
         result = 0;
       } else {
         result = 1;
       }
-    } else if (o2_fileName_null) {
+    } else if (o2_fileName_null != 0) {
       result = -1;
     }
     result = n1 - n2;

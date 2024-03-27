@@ -53,7 +53,7 @@ do
             output_file="$output_dir/$file_basename-${technique:0:3}".c
         fi
 
-        (time timeout 10m $kestrel_exec --infer-invariants -i $file -o $output_file --output-mode=$out_mode $technique --sa-max-iterations=12000) > "$log_dir/$file_basename".log 2>&1
+        (time timeout 2m $kestrel_exec --infer-invariants -i $file -o $output_file --output-mode=$out_mode $technique --sa-max-iterations=12000) > "$log_dir/$file_basename".log 2>&1
     done
   done
 done

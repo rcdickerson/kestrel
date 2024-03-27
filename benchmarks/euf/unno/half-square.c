@@ -8,13 +8,21 @@
  */
 
 void _test_gen(int low, int l_h, int r_h) {
+
   if (l_h < 0) { l_h = l_h * -1; }
   l_h = l_h + 1;
   l_h = l_h % 100;
+
   if (r_h < 0) { r_h = r_h * -1; }
   r_h = r_h + 1;
   r_h = r_h % 100;
+
+  if (low < 0) { low = low * -1; }
+  low = low + 1;
+  low = low % 100;
+
   while (low <= l_h || low <= r_h) { low = low * 2; }
+
   _main(low, l_h, low, r_h);
 }
 

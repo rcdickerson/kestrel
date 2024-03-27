@@ -5,7 +5,7 @@ shopt -s nullglob
 # First argument: benchmark group
 benchmark_group=$1
 if [ "$benchmark_group" = "all" ]; then
-  benchmark_dirs=(./benchmarks/*)
+  benchmark_dirs=(./benchmarks/euf/*)
 else
   benchmark_dirs=("./benchmarks/euf/$benchmark_group")
 fi

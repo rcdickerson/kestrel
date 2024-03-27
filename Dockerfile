@@ -22,7 +22,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
 RUN apt-get install -y coinor-cbc
 RUN apt-get install -y coinor-libcbc-dev
 
-# JRE
+# Java
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y openjdk-8-jdk
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/

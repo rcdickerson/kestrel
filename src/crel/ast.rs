@@ -135,8 +135,7 @@ pub enum Expression {
     op: BinaryOp,
   },
   Forall {
-    pred_var: String,
-    pred_type: Type,
+    bindings: Vec<(String, Type)>,
     condition: Box<Expression>,
   },
   Statement(Box<Statement>),

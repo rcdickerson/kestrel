@@ -149,20 +149,26 @@ impl CondToCRel for CondBExpr {
       },
       CondBExpr::BinopB{lhs, rhs, op} => {
         crel::Expression::Binop {
-          lhs: Box::new(lhs.to_crel()),
+          lhs: match op {
+            CondBBinopB::Implies => Box::new(crel::Expression::Unop {
+              expr: Box::new(lhs.to_crel()),
+              op: crel::UnaryOp::Not
+            }),
+            _ => Box::new(lhs.to_crel()),
+          },
           rhs: Box::new(rhs.to_crel()),
           op: match op {
-            CondBBinopB::And => crel::BinaryOp::And,
-            CondBBinopB::Or => crel::BinaryOp::Or,
+            CondBBinopB::And     => crel::BinaryOp::And,
+            CondBBinopB::Or      => crel::BinaryOp::Or,
+            CondBBinopB::Implies => crel::BinaryOp::Or,
           }
         }
       },
-      CondBExpr::Forall{pred_var, pred_type, condition} => {
+      CondBExpr::Forall{bindings, condition} => {
         crel::Expression::Forall {
-          pred_var: pred_var.clone(),
-          pred_type: match pred_type {
-            KestrelType::Int => crel::Type::Int,
-          },
+          bindings: bindings.iter().map(|(var, ty)| match ty {
+            KestrelType::Int => (var.clone(), crel::Type::Int),
+          }).collect(),
           condition: Box::new(condition.to_crel()),
         }
       },

@@ -14,6 +14,7 @@ use nom::{
   multi::many1,
   multi::many1_count,
   multi::separated_list0,
+  multi::separated_list1,
   number::complete::float,
   sequence::delimited,
   sequence::pair,
@@ -247,23 +248,29 @@ fn bexpr_forall(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _)         = multispace0(i)?;
   let (i, _)         = tag("forall")(i)?;
   let (i, _)         = multispace0(i)?;
+  let (i, bindings)  = separated_list1(tag(","), bexpr_forall_binding)(i)?;
+  let (i, _)         = multispace0(i)?;
+  let (i, _)         = tag("::")(i)?;
+  let (i, _)         = multispace0(i)?;
+  let (i, condition) = bexpr(i)?;
+  Ok((i, CondBExpr::Forall {
+    bindings,
+    condition: Box::new(condition)
+  }))
+}
+
+fn bexpr_forall_binding(i: &str) -> IResult<&str, (String, KestrelType)> {
+  let (i, _)         = multispace0(i)?;
   let (i, pred_var)  = c_id(i)?;
   let (i, _)         = multispace0(i)?;
   let (i, _)         = tag(":")(i)?;
   let (i, _)         = multispace0(i)?;
   let (i, pred_type) = alpha1(i)?;
-  let (i, _)         = multispace0(i)?;
-  let (i, _)         = tag("::")(i)?;
-  let (i, _)         = multispace0(i)?;
-  let (i, condition) = bexpr(i)?;
   match pred_type {
-      "int" => Ok((i, CondBExpr::Forall {
-        pred_var: pred_var.to_string(),
-        pred_type: KestrelType::Int,
-        condition: Box::new(condition)
-      })),
-      _ => Err(Err::Error(Error{input: i, code: ErrorKind::Fail})),
-  }}
+    "int" => Ok((i, (pred_var.to_string(), KestrelType::Int))),
+    _ => Err(Err::Error(Error{input: i, code: ErrorKind::Fail})),
+  }
+}
 
 fn bexpr_predicate(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _)         = multispace0(i)?;
@@ -295,8 +302,9 @@ fn bexpr_lhs(i: &str) -> IResult<&str, CondBExpr> {
 pub fn bexpr(i: &str) -> IResult<&str, CondBExpr> {
   let (i, _) = multispace0(i)?;
   alt((
-    bexpr_binop_b("&&", CondBBinopB::And),
-    bexpr_binop_b("||", CondBBinopB::Or),
+    bexpr_binop_b("&&",  CondBBinopB::And),
+    bexpr_binop_b("||",  CondBBinopB::Or),
+    bexpr_binop_b("==>", CondBBinopB::Implies),
     bexpr_lhs,
     delimited(tag("("), bexpr, tag(")")),
   ))(i)

@@ -14,7 +14,7 @@ pub enum Expression {
   StringLiteral(String),
   UnOp{expr: Box<Expression>, op: String},
   BinOp{lhs: Box<Expression>, rhs: Box<Expression>, op: String},
-  Forall{pred_var: String, pred_type: Type, condition: Box<Expression>},
+  Forall{bindings: Vec<(String, Type)>, condition: Box<Expression>},
   Statement(Box<Statement>),
 }
 
@@ -70,9 +70,14 @@ impl Expression {
         rhs.emit(writer, true);
         if subexp { writer.write(")"); }
       },
-      Expression::Forall{pred_var, pred_type, condition} => {
-        writer.write("forall ").write(pred_var).write(": ");
-        pred_type.emit(writer);
+      Expression::Forall{bindings, condition} => {
+        writer.write("forall ");
+        let mut comma = "";
+        for (pred_var, pred_type) in bindings {
+          writer.write(comma).write(pred_var).write(": ");
+          pred_type.emit(writer);
+          comma = ", ";
+        }
         writer.write(" :: ");
         condition.emit(writer, true);
       }

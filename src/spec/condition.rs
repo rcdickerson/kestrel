@@ -99,7 +99,7 @@ pub enum CondBExpr {
   Unop{bexp: Box<CondBExpr>, op: CondBUnop},
   BinopA{lhs: CondAExpr, rhs: CondAExpr, op: CondBBinopA},
   BinopB{lhs: Box<CondBExpr>, rhs: Box<CondBExpr>, op: CondBBinopB},
-  Forall{pred_var: String, pred_type: KestrelType, condition: Box<CondBExpr>},
+  Forall{bindings: Vec<(String, KestrelType)>, condition: Box<CondBExpr>},
   Predicate{name: String, args: Vec<CondAExpr>},
 }
 
@@ -117,9 +117,11 @@ impl CondBExpr {
         lhs.state_vars().union(&rhs.state_vars()).cloned()
           .collect()
       },
-      CondBExpr::Forall{pred_var, condition, ..} => {
+      CondBExpr::Forall{bindings, condition, ..} => {
         let mut vars = condition.state_vars();
-        vars.remove(pred_var);
+        for (pred_var, _) in bindings {
+          vars.remove(pred_var);
+        }
         vars
       },
       CondBExpr::Predicate{name, args} => {
@@ -167,4 +169,5 @@ pub enum CondBBinopA {
 pub enum CondBBinopB {
   And,
   Or,
+  Implies,
 }

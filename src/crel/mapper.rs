@@ -155,9 +155,8 @@ impl Expression {
         rhs: Box::new(mapper.map_expression(rhs).map(mapper)),
         op: op.clone(),
       },
-      Expression::Forall{pred_var, pred_type, condition} => Expression::Forall {
-        pred_var: mapper.map_name(pred_var),
-        pred_type: pred_type.clone(),
+      Expression::Forall{bindings, condition} => Expression::Forall {
+        bindings: bindings.iter().map(|(v, t)| (mapper.map_name(v), t.clone())).collect(),
         condition: Box::new(mapper.map_expression(condition).map(mapper)),
       },
       Expression::Statement(stmt) => Expression::Statement(

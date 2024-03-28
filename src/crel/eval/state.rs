@@ -181,8 +181,9 @@ impl State {
           let lhs = &KestrelCond::BExpr(lhs.as_ref().clone());
           let rhs = &KestrelCond::BExpr(rhs.as_ref().clone());
           match op {
-            CondBBinopB::And => self.satisfies(lhs) && self.satisfies(rhs),
-            CondBBinopB::Or  => self.satisfies(lhs) || self.satisfies(rhs),
+            CondBBinopB::And     =>  self.satisfies(lhs) && self.satisfies(rhs),
+            CondBBinopB::Or      =>  self.satisfies(lhs) || self.satisfies(rhs),
+            CondBBinopB::Implies => !self.satisfies(lhs) || self.satisfies(rhs),
           }
         },
         CondBExpr::Forall{..} => true, // Ignore

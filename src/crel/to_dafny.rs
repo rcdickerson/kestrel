@@ -121,10 +121,9 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
         BinaryOp::Or        => Daf::Expression::BinOp{lhs, rhs, op: "||".to_string()},
       }
     },
-    Expression::Forall { pred_var, pred_type, condition } => {
+    Expression::Forall { bindings, condition } => {
       Daf::Expression::Forall {
-        pred_var: pred_var.to_string(),
-        pred_type: type_to_daf(pred_type).unwrap(),
+        bindings: bindings.iter().map(|(v, t)| (v.clone(), type_to_daf(t).unwrap())).collect(),
         condition: Box::new(expression_to_daf(condition))
       }
     }

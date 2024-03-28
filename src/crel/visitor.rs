@@ -157,8 +157,10 @@ impl Expression {
         visitor.visit_expression(rhs);
         rhs.walk(visitor);
       },
-      Expression::Forall{pred_var, condition, ..} => {
-        visitor.visit_name(pred_var);
+      Expression::Forall{bindings, condition, ..} => {
+        for (pred_var, _) in bindings {
+          visitor.visit_name(pred_var);
+        }
         visitor.visit_expression(condition);
         condition.walk(visitor);
       },

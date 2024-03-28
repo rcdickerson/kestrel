@@ -140,7 +140,8 @@ fn main() {
     })),
   }
   args.output_summary.map(|location| {
-    workflow.add_task(WriteSummary::new(location, vec!(args.extractor.tag())))
+    let tags = vec!(args.extractor.tag());
+    workflow.add_task(WriteSummary::new(location, tags));
   });
   workflow.execute();
   println!("Done!");

@@ -2,6 +2,8 @@
 
 shopt -s nullglob
 
+output_base_dir="./results"
+
 # First argument: benchmark group
 benchmark_group=$1
 if [ "$benchmark_group" = "all" ]; then
@@ -25,6 +27,8 @@ echo "Building KestRel"
 cargo build --release
 kestrel_exec=./target/release/kestrel
 
+summary_file="$output_base_dir/summary.csv"
+
 for group_dir in "${benchmark_dirs[@]}"
 do
   group_name=`basename $group_dir`
@@ -33,7 +37,6 @@ do
   for technique in "${techniques[@]}"
   do
     # Make the output and log directories
-    output_base_dir="./results"
     output_dir="$output_base_dir/alignments/$out_mode/$group_name/$technique"
     log_dir="$output_base_dir/log/alignment/$out_mode/$group_name/$technique"
     echo "Storing results in $output_dir"
@@ -53,7 +56,7 @@ do
             output_file="$output_dir/$file_basename-${technique:0:3}".c
         fi
 
-        (time timeout 2m $kestrel_exec --infer-invariants -i $file -o $output_file --output-mode=$out_mode $technique --sa-max-iterations=12000) > "$log_dir/$file_basename".log 2>&1
+        (time timeout 2m $kestrel_exec --infer-invariants --output-summary $summary_file -i $file -o $output_file --output-mode=$out_mode $technique --sa-max-iterations=12000) > "$log_dir/$file_basename".log 2>&1
     done
   done
 done

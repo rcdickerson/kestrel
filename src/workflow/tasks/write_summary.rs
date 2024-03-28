@@ -24,6 +24,8 @@ impl Task for WriteSummary {
     let mut line = Vec::new();
     line.push(context.task_name.clone());
     line.append(&mut self.tags.clone());
+    line.push(format!("{}", context.elapsed_time().as_millis()));
+    line.push(format!("{}", context.verified));
     if let Err(e) = writeln!(file, "{}", line.join(",")) {
       panic!("Unable to write to summary file: {}", e);
     }

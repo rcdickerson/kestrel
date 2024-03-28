@@ -52,7 +52,10 @@ impl Task for Houdafny {
       // Check to see if we're done, either successfull verification or
       // some failure without bad invariants.
       println!("{}", dafny_output);
-      if dafny_result.status.success() { break; }
+      if dafny_result.status.success() {
+        context.verified = true;
+        break;
+      }
       let bad_invar_lines = parse_bad_invariants(dafny_output.to_string());
       if bad_invar_lines.is_empty() { break; }
 

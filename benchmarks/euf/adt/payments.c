@@ -5,7 +5,7 @@
      && left.payments_in == right.payments_in;
  * left: left;
  * right: right;
- * post: left.payments_in == right.payments_in;
+ * post: left.payments == right.payments;
  */
 
 // A mutating method payments.method(args) is modeled as:

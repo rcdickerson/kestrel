@@ -4,9 +4,11 @@ use crate::spec::*;
 use crate::unaligned::*;
 use egg::*;
 use std::path::Path;
+use std::time::{Duration, Instant};
 
 pub struct Context<'a> {
   pub task_name: String,
+  pub start_time: Instant,
   pub spec: Option<&'a KestrelSpec>,
   pub unaligned_crel: Option<&'a UnalignedCRel>,
   pub unaligned_eggroll: Option<&'a String>,
@@ -14,12 +16,14 @@ pub struct Context<'a> {
   pub aligned_crel: Option<CRel>,
   pub aligned_output: Option<String>,
   pub output_path: Option<String>,
+  pub verified: bool,
 }
 
 impl Context<'_> {
   pub fn new(task_name: String) -> Self {
     Context {
       task_name,
+      start_time: Instant::now(),
       spec: None,
       unaligned_crel: None,
       unaligned_eggroll: None,
@@ -27,6 +31,7 @@ impl Context<'_> {
       aligned_crel: None,
       aligned_output: None,
       output_path: None,
+      verified: false,
     }
   }
 
@@ -62,5 +67,9 @@ impl Context<'_> {
     self.output_path.as_ref().map(|path| {
       Path::new(&path).file_name().unwrap().to_str().unwrap().to_string()
     })
+  }
+
+  pub fn elapsed_time(&self) -> Duration {
+    self.start_time.elapsed()
   }
 }

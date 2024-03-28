@@ -6,6 +6,7 @@ use egg::*;
 use std::path::Path;
 
 pub struct Context<'a> {
+  pub task_name: String,
   pub spec: Option<&'a KestrelSpec>,
   pub unaligned_crel: Option<&'a UnalignedCRel>,
   pub unaligned_eggroll: Option<&'a String>,
@@ -16,8 +17,9 @@ pub struct Context<'a> {
 }
 
 impl Context<'_> {
-  pub fn new() -> Self {
+  pub fn new(task_name: String) -> Self {
     Context {
+      task_name,
       spec: None,
       unaligned_crel: None,
       unaligned_eggroll: None,

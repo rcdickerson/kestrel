@@ -10,6 +10,7 @@ pub mod invars_daikon;
 pub mod print_info;
 pub mod write_dot;
 pub mod write_product;
+pub mod write_summary;
 
 pub use align_count_loops::*;
 pub use align_milp::*;
@@ -23,3 +24,4 @@ pub use invars_daikon::*;
 pub use print_info::*;
 pub use write_dot::*;
 pub use write_product::*;
+pub use write_summary::*;

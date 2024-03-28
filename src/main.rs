@@ -19,6 +19,12 @@ struct Args {
   #[arg(long, value_enum, default_value_t = OutputMode::Seahorn)]
   output_mode: OutputMode,
 
+  /// Append verification summary data as a comma-separated value line
+  /// in the given file. Useful for collecting results over batches of
+  /// verification tasks.
+  #[arg(long)]
+  output_summary: Option<String>,
+
   /// Output a dot file representation of the e-graph.
   #[arg(short, long)]
   dot: bool,
@@ -68,6 +74,17 @@ enum ExtractorArg {
   Unaligned,
 }
 
+impl ExtractorArg {
+  fn tag(&self) -> String {
+    match self {
+      ExtractorArg::CountLoops => "count-loops".to_string(),
+      ExtractorArg::MILP       => "milp".to_string(),
+      ExtractorArg::SA         => "sa".to_string(),
+      ExtractorArg::Unaligned  => "unaligned".to_string(),
+    }
+  }
+}
+
 /// The high-level KestRel workflow is:
 ///   1. Read in a C file and parse its @KESTREL spec.
 ///   2. Convert the C into CRel. CRel is a C-like IR which can represent
@@ -90,7 +107,7 @@ fn main() {
   let unaligned_crel = UnalignedCRel::from(&raw_crel, &spec);
   let unaligned_eggroll = unaligned_crel.main.to_eggroll();
 
-  let mut context = Context::new();
+  let mut context = Context::new(args.input);
   context.spec = Some(&spec);
   context.unaligned_crel = Some(&unaligned_crel);
   context.unaligned_eggroll = Some(&unaligned_eggroll);
@@ -122,6 +139,9 @@ fn main() {
       ctx.aligned_output().clone()
     })),
   }
+  args.output_summary.map(|location| {
+    workflow.add_task(WriteSummary::new(location, vec!(args.extractor.tag())))
+  });
   workflow.execute();
   println!("Done!");
 }

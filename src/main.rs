@@ -125,12 +125,20 @@ fn main() {
     ExtractorArg::Unaligned => workflow.add_task(AlignNone::new()),
     ExtractorArg::CountLoops => workflow.add_task(AlignCountLoops::new()),
     ExtractorArg::MILP => workflow.add_task(AlignMilp::new()),
-    ExtractorArg::SA => workflow.add_task(AlignSa::new(args.sa_start_random, args.sa_max_iterations)),
+    ExtractorArg::SA => {
+      workflow.add_task(AlignCountLoops::new());
+      workflow.add_task(AlignedCRel::new());
+      if args.infer_invariants {
+        workflow.add_task(InvarsDaikon::new());
+        workflow.add_task(Houdafny::new());
+      }
+      workflow.add_task(AlignSa::new(args.sa_start_random, args.sa_max_iterations))
+    },
   }
-  workflow.add_task(AlignedCRel::new());
+  workflow.add_task_unless_verifed(AlignedCRel::new());
   if args.infer_invariants {
-    workflow.add_task(InvarsDaikon::new());
-    workflow.add_task(Houdafny::new());
+    workflow.add_task_unless_verifed(InvarsDaikon::new());
+    workflow.add_task_unless_verifed(Houdafny::new());
   }
   workflow.add_task(AlignedOutput::new(args.output_mode));
   match args.output {
@@ -144,5 +152,6 @@ fn main() {
     workflow.add_task(WriteSummary::new(location, tags));
   });
   workflow.execute();
-  println!("Done!");
+  println!("KestRel completed in {}ms", workflow.context().elapsed_time().as_millis());
+  println!("Verified: {}", workflow.context().verified);
 }

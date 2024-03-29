@@ -1,6 +1,5 @@
 use crate::annealer::*;
 use crate::crel::eval::*;
-use crate::eggroll::cost_functions::minloops::*;
 use crate::eggroll::cost_functions::sa::*;
 use crate::workflow::context::*;
 use crate::workflow::task::*;
@@ -22,22 +21,15 @@ impl AlignSa {
 
 impl Task for AlignSa {
   fn run(&self, context: &mut Context) {
+    if context.verified {
+      println!("Verification complete; skipping simulated annealing alignment");
+      return;
+    }
+
     let num_trace_states = 10;
     let trace_fuel = 10000;
 
-    let init_runner = Runner::default()
-      .with_expr(&context.unaligned_eggroll().parse().unwrap())
-      .run(&crate::eggroll::rewrite::rewrites(false));
-    let init = if self.start_random { None } else {
-      let extractor = Extractor::new(&init_runner.egraph, MinLoops);
-      let (_, initial) = extractor.find_best(init_runner.roots[0]);
-      // println!("\nPre-SA Initial Alignment");
-      // println!("--------------------------");
-      // println!("{}", initial.pretty(80));
-      // println!("--------------------------");
-      Some(initial)
-    };
-
+    let init = if self.start_random { None } else { context.aligned_eggroll.clone() };
     let runner = Runner::default()
       .with_expr(&init.clone().unwrap_or(context.unaligned_eggroll().parse().unwrap()))
       .run(&crate::eggroll::rewrite::rewrites(true));

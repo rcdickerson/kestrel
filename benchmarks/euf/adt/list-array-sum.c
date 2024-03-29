@@ -1,9 +1,9 @@
 /* @KESTREL
  * pre: (forall list: int :: r_advance(list, list, 0) == 1)
      && (forall l1: int, l2: int :: l1 != l2 ==> r_advance(l1, l2, 0) == 0)
-     && (forall l1: int, l2: int, l2next: int, n: int ::
-             (l2next == list_next(l2) && r_advance(l1, l2, n) == 1)
-             ==> r_advance(l1, l2next, n + 1) == 1)
+     && (forall l1: int, l2: int, l2next: int, n: int, m: int ::
+             (l2next == list_next(l2) && r_advance(l1, l2, n) == 1 && m == n + 1)
+             ==> r_advance(l1, l2next, m) == 1)
      && (forall list: int, n: int ::
              r_advance(left.list_in, list, n) == 1
               ==> list_val(list) == read(right.arr_in, n));

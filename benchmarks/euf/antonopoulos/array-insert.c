@@ -2,7 +2,8 @@
  * pre: left.val_in > 0
      && right.val_in > 0
      && left.len_in >= 0
-     && right.len_in >= 0;
+     && right.len_in >= 0
+     && (forall i:int :: read(left.arr_in, i) == read(right.arr_in, i));
  * left: left;
  * right: right;
  * post: left.i == right.j;
@@ -37,7 +38,7 @@ void left(int arr_in, int len_in, int val_in) {
   int len = len_in;
   int val = val_in;
   int i = 0;
-  while( i < len && read(arr, i) < val) {
+  while (i < len && read(arr, i) < val) {
     i = i + 1;
   }
   arr = shift(arr, i, 1);
@@ -53,7 +54,7 @@ void right(int arr_in, int len_in, int val_in) {
   int len = len_in;
   int val = val_in;
   int j = 0;
-  while( j < len && read(arr, j) < val) {
+  while (j < len && read(arr, j) < val) {
     j = j + 1;
   }
   arr = shift(arr, j, 1);

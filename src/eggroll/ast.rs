@@ -25,8 +25,8 @@ define_language! {
     "="             = Asgn([Id; 2]),
     "if"            = If([Id; 2]),
     "if-else"       = IfElse([Id; 3]),
-    "while"         = While([Id; 2]),
-    "while-no-body" = WhileNoBody([Id; 1]),
+    "while"         = While([Id; 3]),
+    "while-no-body" = WhileNoBody([Id; 2]),
     "index"         = Index([Id; 2]),
     "seq"           = Seq([Id; 2]),
     "assert"        = Assert(Id),
@@ -46,8 +46,9 @@ define_language! {
     // make these kinds of rewrites within the
     // expanded form, but we may want to revisit this
     // tradeoff in the future.
-    "while-lockstep" = WhileLockstep([Id; 7]),
-    "while-scheduled" = WhileScheduled([Id; 8]),
+    "while-lockstep" = WhileLockstep([Id; 9]),
+    "while-scheduled" = WhileScheduled([Id; 10]),
+    "invariants" = Invariants(Vec<Id>),
 
     // Declarations
     "declaration" = Declaration([Id; 3]),

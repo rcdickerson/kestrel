@@ -18,7 +18,7 @@ impl CRelVisitor for InvariantDecorator<'_> {
       Statement::While{loop_id, invariants, ..} => {
         loop_id.as_ref().map(|id| {
           self.imap.get(id).map(|invs| {
-            invariants.replace(invs.clone())
+            invariants.append(&mut invs.clone())
           })
         });
       },

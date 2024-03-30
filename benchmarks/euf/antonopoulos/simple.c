@@ -15,6 +15,7 @@ void fun(int n) {
   int i = 0;
 
   while( i <= n ) {
+    _invariant("l_x == r_x");
     x = x + 1;
     i = i + 1;
   }

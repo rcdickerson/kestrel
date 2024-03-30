@@ -17,7 +17,7 @@ pub enum Statement {
   While {
     loop_id: Option<String>,
     condition: Box<Expression>,
-    invariants: Option<Vec<Expression>>,
+    invariants: Vec<Expression>,
     body: Option<Box<Statement>>,
   }
 }
@@ -73,21 +73,18 @@ impl Statement {
         writer.write("while (");
         let start_line = writer.cur_line();
         condition.emit(writer, false);
-        match invariants {
-          None => {
-            writer.write(") {").new_line();
-          },
-          Some(invars) => {
-            writer.write(")").new_line();
-            writer.indent();
-            for invar in invars {
-              writer.write("invariant ");
-              invar.emit(writer, false);
-              writer.new_line();
-            }
-            writer.dedent();
-            writer.write("{").new_line();
-          },
+        if invariants.is_empty() {
+          writer.write(") {").new_line();
+        } else {
+          writer.write(")").new_line();
+          writer.indent();
+          for invar in invariants {
+            writer.write("invariant ");
+            invar.emit(writer, false);
+            writer.new_line();
+          }
+          writer.dedent();
+          writer.write("{").new_line();
         }
         writer.indent();
         match body {

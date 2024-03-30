@@ -188,7 +188,7 @@ pub enum Statement {
   Return(Option<Box<Expression>>),
   While {
     loop_id: Option<String>,
-    invariants: Option<Vec<Expression>>,
+    invariants: Vec<Expression>,
     condition: Box<Expression>,
     body: Option<Box<Statement>>,
   },

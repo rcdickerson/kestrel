@@ -132,7 +132,8 @@ fn main() {
         workflow.add_task(InvarsDaikon::new());
         workflow.add_task(Houdafny::new());
       }
-      workflow.add_task(AlignSa::new(args.sa_start_random, args.sa_max_iterations))
+      workflow.add_task_unless_verifed(
+        AlignSa::new(args.sa_start_random, args.sa_max_iterations))
     },
   }
   workflow.add_task_unless_verifed(AlignedCRel::new());

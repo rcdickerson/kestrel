@@ -118,15 +118,26 @@ fn statement_to_eggroll(stmt: &Statement) -> String {
       None => "return-none".to_string(),
       Some(ret) => format!("(return {})", expression_to_eggroll(ret)),
     },
-    Statement::While{condition, body, ..} => {
+    Statement::While{condition, invariants, body, ..} => {
       match body {
-        None => format!("(while-no-body {})", expression_to_eggroll(condition)),
-        Some(stmt) => format!("(while {} {})",
+        None => format!("(while-no-body {} {})",
+                        expression_to_eggroll(condition),
+                        invariants_to_eggroll(invariants)),
+        Some(stmt) => format!("(while {} {} {})",
                               expression_to_eggroll(condition),
+                              invariants_to_eggroll(invariants),
                               statement_to_eggroll(stmt)),
       }
     }
   }
+}
+
+fn invariants_to_eggroll(invariants: &Vec<Expression>) -> String {
+  let invar_str = invariants.iter()
+    .map(expression_to_eggroll)
+    .collect::<Vec<_>>()
+    .join(" ");
+  format!("(invariants {})", invar_str)
 }
 
 fn declaration_specifier_to_eggroll(spec: &DeclarationSpecifier) -> String {

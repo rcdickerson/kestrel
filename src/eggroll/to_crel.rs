@@ -222,12 +222,14 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
       },
       Sexp::Atom(Atom::S(s)) if s == "while-no-body" => {
         let condition = Box::new(expect_expression(&sexps[1], config));
-        Statement::While{loop_id: None, invariants: None, condition, body: None}
+        let invariants = expect_invariants(&sexps[2], config);
+        Statement::While{loop_id: None, invariants, condition, body: None}
       },
       Sexp::Atom(Atom::S(s)) if s == "while" => {
         let condition = Box::new(expect_expression(&sexps[1], config));
-        let body = Some(Box::new(expect_statement(&sexps[2], config)));
-        Statement::While{loop_id: None, invariants: None, condition, body}
+        let invariants = expect_invariants(&sexps[2], config);
+        let body = Some(Box::new(expect_statement(&sexps[3], config)));
+        Statement::While{loop_id: None, invariants, condition, body}
       },
       Sexp::Atom(Atom::S(s)) if s == "while-double" => {
         let condition = expect_expression(&sexps[1], config);
@@ -242,7 +244,7 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
         ));
         Statement::While {
           loop_id: None,
-          invariants: None,
+          invariants: Vec::new(),
           condition: Box::new(condition),
           body: Some(Box::new(double_body))
         }
@@ -257,8 +259,12 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
           rhs: Box::new(cond2.clone()),
           op: BinaryOp::And,
         };
+        let invars1 = expect_invariants(&sexps[5], config);
+        let invars2 = expect_invariants(&sexps[6], config);
+        let mut combined_invars = invars1.clone();
+        combined_invars.append(&mut invars2.clone());
 
-        let body1 = expect_statement(&sexps[5], config);
+        let body1 = expect_statement(&sexps[7], config);
         let runoff_body_1 = match config.assume_name.clone() {
           None => body1.clone(),
           Some(assume_name) => Statement::Compound(vec!(
@@ -272,7 +278,7 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
           )),
         };
 
-        let body2 = expect_statement(&sexps[6], config);
+        let body2 = expect_statement(&sexps[8], config);
         let runoff_body_2 = match config.assume_name.clone() {
           None => body2.clone(),
           Some(assume_name) => Statement::Compound(vec!(
@@ -285,7 +291,7 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
             BlockItem::Statement(body2.clone()),
           )),
         };
-        let body = expect_statement(&sexps[7], config);
+        let body = expect_statement(&sexps[9], config);
 
         let mut unrolls1 = Vec::new();
         while (unrolls1.len() as i64) < left_unrolls {
@@ -311,17 +317,17 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
           BlockItem::Statement(Statement::Compound(unrolls2)),
           BlockItem::Statement(Statement::While {
             loop_id: None,
-            invariants: None,
+            invariants: combined_invars,
             condition: Box::new(conj),
             body: Some(Box::new(body))}),
           BlockItem::Statement(Statement::While {
             loop_id: None,
-            invariants: None,
+            invariants: invars1,
             condition: Box::new(cond1),
             body: Some(Box::new(runoff_body_1))}),
           BlockItem::Statement(Statement::While {
             loop_id: None,
-            invariants: None,
+            invariants: invars2,
             condition: Box::new(cond2),
             body: Some(Box::new(runoff_body_2))}),
         ];
@@ -333,6 +339,24 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
       _ => Statement::Expression(Box::new(expect_expression(sexp, config)))
     },
     _ => Statement::Expression(Box::new(expect_expression(sexp, config)))
+  }
+}
+
+fn expect_invariants(sexp: &Sexp, config: &Config) -> Vec<Expression> {
+  match sexp {
+    Sexp::List(sexps) => {
+      match &sexps[0] {
+        Sexp::Atom(Atom::S(s)) if s == "invariants" => {
+          let mut invars = Vec::new();
+          for i in 1..sexps.len() {
+            invars.push(expect_expression(&sexps[i], config))
+          }
+          invars
+        },
+        _ => panic!("Expected invariants, got: {}", sexp),
+      }
+    },
+    _ => panic!("Expected invariants, got: {}", sexp),
   }
 }
 
@@ -348,8 +372,13 @@ fn expect_while_scheduled(sexps: &[Sexp], config: &Config) -> Statement {
     rhs: Box::new(cond2.clone()),
     op: BinaryOp::And,
   };
+  let invars1 = expect_invariants(&sexps[7], config);
+  let invars2 = expect_invariants(&sexps[8], config);
+  let mut combined_invars = invars1.clone();
+  combined_invars.append(&mut invars2.clone());
 
-  let body1 = expect_statement(&sexps[7], config);
+
+  let body1 = expect_statement(&sexps[9], config);
   let mut body1_rel = body1.clone();
   let mut unrolls1 = Vec::new();
   while (unrolls1.len() as i64) < left_unrolls {
@@ -385,7 +414,7 @@ fn expect_while_scheduled(sexps: &[Sexp], config: &Config) -> Statement {
     BlockItem::Statement(body1.clone()),
   ));
 
-  let body2 = expect_statement(&sexps[8], config);
+  let body2 = expect_statement(&sexps[10], config);
   let mut body2_rel = body2.clone();
   let mut unrolls2 = Vec::new();
   while (unrolls2.len() as i64) < right_unrolls {
@@ -431,17 +460,17 @@ fn expect_while_scheduled(sexps: &[Sexp], config: &Config) -> Statement {
     BlockItem::Statement(Statement::Compound(unrolls2)),
     BlockItem::Statement(Statement::While {
       loop_id: None,
-      invariants: None,
+      invariants: combined_invars,
       condition: Box::new(conj),
       body: Some(Box::new(bodies))}),
     BlockItem::Statement(Statement::While {
       loop_id: None,
-      invariants: None,
+      invariants: invars1,
       condition: Box::new(cond1),
       body: Some(Box::new(runoff_body_1))}),
     BlockItem::Statement(Statement::While {
       loop_id: None,
-      invariants: None,
+      invariants: invars2,
       condition: Box::new(cond2),
       body: Some(Box::new(runoff_body_2))}),
   ];

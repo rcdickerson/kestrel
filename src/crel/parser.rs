@@ -1,7 +1,12 @@
 use crate::crel::ast::*;
+use crate::spec::parser::bexpr;
+use crate::spec::to_crel::*;
 use lang_c::ast as c;
 use lang_c::driver::{Config, parse};
 use lang_c::span::Node;
+
+type ExprWithInvars = (Expression, Vec<Expression>);
+type StmtWithInvars = (Statement,  Vec<Expression>);
 
 /// Read the given C file and parse it into the CRel IR.
 pub fn parse_c_file(input_file: &String) -> CRel {
@@ -61,7 +66,7 @@ fn trans_function_definition(def: &Node<c::FunctionDefinition>) -> CRel {
     .collect::<Vec<DeclarationSpecifier>>();
   let declarator = trans_declarator(&def.node.declarator);
   let (name, params) = declarator.expect_function();
-  let body = trans_statement(&def.node.statement);
+  let (body, _) = trans_statement(&def.node.statement);
   CRel::FunctionDefinition {
     specifiers,
     name: name.clone(),
@@ -112,11 +117,11 @@ fn trans_declarator(decl: &Node<c::Declarator>) -> Declarator {
         c::ArraySize::VariableUnknown => is_array = true,
         c::ArraySize::VariableExpression(expr) => {
           is_array = true;
-          array_sizes.push(trans_expression(expr));
+          array_sizes.push(trans_expression(expr).0);
         },
         c::ArraySize::StaticExpression(expr) => {
           is_array = true;
-          array_sizes.push(trans_expression(expr));
+          array_sizes.push(trans_expression(expr).0);
         },
       },
       c::DerivedDeclarator::Function(fundecl) => {
@@ -166,7 +171,7 @@ fn trans_init_declarator(decl: &Node<c::InitDeclarator>) -> (Declarator, Option<
 
 fn trans_initializer(initializer: &Option<Node<c::Initializer>>) -> Option<Expression> {
   initializer.as_ref().map(|init| match &init.node {
-      c::Initializer::Expression(expr) => trans_expression(expr),
+      c::Initializer::Expression(expr) => trans_expression(expr).0,
       _ => panic!("Unsupported initalizer: {:?}", init),
     })
 }
@@ -189,50 +194,69 @@ fn trans_type_qualifier(type_qual: c::TypeQualifier) -> TypeQualifier {
   }
 }
 
-fn trans_statement(stmt: &Node<c::Statement>) -> Statement {
+fn trans_statement(stmt: &Node<c::Statement>) -> StmtWithInvars {
   match &stmt.node {
-    c::Statement::Break => Statement::Break,
+    c::Statement::Break => (Statement::Break, Vec::new()),
     c::Statement::Compound(items) => {
-      Statement::Compound(items.iter().flat_map(trans_block_item).collect())
+      let mut stmts = Vec::new();
+      let mut invs = Vec::new();
+      for item in items {
+        let (mut stmt, mut inv) = trans_block_item(item);
+        stmts.append(&mut stmt);
+        invs.append(&mut inv);
+      }
+      (Statement::Compound(stmts), invs)
     },
     c::Statement::Expression(expr) => match expr {
-      None => Statement::None,
-      Some(expr) => Statement::Expression(Box::new(trans_expression(expr))),
-    },
-    c::Statement::If(stmt) => {
-      let condition = Box::new(trans_expression(&stmt.node.condition));
-      let then = Box::new(trans_statement(&stmt.node.then_statement));
-      let els = stmt.node.else_statement.as_ref().map(|else_stmt| Box::new(trans_statement(else_stmt)));
-      Statement::If{condition, then, els}
-    },
-    c::Statement::Return(node) => match node {
-      None => Statement::Return(None),
+      None => (Statement::None, Vec::new()),
       Some(expr) => {
-        let texpr = trans_expression(expr);
-        Statement::Return(Some(Box::new(texpr)))
+        let (expr, invars) = trans_expression(expr);
+        (Statement::Expression(Box::new(expr)), invars)
       },
     },
-    c::Statement::While(node) => trans_while_statement(node),
+    c::Statement::If(stmt) => {
+      let condition = Box::new(trans_expression(&stmt.node.condition).0);
+      let (then, mut invs) = trans_statement(&stmt.node.then_statement);
+      let (els, mut einvs) = match &stmt.node.else_statement {
+        None => (None, Vec::new()),
+        Some(stmt) => {
+          let (s, i) = trans_statement(&stmt);
+          (Some(Box::new(s)), i)
+        },
+      };
+      invs.append(&mut einvs);
+      (Statement::If{condition, then: Box::new(then), els }, invs)
+    },
+    c::Statement::Return(node) => match node {
+      None => (Statement::Return(None), Vec::new()),
+      Some(expr) => {
+        let (texpr, invars) = trans_expression(expr);
+        (Statement::Return(Some(Box::new(texpr))), invars)
+      },
+    },
+    c::Statement::While(node) => (trans_while_statement(node), Vec::new()),
     _ => panic!("Unsupported statement: {:?}", stmt),
   }
 }
 
-fn trans_expression(expr: &Node<c::Expression>) -> Expression {
+fn trans_expression(expr: &Node<c::Expression>) -> ExprWithInvars {
   match &expr.node {
     c::Expression::UnaryOperator(unop) => {
-      let expr = Box::new(trans_expression(&unop.node.operand));
+      let (expr, invars) = trans_expression(&unop.node.operand);
       let op = trans_unary_operator(&unop.node.operator.node);
-      Expression::Unop{ expr, op }
+      (Expression::Unop{ expr: Box::new(expr), op }, invars)
     },
     c::Expression::BinaryOperator(binop) => {
-      let lhs = Box::new(trans_expression(&binop.node.lhs));
-      let rhs = Box::new(trans_expression(&binop.node.rhs));
+      let (lhs, mut invars) = trans_expression(&binop.node.lhs);
+      let (rhs, mut rinvars) = trans_expression(&binop.node.rhs);
       let op = trans_binary_operator(&binop.node.operator.node);
-      Expression::Binop{ lhs, rhs, op }
+      invars.append(&mut rinvars);
+      (Expression::Binop{ lhs: Box::new(lhs), rhs: Box::new(rhs), op }, invars)
     },
     c::Expression::Call(call) => trans_call_expression(call),
-    c::Expression::Constant(cnst) => trans_constant(cnst),
-    c::Expression::Identifier(id) => Expression::Identifier{ name: id.node.name.clone() },
+    c::Expression::Constant(cnst) => (trans_constant(cnst), Vec::new()),
+    c::Expression::Identifier(id) =>
+      (Expression::Identifier{ name: id.node.name.clone() }, Vec::new()),
     _ => panic!("Unsupported expression: {:?}", expr),
   }
 }
@@ -275,38 +299,62 @@ fn trans_constant(cnst: &Node<c::Constant>) -> Expression {
   }
 }
 
-fn trans_block_item(item: &Node<c::BlockItem>) -> Vec<BlockItem> {
+fn trans_block_item(item: &Node<c::BlockItem>) -> (Vec<BlockItem>, Vec<Expression>) {
   match &item.node {
     c::BlockItem::Declaration(node) => {
-      trans_declaration(node).iter().map(|decl| {
+      let decl = trans_declaration(node).iter().map(|decl| {
         BlockItem::Declaration(decl.clone())
-      }).collect()
+      }).collect();
+      (decl, Vec::new())
     },
     c::BlockItem::Statement(node) => {
-      vec!(BlockItem::Statement(trans_statement(node)))
+      let (stmt, invars) = trans_statement(node);
+      (vec!(BlockItem::Statement(stmt)), invars)
     },
     _ => panic!("Unsupported block item: {:?}", item.node),
   }
 }
 
 fn trans_while_statement(expr: &Node<c::WhileStatement>) -> Statement {
-  let condition = Box::new(trans_expression(&expr.node.expression));
-  let body = match trans_statement(&expr.node.statement) {
-    Statement::None => None,
-    stmt => Some(Box::new(stmt)),
+  let condition = Box::new(trans_expression(&expr.node.expression).0);
+  let (body, invars) = match trans_statement(&expr.node.statement) {
+    (Statement::None, invars) => (None, invars),
+    (stmt, invars) => (Some(Box::new(stmt)), invars),
   };
   Statement::While {
     loop_id: None,
-    invariants: None,
+    invariants: invars,
     condition,
     body
   }
 }
 
-fn trans_call_expression(expr: &Node<c::CallExpression>) -> Expression {
-  let callee = trans_expression(&expr.node.callee);
-  let args = expr.node.arguments.iter()
-    .map(trans_expression)
-    .collect();
-  Expression::Call{callee: Box::new(callee), args}
+fn trans_call_expression(expr: &Node<c::CallExpression>) -> ExprWithInvars {
+  let (callee, invars) = trans_expression(&expr.node.callee);
+  match callee {
+    Expression::Identifier{name} if name == "_invariant" => {
+      let invars = expr.node.arguments.iter()
+        .map(|arg| match &arg.node {
+          c::Expression::StringLiteral(lit) => {
+            let mut chars = lit.node[0].chars();
+            chars.next();      // Remove leading and trailing
+            chars.next_back(); // quotation marks.
+            chars.as_str()
+          }
+          _ => panic!("Expecting string arguments to _invariant"),
+        })
+        .map(|invar_str| match bexpr(invar_str) {
+          Ok((_, expr)) => expr.to_crel(),
+          Err(err) => panic!("Error parsing invariant: {}", err),
+        })
+        .collect();
+      (Expression::Statement(Box::new(Statement::None)), invars)
+    },
+    _ => {
+      let args = expr.node.arguments.iter()
+        .map(|arg| trans_expression(arg).0)
+        .collect();
+      (Expression::Call{callee: Box::new(callee), args}, invars)
+    },
+  }
 }

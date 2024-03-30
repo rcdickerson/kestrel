@@ -121,7 +121,7 @@ impl Statement {
       ),
       Statement::While{loop_id, invariants, condition, body} => Statement::While {
         loop_id: loop_id.clone(),
-        invariants: invariants.as_ref().map(|invars| invars.clone()),
+        invariants: invariants.clone(),
         condition: Box::new(mapper.map_expression(condition).map(mapper)),
         body: body.as_ref().map(|stmt| {
           Box::new(mapper.map_statement(&stmt).map(mapper))

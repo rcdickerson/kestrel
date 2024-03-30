@@ -1,5 +1,7 @@
 /* @KESTREL
- * pre: left.a_in == right.a_in;
+ * pre: left.a_in == right.a_in
+     && (forall i: int, j: int, a: int, x: int :: (i == j) ==> read(store(a, i, x), j) == x)
+     && (forall i: int, j: int, a: int, x: int :: (i != j) ==> read(store(a, i, x), j) == read(a, j));
  * left: left;
  * right: right;
  * post: left.a == right.a;

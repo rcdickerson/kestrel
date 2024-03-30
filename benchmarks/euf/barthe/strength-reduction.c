@@ -15,6 +15,7 @@ void left(int B, int C, int N, int x_in) {
   int i = 0;
   int j = 0;
   while (i < N ) {
+    _invariant("right.j == (right.i * right.B) + right.C");
     j = i * B + C;
     x = x + j;
     i = i + 1;

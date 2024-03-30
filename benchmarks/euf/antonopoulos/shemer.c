@@ -16,6 +16,8 @@ void left(int x) {
   int z = 2 * x;
   int i = 0;
   while (i < z) {
+    _invariant("2 * r_y == l_y");
+    _invariant("2 * r_i == l_i");
     y = y + x;
     i = i + 1;
   }

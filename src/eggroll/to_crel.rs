@@ -406,8 +406,8 @@ fn expect_while_scheduled(sexps: &[Sexp], config: &Config) -> Statement {
     rhs: Box::new(cond2.clone()),
     op: BinaryOp::And,
   };
-  let invars1 = expect_invariants(&sexps[5], config);
-  let invars2 = expect_invariants(&sexps[6], config);
+  let invars1 = expect_invariants(&sexps[7], config);
+  let invars2 = expect_invariants(&sexps[8], config);
   let mut combined_invars: Vec<_> = invars1.values().map(|v| v.clone()).collect();
   for (sexp, expr) in &invars2 {
     if !invars1.contains_key(sexp) { combined_invars.push(expr.clone()) }

@@ -430,15 +430,6 @@ fn expect_while_scheduled(sexps: &[Sexp], config: &Config) -> Statement {
       .collect();
     body1_rel = Statement::Compound(items);
   }
-  let runoff_body_1 = Statement::Compound(vec!(
-    BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
-      callee: Box::new(Expression::Identifier{name: "assume".to_string()}),
-      args: vec!(Expression::Unop{
-        expr: Box::new(cond2.clone()),
-        op: UnaryOp::Not}),
-    }))),
-    BlockItem::Statement(body1.clone()),
-  ));
 
   let body2 = expect_statement(&sexps[10], config);
   let mut body2_rel = body2.clone();
@@ -466,15 +457,6 @@ fn expect_while_scheduled(sexps: &[Sexp], config: &Config) -> Statement {
       .collect();
     body2_rel = Statement::Compound(items);
   }
-  let runoff_body_2 = Statement::Compound(vec!(
-    BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
-      callee: Box::new(Expression::Identifier{name: "assume".to_string()}),
-      args: vec!(Expression::Unop{
-        expr: Box::new(cond1.clone()),
-        op: UnaryOp::Not}),
-    }))),
-    BlockItem::Statement(body2.clone()),
-  ));
 
   let bodies = Statement::Relation {
     lhs: Box::new(body1_rel),
@@ -493,12 +475,14 @@ fn expect_while_scheduled(sexps: &[Sexp], config: &Config) -> Statement {
       loop_id: None,
       invariants: invars1,
       condition: Box::new(cond1),
-      body: Some(Box::new(runoff_body_1))}),
+      body: Some(Box::new(body1.clone()))}),
+      //body: Some(Box::new(runoff_body_1))}),
     BlockItem::Statement(Statement::While {
       loop_id: None,
       invariants: invars2,
       condition: Box::new(cond2),
-      body: Some(Box::new(runoff_body_2))}),
+      body: Some(Box::new(body2.clone()))}),
+      //body: Some(Box::new(runoff_body_2))}),
   ];
   Statement::Compound(stmts)
 }

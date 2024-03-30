@@ -1,5 +1,6 @@
 /* @KESTREL
- * pre: (forall list: int :: r_advance(list, list, 0) == 1)
+ * pre: left.length == right.length
+     && (forall list: int :: r_advance(list, list, 0) == 1)
      && (forall l1: int, l2: int :: l1 != l2 ==> r_advance(l1, l2, 0) == 0)
      && (forall l1: int, l2: int, l2next: int, n: int, m: int ::
              (l2next == list_next(l2) && r_advance(l1, l2, n) == 1 && m == n + 1)
@@ -31,12 +32,13 @@ void _test_gen(int arr, int list, int length) {
   _main(list, length, arr, length);
 }
 
-void sum_list(int list_in, int length)
-{
+void sum_list(int list_in, int length) {
   int sum = 0;
   int list = list_in;
   int i = 0;
   while(i < length) {
+    _invariant("left.sum == right.sum");
+    _invariant("r_advance(left.list_in, left.list, left.i) == 1");
     sum = sum + list_val(list);
     list = list_next(list);
     i = i + 1;
@@ -44,8 +46,7 @@ void sum_list(int list_in, int length)
 }
 
 
-void sum_array(int arr_in, int length)
-{
+void sum_array(int arr_in, int length) {
   int sum = 0;
   int i = 0;
   while(i < length) {

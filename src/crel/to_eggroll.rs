@@ -76,7 +76,13 @@ fn expression_to_eggroll(expr: &Expression) -> String {
       };
       format!("({} {} {})", op_egg, lhs_egg, rhs_egg)
     },
-    Expression::Forall{..} => panic!("Foralls unsupported in eggroll IR"),
+    Expression::Forall{bindings, condition} => {
+      let bindings = bindings.iter()
+        .map(|(name, ty)| format!("(binding {} {})", name, type_to_eggroll(ty)))
+        .collect::<Vec<_>>()
+        .join(" ");
+      format!("(forall (bindings {}) {})", bindings, expression_to_eggroll(condition))
+    },
     Expression::Statement(stmt) => statement_to_eggroll(stmt),
   }
 }

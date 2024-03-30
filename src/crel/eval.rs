@@ -168,7 +168,7 @@ fn eval_binop(lhs: &Expression, rhs: &Expression, op: &BinaryOp, exec: &mut Exec
   };
 
   match op {
-    BinaryOp::Add => arith_binop(exec, |i1, i2| i1 + i2, |f1, f2| f1 + f2),
+    BinaryOp::Add => arith_binop(exec, |i1, i2| i1.wrapping_add(i2), |f1, f2| f1 + f2),
     BinaryOp::And => {
       if exec.value_is_false() {
         exec.set_value(HeapValue::Int(0));

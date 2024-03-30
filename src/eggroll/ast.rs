@@ -48,7 +48,12 @@ define_language! {
     // tradeoff in the future.
     "while-lockstep" = WhileLockstep([Id; 9]),
     "while-scheduled" = WhileScheduled([Id; 10]),
+
+    // Invariants
     "invariants" = Invariants(Vec<Id>),
+    "forall" = Forall([Id; 2]),
+    "bindings" = Bindings(Vec<Id>),
+    "binding" = Binding([Id; 2]),
 
     // Declarations
     "declaration" = Declaration([Id; 3]),

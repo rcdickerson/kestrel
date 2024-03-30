@@ -90,6 +90,11 @@ fn expect_expression(sexp: &Sexp, config: &Config) -> Expression {
         let rhs = Box::new(expect_expression(&sexps[2], config));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Index }
       },
+      Sexp::Atom(Atom::S(s)) if s == "forall" => {
+        let bindings = expect_bindings(&sexps[1]);
+        let condition = Box::new(expect_expression(&sexps[2], config));
+        Expression::Forall{bindings, condition}
+      },
       Sexp::Atom(Atom::S(s)) if s == "+" => {
         let lhs = Box::new(expect_expression(&sexps[1], config));
         let rhs = Box::new(expect_expression(&sexps[2], config));
@@ -358,6 +363,44 @@ fn expect_invariants(sexp: &Sexp, config: &Config) -> Vec<Expression> {
     },
     Sexp::Atom(Atom::S(s)) if s == "invariants" => Vec::new(),
     _ => panic!("Expected invariants, got: {}", sexp),
+  }
+}
+
+fn expect_bindings(sexp: &Sexp) -> Vec<(String, Type)> {
+  match sexp {
+    Sexp::List(sexps) => {
+      match &sexps[0] {
+        Sexp::Atom(Atom::S(s)) if s == "bindings" => {
+          let mut bindings = Vec::new();
+          for i in 1..sexps.len() {
+            bindings.push(expect_binding(&sexps[i]));
+          }
+          bindings
+        },
+        _ => panic!("Expected quantifier bindings, got: {}", sexp),
+      }
+    },
+    Sexp::Atom(Atom::S(s)) if s == "bindings" => Vec::new(),
+    _ => panic!("Expected quantifier bindings, got: {}", sexp),
+  }
+}
+
+fn expect_binding(sexp: &Sexp) -> (String, Type) {
+  match sexp {
+    Sexp::List(sexps) => {
+      match &sexps[0] {
+        Sexp::Atom(Atom::S(s)) if s == "binding" => {
+          let name = match &sexps[1] {
+            Sexp::Atom(Atom::S(s)) => s,
+            _ => panic!("Expected quantifier binding, got: {}", sexp),
+          };
+          let ty = expect_type(&sexps[2]);
+          (name.clone(), ty)
+        },
+        _ => panic!("Expected quantifier binding, got: {}", sexp),
+      }
+    },
+    _ => panic!("Expected quantifier binding, got: {}", sexp),
   }
 }
 

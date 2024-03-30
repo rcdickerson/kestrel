@@ -236,24 +236,6 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
         let body = Some(Box::new(expect_statement(&sexps[3], config)));
         Statement::While{loop_id: None, invariants, condition, body}
       },
-      Sexp::Atom(Atom::S(s)) if s == "while-double" => {
-        let condition = expect_expression(&sexps[1], config);
-        let body_stmt = expect_statement(&sexps[2], config);
-        let double_body = Statement::Compound(vec!(
-          BlockItem::Statement(body_stmt.clone()),
-          BlockItem::Statement(Statement::If {
-            condition: Box::new(condition.clone()),
-            then: Box::new(body_stmt.clone()),
-            els: None,
-          }),
-        ));
-        Statement::While {
-          loop_id: None,
-          invariants: Vec::new(),
-          condition: Box::new(condition),
-          body: Some(Box::new(double_body))
-        }
-      },
       Sexp::Atom(Atom::S(s)) if s == "while-lockstep" => {
         let left_unrolls = expect_i64(&sexps[1]);
         let right_unrolls = expect_i64(&sexps[2]);

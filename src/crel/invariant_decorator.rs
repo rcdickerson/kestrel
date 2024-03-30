@@ -24,7 +24,6 @@ impl CRelVisitor for InvariantDecorator<'_> {
       },
       _ => ()
     }
-    statement.walk(self);
   }
 }
 

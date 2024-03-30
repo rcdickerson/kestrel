@@ -1,12 +1,15 @@
 /* @KESTREL
- * pre: forall i: int ::
-     (read(left.list_in, i) >= read(right.list_in, i) || read(right.list_in, i) - read(left.list_in, i) < epsilon) &&
-     (read(left.list_in, i) <  read(right.list_in, i) || read(left.list_in, i) - read(right.list_in, i) < epsilon);
+ * pre: left.size_in == right.size_in
+     && (forall i: int, j: int, a: int, x: float :: (i == j) ==> read(store(a, i, x), j) == x)
+     && (forall i: int, j: int, a: int, x: float :: (i != j) ==> read(store(a, i, x), j) == read(a, j))
+     && (forall i: int ::
+          (read(left.list_in, i) <  read(right.list_in, i) ==> read(right.list_in, i) - read(left.list_in, i) < epsilon) &&
+          (read(left.list_in, i) >= read(right.list_in, i) ==> read(left.list_in, i) - read(right.list_in, i) < epsilon));
  * left: sort;
  * right: sort;
  * post: forall j: int ::
-     (read(left.list, j) >= read(right.list, j) || read(right.list, j) - read(left.list, j) < epsilon) &&
-     (read(left.list, j) <  read(right.list, j) || read(left.list, j) - read(right.list, j) < epsilon);
+     (read(left.list, j) <  read(right.list, j) ==> read(right.list, j) - read(left.list, j) < epsilon) &&
+     (read(left.list, j) >= read(right.list, j) ==> read(left.list, j) - read(right.list, j) < epsilon);
  */
 
 const float epsilon = 0.01;
@@ -25,8 +28,10 @@ void sort(int list_in, int size_in) {
   int size = size_in;
   int i = 0;
   while (i < size) {
+    _invariant("forall j: int :: (read(left.list, j) <  read(right.list, j) ==> read(right.list, j) - read(left.list, j) < epsilon) && (read(left.list, j) >= read(right.list, j) ==> read(left.list, j) - read(right.list, j) < epsilon)");
     int j = size - 1;
     while (j > i) {
+      _invariant("forall j: int :: (read(left.list, j) <  read(right.list, j) ==> read(right.list, j) - read(left.list, j) < epsilon) && (read(left.list, j) >= read(right.list, j) ==> read(left.list, j) - read(right.list, j) < epsilon)");
       float prev = read(list, j - 1);
       float cur  = read(list, j);
       if (prev > cur) {

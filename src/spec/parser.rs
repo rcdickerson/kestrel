@@ -267,7 +267,8 @@ fn bexpr_forall_binding(i: &str) -> IResult<&str, (String, KestrelType)> {
   let (i, _)         = multispace0(i)?;
   let (i, pred_type) = alpha1(i)?;
   match pred_type {
-    "int" => Ok((i, (pred_var.to_string(), KestrelType::Int))),
+    "float" => Ok((i, (pred_var.to_string(), KestrelType::Float))),
+    "int"   => Ok((i, (pred_var.to_string(), KestrelType::Int))),
     _ => Err(Err::Error(Error{input: i, code: ErrorKind::Fail})),
   }
 }

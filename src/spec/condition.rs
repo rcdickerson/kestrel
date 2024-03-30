@@ -28,6 +28,7 @@ impl KestrelCond {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum KestrelType {
+  Float,
   Int,
 }
 

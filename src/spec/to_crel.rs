@@ -167,6 +167,7 @@ impl CondToCRel for CondBExpr {
       CondBExpr::Forall{bindings, condition} => {
         crel::Expression::Forall {
           bindings: bindings.iter().map(|(var, ty)| match ty {
+            KestrelType::Float => (var.clone(), crel::Type::Float),
             KestrelType::Int => (var.clone(), crel::Type::Int),
           }).collect(),
           condition: Box::new(condition.to_crel()),

@@ -1,5 +1,6 @@
 use crate::crel::ast::*;
 use sexp::{Atom, Sexp};
+use std::collections::HashMap;
 
 pub struct Config {
   pub assert_name: Option<String>,
@@ -227,12 +228,12 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
       },
       Sexp::Atom(Atom::S(s)) if s == "while-no-body" => {
         let condition = Box::new(expect_expression(&sexps[1], config));
-        let invariants = expect_invariants(&sexps[2], config);
+        let invariants = expect_invariants(&sexps[2], config).values().map(|v| v.clone()).collect();
         Statement::While{loop_id: None, invariants, condition, body: None}
       },
       Sexp::Atom(Atom::S(s)) if s == "while" => {
         let condition = Box::new(expect_expression(&sexps[1], config));
-        let invariants = expect_invariants(&sexps[2], config);
+        let invariants = expect_invariants(&sexps[2], config).values().map(|v| v.clone()).collect();
         let body = Some(Box::new(expect_statement(&sexps[3], config)));
         Statement::While{loop_id: None, invariants, condition, body}
       },
@@ -248,8 +249,12 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
         };
         let invars1 = expect_invariants(&sexps[5], config);
         let invars2 = expect_invariants(&sexps[6], config);
-        let mut combined_invars = invars1.clone();
-        combined_invars.append(&mut invars2.clone());
+        let mut combined_invars: Vec<_> = invars1.values().map(|v| v.clone()).collect();
+        for (sexp, expr) in &invars2 {
+          if !invars1.contains_key(sexp) {
+            combined_invars.push(expr.clone());
+          }
+        }
 
         let body1 = expect_statement(&sexps[7], config);
         let runoff_body_1 = match config.assume_name.clone() {
@@ -309,12 +314,12 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
             body: Some(Box::new(body))}),
           BlockItem::Statement(Statement::While {
             loop_id: None,
-            invariants: invars1,
+            invariants: invars1.values().map(|v| v.clone()).collect(),
             condition: Box::new(cond1),
             body: Some(Box::new(runoff_body_1))}),
           BlockItem::Statement(Statement::While {
             loop_id: None,
-            invariants: invars2,
+            invariants: invars2.values().map(|v| v.clone()).collect(),
             condition: Box::new(cond2),
             body: Some(Box::new(runoff_body_2))}),
         ];
@@ -329,21 +334,24 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
   }
 }
 
-fn expect_invariants(sexp: &Sexp, config: &Config) -> Vec<Expression> {
+/// Returns a set of invariants indexed by the sexp that encoded each. The HashSet is
+/// to aid in de-duping invariants, as Expressions are not hashable. (If they ever
+/// become so, the return type of this function can become HashSet<Expression>.)
+fn expect_invariants(sexp: &Sexp, config: &Config) -> HashMap<String, Expression> {
   match sexp {
     Sexp::List(sexps) => {
       match &sexps[0] {
         Sexp::Atom(Atom::S(s)) if s == "invariants" => {
-          let mut invars = Vec::new();
+          let mut invars = HashMap::new();
           for i in 1..sexps.len() {
-            invars.push(expect_expression(&sexps[i], config))
+            invars.insert(sexps[i].to_string(), expect_expression(&sexps[i], config));
           }
           invars
         },
         _ => panic!("Expected invariants, got: {}", sexp),
       }
     },
-    Sexp::Atom(Atom::S(s)) if s == "invariants" => Vec::new(),
+    Sexp::Atom(Atom::S(s)) if s == "invariants" => HashMap::new(),
     _ => panic!("Expected invariants, got: {}", sexp),
   }
 }
@@ -398,11 +406,12 @@ fn expect_while_scheduled(sexps: &[Sexp], config: &Config) -> Statement {
     rhs: Box::new(cond2.clone()),
     op: BinaryOp::And,
   };
-  let invars1 = expect_invariants(&sexps[7], config);
-  let invars2 = expect_invariants(&sexps[8], config);
-  let mut combined_invars = invars1.clone();
-  combined_invars.append(&mut invars2.clone());
-
+  let invars1 = expect_invariants(&sexps[5], config);
+  let invars2 = expect_invariants(&sexps[6], config);
+  let mut combined_invars: Vec<_> = invars1.values().map(|v| v.clone()).collect();
+  for (sexp, expr) in &invars2 {
+    if !invars1.contains_key(sexp) { combined_invars.push(expr.clone()) }
+  }
 
   let body1 = expect_statement(&sexps[9], config);
   let mut body1_rel = body1.clone();
@@ -473,13 +482,13 @@ fn expect_while_scheduled(sexps: &[Sexp], config: &Config) -> Statement {
       body: Some(Box::new(bodies))}),
     BlockItem::Statement(Statement::While {
       loop_id: None,
-      invariants: invars1,
+      invariants: invars1.values().map(|v| v.clone()).collect(),
       condition: Box::new(cond1),
       body: Some(Box::new(body1.clone()))}),
       //body: Some(Box::new(runoff_body_1))}),
     BlockItem::Statement(Statement::While {
       loop_id: None,
-      invariants: invars2,
+      invariants: invars2.values().map(|v| v.clone()).collect(),
       condition: Box::new(cond2),
       body: Some(Box::new(body2.clone()))}),
       //body: Some(Box::new(runoff_body_2))}),

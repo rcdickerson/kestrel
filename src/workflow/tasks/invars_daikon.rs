@@ -22,7 +22,6 @@ impl InvarsDaikon {
 
 impl Task for InvarsDaikon {
   fn run(&self, context: &mut Context) {
-
     // Write Daikon output to file.
     let daikon_path = "daikon_output.c".to_string();
     println!("Writing Daikon to {}...", daikon_path);
@@ -79,8 +78,8 @@ impl Task for InvarsDaikon {
       Result::Err(err) => panic!("Error parsing Daikon invariants: {}", err),
     };
     separate_eq(&mut invariants);
-    let mut skipper = LoopSkipper::new(invariants.keys().collect());
-    let mut crel = context.aligned_crel().map(&mut skipper);
+    let mut keep_loops = LoopKeeper::new(invariants.keys().collect());
+    let mut crel = context.aligned_crel().map(&mut keep_loops);
     crel.decorate_invariants(&invariants);
     context.aligned_crel.replace(crel);
   }
@@ -92,6 +91,7 @@ fn separate_eq(invariants: &mut HashMap<String, Vec<Expression>>) {
     *invars = invars.iter()
       .flat_map(|invar| match invar {
         Expression::Binop{lhs, rhs, op: BinaryOp::Equals} => vec!(
+          Expression::Binop{lhs: lhs.clone(), rhs: rhs.clone(), op: BinaryOp::Equals},
           Expression::Binop{lhs: lhs.clone(), rhs: rhs.clone(), op: BinaryOp::Lte},
           Expression::Binop{lhs: lhs.clone(), rhs: rhs.clone(), op: BinaryOp::Gte},
         ),
@@ -101,18 +101,18 @@ fn separate_eq(invariants: &mut HashMap<String, Vec<Expression>>) {
   }
 }
 
-struct LoopSkipper<'a> {
+struct LoopKeeper<'a> {
   keep_ids: HashSet<&'a String>,
   handled_ids: HashSet<String>,
 }
 
-impl <'a> LoopSkipper<'a> {
+impl <'a> LoopKeeper<'a> {
   fn new(keep_ids: HashSet<&'a String>) -> Self {
-    LoopSkipper{keep_ids, handled_ids: HashSet::new()}
+    LoopKeeper{keep_ids, handled_ids: HashSet::new()}
   }
 }
 
-impl CRelMapper for LoopSkipper<'_> {
+impl CRelMapper for LoopKeeper<'_> {
   fn map_statement(&mut self, stmt: &Statement) -> Statement {
     match stmt {
       Statement::While{loop_id, condition, ..} => match loop_id {

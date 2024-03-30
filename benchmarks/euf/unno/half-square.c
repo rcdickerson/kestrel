@@ -8,7 +8,6 @@
  */
 
 void _test_gen(int low, int l_h, int r_h) {
-
   if (l_h < 0) { l_h = l_h * -1; }
   l_h = l_h + 1;
   l_h = l_h % 100;

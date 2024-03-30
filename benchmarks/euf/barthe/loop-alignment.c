@@ -2,7 +2,9 @@
  * pre: left.a_in == right.a_in
      && left.b_in == right.b_in
      && left.size_in == right.size_in
-     && 1 <= left.size_in;
+     && 1 <= left.size_in
+     && (forall i: int, j: int, a: int, x: int :: (i == j) ==> read(store(a, i, x), j) == x)
+     && (forall i: int, j: int, a: int, x: int :: (i != j) ==> read(store(a, i, x), j) == read(a, j));
  * left: left;
  * right: right;
  * post: left.d == right.d;
@@ -11,8 +13,6 @@
 int read(int list_id, int index);
 int store(int list_id, int index, int value);
 
-// assume(forall i: int, j: int, a: int, x: int :: (i == j) ==> read(store(a, i, x), j) == x);
-// assume(forall i: int, j: int, a: int, x: int :: (i != j) ==> read(store(a, i, x), j) == read(a, j));
 
 void _test_gen(int a, int b, int size) {
   if (size < 0) { size = size * -1; }
@@ -27,6 +27,9 @@ void left(int a_in, int b_in, int size_in) {
   int i = 1;
   int d = a + b + 1; // "New list"
   while (i <= size) {
+    _invariant("l_i == r_j + 1");
+    _invariant("l_d == r_d");
+    _invariant("l_b == store(r_b, r_j, read(r_a, r_j))");
     b = store(b, i, read(a, i));
     d = store(d, i, read(b, i - 1));
     i = i + 1;

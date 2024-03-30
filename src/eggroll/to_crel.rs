@@ -356,6 +356,7 @@ fn expect_invariants(sexp: &Sexp, config: &Config) -> Vec<Expression> {
         _ => panic!("Expected invariants, got: {}", sexp),
       }
     },
+    Sexp::Atom(Atom::S(s)) if s == "invariants" => Vec::new(),
     _ => panic!("Expected invariants, got: {}", sexp),
   }
 }

@@ -18,7 +18,7 @@ pub fn rewrites(with_loop_sched: bool) -> Vec<Rewrite<Eggroll, ()>> {
     rewrites.append(&mut vec![
       rewrite!("while-scheduled21"; "(<|> (while ?e1 ?i1 ?c1) (while ?e2 ?i2 ?c2))"
                                  => "(while-scheduled 0 0 2 1 ?e1 ?e2 ?i1 ?i2 ?c1 ?c2)"),
-      rewrite!("while-scheduled12"; "(<|> (while ?e1 ?11 ?c1) (while ?e2 ?i2 ?c2))"
+      rewrite!("while-scheduled12"; "(<|> (while ?e1 ?i1 ?c1) (while ?e2 ?i2 ?c2))"
                                  => "(while-scheduled 0 0 1 2 ?e1 ?e2 ?i1 ?i2 ?c1 ?c2)"),
 
       rewrite!("unroll-lock-l01"; "(while-lockstep 0 0 ?e1 ?e2 ?i1 ?i2 ?c1 ?c2 ?body)"

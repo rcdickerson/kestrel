@@ -186,7 +186,7 @@ fn eval_binop(lhs: &Expression, rhs: &Expression, op: &BinaryOp, exec: &mut Exec
       eval_expression(rhs, exec);
       exec.push_update(&loc, exec.current_value());
     },
-    BinaryOp::Sub => arith_binop(exec, |i1, i2| i1 - i2, |f1, f2| f1 - f2),
+    BinaryOp::Sub => arith_binop(exec, |i1, i2| i1.wrapping_sub(i2), |f1, f2| f1 - f2),
     BinaryOp::Div => arith_binop(exec, |i1, i2| i1 / i2, |f1, f2| f1 / f2),
     BinaryOp::Equals => bool_binop(exec, |i1, i2| i1 == i2, |f1, f2| f1 == f2),
     BinaryOp::Gt => bool_binop(exec, |i1, i2| i1 > i2, |f1, f2| f1 > f2),
@@ -204,7 +204,7 @@ fn eval_binop(lhs: &Expression, rhs: &Expression, op: &BinaryOp, exec: &mut Exec
     BinaryOp::Lt => bool_binop(exec, |i1, i2| i1 < i2, |f1, f2| f1 < f2),
     BinaryOp::Lte => bool_binop(exec, |i1, i2| i1 <= i2, |f1, f2| f1 <= f2),
     BinaryOp::Mod => arith_binop(exec, |i1, i2| i1 % i2, |f1, f2| f1 % f2),
-    BinaryOp::Mul => arith_binop(exec, |i1, i2| i1 * i2, |f1, f2| f1 * f2),
+    BinaryOp::Mul => arith_binop(exec, |i1, i2| i1.wrapping_mul(i2), |f1, f2| f1 * f2),
     BinaryOp::NotEquals => bool_binop(exec, |i1, i2| i1 != i2, |f1, f2| f1 != f2),
     BinaryOp::Or => {
       if exec.value_is_true() {

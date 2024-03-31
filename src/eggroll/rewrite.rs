@@ -3,6 +3,11 @@ use egg::*;
 
 pub fn rewrites(with_loop_sched: bool) -> Vec<Rewrite<Eggroll, ()>> {
   let mut rewrites = vec![
+    rewrite!("push-rel-if-l"; "(<|> (if ?c ?t) ?s)" => "(if-else ?c (<|> ?t ?s) ?s)"),
+    rewrite!("push-rel-if-else-l"; "(<|> (if-else ?c ?t ?e) ?s)" => "(if-else ?c (<|> ?t ?s) (<|> ?e ?s))"),
+    rewrite!("push-rel-if-r"; "(<|> ?s (if ?c ?t))" => "(if-else ?c (<|> ?s ?t) ?s)"),
+    rewrite!("push-rel-if-else-r"; "(<|> ?s (if-else ?c ?t ?e))" => "(if-else ?c (<|> ?s ?t) (<|> ?s ?e))"),
+
     rewrite!("prod-assoc-l"; "(seq ?a (seq ?b ?c))" => "(seq (seq ?a ?b) ?c)"),
     rewrite!("prod-assoc-r"; "(seq (seq ?a ?b) ?c)" => "(seq ?a (seq ?b ?c))"),
     rewrite!("rel-embed"; "(<|> ?x ?y)" => "(seq (<| ?x) (|> ?y))"),

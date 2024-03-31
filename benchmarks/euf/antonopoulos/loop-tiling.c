@@ -1,9 +1,11 @@
 /* @KESTREL
- * pre:   left.n_in == right.n_in && left.m_in == right.m_in;
+ * pre: left.a_in == right.a_in
+     && left.n_in == right.n_in
+     && left.m_in == right.m_in;
  * left:  left;
  * right: right;
- * post:  forall i:int :: forall j:int ::
-          read(left.a, (i * 10) + j) == read(read(right.a, i), j);
+ * post:  forall i: int, j: int ::
+          read(left.a, (i * left.m) + j) == read(read(right.a, i), j);
  */
 
 int read(int arr, int index);
@@ -13,8 +15,8 @@ int f(int);
 void _test_gen(int a_left, int a_right, int m, int n) {
   if (m < 0) { m = m * -1; }
   if (n < 0) { n = n * -1; }
-  m = m % 50;
-  n = n % 50;
+  m = m % 10;
+  n = n % 10;
   _main(a_left, n, m, a_right, n, m);
 }
 

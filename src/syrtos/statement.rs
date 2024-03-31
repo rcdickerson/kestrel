@@ -44,7 +44,7 @@ impl Statement {
         match els {
           None => { writer.new_line(); },
           Some(else_stmt) => {
-            writer.write(" else {");
+            writer.write(" else {").new_line();
             writer.indent();
             else_stmt.emit(writer);
             writer.dedent();

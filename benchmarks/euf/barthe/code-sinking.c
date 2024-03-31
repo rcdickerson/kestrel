@@ -1,10 +1,12 @@
 /* @KESTREL
- * pre: left.a_in == right.a_in
+ * pre: (forall i: int :: read(left.a_in, i) == read(right.a_in, i))
+     && left.size == right.size
+     && left.size > 0
      && (forall i: int, j: int, a: int, x: int :: (i == j) ==> read(store(a, i, x), j) == x)
      && (forall i: int, j: int, a: int, x: int :: (i != j) ==> read(store(a, i, x), j) == read(a, j));
  * left: left;
  * right: right;
- * post: left.a == right.a;
+ * post: (forall i: int :: read(left.a, i) == read(right.a, i));
  */
 
 int read(int list_id, int index);
@@ -12,7 +14,7 @@ int store(int list_id, int index, int value);
 
 void _test_gen(int list_id, int size) {
   if (size < 0) { size = size * -1; }
-  size = size % 100;
+  size = (size % 100) + 1;
   _main(list_id, size, list_id, size);
 }
 
@@ -21,7 +23,8 @@ void left(int a_in, int size) {
   int max = read(a, 0);
   int maxi = 0;
   int i = 0;
-  while (i < size) {
+  while (i <= size) {
+//    _invariant("left.size == right.size");
     if (max < read(a, i)) {
       max = read(a, i);
       maxi = i;
@@ -36,9 +39,9 @@ void left(int a_in, int size) {
 void right(int a_in, int size) {
   int a = a_in;
   int j = 0;
-  int max;
-  int maxi;
-  while (j < size) {
+  int max = 0;
+  int maxi = 0;
+  while (j <= size) {
     if (j == 0) {
       max = read(a, 0);
       maxi = 0;

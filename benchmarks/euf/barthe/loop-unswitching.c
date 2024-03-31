@@ -14,22 +14,6 @@
 int read(int list_id, int index);
 int store(int list_id, int index, int value);
 
-void _generator(int _arr1, int _arr2, int _arr3, int _k, int _x, int _size) {
-  int l_a_in = _arr1;
-  int r_a_in = _arr1;
-  int l_b_in = _arr1;
-  int r_b_in = _arr1;
-  int l_c_in = _arr1;
-  int r_c_in = _arr1;
-  int l_k_in = _k;
-  int r_k_in = _k;
-  int l_x_in = _x;
-  int r_x_in = _x;
-  int l_size = _size;
-  int r_size = _size;
-}
-
-
 void _test_gen(int a, int b, int c, int k, int x, int size) {
   if (size < 0) { size = size * -1; }
   size = size % 100;

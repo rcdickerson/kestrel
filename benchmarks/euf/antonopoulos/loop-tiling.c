@@ -5,7 +5,7 @@
  * left:  left;
  * right: right;
  * post:  forall i: int, j: int ::
-          read(left.a, (i * left.m) + j) == read(read(right.a, i), j);
+          read(left.a, (i * left.n) + j) == read(read(right.a, i), j);
  */
 
 int read(int arr, int index);

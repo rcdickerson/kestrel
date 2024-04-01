@@ -3,11 +3,6 @@ use egg::*;
 
 pub fn rewrites(with_loop_sched: bool) -> Vec<Rewrite<Eggroll, ()>> {
   let mut rewrites = vec![
-    rewrite!("push-rel-if-l"; "(<|> (if ?c ?t) ?s)" => "(if-else ?c (<|> ?t ?s) ?s)"),
-    rewrite!("push-rel-if-else-l"; "(<|> (if-else ?c ?t ?e) ?s)" => "(if-else ?c (<|> ?t ?s) (<|> ?e ?s))"),
-    rewrite!("push-rel-if-r"; "(<|> ?s (if ?c ?t))" => "(if-else ?c (<|> ?s ?t) ?s)"),
-    rewrite!("push-rel-if-else-r"; "(<|> ?s (if-else ?c ?t ?e))" => "(if-else ?c (<|> ?s ?t) (<|> ?s ?e))"),
-
     rewrite!("prod-assoc-l"; "(seq ?a (seq ?b ?c))" => "(seq (seq ?a ?b) ?c)"),
     rewrite!("prod-assoc-r"; "(seq (seq ?a ?b) ?c)" => "(seq ?a (seq ?b ?c))"),
     rewrite!("rel-embed"; "(<|> ?x ?y)" => "(seq (<| ?x) (|> ?y))"),
@@ -18,6 +13,10 @@ pub fn rewrites(with_loop_sched: bool) -> Vec<Rewrite<Eggroll, ()>> {
     rewrite!("embed-hom-r"; "(|> (seq ?x ?y))" => "(seq (|> ?x) (|> ?y))"),
     rewrite!("while-lockstep"; "(<|> (while ?e1 ?i1 ?c1) (while ?e2 ?i2 ?c2))"
                             => "(while-lockstep 0 0 ?e1 ?e2 ?i1 ?i2 ?c1 ?c2 (<|> ?c1 ?c2))"),
+    rewrite!("push-rel-if-l"; "(<|> (if ?c ?t) ?s)" => "(if-else ?c (<|> ?t ?s) ?s)"),
+    rewrite!("push-rel-if-else-l"; "(<|> (if-else ?c ?t ?e) ?s)" => "(if-else ?c (<|> ?t ?s) (<|> ?e ?s))"),
+    rewrite!("push-rel-if-r"; "(<|> ?s (if ?c ?t))" => "(if-else ?c (<|> ?s ?t) ?s)"),
+    rewrite!("push-rel-if-else-r"; "(<|> ?s (if-else ?c ?t ?e))" => "(if-else ?c (<|> ?s ?t) (<|> ?s ?e))"),
   ];
   if with_loop_sched {
     rewrites.append(&mut vec![

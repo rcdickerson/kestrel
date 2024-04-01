@@ -130,11 +130,13 @@ fn main() {
     ExtractorArg::CountLoops => workflow.add_task(AlignCountLoops::new()),
     ExtractorArg::MILP => workflow.add_task(AlignMilp::new()),
     ExtractorArg::SA => {
-      workflow.add_task(AlignCountLoops::new());
-      workflow.add_task(AlignedCRel::new());
-      if args.infer_invariants {
-        workflow.add_task(InvarsDaikon::new());
-        workflow.add_task(Houdafny::new());
+      if !args.sa_start_random {
+        workflow.add_task(AlignCountLoops::new());
+        workflow.add_task(AlignedCRel::new());
+        if args.infer_invariants {
+          workflow.add_task(InvarsDaikon::new());
+          workflow.add_task(Houdafny::new());
+        }
       }
       workflow.add_task_unless_verifed(
         AlignSa::new(args.sa_start_random, args.sa_max_iterations))

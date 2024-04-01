@@ -21,6 +21,8 @@ impl InvarsDaikon {
 }
 
 impl Task for InvarsDaikon {
+  fn name(&self) -> String { "invars-daikon".to_string() }
+
   fn run(&self, context: &mut Context) {
     // Write Daikon output to file.
     let daikon_path = "daikon_output.c".to_string();

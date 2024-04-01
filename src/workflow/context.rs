@@ -8,7 +8,6 @@ use std::time::{Duration, Instant};
 
 pub struct Context<'a> {
   pub task_name: String,
-  pub start_time: Instant,
   pub spec: Option<&'a KestrelSpec>,
   pub unaligned_crel: Option<&'a UnalignedCRel>,
   pub unaligned_eggroll: Option<&'a String>,
@@ -16,6 +15,9 @@ pub struct Context<'a> {
   pub aligned_crel: Option<CRel>,
   pub aligned_output: Option<String>,
   pub output_path: Option<String>,
+  pub task_timings: Vec<(String, Duration)>,
+  pub start_time: Option<Instant>,
+  pub completion_time: Option<Duration>,
   pub verified: bool,
 }
 
@@ -23,7 +25,6 @@ impl Context<'_> {
   pub fn new(task_name: String) -> Self {
     Context {
       task_name,
-      start_time: Instant::now(),
       spec: None,
       unaligned_crel: None,
       unaligned_eggroll: None,
@@ -31,6 +32,9 @@ impl Context<'_> {
       aligned_crel: None,
       aligned_output: None,
       output_path: None,
+      task_timings: Vec::new(),
+      start_time: None,
+      completion_time: None,
       verified: false,
     }
   }
@@ -69,7 +73,19 @@ impl Context<'_> {
     })
   }
 
+  pub fn mark_started(&mut self) {
+    self.start_time.replace(Instant::now());
+  }
+
+  pub fn mark_completed(&mut self) {
+    let elapsed = self.start_time.expect("Execution not marked as started").elapsed();
+    self.completion_time.replace(elapsed);
+  }
+
   pub fn elapsed_time(&self) -> Duration {
-    self.start_time.elapsed()
+    match self.completion_time {
+      Some(duration) => duration,
+      None => self.start_time.expect("Execution not marked as started").elapsed()
+    }
   }
 }

@@ -13,6 +13,8 @@ impl ComputeSpace {
 }
 
 impl Task for ComputeSpace {
+  fn name(&self) -> String { "compute-space".to_string() }
+
   fn run(&self, context: &mut Context) {
     let runner = Runner::default()
       .with_expr(&context.unaligned_eggroll().parse().unwrap())

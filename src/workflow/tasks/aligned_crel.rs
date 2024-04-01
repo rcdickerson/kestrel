@@ -11,6 +11,7 @@ impl AlignedCRel {
 }
 
 impl Task for AlignedCRel {
+  fn name(&self) -> String { "aligned-crel".to_string() }
   fn run(&self, context: &mut Context) {
     let mut aligned_crel = eggroll_to_crel(
       &context.aligned_eggroll().to_string(),

@@ -15,6 +15,7 @@ impl WriteSummary {
 }
 
 impl Task for WriteSummary {
+  fn name(&self) -> String { "write-summary".to_string() }
   fn run(&self, context: &mut Context) {
     let mut file = OpenOptions::new()
       .create(true)

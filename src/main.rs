@@ -25,6 +25,10 @@ struct Args {
   #[arg(long)]
   output_summary: Option<String>,
 
+  /// Write per-task timings to the given file.
+  #[arg(long)]
+  output_timings: Option<String>,
+
   /// Output a dot file representation of the e-graph.
   #[arg(short, long)]
   dot: bool,
@@ -113,7 +117,7 @@ fn main() {
   context.unaligned_eggroll = Some(&unaligned_eggroll);
   context.output_path = args.output.clone();
 
-  let mut workflow = Workflow::new(context);
+  let mut workflow = Workflow::new(&mut context);
   if args.verbose {
     workflow.add_task(PrintInfo::with_header("Unaligned Product Program", &|ctx| {
       ctx.unaligned_crel().main.to_c().to_string()
@@ -148,11 +152,21 @@ fn main() {
       ctx.aligned_output().clone()
     })),
   }
+  workflow.add_task(PrintInfo::with_header("Per-Task Times (ms)", &|ctx| {
+    let mut lines = Vec::new();
+    for (task_name, duration) in &ctx.task_timings {
+      lines.push(format!("{}: {}", task_name, duration.as_millis()));
+    }
+    lines.join("\n") + "\n"
+  }));
   args.output_summary.map(|location| {
-    let tags = vec!(args.extractor.tag());
-    workflow.add_task(WriteSummary::new(location, tags));
+    workflow.add_task(WriteSummary::new(location, vec!(args.extractor.tag())));
   });
   workflow.execute();
+
+  if args.verbose {
+  };
+
   println!("KestRel completed in {}ms", workflow.context().elapsed_time().as_millis());
   println!("Verified: {}", workflow.context().verified);
 }

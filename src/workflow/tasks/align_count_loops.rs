@@ -12,6 +12,7 @@ impl AlignCountLoops {
 }
 
 impl Task for AlignCountLoops {
+  fn name(&self) -> String { "align-count-loops".to_string() }
   fn run(&self, context: &mut Context) {
     let runner = Runner::default()
       .with_expr(&context.unaligned_eggroll().parse().unwrap())

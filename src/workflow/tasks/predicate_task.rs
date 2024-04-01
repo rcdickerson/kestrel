@@ -13,6 +13,7 @@ impl <'a> PredicateTask<'a> {
 }
 
 impl Task for PredicateTask<'_> {
+  fn name(&self) -> String { self.task.name() }
   fn run(&self, context: &mut Context) {
     if (self.predicate)(context) {
       self.task.run(context);

@@ -13,6 +13,7 @@ impl AlignedOutput {
 }
 
 impl Task for AlignedOutput {
+  fn name(&self) -> String { "aligned-output".to_string() }
   fn run(&self, context: &mut Context) {
     context.aligned_output.replace(self.output_mode.crel_to_output(
       &context.aligned_crel(),

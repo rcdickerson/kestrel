@@ -15,6 +15,7 @@ impl WriteDot {
 }
 
 impl Task for WriteDot {
+  fn name(&self) -> String { "write-dot".to_string() }
   fn run(&self, context: &mut Context) {
     println!("Writing egraph structure to egraph.dot");
     let runner = Runner::default()

@@ -17,6 +17,7 @@ impl <'a> PrintInfo<'a> {
 }
 
 impl Task for PrintInfo<'_> {
+  fn name(&self) -> String { "print-info".to_string() }
   fn run(&self, context: &mut Context) {
     self.header.map(|head| {
       let line = std::iter::repeat('-').take(head.len()).collect::<String>();

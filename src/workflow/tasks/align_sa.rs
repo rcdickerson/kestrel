@@ -20,6 +20,8 @@ impl AlignSa {
 }
 
 impl Task for AlignSa {
+  fn name(&self) -> String { "align-sa".to_string() }
+
   fn run(&self, context: &mut Context) {
     if context.verified {
       println!("Verification complete; skipping simulated annealing alignment");

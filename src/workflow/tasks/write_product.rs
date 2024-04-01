@@ -16,6 +16,7 @@ impl WriteProduct {
 }
 
 impl Task for WriteProduct {
+  fn name(&self) -> String { "write-product".to_string() }
   fn run(&self, context: &mut Context) {
     println!("Writing output to {}...", context.output_path());
     let mut file = File::create(context.output_path())

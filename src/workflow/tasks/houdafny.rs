@@ -20,6 +20,8 @@ impl Houdafny {
 }
 
 impl Task for Houdafny {
+  fn name(&self) -> String { "houdafny".to_string() }
+
   fn run(&self, context: &mut Context) {
     let dafny_path = "houdafny.dfy".to_string();
     loop {

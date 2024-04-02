@@ -79,7 +79,6 @@ impl OutputMode {
                         global_decls: Vec<Declaration>,
                         fundefs: HashMap<String, FunDef>,
                         filename: &Option<String>) -> String {
-
     const TEST_GEN_FUN_NAME: &str = "_test_gen";
 
     let (_, crel_fundefs) = crate::crel::fundef::extract_fundefs(crel);
@@ -132,7 +131,15 @@ impl OutputMode {
     let mut new_seq: Vec<CRel> = global_decls.iter()
       .map(|decl| match &decl.declarator {
         Declarator::Function{name, params} => {
-          fun_impl_hash(&decl.specifiers, name.clone(), params)
+          match fundefs.get(&format!("_{}", name)) {
+            None => fun_impl_hash(&decl.specifiers, name.clone(), params),
+            Some(def) => CRel::FunctionDefinition {
+              specifiers: decl.specifiers.clone(),
+              name: name.clone(),
+              params: def.params.clone(),
+              body: Box::new(def.body.clone()),
+            },
+          }
         },
         _ => CRel::Declaration(decl.clone()),
       })

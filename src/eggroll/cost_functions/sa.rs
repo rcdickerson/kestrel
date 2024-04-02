@@ -321,13 +321,14 @@ fn score_loop_executions(program: &CRel, trace: &Trace) -> f32 {
 
 pub fn sa_score(trace_states: &Vec<State>, trace_fuel: usize, expr: RecExpr<Eggroll>) -> f32 {
   let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string(), &to_crel::Config::default());
-  let body = crate::crel::fundef::extract_fundefs(&crel).1
+  let fundefs = crate::crel::fundef::extract_fundefs(&crel).1;
+  let body = fundefs
     .get(&"main".to_string())
     .expect("Missing main function")
     .body.clone();
 
   let score_state = |state: &State| -> f32 {
-    let exec = run(&body, state.clone(), trace_fuel);
+    let exec = run(&body, state.clone(), trace_fuel, Some(&fundefs));
     SAScore::new(&crel, &exec.trace).total()
   };
 

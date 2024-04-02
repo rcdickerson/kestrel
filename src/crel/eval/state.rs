@@ -174,7 +174,7 @@ impl State {
         CondBExpr::BinopA{..} => {
           let crel = cond.to_crel();
           let stmt = Statement::Expression(Box::new(crel));
-          let result = run(&stmt, self.clone(), 1000).value_int();
+          let result = run(&stmt, self.clone(), 1000, None).value_int();
           result != 0
         },
         CondBExpr::BinopB{lhs, rhs, op} => {
@@ -192,7 +192,7 @@ impl State {
             callee: Box::new(Expression::Identifier{name: name.clone()}),
             args: args.iter().map(|arg| arg.to_crel()).collect(),
           }));
-          let result = run(&stmt, self.clone(), 1000).value_int();
+          let result = run(&stmt, self.clone(), 1000, None).value_int();
           result != 0
         }
       },
@@ -253,7 +253,7 @@ impl State {
         let mut alloc_size = 1;
         for size_expr in sizes {
           let stmt = Statement::Expression(Box::new(size_expr.clone()));
-          alloc_size *= run(&stmt, state.clone(), fuel).value_int();
+          alloc_size *= run(&stmt, state.clone(), fuel, None).value_int();
         }
         state.alloc(name, alloc_size as usize, HeapValue::Int(0));
       },
@@ -272,7 +272,7 @@ impl State {
       rhs: Box::new(initializer.clone().unwrap()),
       op: BinaryOp::Assign,
     }));
-    run(&initialization, state.clone(), fuel).current_state
+    run(&initialization, state.clone(), fuel, None).current_state
   }
 
   fn randomize_declaration(&self,
@@ -290,7 +290,7 @@ impl State {
             let mut state = self.clone();
             for size in sizes {
               let size_stmt = Statement::Expression(Box::new(size.clone()));
-              let size_eval = run(&size_stmt, state.clone(), 1000);
+              let size_eval = run(&size_stmt, state.clone(), 1000, None);
               state = size_eval.current_state.clone();
               alloc_size *= size_eval.value_int();
             }
@@ -330,7 +330,7 @@ pub fn rand_states_satisfying(num: usize,
         let ty = decl.get_type().unwrap();
         state = state.randomize_declaration(decl.declarator.as_ref().unwrap(), &None, ty, fuel);
       }
-      state = run(&generator.body, state.clone(), fuel).current_state.clone();
+      state = run(&generator.body, state.clone(), fuel, None).current_state.clone();
     }
     if state.satisfies(cond) {
       states.push(state);

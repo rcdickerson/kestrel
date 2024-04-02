@@ -10,7 +10,7 @@ pub fn fun_impl_hash(fun_specifiers: &Vec<DeclarationSpecifier>,
   let mut body = vec![BlockItem::Declaration(Declaration {
     specifiers: vec![DeclarationSpecifier::TypeSpecifier(Type::Int)],
     declarator: Declarator::Identifier{name: hash_name.clone()},
-    initializer: Some(Expression::ConstInt(0)),
+    initializer: Some(Expression::ConstInt(17)),
   })];
 
   let mut converted_params = Vec::new();
@@ -38,7 +38,7 @@ pub fn fun_impl_hash(fun_specifiers: &Vec<DeclarationSpecifier>,
       op: BinaryOp::Add,
       lhs: Box::new(Expression::Binop {
         op: BinaryOp::Mul,
-        lhs: Box::new(Expression::ConstInt(31)),
+        lhs: Box::new(Expression::ConstInt(37)),
         rhs: Box::new(hash_id.clone()),
       }),
       rhs: Box::new(Expression::Identifier{name: param_name}),

@@ -1,7 +1,9 @@
 use crate::crel::eval::*;
 use crate::crel::eval::state::VarRead;
+use crate::crel::fundef::*;
+use std::collections::HashMap;
 
-pub struct Execution {
+pub struct Execution<'a> {
   pub current_state: State,
   pub trace: Trace,
   max_trace_size: usize,
@@ -10,11 +12,12 @@ pub struct Execution {
   flag_out_of_fuel: bool,
   reg_location: HeapLocation,
   reg_value: HeapValue,
+  pub fundefs: Option<&'a HashMap<String, FunDef>>,
 }
 
-impl Execution {
+impl <'a> Execution<'a> {
 
-  pub fn new(max_trace_size: usize) -> Self {
+  pub fn new(max_trace_size: usize, fundefs: Option<&'a HashMap<String, FunDef>>) -> Self {
     Execution {
       current_state: State::new(),
       trace: Trace::new(),
@@ -24,6 +27,7 @@ impl Execution {
       flag_out_of_fuel: false,
       reg_location: HeapLocation::Pointer(0),
       reg_value: HeapValue::Int(0),
+      fundefs
     }
   }
 

@@ -2,16 +2,19 @@ mod execution;
 mod state;
 mod trace;
 
+use crate::crel::fundef::*;
 pub use execution::Execution;
 pub use state::{HeapLocation, HeapValue, State};
 pub use state::rand_states_satisfying;
+use std::collections::HashMap;
 pub use trace::Tag;
 pub use trace::{Trace, TraceState, TraceStateValue};
 
 use crate::crel::ast::*;
 
-pub fn run(stmt: &Statement, state: State, max_trace: usize) -> Execution {
-  let mut exec = Execution::new(max_trace);
+pub fn run<'a>(stmt: &Statement, state: State, max_trace: usize,
+           fundefs: Option<&'a HashMap<String, FunDef>>) -> Execution<'a> {
+  let mut exec = Execution::new(max_trace, fundefs);
   exec.push_state(state);
   eval_statement(stmt, &mut exec);
   exec
@@ -95,17 +98,39 @@ fn eval_expression(expr: &Expression, exec: &mut Execution) {
       exec.set_value(HeapValue::Float(*f));
     },
     Expression::StringLiteral(_) => (),
-    Expression::Call{callee: _, args} => {
-      // Compute a simple hash of arguments.
-      let mut hash = 0 as u32;
-      for arg in args {
-        eval_expression(arg, exec);
-        match exec.current_value() {
-          HeapValue::Int(i) => hash = hash.wrapping_mul(31).wrapping_add(i as u32),
-          HeapValue::Float(f) => hash = hash.wrapping_mul(31).wrapping_add(f.to_bits()),
+    Expression::Call{callee, args} => {
+      let callee_name = match callee.as_ref() {
+        Expression::Identifier{name} => Some(name),
+        _ => None,
+      };
+      let test_impl = exec.fundefs.and_then(|defs| {
+        callee_name.and_then(|name| defs.get(&format!("_{}", name)))
+      });
+      match test_impl {
+        Some(fundef) => {
+          let mut call_state = exec.current_state.clone();
+          for (param_decl, arg) in fundef.params.iter().zip(args) {
+            eval_expression(arg, exec);
+            let param_name = &param_decl.declarator.as_ref()
+              .expect(format!("Unnamed parameter in {}",
+                              callee_name.unwrap_or(&"<unnamed function>".to_string())).as_str())
+              .name().clone();
+            call_state.store_var(param_name, exec.current_value());
+          }
+        },
+        None => {
+          // Compute a simple hash of arguments.
+          let mut hash = 17 as u32;
+          for arg in args {
+            eval_expression(arg, exec);
+            match exec.current_value() {
+              HeapValue::Int(i) => hash = hash.wrapping_mul(37).wrapping_add(i as u32),
+              HeapValue::Float(f) => hash = hash.wrapping_mul(37).wrapping_add(f.to_bits()),
+            }
+          }
+          exec.set_value(HeapValue::Int(hash as i32));
         }
       }
-      exec.set_value(HeapValue::Int(hash as i32));
     },
     Expression::Unop{expr, op} => eval_unop(expr, op, exec),
     Expression::Binop{lhs, rhs, op} => eval_binop(lhs, rhs, op, exec),

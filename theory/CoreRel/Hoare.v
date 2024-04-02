@@ -34,8 +34,7 @@ Declare Scope hoare_spec_scope.
 Notation "P ->> Q" := (assert_implies P Q) (at level 80) : hoare_spec_scope.
 Open Scope hoare_spec_scope.
 Notation "P <<->> Q" :=
-  (P ->> Q /\ Q ->> P) (at level 80) : hoare_spec_scope. 
-
+  (P ->> Q /\ Q ->> P) (at level 80) : hoare_spec_scope.
 
 Definition Aexp : Type := state -> nat.
 
@@ -98,7 +97,7 @@ Notation "{{ P }}  c  {{ Q }}" :=
 
 
 Definition assn_sub X a (P:Assertion) : Assertion :=
-  fun (st : state) => 
+  fun (st : state) =>
     P (<[X := aeval st a]> st).
 
 Set Printing All.
@@ -127,10 +126,10 @@ Proof.
 Qed.
 
 (*hoare_triple (assn_sub X a Q) X := a Q*)
-Theorem hoare_asgn : forall Q X a, 
+Theorem hoare_asgn : forall Q X a,
   hoare_triple (assn_sub X a Q) <{X := a}> Q.
 Proof.
-unfold hoare_triple, assn_sub. intros. inversion H0; subst. 
+unfold hoare_triple, assn_sub. intros. inversion H0; subst.
 assumption.
 Qed.
 
@@ -139,7 +138,7 @@ Hint Unfold assert_of_Prop Aexp_of_nat Aexp_of_aexp : core.
 
 (*assn_auto, assn_auto''*)
 Ltac assn_auto :=
-  try auto; 
+  try auto;
   try (unfold "->>", assn_sub, insert;
        intros; simpl in *; lia).
 
@@ -151,7 +150,7 @@ Print assn_auto.
 Theorem hoare_consequence_pre : forall (P P' Q : Assertion) r,
   hoare_triple P' r Q ->
   assert_implies P P' ->
-  hoare_triple P r Q. 
+  hoare_triple P r Q.
 Proof.
  unfold hoare_triple, "->>".
   intros P P' Q c Hhoare Himp st st' Heval Hpre.
@@ -162,7 +161,7 @@ Qed.
 Theorem hoare_consequence_post : forall (P Q Q' : Assertion) r,
   hoare_triple P r Q' ->
   assert_implies Q' Q ->
-  hoare_triple P r Q. 
+  hoare_triple P r Q.
 Proof.
  unfold hoare_triple, "->>". intros.
  eapply H0. eapply H. eassumption. assumption.
@@ -186,7 +185,7 @@ Ltac assn_auto'' :=
   unfold "->>", assn_sub, insert, bassn;
   intros; simpl in *;
   try rewrite -> eqb_eq in *;
-  try rewrite -> leb_le in *;  (* for inequalities *)
+  try rewrite -> Nat.leb_le in *;  (* for inequalities *)
   auto; try lia.
 
 (** A useful fact about [bassn]: *)
@@ -213,14 +212,11 @@ Theorem hoare_while : forall P (b: bexp) r,
   hoare_triple (P /\ b) r P ->
   hoare_triple P <{while b do r end}> (P /\ ~ b).
 Proof.
-unfold hoare_triple; intros. 
+unfold hoare_triple; intros.
 remember <{while b do r end}> as original_command eqn:Horig.
 induction H1. discriminate. discriminate. discriminate. discriminate.
-discriminate. inversion Horig; subst. eauto. 
+discriminate. inversion Horig; subst. eauto.
 inversion Horig; subst. eauto.
 Qed.
 
 End Definitions.
-
-
-

@@ -181,6 +181,24 @@ Section Equiv.
     discriminate H. assumption.
   Qed.
 
+  Lemma cond_r : forall bL cL1 cL2 cR,
+      <{ <| if bL then cL1 else cL2 end | cR |> }>
+      ==R <{ifR <|bL | true |> then <|cL1 | cR|> else <|cL2 | cR|> end}>.
+  Proof.
+    intros bL cL1 cL2 cR ((st1, st2), (st1', st2')). split.
+    intros. In_inversion. firstorder.
+    intros. simpl in H. In_inversion; firstorder.
+  Qed.
+
+  Lemma cond_l : forall bR cL cR1 cR2,
+      <{ <| cL | if bR then cR1 else cR2 end |> }>
+      ==R <{ifR <| true | bR |> then <|cL | cR1|> else <|cL | cR2|> end}>.
+  Proof.
+    intros bR cL cR1 cR2 ((st1, st2), (st1', st2')). split.
+    intros. In_inversion. firstorder.
+    intros. simpl in H. In_inversion; firstorder.
+  Qed.
+
   Lemma whileR_false_L : forall b1 b2 r,
       bexp_eqv b1 <{false}> ->
       <{ whileR <|b1 | b2|> do r end  }> ==R <{ <|skip|skip|> }> .

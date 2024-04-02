@@ -6,17 +6,17 @@ From Coq Require Import String.
 
 Class Id A M := {
   (* Constraints. *)
-  id_finmap_fmap :> FMap M | 0;
-  id_finmap_lookup :> ∀ C, Lookup A C (M C) | 0;
-  id_finmap_empty :> ∀ C, Empty (M C) | 0;
-  id_finmap_partial_alter :> ∀ C, PartialAlter A C (M C) | 0;
-  id_finmap_omap :> OMap M | 0;
-  id_finmap_merge :> Merge M | 0;
-  id_finmap_to_list :> ∀ C, FinMapToList A C (M C) | 0;
+  id_finmap_fmap :: FMap M | 0;
+  id_finmap_lookup :: ∀ C, Lookup A C (M C) | 0;
+  id_finmap_empty :: ∀ C, Empty (M C) | 0;
+  id_finmap_partial_alter :: ∀ C, PartialAlter A C (M C) | 0;
+  id_finmap_omap :: OMap M | 0;
+  id_finmap_merge :: Merge M | 0;
+  id_finmap_to_list :: ∀ C, FinMapToList A C (M C) | 0;
 
   (* Properties that we care about. *)
-  id_eq_decision :> EqDecision A | 0;
-    id_finmap :> FinMap A M | 0
+  id_eq_decision :: EqDecision A | 0;
+    id_finmap :: FinMap A M | 0
   }.
 
 (** Strings as ids. *)

@@ -17,7 +17,6 @@ int updateMap(int kv_store, int key, int value);
 int read(int list, int index);
 int store(int list, int index, int value);
 
-
 void kv_update(int map_in, int k, int v) {
   int map = map_in;
   map = updateMap(map, k, v);

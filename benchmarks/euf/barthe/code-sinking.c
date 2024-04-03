@@ -24,7 +24,23 @@ void left(int a_in, int size) {
   int maxi = 0;
   int i = 0;
   while (i <= size) {
-//    _invariant("left.size == right.size");
+    _invariant("r_j <= r_size ==> forall i: int :: read(l_a, i) == read(r_a, i)");
+    _invariant("0 <= l_i && l_i <= l_size + 1");
+    _invariant("0 <= r_j && r_j <= r_size + 1");
+    _invariant("l_i == r_j");
+    _invariant("0 <= l_maxi && l_maxi <= l_i");
+    _invariant("0 <= r_maxi && r_maxi <= r_j");
+    _invariant("0 <= l_maxi <= l_size");
+    _invariant("0 <= r_maxi <= r_size");
+    _invariant("l_i > 0 ==> l_max == r_max");
+    _invariant("l_maxi == r_maxi");
+    _invariant("0 < l_i ==> l_max == r_max");
+    _invariant("l_max == read(l_a, l_maxi)");
+    _invariant("0 < r_j && r_j <= r_size ==> r_max == read(r_a, r_maxi)");
+    _invariant("r_j == r_size + 1 ==> forall i: int :: (i != r_maxi && i != r_size) ==> (read(l_a, i) == read(r_a, i))");
+    _invariant("r_j == r_size + 1 ==> l_max == read(r_a, r_size)");
+    _invariant("r_j == r_size + 1 ==> read(l_a, l_maxi) == read(r_a, r_size)");
+    _invariant("r_j == r_size + 1 ==> read(l_a, l_size) == read(r_a, r_maxi)");
     if (max < read(a, i)) {
       max = read(a, i);
       maxi = i;

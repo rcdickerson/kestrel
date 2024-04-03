@@ -141,6 +141,16 @@ pub enum Expression {
   Statement(Box<Statement>),
 }
 
+impl Expression {
+  pub fn is_none(&self) -> bool {
+    match self {
+      Expression::Statement(stmt) => stmt.is_none(),
+      _ => false,
+    }
+  }
+}
+
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum UnaryOp {
   Minus,
@@ -192,6 +202,16 @@ pub enum Statement {
     condition: Box<Expression>,
     body: Option<Box<Statement>>,
   },
+}
+
+impl Statement {
+  pub fn is_none(&self) -> bool {
+    match self {
+      Statement::None => true,
+      Statement::Expression(expr) => expr.is_none(),
+      _ => false,
+    }
+  }
 }
 
 #[derive(Clone, Debug, PartialEq)]

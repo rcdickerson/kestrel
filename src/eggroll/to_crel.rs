@@ -180,7 +180,7 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
       Sexp::Atom(Atom::S(s)) if s == "basic-block" => {
         let items = sexps[1..].iter()
           .map(|x| expect_block_item(x, config))
-          .collect();
+          .collect::<Vec<_>>();
         Statement::BasicBlock(items)
       },
       Sexp::Atom(Atom::S(s)) if s == "seq" => {

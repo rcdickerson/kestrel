@@ -309,7 +309,11 @@ fn trans_block_item(item: &Node<c::BlockItem>) -> (Vec<BlockItem>, Vec<Expressio
     },
     c::BlockItem::Statement(node) => {
       let (stmt, invars) = trans_statement(node);
-      (vec!(BlockItem::Statement(stmt)), invars)
+      if stmt.is_none() {
+        (Vec::new(), invars)
+      } else {
+        (vec!(BlockItem::Statement(stmt)), invars)
+      }
     },
     _ => panic!("Unsupported block item: {:?}", item.node),
   }
@@ -317,10 +321,8 @@ fn trans_block_item(item: &Node<c::BlockItem>) -> (Vec<BlockItem>, Vec<Expressio
 
 fn trans_while_statement(expr: &Node<c::WhileStatement>) -> Statement {
   let condition = Box::new(trans_expression(&expr.node.expression).0);
-  let (body, invars) = match trans_statement(&expr.node.statement) {
-    (Statement::None, invars) => (None, invars),
-    (stmt, invars) => (Some(Box::new(stmt)), invars),
-  };
+  let (stmt, invars) = trans_statement(&expr.node.statement);
+  let body = if stmt.is_none() { None } else { Some(Box::new(stmt)) };
   Statement::While {
     loop_id: None,
     invariants: invars,

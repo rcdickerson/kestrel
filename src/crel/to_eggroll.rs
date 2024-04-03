@@ -94,7 +94,7 @@ fn statement_to_eggroll(stmt: &Statement) -> String {
         .map(block_item_to_eggroll)
         .collect::<Vec<String>>()
         .join(" ");
-      format!("(basic-block {})", items_eggroll)
+      format!("(basic-block {})", items_eggroll.trim())
     },
     Statement::Break => "break".to_string(),
     Statement::Compound(items) => {

@@ -15,7 +15,7 @@ fi
 # Second argument: extraction technique.
 ext_technique=$2
 if [ "$ext_technique" = "all" ]; then
-  techniques=("unaligned" "count-loops" "sa")
+  techniques=("unaligned" "sa")
 else
   techniques=("$ext_technique")
 fi

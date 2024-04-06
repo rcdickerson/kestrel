@@ -1,0 +1,602 @@
+Starting simulated annealing...
+Initial score: 0.44666666
+Score 0.37864766 at temperature 0.97925174
+Score 0.29283336 at temperature 0.971919
+Score 0.28830302 at temperature 0.95692027
+Score 0.14733334 at temperature 0.95475376
+Simulated annealing complete.
+Saw 2535 configurations
+Best score: 0.14733334
+Writing Daikon to daikon_output.c...
+Done
+Compiling Daikon output...
+daikon_output.c: In function ‘_main’:
+daikon_output.c:45:7: error: break statement not within loop or switch
+   45 |       break;
+      |       ^~~~~
+daikon_output.c:61:7: error: break statement not within loop or switch
+   61 |       break;
+      |       ^~~~~
+Running Kvasir...
+==64021== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==64021== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==64021== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==64021== Command: ./daikon_output
+==64021== 
+==64021== 
+==64021== For lists of detected and suppressed errors, rerun with: -s
+==64021== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(28,6): Error: a non-labeled 'break' statement is allowed only in loops
+   |
+28 |       break;
+   |       ^^^^^
+
+houdafny.dfy(44,6): Error: a non-labeled 'break' statement is allowed only in loops
+   |
+44 |       break;
+   |       ^^^^^
+
+houdafny.dfy(50,14): Error: unresolved identifier: l_o1
+   |
+50 |     invariant l_o1 != 0
+   |               ^^^^
+
+houdafny.dfy(51,14): Error: unresolved identifier: l_len1
+   |
+51 |     invariant l_len1 != 0
+   |               ^^^^^^
+
+houdafny.dfy(52,14): Error: unresolved identifier: l_o2
+   |
+52 |     invariant l_o2 != 0
+   |               ^^^^
+
+houdafny.dfy(53,14): Error: unresolved identifier: l_len2
+   |
+53 |     invariant l_len2 != 0
+   |               ^^^^^^
+
+houdafny.dfy(57,14): Error: unresolved identifier: l_index
+   |
+57 |     invariant l_index == 0
+   |               ^^^^^^^
+
+houdafny.dfy(58,14): Error: unresolved identifier: l_index
+   |
+58 |     invariant l_index <= 0
+   |               ^^^^^^^
+
+houdafny.dfy(59,14): Error: unresolved identifier: l_index
+   |
+59 |     invariant l_index >= 0
+   |               ^^^^^^^
+
+houdafny.dfy(60,14): Error: unresolved identifier: l_o1
+   |
+60 |     invariant l_o1 != l_len1
+   |               ^^^^
+
+houdafny.dfy(60,22): Error: unresolved identifier: l_len1
+   |
+60 |     invariant l_o1 != l_len1
+   |                       ^^^^^^
+
+houdafny.dfy(61,14): Error: unresolved identifier: l_o1
+   |
+61 |     invariant l_o1 != l_o2
+   |               ^^^^
+
+houdafny.dfy(61,22): Error: unresolved identifier: l_o2
+   |
+61 |     invariant l_o1 != l_o2
+   |                       ^^^^
+
+houdafny.dfy(62,14): Error: unresolved identifier: l_o1
+   |
+62 |     invariant l_o1 != l_len2
+   |               ^^^^
+
+houdafny.dfy(62,22): Error: unresolved identifier: l_len2
+   |
+62 |     invariant l_o1 != l_len2
+   |                       ^^^^^^
+
+houdafny.dfy(63,14): Error: unresolved identifier: l_o1
+   |
+63 |     invariant l_o1 != l_index
+   |               ^^^^
+
+houdafny.dfy(63,22): Error: unresolved identifier: l_index
+   |
+63 |     invariant l_o1 != l_index
+   |                       ^^^^^^^
+
+houdafny.dfy(64,14): Error: unresolved identifier: l_len1
+   |
+64 |     invariant l_len1 != l_o2
+   |               ^^^^^^
+
+houdafny.dfy(64,24): Error: unresolved identifier: l_o2
+   |
+64 |     invariant l_len1 != l_o2
+   |                         ^^^^
+
+houdafny.dfy(65,14): Error: unresolved identifier: l_len1
+   |
+65 |     invariant l_len1 != l_len2
+   |               ^^^^^^
+
+houdafny.dfy(65,24): Error: unresolved identifier: l_len2
+   |
+65 |     invariant l_len1 != l_len2
+   |                         ^^^^^^
+
+houdafny.dfy(66,14): Error: unresolved identifier: l_len1
+   |
+66 |     invariant l_len1 > l_index
+   |               ^^^^^^
+
+houdafny.dfy(66,23): Error: unresolved identifier: l_index
+   |
+66 |     invariant l_len1 > l_index
+   |                        ^^^^^^^
+
+houdafny.dfy(67,14): Error: unresolved identifier: l_o2
+   |
+67 |     invariant l_o2 != l_len2
+   |               ^^^^
+
+houdafny.dfy(67,22): Error: unresolved identifier: l_len2
+   |
+67 |     invariant l_o2 != l_len2
+   |                       ^^^^^^
+
+houdafny.dfy(68,14): Error: unresolved identifier: l_o2
+   |
+68 |     invariant l_o2 != l_index
+   |               ^^^^
+
+houdafny.dfy(68,22): Error: unresolved identifier: l_index
+   |
+68 |     invariant l_o2 != l_index
+   |                       ^^^^^^^
+
+houdafny.dfy(69,14): Error: unresolved identifier: l_len2
+   |
+69 |     invariant l_len2 > l_index
+   |               ^^^^^^
+
+houdafny.dfy(69,23): Error: unresolved identifier: l_index
+   |
+69 |     invariant l_len2 > l_index
+   |                        ^^^^^^^
+
+houdafny.dfy(118,14): Error: unresolved identifier: l_o1
+    |
+118 |     invariant l_o1 == r_o2
+    |               ^^^^
+
+houdafny.dfy(118,22): Error: unresolved identifier: r_o2
+    |
+118 |     invariant l_o1 == r_o2
+    |                       ^^^^
+
+houdafny.dfy(119,14): Error: unresolved identifier: l_o1
+    |
+119 |     invariant l_o1 <= r_o2
+    |               ^^^^
+
+houdafny.dfy(119,22): Error: unresolved identifier: r_o2
+    |
+119 |     invariant l_o1 <= r_o2
+    |                       ^^^^
+
+houdafny.dfy(120,14): Error: unresolved identifier: l_o1
+    |
+120 |     invariant l_o1 >= r_o2
+    |               ^^^^
+
+houdafny.dfy(120,22): Error: unresolved identifier: r_o2
+    |
+120 |     invariant l_o1 >= r_o2
+    |                       ^^^^
+
+houdafny.dfy(121,14): Error: unresolved identifier: l_len1
+    |
+121 |     invariant l_len1 == r_len2
+    |               ^^^^^^
+
+houdafny.dfy(121,24): Error: unresolved identifier: r_len2
+    |
+121 |     invariant l_len1 == r_len2
+    |                         ^^^^^^
+
+houdafny.dfy(122,14): Error: unresolved identifier: l_len1
+    |
+122 |     invariant l_len1 <= r_len2
+    |               ^^^^^^
+
+houdafny.dfy(122,24): Error: unresolved identifier: r_len2
+    |
+122 |     invariant l_len1 <= r_len2
+    |                         ^^^^^^
+
+houdafny.dfy(123,14): Error: unresolved identifier: l_len1
+    |
+123 |     invariant l_len1 >= r_len2
+    |               ^^^^^^
+
+houdafny.dfy(123,24): Error: unresolved identifier: r_len2
+    |
+123 |     invariant l_len1 >= r_len2
+    |                         ^^^^^^
+
+houdafny.dfy(124,14): Error: unresolved identifier: l_o2
+    |
+124 |     invariant l_o2 == r_o1
+    |               ^^^^
+
+houdafny.dfy(124,22): Error: unresolved identifier: r_o1
+    |
+124 |     invariant l_o2 == r_o1
+    |                       ^^^^
+
+houdafny.dfy(125,14): Error: unresolved identifier: l_o2
+    |
+125 |     invariant l_o2 <= r_o1
+    |               ^^^^
+
+houdafny.dfy(125,22): Error: unresolved identifier: r_o1
+    |
+125 |     invariant l_o2 <= r_o1
+    |                       ^^^^
+
+houdafny.dfy(126,14): Error: unresolved identifier: l_o2
+    |
+126 |     invariant l_o2 >= r_o1
+    |               ^^^^
+
+houdafny.dfy(126,22): Error: unresolved identifier: r_o1
+    |
+126 |     invariant l_o2 >= r_o1
+    |                       ^^^^
+
+houdafny.dfy(127,14): Error: unresolved identifier: l_len2
+    |
+127 |     invariant l_len2 == r_len1
+    |               ^^^^^^
+
+houdafny.dfy(127,24): Error: unresolved identifier: r_len1
+    |
+127 |     invariant l_len2 == r_len1
+    |                         ^^^^^^
+
+houdafny.dfy(128,14): Error: unresolved identifier: l_len2
+    |
+128 |     invariant l_len2 <= r_len1
+    |               ^^^^^^
+
+houdafny.dfy(128,24): Error: unresolved identifier: r_len1
+    |
+128 |     invariant l_len2 <= r_len1
+    |                         ^^^^^^
+
+houdafny.dfy(129,14): Error: unresolved identifier: l_len2
+    |
+129 |     invariant l_len2 >= r_len1
+    |               ^^^^^^
+
+houdafny.dfy(129,24): Error: unresolved identifier: r_len1
+    |
+129 |     invariant l_len2 >= r_len1
+    |                         ^^^^^^
+
+houdafny.dfy(130,14): Error: unresolved identifier: l_index
+    |
+130 |     invariant l_index == r_index
+    |               ^^^^^^^
+
+houdafny.dfy(130,25): Error: unresolved identifier: r_index
+    |
+130 |     invariant l_index == r_index
+    |                          ^^^^^^^
+
+houdafny.dfy(131,14): Error: unresolved identifier: l_index
+    |
+131 |     invariant l_index <= r_index
+    |               ^^^^^^^
+
+houdafny.dfy(131,25): Error: unresolved identifier: r_index
+    |
+131 |     invariant l_index <= r_index
+    |                          ^^^^^^^
+
+houdafny.dfy(132,14): Error: unresolved identifier: l_index
+    |
+132 |     invariant l_index >= r_index
+    |               ^^^^^^^
+
+houdafny.dfy(132,25): Error: unresolved identifier: r_index
+    |
+132 |     invariant l_index >= r_index
+    |                          ^^^^^^^
+
+houdafny.dfy(133,14): Error: unresolved identifier: l_o1
+    |
+133 |     invariant l_o1 != 0
+    |               ^^^^
+
+houdafny.dfy(134,14): Error: unresolved identifier: l_len1
+    |
+134 |     invariant l_len1 != 0
+    |               ^^^^^^
+
+houdafny.dfy(135,14): Error: unresolved identifier: l_o2
+    |
+135 |     invariant l_o2 != 0
+    |               ^^^^
+
+houdafny.dfy(136,14): Error: unresolved identifier: l_len2
+    |
+136 |     invariant l_len2 != 0
+    |               ^^^^^^
+
+houdafny.dfy(138,14): Error: unresolved identifier: l_index
+    |
+138 |     invariant l_index == 0
+    |               ^^^^^^^
+
+houdafny.dfy(139,14): Error: unresolved identifier: l_index
+    |
+139 |     invariant l_index <= 0
+    |               ^^^^^^^
+
+houdafny.dfy(140,14): Error: unresolved identifier: l_index
+    |
+140 |     invariant l_index >= 0
+    |               ^^^^^^^
+
+houdafny.dfy(141,14): Error: unresolved identifier: l_aentry
+    |
+141 |     invariant l_aentry != 0
+    |               ^^^^^^^^
+
+houdafny.dfy(142,14): Error: unresolved identifier: l_bentry
+    |
+142 |     invariant l_bentry != 0
+    |               ^^^^^^^^
+
+houdafny.dfy(146,14): Error: unresolved identifier: l_o1
+    |
+146 |     invariant l_o1 != l_len1
+    |               ^^^^
+
+houdafny.dfy(146,22): Error: unresolved identifier: l_len1
+    |
+146 |     invariant l_o1 != l_len1
+    |                       ^^^^^^
+
+houdafny.dfy(147,14): Error: unresolved identifier: l_o1
+    |
+147 |     invariant l_o1 != l_o2
+    |               ^^^^
+
+houdafny.dfy(147,22): Error: unresolved identifier: l_o2
+    |
+147 |     invariant l_o1 != l_o2
+    |                       ^^^^
+
+houdafny.dfy(148,14): Error: unresolved identifier: l_o1
+    |
+148 |     invariant l_o1 != l_len2
+    |               ^^^^
+
+houdafny.dfy(148,22): Error: unresolved identifier: l_len2
+    |
+148 |     invariant l_o1 != l_len2
+    |                       ^^^^^^
+
+houdafny.dfy(149,14): Error: unresolved identifier: l_o1
+    |
+149 |     invariant l_o1 != l_index
+    |               ^^^^
+
+houdafny.dfy(149,22): Error: unresolved identifier: l_index
+    |
+149 |     invariant l_o1 != l_index
+    |                       ^^^^^^^
+
+houdafny.dfy(150,14): Error: unresolved identifier: l_o1
+    |
+150 |     invariant l_o1 != l_aentry
+    |               ^^^^
+
+houdafny.dfy(150,22): Error: unresolved identifier: l_aentry
+    |
+150 |     invariant l_o1 != l_aentry
+    |                       ^^^^^^^^
+
+houdafny.dfy(151,14): Error: unresolved identifier: l_o1
+    |
+151 |     invariant l_o1 != l_bentry
+    |               ^^^^
+
+houdafny.dfy(151,22): Error: unresolved identifier: l_bentry
+    |
+151 |     invariant l_o1 != l_bentry
+    |                       ^^^^^^^^
+
+houdafny.dfy(152,14): Error: unresolved identifier: l_len1
+    |
+152 |     invariant l_len1 != l_o2
+    |               ^^^^^^
+
+houdafny.dfy(152,24): Error: unresolved identifier: l_o2
+    |
+152 |     invariant l_len1 != l_o2
+    |                         ^^^^
+
+houdafny.dfy(153,14): Error: unresolved identifier: l_len1
+    |
+153 |     invariant l_len1 != l_len2
+    |               ^^^^^^
+
+houdafny.dfy(153,24): Error: unresolved identifier: l_len2
+    |
+153 |     invariant l_len1 != l_len2
+    |                         ^^^^^^
+
+houdafny.dfy(154,14): Error: unresolved identifier: l_len1
+    |
+154 |     invariant l_len1 > l_index
+    |               ^^^^^^
+
+houdafny.dfy(154,23): Error: unresolved identifier: l_index
+    |
+154 |     invariant l_len1 > l_index
+    |                        ^^^^^^^
+
+houdafny.dfy(155,14): Error: unresolved identifier: l_len1
+    |
+155 |     invariant l_len1 != l_aentry
+    |               ^^^^^^
+
+houdafny.dfy(155,24): Error: unresolved identifier: l_aentry
+    |
+155 |     invariant l_len1 != l_aentry
+    |                         ^^^^^^^^
+
+houdafny.dfy(156,14): Error: unresolved identifier: l_len1
+    |
+156 |     invariant l_len1 != l_bentry
+    |               ^^^^^^
+
+houdafny.dfy(156,24): Error: unresolved identifier: l_bentry
+    |
+156 |     invariant l_len1 != l_bentry
+    |                         ^^^^^^^^
+
+houdafny.dfy(157,14): Error: unresolved identifier: l_o2
+    |
+157 |     invariant l_o2 != l_len2
+    |               ^^^^
+
+houdafny.dfy(157,22): Error: unresolved identifier: l_len2
+    |
+157 |     invariant l_o2 != l_len2
+    |                       ^^^^^^
+
+houdafny.dfy(158,14): Error: unresolved identifier: l_o2
+    |
+158 |     invariant l_o2 != l_index
+    |               ^^^^
+
+houdafny.dfy(158,22): Error: unresolved identifier: l_index
+    |
+158 |     invariant l_o2 != l_index
+    |                       ^^^^^^^
+
+houdafny.dfy(159,14): Error: unresolved identifier: l_o2
+    |
+159 |     invariant l_o2 != l_aentry
+    |               ^^^^
+
+houdafny.dfy(159,22): Error: unresolved identifier: l_aentry
+    |
+159 |     invariant l_o2 != l_aentry
+    |                       ^^^^^^^^
+
+houdafny.dfy(160,14): Error: unresolved identifier: l_o2
+    |
+160 |     invariant l_o2 != l_bentry
+    |               ^^^^
+
+houdafny.dfy(160,22): Error: unresolved identifier: l_bentry
+    |
+160 |     invariant l_o2 != l_bentry
+    |                       ^^^^^^^^
+
+houdafny.dfy(161,14): Error: unresolved identifier: l_len2
+    |
+161 |     invariant l_len2 > l_index
+    |               ^^^^^^
+
+houdafny.dfy(161,23): Error: unresolved identifier: l_index
+    |
+161 |     invariant l_len2 > l_index
+    |                        ^^^^^^^
+
+houdafny.dfy(162,14): Error: unresolved identifier: l_len2
+    |
+162 |     invariant l_len2 != l_aentry
+    |               ^^^^^^
+
+houdafny.dfy(162,24): Error: unresolved identifier: l_aentry
+    |
+162 |     invariant l_len2 != l_aentry
+    |                         ^^^^^^^^
+
+houdafny.dfy(163,14): Error: unresolved identifier: l_len2
+    |
+163 |     invariant l_len2 != l_bentry
+    |               ^^^^^^
+
+houdafny.dfy(163,24): Error: unresolved identifier: l_bentry
+    |
+163 |     invariant l_len2 != l_bentry
+    |                         ^^^^^^^^
+
+houdafny.dfy(164,14): Error: unresolved identifier: l_index
+    |
+164 |     invariant l_index != l_aentry
+    |               ^^^^^^^
+
+houdafny.dfy(164,25): Error: unresolved identifier: l_aentry
+    |
+164 |     invariant l_index != l_aentry
+    |                          ^^^^^^^^
+
+houdafny.dfy(165,14): Error: unresolved identifier: l_index
+    |
+165 |     invariant l_index != l_bentry
+    |               ^^^^^^^
+
+houdafny.dfy(165,25): Error: unresolved identifier: l_bentry
+    |
+165 |     invariant l_index != l_bentry
+    |                          ^^^^^^^^
+
+houdafny.dfy(166,14): Error: unresolved identifier: l_aentry
+    |
+166 |     invariant l_aentry != l_bentry
+    |               ^^^^^^^^
+
+houdafny.dfy(166,26): Error: unresolved identifier: l_bentry
+    |
+166 |     invariant l_aentry != l_bentry
+    |                           ^^^^^^^^
+
+110 resolution/type errors detected in houdafny.dfy
+
+Writing output to ./results/alignments/dafny/sousa/sa/chromosome-sa.dfy...
+Done
+
+Per-Task Times (ms)
+-------------------
+align-sa: 2918
+aligned-crel: 0
+invars-daikon: 819
+houdafny: 798
+aligned-output: 0
+write-product: 0
+
+KestRel completed in 4538ms
+Verified: false
+
+real	0m4.559s
+user	0m5.461s
+sys	0m0.125s

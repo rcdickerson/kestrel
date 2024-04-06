@@ -1,0 +1,1040 @@
+Computed alignment by local loop counting.
+Writing Daikon to daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==56390== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==56390== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==56390== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==56390== Command: ./daikon_output
+==56390== 
+==56390== 
+==56390== For lists of detected and suppressed errors, rerun with: -s
+==56390== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(45,19): Error: this loop invariant could not be proved on entry
+   |
+45 |     invariant l_o1 != 0
+   |                    ^^
+
+houdafny.dfy(45,19): Related message: loop invariant violation
+   |
+45 |     invariant l_o1 != 0
+   |                    ^^
+
+houdafny.dfy(46,21): Error: this loop invariant could not be proved on entry
+   |
+46 |     invariant l_len1 != 0
+   |                      ^^
+
+houdafny.dfy(46,21): Related message: loop invariant violation
+   |
+46 |     invariant l_len1 != 0
+   |                      ^^
+
+houdafny.dfy(47,19): Error: this loop invariant could not be proved on entry
+   |
+47 |     invariant l_o2 != 0
+   |                    ^^
+
+houdafny.dfy(47,19): Related message: loop invariant violation
+   |
+47 |     invariant l_o2 != 0
+   |                    ^^
+
+houdafny.dfy(48,21): Error: this loop invariant could not be proved on entry
+   |
+48 |     invariant l_len2 != 0
+   |                      ^^
+
+houdafny.dfy(48,21): Related message: loop invariant violation
+   |
+48 |     invariant l_len2 != 0
+   |                      ^^
+
+houdafny.dfy(49,21): Error: this loop invariant could not be proved on entry
+   |
+49 |     invariant l_len2 >= 2
+   |                      ^^
+
+houdafny.dfy(49,21): Related message: loop invariant violation
+   |
+49 |     invariant l_len2 >= 2
+   |                      ^^
+
+houdafny.dfy(53,22): Error: this invariant could not be proved to be maintained by the loop
+   |
+53 |     invariant l_index == 0
+   |                       ^^
+
+houdafny.dfy(53,22): Related message: loop invariant violation
+   |
+53 |     invariant l_index == 0
+   |                       ^^
+
+houdafny.dfy(59,19): Error: this loop invariant could not be proved on entry
+   |
+59 |     invariant l_o1 != l_len1
+   |                    ^^
+
+houdafny.dfy(59,19): Related message: loop invariant violation
+   |
+59 |     invariant l_o1 != l_len1
+   |                    ^^
+
+houdafny.dfy(60,19): Error: this loop invariant could not be proved on entry
+   |
+60 |     invariant l_o1 != l_o2
+   |                    ^^
+
+houdafny.dfy(60,19): Related message: loop invariant violation
+   |
+60 |     invariant l_o1 != l_o2
+   |                    ^^
+
+houdafny.dfy(61,19): Error: this loop invariant could not be proved on entry
+   |
+61 |     invariant l_o1 != l_len2
+   |                    ^^
+
+houdafny.dfy(61,19): Related message: loop invariant violation
+   |
+61 |     invariant l_o1 != l_len2
+   |                    ^^
+
+houdafny.dfy(63,21): Error: this loop invariant could not be proved on entry
+   |
+63 |     invariant l_len1 != l_o2
+   |                      ^^
+
+houdafny.dfy(63,21): Related message: loop invariant violation
+   |
+63 |     invariant l_len1 != l_o2
+   |                      ^^
+
+houdafny.dfy(65,19): Error: this loop invariant could not be proved on entry
+   |
+65 |     invariant l_o2 != l_len2
+   |                    ^^
+
+houdafny.dfy(65,19): Related message: loop invariant violation
+   |
+65 |     invariant l_o2 != l_len2
+   |                    ^^
+
+houdafny.dfy(124,23): Error: this loop invariant could not be proved on entry
+    |
+124 |     invariant l_aentry != 0
+    |                        ^^
+
+houdafny.dfy(124,23): Related message: loop invariant violation
+    |
+124 |     invariant l_aentry != 0
+    |                        ^^
+
+houdafny.dfy(125,23): Error: this loop invariant could not be proved on entry
+    |
+125 |     invariant l_bentry != 0
+    |                        ^^
+
+houdafny.dfy(125,23): Related message: loop invariant violation
+    |
+125 |     invariant l_bentry != 0
+    |                        ^^
+
+houdafny.dfy(131,19): Error: this loop invariant could not be proved on entry
+    |
+131 |     invariant l_o1 != l_aentry
+    |                    ^^
+
+houdafny.dfy(131,19): Related message: loop invariant violation
+    |
+131 |     invariant l_o1 != l_aentry
+    |                    ^^
+
+houdafny.dfy(132,19): Error: this loop invariant could not be proved on entry
+    |
+132 |     invariant l_o1 != l_bentry
+    |                    ^^
+
+houdafny.dfy(132,19): Related message: loop invariant violation
+    |
+132 |     invariant l_o1 != l_bentry
+    |                    ^^
+
+houdafny.dfy(135,21): Error: this loop invariant could not be proved on entry
+    |
+135 |     invariant l_len1 != l_aentry
+    |                      ^^
+
+houdafny.dfy(135,21): Related message: loop invariant violation
+    |
+135 |     invariant l_len1 != l_aentry
+    |                      ^^
+
+houdafny.dfy(136,21): Error: this loop invariant could not be proved on entry
+    |
+136 |     invariant l_len1 != l_bentry
+    |                      ^^
+
+houdafny.dfy(136,21): Related message: loop invariant violation
+    |
+136 |     invariant l_len1 != l_bentry
+    |                      ^^
+
+houdafny.dfy(139,19): Error: this loop invariant could not be proved on entry
+    |
+139 |     invariant l_o2 != l_aentry
+    |                    ^^
+
+houdafny.dfy(139,19): Related message: loop invariant violation
+    |
+139 |     invariant l_o2 != l_aentry
+    |                    ^^
+
+houdafny.dfy(140,19): Error: this loop invariant could not be proved on entry
+    |
+140 |     invariant l_o2 != l_bentry
+    |                    ^^
+
+houdafny.dfy(140,19): Related message: loop invariant violation
+    |
+140 |     invariant l_o2 != l_bentry
+    |                    ^^
+
+houdafny.dfy(142,21): Error: this loop invariant could not be proved on entry
+    |
+142 |     invariant l_len2 != l_aentry
+    |                      ^^
+
+houdafny.dfy(142,21): Related message: loop invariant violation
+    |
+142 |     invariant l_len2 != l_aentry
+    |                      ^^
+
+houdafny.dfy(143,21): Error: this loop invariant could not be proved on entry
+    |
+143 |     invariant l_len2 != l_bentry
+    |                      ^^
+
+houdafny.dfy(143,21): Related message: loop invariant violation
+    |
+143 |     invariant l_len2 != l_bentry
+    |                      ^^
+
+
+Dafny program verifier finished with 0 verified, 21 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(48,22): Error: this invariant could not be proved to be maintained by the loop
+   |
+48 |     invariant l_index <= 0
+   |                       ^^
+
+houdafny.dfy(48,22): Related message: loop invariant violation
+   |
+48 |     invariant l_index <= 0
+   |                       ^^
+
+houdafny.dfy(53,19): Error: this loop invariant could not be proved on entry
+   |
+53 |     invariant l_o1 != l_index
+   |                    ^^
+
+houdafny.dfy(53,19): Related message: loop invariant violation
+   |
+53 |     invariant l_o1 != l_index
+   |                    ^^
+
+houdafny.dfy(54,21): Error: this loop invariant could not be proved on entry
+   |
+54 |     invariant l_len1 > l_index
+   |                      ^
+
+houdafny.dfy(54,21): Related message: loop invariant violation
+   |
+54 |     invariant l_len1 > l_index
+   |                      ^
+
+houdafny.dfy(55,19): Error: this loop invariant could not be proved on entry
+   |
+55 |     invariant l_o2 != l_index
+   |                    ^^
+
+houdafny.dfy(55,19): Related message: loop invariant violation
+   |
+55 |     invariant l_o2 != l_index
+   |                    ^^
+
+houdafny.dfy(56,21): Error: this loop invariant could not be proved on entry
+   |
+56 |     invariant l_len2 > l_index
+   |                      ^
+
+houdafny.dfy(56,21): Related message: loop invariant violation
+   |
+56 |     invariant l_len2 > l_index
+   |                      ^
+
+houdafny.dfy(108,21): Error: this loop invariant could not be proved on entry
+    |
+108 |     invariant l_len2 >= 2
+    |                      ^^
+
+houdafny.dfy(108,21): Related message: loop invariant violation
+    |
+108 |     invariant l_len2 >= 2
+    |                      ^^
+
+houdafny.dfy(114,19): Error: this loop invariant could not be proved on entry
+    |
+114 |     invariant l_o1 != l_len1
+    |                    ^^
+
+houdafny.dfy(114,19): Related message: loop invariant violation
+    |
+114 |     invariant l_o1 != l_len1
+    |                    ^^
+
+houdafny.dfy(116,19): Error: this loop invariant could not be proved on entry
+    |
+116 |     invariant l_o1 != l_len2
+    |                    ^^
+
+houdafny.dfy(116,19): Related message: loop invariant violation
+    |
+116 |     invariant l_o1 != l_len2
+    |                    ^^
+
+houdafny.dfy(118,21): Error: this loop invariant could not be proved on entry
+    |
+118 |     invariant l_len1 != l_o2
+    |                      ^^
+
+houdafny.dfy(118,21): Related message: loop invariant violation
+    |
+118 |     invariant l_len1 != l_o2
+    |                      ^^
+
+houdafny.dfy(120,19): Error: this loop invariant could not be proved on entry
+    |
+120 |     invariant l_o2 != l_len2
+    |                    ^^
+
+houdafny.dfy(120,19): Related message: loop invariant violation
+    |
+120 |     invariant l_o2 != l_len2
+    |                    ^^
+
+houdafny.dfy(123,22): Error: this loop invariant could not be proved on entry
+    |
+123 |     invariant l_index != l_aentry
+    |                       ^^
+
+houdafny.dfy(123,22): Related message: loop invariant violation
+    |
+123 |     invariant l_index != l_aentry
+    |                       ^^
+
+houdafny.dfy(124,22): Error: this loop invariant could not be proved on entry
+    |
+124 |     invariant l_index != l_bentry
+    |                       ^^
+
+houdafny.dfy(124,22): Related message: loop invariant violation
+    |
+124 |     invariant l_index != l_bentry
+    |                       ^^
+
+houdafny.dfy(178,19): Error: this loop invariant could not be proved on entry
+    |
+178 |     invariant l_o1 != l_aentry
+    |                    ^^
+
+houdafny.dfy(178,19): Related message: loop invariant violation
+    |
+178 |     invariant l_o1 != l_aentry
+    |                    ^^
+
+houdafny.dfy(179,19): Error: this loop invariant could not be proved on entry
+    |
+179 |     invariant l_o1 != l_bentry
+    |                    ^^
+
+houdafny.dfy(179,19): Related message: loop invariant violation
+    |
+179 |     invariant l_o1 != l_bentry
+    |                    ^^
+
+houdafny.dfy(182,21): Error: this loop invariant could not be proved on entry
+    |
+182 |     invariant l_len1 != l_aentry
+    |                      ^^
+
+houdafny.dfy(182,21): Related message: loop invariant violation
+    |
+182 |     invariant l_len1 != l_aentry
+    |                      ^^
+
+houdafny.dfy(183,21): Error: this loop invariant could not be proved on entry
+    |
+183 |     invariant l_len1 != l_bentry
+    |                      ^^
+
+houdafny.dfy(183,21): Related message: loop invariant violation
+    |
+183 |     invariant l_len1 != l_bentry
+    |                      ^^
+
+houdafny.dfy(186,19): Error: this loop invariant could not be proved on entry
+    |
+186 |     invariant l_o2 != l_aentry
+    |                    ^^
+
+houdafny.dfy(186,19): Related message: loop invariant violation
+    |
+186 |     invariant l_o2 != l_aentry
+    |                    ^^
+
+houdafny.dfy(187,19): Error: this loop invariant could not be proved on entry
+    |
+187 |     invariant l_o2 != l_bentry
+    |                    ^^
+
+houdafny.dfy(187,19): Related message: loop invariant violation
+    |
+187 |     invariant l_o2 != l_bentry
+    |                    ^^
+
+houdafny.dfy(189,21): Error: this loop invariant could not be proved on entry
+    |
+189 |     invariant l_len2 != l_aentry
+    |                      ^^
+
+houdafny.dfy(189,21): Related message: loop invariant violation
+    |
+189 |     invariant l_len2 != l_aentry
+    |                      ^^
+
+houdafny.dfy(190,21): Error: this loop invariant could not be proved on entry
+    |
+190 |     invariant l_len2 != l_bentry
+    |                      ^^
+
+houdafny.dfy(190,21): Related message: loop invariant violation
+    |
+190 |     invariant l_len2 != l_bentry
+    |                      ^^
+
+
+Dafny program verifier finished with 0 verified, 20 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(93,14): Error: variable 'l_aentry', which is subject to definite-assignment rules, might be uninitialized here
+   |
+93 |     invariant l_aentry == r_bentry
+   |               ^^^^^^^^
+
+houdafny.dfy(93,23): Error: this loop invariant could not be proved on entry
+   |
+93 |     invariant l_aentry == r_bentry
+   |                        ^^
+
+houdafny.dfy(93,23): Related message: loop invariant violation
+   |
+93 |     invariant l_aentry == r_bentry
+   |                        ^^
+
+houdafny.dfy(93,26): Error: variable 'r_bentry', which is subject to definite-assignment rules, might be uninitialized here
+   |
+93 |     invariant l_aentry == r_bentry
+   |                           ^^^^^^^^
+
+houdafny.dfy(96,14): Error: variable 'l_bentry', which is subject to definite-assignment rules, might be uninitialized here
+   |
+96 |     invariant l_bentry == r_aentry
+   |               ^^^^^^^^
+
+houdafny.dfy(96,23): Error: this loop invariant could not be proved on entry
+   |
+96 |     invariant l_bentry == r_aentry
+   |                        ^^
+
+houdafny.dfy(96,23): Related message: loop invariant violation
+   |
+96 |     invariant l_bentry == r_aentry
+   |                        ^^
+
+houdafny.dfy(96,26): Error: variable 'r_aentry', which is subject to definite-assignment rules, might be uninitialized here
+   |
+96 |     invariant l_bentry == r_aentry
+   |                           ^^^^^^^^
+
+houdafny.dfy(99,19): Error: this loop invariant could not be proved on entry
+   |
+99 |     invariant l_o1 != 0
+   |                    ^^
+
+houdafny.dfy(99,19): Related message: loop invariant violation
+   |
+99 |     invariant l_o1 != 0
+   |                    ^^
+
+houdafny.dfy(100,21): Error: this loop invariant could not be proved on entry
+    |
+100 |     invariant l_len1 != 0
+    |                      ^^
+
+houdafny.dfy(100,21): Related message: loop invariant violation
+    |
+100 |     invariant l_len1 != 0
+    |                      ^^
+
+houdafny.dfy(101,19): Error: this loop invariant could not be proved on entry
+    |
+101 |     invariant l_o2 != 0
+    |                    ^^
+
+houdafny.dfy(101,19): Related message: loop invariant violation
+    |
+101 |     invariant l_o2 != 0
+    |                    ^^
+
+houdafny.dfy(102,21): Error: this loop invariant could not be proved on entry
+    |
+102 |     invariant l_len2 != 0
+    |                      ^^
+
+houdafny.dfy(102,21): Related message: loop invariant violation
+    |
+102 |     invariant l_len2 != 0
+    |                      ^^
+
+houdafny.dfy(104,22): Error: this loop invariant could not be proved on entry
+    |
+104 |     invariant l_index == 0
+    |                       ^^
+
+houdafny.dfy(104,22): Related message: loop invariant violation
+    |
+104 |     invariant l_index == 0
+    |                       ^^
+
+houdafny.dfy(154,21): Error: this loop invariant could not be proved on entry
+    |
+154 |     invariant l_len2 >= 2
+    |                      ^^
+
+houdafny.dfy(154,21): Related message: loop invariant violation
+    |
+154 |     invariant l_len2 >= 2
+    |                      ^^
+
+houdafny.dfy(159,23): Error: this loop invariant could not be proved on entry
+    |
+159 |     invariant l_aentry != 0
+    |                        ^^
+
+houdafny.dfy(159,23): Related message: loop invariant violation
+    |
+159 |     invariant l_aentry != 0
+    |                        ^^
+
+houdafny.dfy(160,23): Error: this loop invariant could not be proved on entry
+    |
+160 |     invariant l_bentry != 0
+    |                        ^^
+
+houdafny.dfy(160,23): Related message: loop invariant violation
+    |
+160 |     invariant l_bentry != 0
+    |                        ^^
+
+houdafny.dfy(162,19): Error: this loop invariant could not be proved on entry
+    |
+162 |     invariant l_o1 != l_len1
+    |                    ^^
+
+houdafny.dfy(162,19): Related message: loop invariant violation
+    |
+162 |     invariant l_o1 != l_len1
+    |                    ^^
+
+houdafny.dfy(164,19): Error: this loop invariant could not be proved on entry
+    |
+164 |     invariant l_o1 != l_len2
+    |                    ^^
+
+houdafny.dfy(164,19): Related message: loop invariant violation
+    |
+164 |     invariant l_o1 != l_len2
+    |                    ^^
+
+houdafny.dfy(166,21): Error: this loop invariant could not be proved on entry
+    |
+166 |     invariant l_len1 != l_o2
+    |                      ^^
+
+houdafny.dfy(166,21): Related message: loop invariant violation
+    |
+166 |     invariant l_len1 != l_o2
+    |                      ^^
+
+houdafny.dfy(168,19): Error: this loop invariant could not be proved on entry
+    |
+168 |     invariant l_o2 != l_len2
+    |                    ^^
+
+houdafny.dfy(168,19): Related message: loop invariant violation
+    |
+168 |     invariant l_o2 != l_len2
+    |                    ^^
+
+
+Dafny program verifier finished with 0 verified, 18 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(93,14): Error: variable 'l_aentry', which is subject to definite-assignment rules, might be uninitialized here
+   |
+93 |     invariant l_aentry <= r_bentry
+   |               ^^^^^^^^
+
+houdafny.dfy(93,23): Error: this loop invariant could not be proved on entry
+   |
+93 |     invariant l_aentry <= r_bentry
+   |                        ^^
+
+houdafny.dfy(93,23): Related message: loop invariant violation
+   |
+93 |     invariant l_aentry <= r_bentry
+   |                        ^^
+
+houdafny.dfy(93,26): Error: variable 'r_bentry', which is subject to definite-assignment rules, might be uninitialized here
+   |
+93 |     invariant l_aentry <= r_bentry
+   |                           ^^^^^^^^
+
+houdafny.dfy(94,23): Error: this loop invariant could not be proved on entry
+   |
+94 |     invariant l_aentry >= r_bentry
+   |                        ^^
+
+houdafny.dfy(94,23): Related message: loop invariant violation
+   |
+94 |     invariant l_aentry >= r_bentry
+   |                        ^^
+
+houdafny.dfy(95,14): Error: variable 'l_bentry', which is subject to definite-assignment rules, might be uninitialized here
+   |
+95 |     invariant l_bentry <= r_aentry
+   |               ^^^^^^^^
+
+houdafny.dfy(95,23): Error: this loop invariant could not be proved on entry
+   |
+95 |     invariant l_bentry <= r_aentry
+   |                        ^^
+
+houdafny.dfy(95,23): Related message: loop invariant violation
+   |
+95 |     invariant l_bentry <= r_aentry
+   |                        ^^
+
+houdafny.dfy(95,26): Error: variable 'r_aentry', which is subject to definite-assignment rules, might be uninitialized here
+   |
+95 |     invariant l_bentry <= r_aentry
+   |                           ^^^^^^^^
+
+houdafny.dfy(96,23): Error: this loop invariant could not be proved on entry
+   |
+96 |     invariant l_bentry >= r_aentry
+   |                        ^^
+
+houdafny.dfy(96,23): Related message: loop invariant violation
+   |
+96 |     invariant l_bentry >= r_aentry
+   |                        ^^
+
+houdafny.dfy(98,22): Error: this loop invariant could not be proved on entry
+   |
+98 |     invariant l_index <= 0
+   |                       ^^
+
+houdafny.dfy(98,22): Related message: loop invariant violation
+   |
+98 |     invariant l_index <= 0
+   |                       ^^
+
+houdafny.dfy(101,19): Error: this loop invariant could not be proved on entry
+    |
+101 |     invariant l_o1 != l_o2
+    |                    ^^
+
+houdafny.dfy(101,19): Related message: loop invariant violation
+    |
+101 |     invariant l_o1 != l_o2
+    |                    ^^
+
+houdafny.dfy(102,19): Error: this loop invariant could not be proved on entry
+    |
+102 |     invariant l_o1 != l_index
+    |                    ^^
+
+houdafny.dfy(102,19): Related message: loop invariant violation
+    |
+102 |     invariant l_o1 != l_index
+    |                    ^^
+
+houdafny.dfy(103,21): Error: this loop invariant could not be proved on entry
+    |
+103 |     invariant l_len1 > l_index
+    |                      ^
+
+houdafny.dfy(103,21): Related message: loop invariant violation
+    |
+103 |     invariant l_len1 > l_index
+    |                      ^
+
+houdafny.dfy(104,19): Error: this loop invariant could not be proved on entry
+    |
+104 |     invariant l_o2 != l_index
+    |                    ^^
+
+houdafny.dfy(104,19): Related message: loop invariant violation
+    |
+104 |     invariant l_o2 != l_index
+    |                    ^^
+
+houdafny.dfy(105,21): Error: this loop invariant could not be proved on entry
+    |
+105 |     invariant l_len2 > l_index
+    |                      ^
+
+houdafny.dfy(105,21): Related message: loop invariant violation
+    |
+105 |     invariant l_len2 > l_index
+    |                      ^
+
+houdafny.dfy(157,22): Error: this loop invariant could not be proved on entry
+    |
+157 |     invariant l_index != l_aentry
+    |                       ^^
+
+houdafny.dfy(157,22): Related message: loop invariant violation
+    |
+157 |     invariant l_index != l_aentry
+    |                       ^^
+
+houdafny.dfy(158,22): Error: this loop invariant could not be proved on entry
+    |
+158 |     invariant l_index != l_bentry
+    |                       ^^
+
+houdafny.dfy(158,22): Related message: loop invariant violation
+    |
+158 |     invariant l_index != l_bentry
+    |                       ^^
+
+
+Dafny program verifier finished with 0 verified, 16 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(96,14): Error: variable 'l_aentry', which is subject to definite-assignment rules, might be uninitialized here
+   |
+96 |     invariant l_aentry != l_bentry
+   |               ^^^^^^^^
+
+houdafny.dfy(96,23): Error: this loop invariant could not be proved on entry
+   |
+96 |     invariant l_aentry != l_bentry
+   |                        ^^
+
+houdafny.dfy(96,23): Related message: loop invariant violation
+   |
+96 |     invariant l_aentry != l_bentry
+   |                        ^^
+
+houdafny.dfy(96,26): Error: variable 'l_bentry', which is subject to definite-assignment rules, might be uninitialized here
+   |
+96 |     invariant l_aentry != l_bentry
+   |                           ^^^^^^^^
+
+houdafny.dfy(127,14): Error: variable 'l_aentry', which is subject to definite-assignment rules, might be uninitialized here
+    |
+127 |     invariant l_aentry == r_bentry
+    |               ^^^^^^^^
+
+houdafny.dfy(127,23): Error: this loop invariant could not be proved on entry
+    |
+127 |     invariant l_aentry == r_bentry
+    |                        ^^
+
+houdafny.dfy(127,23): Related message: loop invariant violation
+    |
+127 |     invariant l_aentry == r_bentry
+    |                        ^^
+
+houdafny.dfy(127,26): Error: variable 'r_bentry', which is subject to definite-assignment rules, might be uninitialized here
+    |
+127 |     invariant l_aentry == r_bentry
+    |                           ^^^^^^^^
+
+houdafny.dfy(130,14): Error: variable 'l_bentry', which is subject to definite-assignment rules, might be uninitialized here
+    |
+130 |     invariant l_bentry == r_aentry
+    |               ^^^^^^^^
+
+houdafny.dfy(130,23): Error: this loop invariant could not be proved on entry
+    |
+130 |     invariant l_bentry == r_aentry
+    |                        ^^
+
+houdafny.dfy(130,23): Related message: loop invariant violation
+    |
+130 |     invariant l_bentry == r_aentry
+    |                        ^^
+
+houdafny.dfy(130,26): Error: variable 'r_aentry', which is subject to definite-assignment rules, might be uninitialized here
+    |
+130 |     invariant l_bentry == r_aentry
+    |                           ^^^^^^^^
+
+houdafny.dfy(133,19): Error: this loop invariant could not be proved on entry
+    |
+133 |     invariant l_o1 != 0
+    |                    ^^
+
+houdafny.dfy(133,19): Related message: loop invariant violation
+    |
+133 |     invariant l_o1 != 0
+    |                    ^^
+
+houdafny.dfy(134,21): Error: this loop invariant could not be proved on entry
+    |
+134 |     invariant l_len1 != 0
+    |                      ^^
+
+houdafny.dfy(134,21): Related message: loop invariant violation
+    |
+134 |     invariant l_len1 != 0
+    |                      ^^
+
+houdafny.dfy(135,19): Error: this loop invariant could not be proved on entry
+    |
+135 |     invariant l_o2 != 0
+    |                    ^^
+
+houdafny.dfy(135,19): Related message: loop invariant violation
+    |
+135 |     invariant l_o2 != 0
+    |                    ^^
+
+houdafny.dfy(136,21): Error: this loop invariant could not be proved on entry
+    |
+136 |     invariant l_len2 != 0
+    |                      ^^
+
+houdafny.dfy(136,21): Related message: loop invariant violation
+    |
+136 |     invariant l_len2 != 0
+    |                      ^^
+
+houdafny.dfy(138,22): Error: this loop invariant could not be proved on entry
+    |
+138 |     invariant l_index == 0
+    |                       ^^
+
+houdafny.dfy(138,22): Related message: loop invariant violation
+    |
+138 |     invariant l_index == 0
+    |                       ^^
+
+
+Dafny program verifier finished with 0 verified, 14 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(126,14): Error: variable 'l_aentry', which is subject to definite-assignment rules, might be uninitialized here
+    |
+126 |     invariant l_aentry <= r_bentry
+    |               ^^^^^^^^
+
+houdafny.dfy(126,23): Error: this loop invariant could not be proved on entry
+    |
+126 |     invariant l_aentry <= r_bentry
+    |                        ^^
+
+houdafny.dfy(126,23): Related message: loop invariant violation
+    |
+126 |     invariant l_aentry <= r_bentry
+    |                        ^^
+
+houdafny.dfy(126,26): Error: variable 'r_bentry', which is subject to definite-assignment rules, might be uninitialized here
+    |
+126 |     invariant l_aentry <= r_bentry
+    |                           ^^^^^^^^
+
+houdafny.dfy(127,23): Error: this loop invariant could not be proved on entry
+    |
+127 |     invariant l_aentry >= r_bentry
+    |                        ^^
+
+houdafny.dfy(127,23): Related message: loop invariant violation
+    |
+127 |     invariant l_aentry >= r_bentry
+    |                        ^^
+
+houdafny.dfy(128,14): Error: variable 'l_bentry', which is subject to definite-assignment rules, might be uninitialized here
+    |
+128 |     invariant l_bentry <= r_aentry
+    |               ^^^^^^^^
+
+houdafny.dfy(128,23): Error: this loop invariant could not be proved on entry
+    |
+128 |     invariant l_bentry <= r_aentry
+    |                        ^^
+
+houdafny.dfy(128,23): Related message: loop invariant violation
+    |
+128 |     invariant l_bentry <= r_aentry
+    |                        ^^
+
+houdafny.dfy(128,26): Error: variable 'r_aentry', which is subject to definite-assignment rules, might be uninitialized here
+    |
+128 |     invariant l_bentry <= r_aentry
+    |                           ^^^^^^^^
+
+houdafny.dfy(129,23): Error: this loop invariant could not be proved on entry
+    |
+129 |     invariant l_bentry >= r_aentry
+    |                        ^^
+
+houdafny.dfy(129,23): Related message: loop invariant violation
+    |
+129 |     invariant l_bentry >= r_aentry
+    |                        ^^
+
+houdafny.dfy(131,22): Error: this loop invariant could not be proved on entry
+    |
+131 |     invariant l_index <= 0
+    |                       ^^
+
+houdafny.dfy(131,22): Related message: loop invariant violation
+    |
+131 |     invariant l_index <= 0
+    |                       ^^
+
+houdafny.dfy(134,19): Error: this loop invariant could not be proved on entry
+    |
+134 |     invariant l_o1 != l_o2
+    |                    ^^
+
+houdafny.dfy(134,19): Related message: loop invariant violation
+    |
+134 |     invariant l_o1 != l_o2
+    |                    ^^
+
+houdafny.dfy(135,19): Error: this loop invariant could not be proved on entry
+    |
+135 |     invariant l_o1 != l_index
+    |                    ^^
+
+houdafny.dfy(135,19): Related message: loop invariant violation
+    |
+135 |     invariant l_o1 != l_index
+    |                    ^^
+
+houdafny.dfy(136,21): Error: this loop invariant could not be proved on entry
+    |
+136 |     invariant l_len1 > l_index
+    |                      ^
+
+houdafny.dfy(136,21): Related message: loop invariant violation
+    |
+136 |     invariant l_len1 > l_index
+    |                      ^
+
+houdafny.dfy(137,19): Error: this loop invariant could not be proved on entry
+    |
+137 |     invariant l_o2 != l_index
+    |                    ^^
+
+houdafny.dfy(137,19): Related message: loop invariant violation
+    |
+137 |     invariant l_o2 != l_index
+    |                    ^^
+
+houdafny.dfy(138,21): Error: this loop invariant could not be proved on entry
+    |
+138 |     invariant l_len2 > l_index
+    |                      ^
+
+houdafny.dfy(138,21): Related message: loop invariant violation
+    |
+138 |     invariant l_len2 > l_index
+    |                      ^
+
+
+Dafny program verifier finished with 0 verified, 14 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(129,14): Error: variable 'l_aentry', which is subject to definite-assignment rules, might be uninitialized here
+    |
+129 |     invariant l_aentry != l_bentry
+    |               ^^^^^^^^
+
+houdafny.dfy(129,23): Error: this loop invariant could not be proved on entry
+    |
+129 |     invariant l_aentry != l_bentry
+    |                        ^^
+
+houdafny.dfy(129,23): Related message: loop invariant violation
+    |
+129 |     invariant l_aentry != l_bentry
+    |                        ^^
+
+houdafny.dfy(129,26): Error: variable 'l_bentry', which is subject to definite-assignment rules, might be uninitialized here
+    |
+129 |     invariant l_aentry != l_bentry
+    |                           ^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 3 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+
+Dafny program verifier finished with 1 verified, 0 errors
+
+Writing output to ./results/alignments/dafny/sousa/count-loops/array-int-cou.dfy...
+Done
+
+Per-Task Times (ms)
+-------------------
+align-count-loops: 42
+aligned-crel: 0
+invars-daikon: 1033
+houdafny: 18949
+aligned-output: 0
+write-product: 0
+
+KestRel completed in 20027ms
+Verified: true
+
+real	0m20.052s
+user	0m21.376s
+sys	0m1.480s

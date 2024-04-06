@@ -1,0 +1,235 @@
+Treating naive product as final alignment.
+Writing Daikon to daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==26918== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==26918== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==26918== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==26918== Command: ./daikon_output
+==26918== 
+==26918== 
+==26918== For lists of detected and suppressed errors, rerun with: -s
+==26918== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(17,21): Error: this loop invariant could not be proved on entry
+   |
+17 |     invariant l_tree != 0
+   |                      ^^
+
+houdafny.dfy(17,21): Related message: loop invariant violation
+   |
+17 |     invariant l_tree != 0
+   |                      ^^
+
+houdafny.dfy(17,21): Error: this invariant could not be proved to be maintained by the loop
+   |
+17 |     invariant l_tree != 0
+   |                      ^^
+
+houdafny.dfy(17,21): Related message: loop invariant violation
+   |
+17 |     invariant l_tree != 0
+   |                      ^^
+
+houdafny.dfy(19,21): Error: this invariant could not be proved to be maintained by the loop
+   |
+19 |     invariant l_tree != l_sum
+   |                      ^^
+
+houdafny.dfy(19,21): Related message: loop invariant violation
+   |
+19 |     invariant l_tree != l_sum
+   |                      ^^
+
+houdafny.dfy(31,20): Error: this loop invariant could not be proved on entry
+   |
+31 |     invariant l_sum != 0
+   |                     ^^
+
+houdafny.dfy(31,20): Related message: loop invariant violation
+   |
+31 |     invariant l_sum != 0
+   |                     ^^
+
+houdafny.dfy(32,18): Error: this loop invariant could not be proved on entry
+   |
+32 |     invariant l_i != 0
+   |                   ^^
+
+houdafny.dfy(32,18): Related message: loop invariant violation
+   |
+32 |     invariant l_i != 0
+   |                   ^^
+
+houdafny.dfy(34,21): Error: this invariant could not be proved to be maintained by the loop
+   |
+34 |     invariant r_tree != 0
+   |                      ^^
+
+houdafny.dfy(34,21): Related message: loop invariant violation
+   |
+34 |     invariant r_tree != 0
+   |                      ^^
+
+houdafny.dfy(37,21): Error: this loop invariant could not be proved on entry
+   |
+37 |     invariant l_tree > r_tree
+   |                      ^
+
+houdafny.dfy(37,21): Related message: loop invariant violation
+   |
+37 |     invariant l_tree > r_tree
+   |                      ^
+
+houdafny.dfy(37,21): Error: this invariant could not be proved to be maintained by the loop
+   |
+37 |     invariant l_tree > r_tree
+   |                      ^
+
+houdafny.dfy(37,21): Related message: loop invariant violation
+   |
+37 |     invariant l_tree > r_tree
+   |                      ^
+
+houdafny.dfy(38,21): Error: this invariant could not be proved to be maintained by the loop
+   |
+38 |     invariant l_tree != r_sum
+   |                      ^^
+
+houdafny.dfy(38,21): Related message: loop invariant violation
+   |
+38 |     invariant l_tree != r_sum
+   |                      ^^
+
+houdafny.dfy(39,20): Error: this loop invariant could not be proved on entry
+   |
+39 |     invariant l_sum != r_tree
+   |                     ^^
+
+houdafny.dfy(39,20): Related message: loop invariant violation
+   |
+39 |     invariant l_sum != r_tree
+   |                     ^^
+
+houdafny.dfy(39,20): Error: this invariant could not be proved to be maintained by the loop
+   |
+39 |     invariant l_sum != r_tree
+   |                     ^^
+
+houdafny.dfy(39,20): Related message: loop invariant violation
+   |
+39 |     invariant l_sum != r_tree
+   |                     ^^
+
+houdafny.dfy(40,20): Error: this invariant could not be proved to be maintained by the loop
+   |
+40 |     invariant l_sum != r_sum
+   |                     ^^
+
+houdafny.dfy(40,20): Related message: loop invariant violation
+   |
+40 |     invariant l_sum != r_sum
+   |                     ^^
+
+houdafny.dfy(41,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+41 |     invariant l_i > r_i
+   |                   ^
+
+houdafny.dfy(41,18): Related message: loop invariant violation
+   |
+41 |     invariant l_i > r_i
+   |                   ^
+
+houdafny.dfy(42,21): Error: this invariant could not be proved to be maintained by the loop
+   |
+42 |     invariant r_tree != r_sum
+   |                      ^^
+
+houdafny.dfy(42,21): Related message: loop invariant violation
+   |
+42 |     invariant r_tree != r_sum
+   |                      ^^
+
+houdafny.dfy(48,8): Error: assertion might not hold
+   |
+48 |   assert(l_sum <= r_sum);
+   |         ^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 15 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(28,21): Error: this loop invariant could not be proved on entry
+   |
+28 |     invariant l_tree != 0
+   |                      ^^
+
+houdafny.dfy(28,21): Related message: loop invariant violation
+   |
+28 |     invariant l_tree != 0
+   |                      ^^
+
+houdafny.dfy(29,18): Error: this loop invariant could not be proved on entry
+   |
+29 |     invariant l_i >= 1
+   |                   ^^
+
+houdafny.dfy(29,18): Related message: loop invariant violation
+   |
+29 |     invariant l_i >= 1
+   |                   ^^
+
+houdafny.dfy(31,21): Error: this loop invariant could not be proved on entry
+   |
+31 |     invariant l_tree != l_sum
+   |                      ^^
+
+houdafny.dfy(31,21): Related message: loop invariant violation
+   |
+31 |     invariant l_tree != l_sum
+   |                      ^^
+
+houdafny.dfy(37,8): Error: assertion might not hold
+   |
+37 |   assert(l_sum <= r_sum);
+   |         ^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 4 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(34,8): Error: assertion might not hold
+   |
+34 |   assert(l_sum <= r_sum);
+   |         ^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+Writing output to ./results/alignments/dafny/adt/unaligned/bst-sum-una.dfy...
+Done
+
+Per-Task Times (ms)
+-------------------
+align-none: 0
+aligned-crel: 0
+invars-daikon: 1017
+houdafny: 5471
+aligned-output: 0
+write-product: 0
+
+KestRel completed in 6489ms
+Verified: false
+
+real	0m6.516s
+user	0m7.598s
+sys	0m0.393s

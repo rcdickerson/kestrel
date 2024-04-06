@@ -1,0 +1,330 @@
+Computed alignment by local loop counting.
+Writing Daikon to daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==50754== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==50754== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==50754== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==50754== Command: ./daikon_output
+==50754== 
+==50754== 
+==50754== For lists of detected and suppressed errors, rerun with: -s
+==50754== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(40,25): Error: this loop invariant could not be proved on entry
+   |
+40 |     invariant l_payments != 0
+   |                          ^^
+
+houdafny.dfy(40,25): Related message: loop invariant violation
+   |
+40 |     invariant l_payments != 0
+   |                          ^^
+
+houdafny.dfy(40,25): Error: this invariant could not be proved to be maintained by the loop
+   |
+40 |     invariant l_payments != 0
+   |                          ^^
+
+houdafny.dfy(40,25): Related message: loop invariant violation
+   |
+40 |     invariant l_payments != 0
+   |                          ^^
+
+houdafny.dfy(41,20): Error: this loop invariant could not be proved on entry
+   |
+41 |     invariant l_ids != 0
+   |                     ^^
+
+houdafny.dfy(41,20): Related message: loop invariant violation
+   |
+41 |     invariant l_ids != 0
+   |                     ^^
+
+houdafny.dfy(42,25): Error: this loop invariant could not be proved on entry
+   |
+42 |     invariant l_salaries != 0
+   |                          ^^
+
+houdafny.dfy(42,25): Related message: loop invariant violation
+   |
+42 |     invariant l_salaries != 0
+   |                          ^^
+
+houdafny.dfy(43,28): Error: this loop invariant could not be proved on entry
+   |
+43 |     invariant l_num_updates != 0
+   |                             ^^
+
+houdafny.dfy(43,28): Related message: loop invariant violation
+   |
+43 |     invariant l_num_updates != 0
+   |                             ^^
+
+houdafny.dfy(44,28): Error: this loop invariant could not be proved on entry
+   |
+44 |     invariant l_num_updates >= 1
+   |                             ^^
+
+houdafny.dfy(44,28): Related message: loop invariant violation
+   |
+44 |     invariant l_num_updates >= 1
+   |                             ^^
+
+houdafny.dfy(46,22): Error: this loop invariant could not be proved on entry
+   |
+46 |     invariant r_bonus == 2653
+   |                       ^^
+
+houdafny.dfy(46,22): Related message: loop invariant violation
+   |
+46 |     invariant r_bonus == 2653
+   |                       ^^
+
+houdafny.dfy(49,25): Error: this loop invariant could not be proved on entry
+   |
+49 |     invariant l_payments != l_ids
+   |                          ^^
+
+houdafny.dfy(49,25): Related message: loop invariant violation
+   |
+49 |     invariant l_payments != l_ids
+   |                          ^^
+
+houdafny.dfy(49,25): Error: this invariant could not be proved to be maintained by the loop
+   |
+49 |     invariant l_payments != l_ids
+   |                          ^^
+
+houdafny.dfy(49,25): Related message: loop invariant violation
+   |
+49 |     invariant l_payments != l_ids
+   |                          ^^
+
+houdafny.dfy(50,25): Error: this loop invariant could not be proved on entry
+   |
+50 |     invariant l_payments != l_salaries
+   |                          ^^
+
+houdafny.dfy(50,25): Related message: loop invariant violation
+   |
+50 |     invariant l_payments != l_salaries
+   |                          ^^
+
+houdafny.dfy(50,25): Error: this invariant could not be proved to be maintained by the loop
+   |
+50 |     invariant l_payments != l_salaries
+   |                          ^^
+
+houdafny.dfy(50,25): Related message: loop invariant violation
+   |
+50 |     invariant l_payments != l_salaries
+   |                          ^^
+
+houdafny.dfy(51,25): Error: this loop invariant could not be proved on entry
+   |
+51 |     invariant l_payments != l_num_updates
+   |                          ^^
+
+houdafny.dfy(51,25): Related message: loop invariant violation
+   |
+51 |     invariant l_payments != l_num_updates
+   |                          ^^
+
+houdafny.dfy(51,25): Error: this invariant could not be proved to be maintained by the loop
+   |
+51 |     invariant l_payments != l_num_updates
+   |                          ^^
+
+houdafny.dfy(51,25): Related message: loop invariant violation
+   |
+51 |     invariant l_payments != l_num_updates
+   |                          ^^
+
+houdafny.dfy(52,25): Error: this invariant could not be proved to be maintained by the loop
+   |
+52 |     invariant l_payments != l_i
+   |                          ^^
+
+houdafny.dfy(52,25): Related message: loop invariant violation
+   |
+52 |     invariant l_payments != l_i
+   |                          ^^
+
+houdafny.dfy(53,25): Error: this loop invariant could not be proved on entry
+   |
+53 |     invariant l_payments != r_bonus
+   |                          ^^
+
+houdafny.dfy(53,25): Related message: loop invariant violation
+   |
+53 |     invariant l_payments != r_bonus
+   |                          ^^
+
+houdafny.dfy(53,25): Error: this invariant could not be proved to be maintained by the loop
+   |
+53 |     invariant l_payments != r_bonus
+   |                          ^^
+
+houdafny.dfy(53,25): Related message: loop invariant violation
+   |
+53 |     invariant l_payments != r_bonus
+   |                          ^^
+
+houdafny.dfy(54,20): Error: this loop invariant could not be proved on entry
+   |
+54 |     invariant l_ids != l_salaries
+   |                     ^^
+
+houdafny.dfy(54,20): Related message: loop invariant violation
+   |
+54 |     invariant l_ids != l_salaries
+   |                     ^^
+
+houdafny.dfy(55,20): Error: this loop invariant could not be proved on entry
+   |
+55 |     invariant l_ids != l_num_updates
+   |                     ^^
+
+houdafny.dfy(55,20): Related message: loop invariant violation
+   |
+55 |     invariant l_ids != l_num_updates
+   |                     ^^
+
+houdafny.dfy(56,20): Error: this invariant could not be proved to be maintained by the loop
+   |
+56 |     invariant l_ids != l_i
+   |                     ^^
+
+houdafny.dfy(56,20): Related message: loop invariant violation
+   |
+56 |     invariant l_ids != l_i
+   |                     ^^
+
+houdafny.dfy(57,20): Error: this loop invariant could not be proved on entry
+   |
+57 |     invariant l_ids != r_bonus
+   |                     ^^
+
+houdafny.dfy(57,20): Related message: loop invariant violation
+   |
+57 |     invariant l_ids != r_bonus
+   |                     ^^
+
+houdafny.dfy(58,25): Error: this loop invariant could not be proved on entry
+   |
+58 |     invariant l_salaries != l_num_updates
+   |                          ^^
+
+houdafny.dfy(58,25): Related message: loop invariant violation
+   |
+58 |     invariant l_salaries != l_num_updates
+   |                          ^^
+
+houdafny.dfy(59,25): Error: this invariant could not be proved to be maintained by the loop
+   |
+59 |     invariant l_salaries != l_i
+   |                          ^^
+
+houdafny.dfy(59,25): Related message: loop invariant violation
+   |
+59 |     invariant l_salaries != l_i
+   |                          ^^
+
+houdafny.dfy(60,25): Error: this loop invariant could not be proved on entry
+   |
+60 |     invariant l_salaries != r_bonus
+   |                          ^^
+
+houdafny.dfy(60,25): Related message: loop invariant violation
+   |
+60 |     invariant l_salaries != r_bonus
+   |                          ^^
+
+houdafny.dfy(61,28): Error: this invariant could not be proved to be maintained by the loop
+   |
+61 |     invariant l_num_updates > l_i
+   |                             ^
+
+houdafny.dfy(61,28): Related message: loop invariant violation
+   |
+61 |     invariant l_num_updates > l_i
+   |                             ^
+
+houdafny.dfy(62,28): Error: this loop invariant could not be proved on entry
+   |
+62 |     invariant l_num_updates < r_bonus
+   |                             ^
+
+houdafny.dfy(62,28): Related message: loop invariant violation
+   |
+62 |     invariant l_num_updates < r_bonus
+   |                             ^
+
+
+Dafny program verifier finished with 0 verified, 25 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(41,22): Error: this loop invariant could not be proved on entry
+   |
+41 |     invariant r_bonus <= 2653
+   |                       ^^
+
+houdafny.dfy(41,22): Related message: loop invariant violation
+   |
+41 |     invariant r_bonus <= 2653
+   |                       ^^
+
+houdafny.dfy(42,22): Error: this loop invariant could not be proved on entry
+   |
+42 |     invariant r_bonus >= 2653
+   |                       ^^
+
+houdafny.dfy(42,22): Related message: loop invariant violation
+   |
+42 |     invariant r_bonus >= 2653
+   |                       ^^
+
+houdafny.dfy(43,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+43 |     invariant l_i < r_bonus
+   |                   ^
+
+houdafny.dfy(43,18): Related message: loop invariant violation
+   |
+43 |     invariant l_i < r_bonus
+   |                   ^
+
+
+Dafny program verifier finished with 0 verified, 3 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+
+Dafny program verifier finished with 1 verified, 0 errors
+
+Writing output to ./results/alignments/dafny/adt/count-loops/payments-cou.dfy...
+Done
+
+Per-Task Times (ms)
+-------------------
+align-count-loops: 0
+aligned-crel: 0
+invars-daikon: 1206
+houdafny: 5502
+aligned-output: 0
+write-product: 0
+
+KestRel completed in 6709ms
+Verified: true
+
+real	0m6.731s
+user	0m8.189s
+sys	0m0.426s

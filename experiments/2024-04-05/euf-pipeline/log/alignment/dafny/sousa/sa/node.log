@@ -1,0 +1,42 @@
+Computed alignment by local loop counting.
+Writing Daikon to daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==39850== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==39850== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==39850== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==39850== Command: ./daikon_output
+==39850== 
+==39850== 
+==39850== For lists of detected and suppressed errors, rerun with: -s
+==39850== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+
+Dafny program verifier finished with 1 verified, 0 errors
+
+Writing output to ./results/alignments/dafny/sousa/sa/node-sa.dfy...
+Done
+
+Per-Task Times (ms)
+-------------------
+align-count-loops: 9
+aligned-crel: 0
+invars-daikon: 721
+houdafny: 1631
+align-sa: 0
+aligned-crel: 0
+invars-daikon: 0
+houdafny: 0
+aligned-output: 0
+write-product: 2
+
+KestRel completed in 2364ms
+Verified: true
+
+real	0m2.385s
+user	0m2.993s
+sys	0m0.129s

@@ -1,0 +1,402 @@
+Computed alignment by local loop counting.
+Writing Daikon to daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==55945== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==55945== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==55945== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==55945== Command: ./daikon_output
+==55945== 
+==55945== 
+==55945== For lists of detected and suppressed errors, rerun with: -s
+==55945== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(20,32): Error: this loop invariant could not be proved on entry
+   |
+20 |     invariant (l_i - (r_i + 1)) == 0
+   |                                 ^^
+
+houdafny.dfy(20,32): Related message: loop invariant violation
+   |
+20 |     invariant (l_i - (r_i + 1)) == 0
+   |                                 ^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(21,32): Error: this loop invariant could not be proved on entry
+   |
+21 |     invariant (l_i - (r_i + 1)) >= 0
+   |                                 ^^
+
+houdafny.dfy(21,32): Related message: loop invariant violation
+   |
+21 |     invariant (l_i - (r_i + 1)) >= 0
+   |                                 ^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(18,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+18 |     invariant l_x != r_i
+   |                   ^^
+
+houdafny.dfy(18,18): Related message: loop invariant violation
+   |
+18 |     invariant l_x != r_i
+   |                   ^^
+
+houdafny.dfy(24,40): Error: this invariant could not be proved to be maintained by the loop
+   |
+24 |     invariant (l_x - (r_x + (r_i - 1))) == 0
+   |                                         ^^
+
+houdafny.dfy(24,40): Related message: loop invariant violation
+   |
+24 |     invariant (l_x - (r_x + (r_i - 1))) == 0
+   |                                         ^^
+
+
+Dafny program verifier finished with 0 verified, 2 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(24,40): Error: this invariant could not be proved to be maintained by the loop
+   |
+24 |     invariant (l_x - (r_x + (r_i - 1))) >= 0
+   |                                         ^^
+
+houdafny.dfy(24,40): Related message: loop invariant violation
+   |
+24 |     invariant (l_x - (r_x + (r_i - 1))) >= 0
+   |                                         ^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(20,34): Error: this invariant could not be proved to be maintained by the loop
+   |
+20 |     invariant (l_x + (l_i - r_x)) == 0
+   |                                   ^^
+
+houdafny.dfy(20,34): Related message: loop invariant violation
+   |
+20 |     invariant (l_x + (l_i - r_x)) == 0
+   |                                   ^^
+
+houdafny.dfy(33,18): Error: this loop invariant could not be proved on entry
+   |
+33 |     invariant l_i != 0
+   |                   ^^
+
+houdafny.dfy(33,18): Related message: loop invariant violation
+   |
+33 |     invariant l_i != 0
+   |                   ^^
+
+houdafny.dfy(38,18): Error: this loop invariant could not be proved on entry
+   |
+38 |     invariant r_i >= 2
+   |                   ^^
+
+houdafny.dfy(38,18): Related message: loop invariant violation
+   |
+38 |     invariant r_i >= 2
+   |                   ^^
+
+houdafny.dfy(39,18): Error: this loop invariant could not be proved on entry
+   |
+39 |     invariant l_x != l_i
+   |                   ^^
+
+houdafny.dfy(39,18): Related message: loop invariant violation
+   |
+39 |     invariant l_x != l_i
+   |                   ^^
+
+houdafny.dfy(41,18): Error: this loop invariant could not be proved on entry
+   |
+41 |     invariant l_x != r_i
+   |                   ^^
+
+houdafny.dfy(41,18): Related message: loop invariant violation
+   |
+41 |     invariant l_x != r_i
+   |                   ^^
+
+houdafny.dfy(43,32): Error: this loop invariant could not be proved on entry
+   |
+43 |     invariant (l_i - (r_i + 1)) == 0
+   |                                 ^^
+
+houdafny.dfy(43,32): Related message: loop invariant violation
+   |
+43 |     invariant (l_i - (r_i + 1)) == 0
+   |                                 ^^
+
+houdafny.dfy(50,40): Error: this loop invariant could not be proved on entry
+   |
+50 |     invariant (l_x - (r_x + (r_i - 1))) == 0
+   |                                         ^^
+
+houdafny.dfy(50,40): Related message: loop invariant violation
+   |
+50 |     invariant (l_x - (r_x + (r_i - 1))) == 0
+   |                                         ^^
+
+
+Dafny program verifier finished with 0 verified, 7 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(20,34): Error: this invariant could not be proved to be maintained by the loop
+   |
+20 |     invariant (l_x + (l_i - r_x)) <= 0
+   |                                   ^^
+
+houdafny.dfy(20,34): Related message: loop invariant violation
+   |
+20 |     invariant (l_x + (l_i - r_x)) <= 0
+   |                                   ^^
+
+houdafny.dfy(21,34): Error: this invariant could not be proved to be maintained by the loop
+   |
+21 |     invariant (l_x + (l_i - r_x)) >= 0
+   |                                   ^^
+
+houdafny.dfy(21,34): Related message: loop invariant violation
+   |
+21 |     invariant (l_x + (l_i - r_x)) >= 0
+   |                                   ^^
+
+houdafny.dfy(32,18): Error: this loop invariant could not be proved on entry
+   |
+32 |     invariant l_i >= 1
+   |                   ^^
+
+houdafny.dfy(32,18): Related message: loop invariant violation
+   |
+32 |     invariant l_i >= 1
+   |                   ^^
+
+houdafny.dfy(39,32): Error: this loop invariant could not be proved on entry
+   |
+39 |     invariant (l_i - (r_i + 1)) >= 0
+   |                                 ^^
+
+houdafny.dfy(39,32): Related message: loop invariant violation
+   |
+39 |     invariant (l_i - (r_i + 1)) >= 0
+   |                                 ^^
+
+houdafny.dfy(45,40): Error: this loop invariant could not be proved on entry
+   |
+45 |     invariant (l_x - (r_x + (r_i - 1))) >= 0
+   |                                         ^^
+
+houdafny.dfy(45,40): Related message: loop invariant violation
+   |
+45 |     invariant (l_x - (r_x + (r_i - 1))) >= 0
+   |                                         ^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(17,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+17 |     invariant l_x <= r_x
+   |                   ^^
+
+houdafny.dfy(17,18): Related message: loop invariant violation
+   |
+17 |     invariant l_x <= r_x
+   |                   ^^
+
+houdafny.dfy(30,18): Error: this loop invariant could not be proved on entry
+   |
+30 |     invariant r_x != 0
+   |                   ^^
+
+houdafny.dfy(30,18): Related message: loop invariant violation
+   |
+30 |     invariant r_x != 0
+   |                   ^^
+
+houdafny.dfy(33,18): Error: this loop invariant could not be proved on entry
+   |
+33 |     invariant l_x < r_x
+   |                   ^
+
+houdafny.dfy(33,18): Related message: loop invariant violation
+   |
+33 |     invariant l_x < r_x
+   |                   ^
+
+houdafny.dfy(33,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+33 |     invariant l_x < r_x
+   |                   ^
+
+houdafny.dfy(33,18): Related message: loop invariant violation
+   |
+33 |     invariant l_x < r_x
+   |                   ^
+
+houdafny.dfy(36,18): Error: this loop invariant could not be proved on entry
+   |
+36 |     invariant r_x != r_i
+   |                   ^^
+
+houdafny.dfy(36,18): Related message: loop invariant violation
+   |
+36 |     invariant r_x != r_i
+   |                   ^^
+
+houdafny.dfy(37,34): Error: this loop invariant could not be proved on entry
+   |
+37 |     invariant (l_x + (l_i - r_x)) == 0
+   |                                   ^^
+
+houdafny.dfy(37,34): Related message: loop invariant violation
+   |
+37 |     invariant (l_x + (l_i - r_x)) == 0
+   |                                   ^^
+
+houdafny.dfy(51,8): Error: assertion might not hold
+   |
+51 |   assert(l_x == r_x);
+   |         ^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 7 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(29,18): Error: this loop invariant could not be proved on entry
+   |
+29 |     invariant r_x >= 1
+   |                   ^^
+
+houdafny.dfy(29,18): Related message: loop invariant violation
+   |
+29 |     invariant r_x >= 1
+   |                   ^^
+
+houdafny.dfy(31,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+31 |     invariant l_i <= r_x
+   |                   ^^
+
+houdafny.dfy(31,18): Related message: loop invariant violation
+   |
+31 |     invariant l_i <= r_x
+   |                   ^^
+
+houdafny.dfy(33,34): Error: this loop invariant could not be proved on entry
+   |
+33 |     invariant (l_x + (l_i - r_x)) <= 0
+   |                                   ^^
+
+houdafny.dfy(33,34): Related message: loop invariant violation
+   |
+33 |     invariant (l_x + (l_i - r_x)) <= 0
+   |                                   ^^
+
+houdafny.dfy(33,34): Error: this invariant could not be proved to be maintained by the loop
+   |
+33 |     invariant (l_x + (l_i - r_x)) <= 0
+   |                                   ^^
+
+houdafny.dfy(33,34): Related message: loop invariant violation
+   |
+33 |     invariant (l_x + (l_i - r_x)) <= 0
+   |                                   ^^
+
+houdafny.dfy(34,34): Error: this loop invariant could not be proved on entry
+   |
+34 |     invariant (l_x + (l_i - r_x)) >= 0
+   |                                   ^^
+
+houdafny.dfy(34,34): Related message: loop invariant violation
+   |
+34 |     invariant (l_x + (l_i - r_x)) >= 0
+   |                                   ^^
+
+houdafny.dfy(46,8): Error: assertion might not hold
+   |
+46 |   assert(l_x == r_x);
+   |         ^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(31,40): Error: this invariant could not be proved to be maintained by the loop
+   |
+31 |     invariant (l_x - (r_x + (r_i - 1))) <= 0
+   |                                         ^^
+
+houdafny.dfy(31,40): Related message: loop invariant violation
+   |
+31 |     invariant (l_x - (r_x + (r_i - 1))) <= 0
+   |                                         ^^
+
+houdafny.dfy(42,8): Error: assertion might not hold
+   |
+42 |   assert(l_x == r_x);
+   |         ^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 2 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(41,8): Error: assertion might not hold
+   |
+41 |   assert(l_x == r_x);
+   |         ^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+Writing output to ./results/alignments/dafny/barthe/count-loops/unroll-cou.dfy...
+Done
+
+Per-Task Times (ms)
+-------------------
+align-count-loops: 0
+aligned-crel: 0
+invars-daikon: 976
+houdafny: 20302
+aligned-output: 0
+write-product: 0
+
+KestRel completed in 21279ms
+Verified: false
+
+real	0m21.301s
+user	0m21.840s
+sys	0m1.156s

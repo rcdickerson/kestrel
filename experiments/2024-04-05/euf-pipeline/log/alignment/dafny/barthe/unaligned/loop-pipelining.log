@@ -1,0 +1,821 @@
+Treating naive product as final alignment.
+Writing Daikon to daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==33442== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==33442== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==33442== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==33442== Command: ./daikon_output
+==33442== 
+==33442== 
+==33442== For lists of detected and suppressed errors, rerun with: -s
+==33442== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(17,18): Error: this loop invariant could not be proved on entry
+   |
+17 |     invariant l_a != 0
+   |                   ^^
+
+houdafny.dfy(17,18): Related message: loop invariant violation
+   |
+17 |     invariant l_a != 0
+   |                   ^^
+
+houdafny.dfy(17,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+17 |     invariant l_a != 0
+   |                   ^^
+
+houdafny.dfy(17,18): Related message: loop invariant violation
+   |
+17 |     invariant l_a != 0
+   |                   ^^
+
+houdafny.dfy(18,18): Error: this loop invariant could not be proved on entry
+   |
+18 |     invariant l_b != 0
+   |                   ^^
+
+houdafny.dfy(18,18): Related message: loop invariant violation
+   |
+18 |     invariant l_b != 0
+   |                   ^^
+
+houdafny.dfy(18,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+18 |     invariant l_b != 0
+   |                   ^^
+
+houdafny.dfy(18,18): Related message: loop invariant violation
+   |
+18 |     invariant l_b != 0
+   |                   ^^
+
+houdafny.dfy(19,18): Error: this loop invariant could not be proved on entry
+   |
+19 |     invariant l_c != 0
+   |                   ^^
+
+houdafny.dfy(19,18): Related message: loop invariant violation
+   |
+19 |     invariant l_c != 0
+   |                   ^^
+
+houdafny.dfy(19,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+19 |     invariant l_c != 0
+   |                   ^^
+
+houdafny.dfy(19,18): Related message: loop invariant violation
+   |
+19 |     invariant l_c != 0
+   |                   ^^
+
+houdafny.dfy(22,18): Error: this loop invariant could not be proved on entry
+   |
+22 |     invariant l_a != l_b
+   |                   ^^
+
+houdafny.dfy(22,18): Related message: loop invariant violation
+   |
+22 |     invariant l_a != l_b
+   |                   ^^
+
+houdafny.dfy(22,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+22 |     invariant l_a != l_b
+   |                   ^^
+
+houdafny.dfy(22,18): Related message: loop invariant violation
+   |
+22 |     invariant l_a != l_b
+   |                   ^^
+
+houdafny.dfy(23,18): Error: this loop invariant could not be proved on entry
+   |
+23 |     invariant l_a != l_c
+   |                   ^^
+
+houdafny.dfy(23,18): Related message: loop invariant violation
+   |
+23 |     invariant l_a != l_c
+   |                   ^^
+
+houdafny.dfy(23,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+23 |     invariant l_a != l_c
+   |                   ^^
+
+houdafny.dfy(23,18): Related message: loop invariant violation
+   |
+23 |     invariant l_a != l_c
+   |                   ^^
+
+houdafny.dfy(24,18): Error: this loop invariant could not be proved on entry
+   |
+24 |     invariant l_a != l_size
+   |                   ^^
+
+houdafny.dfy(24,18): Related message: loop invariant violation
+   |
+24 |     invariant l_a != l_size
+   |                   ^^
+
+houdafny.dfy(24,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+24 |     invariant l_a != l_size
+   |                   ^^
+
+houdafny.dfy(24,18): Related message: loop invariant violation
+   |
+24 |     invariant l_a != l_size
+   |                   ^^
+
+houdafny.dfy(25,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+25 |     invariant l_a != l_i
+   |                   ^^
+
+houdafny.dfy(25,18): Related message: loop invariant violation
+   |
+25 |     invariant l_a != l_i
+   |                   ^^
+
+houdafny.dfy(26,18): Error: this loop invariant could not be proved on entry
+   |
+26 |     invariant l_b != l_c
+   |                   ^^
+
+houdafny.dfy(26,18): Related message: loop invariant violation
+   |
+26 |     invariant l_b != l_c
+   |                   ^^
+
+houdafny.dfy(26,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+26 |     invariant l_b != l_c
+   |                   ^^
+
+houdafny.dfy(26,18): Related message: loop invariant violation
+   |
+26 |     invariant l_b != l_c
+   |                   ^^
+
+houdafny.dfy(27,18): Error: this loop invariant could not be proved on entry
+   |
+27 |     invariant l_b != l_size
+   |                   ^^
+
+houdafny.dfy(27,18): Related message: loop invariant violation
+   |
+27 |     invariant l_b != l_size
+   |                   ^^
+
+houdafny.dfy(27,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+27 |     invariant l_b != l_size
+   |                   ^^
+
+houdafny.dfy(27,18): Related message: loop invariant violation
+   |
+27 |     invariant l_b != l_size
+   |                   ^^
+
+houdafny.dfy(28,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+28 |     invariant l_b != l_i
+   |                   ^^
+
+houdafny.dfy(28,18): Related message: loop invariant violation
+   |
+28 |     invariant l_b != l_i
+   |                   ^^
+
+houdafny.dfy(29,18): Error: this loop invariant could not be proved on entry
+   |
+29 |     invariant l_c != l_size
+   |                   ^^
+
+houdafny.dfy(29,18): Related message: loop invariant violation
+   |
+29 |     invariant l_c != l_size
+   |                   ^^
+
+houdafny.dfy(29,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+29 |     invariant l_c != l_size
+   |                   ^^
+
+houdafny.dfy(29,18): Related message: loop invariant violation
+   |
+29 |     invariant l_c != l_size
+   |                   ^^
+
+houdafny.dfy(30,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+30 |     invariant l_c != l_i
+   |                   ^^
+
+houdafny.dfy(30,18): Related message: loop invariant violation
+   |
+30 |     invariant l_c != l_i
+   |                   ^^
+
+houdafny.dfy(31,21): Error: this invariant could not be proved to be maintained by the loop
+   |
+31 |     invariant l_size > l_i
+   |                      ^
+
+houdafny.dfy(31,21): Related message: loop invariant violation
+   |
+31 |     invariant l_size > l_i
+   |                      ^
+
+
+Dafny program verifier finished with 0 verified, 22 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(35,21): Error: this loop invariant could not be proved on entry
+   |
+35 |     invariant l_size == l_i
+   |                      ^^
+
+houdafny.dfy(35,21): Related message: loop invariant violation
+   |
+35 |     invariant l_size == l_i
+   |                      ^^
+
+houdafny.dfy(41,18): Error: this loop invariant could not be proved on entry
+   |
+41 |     invariant l_a != 0
+   |                   ^^
+
+houdafny.dfy(41,18): Related message: loop invariant violation
+   |
+41 |     invariant l_a != 0
+   |                   ^^
+
+houdafny.dfy(42,18): Error: this loop invariant could not be proved on entry
+   |
+42 |     invariant l_b != 0
+   |                   ^^
+
+houdafny.dfy(42,18): Related message: loop invariant violation
+   |
+42 |     invariant l_b != 0
+   |                   ^^
+
+houdafny.dfy(43,18): Error: this loop invariant could not be proved on entry
+   |
+43 |     invariant l_c != 0
+   |                   ^^
+
+houdafny.dfy(43,18): Related message: loop invariant violation
+   |
+43 |     invariant l_c != 0
+   |                   ^^
+
+houdafny.dfy(45,18): Error: this loop invariant could not be proved on entry
+   |
+45 |     invariant r_a != 0
+   |                   ^^
+
+houdafny.dfy(45,18): Related message: loop invariant violation
+   |
+45 |     invariant r_a != 0
+   |                   ^^
+
+houdafny.dfy(45,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+45 |     invariant r_a != 0
+   |                   ^^
+
+houdafny.dfy(45,18): Related message: loop invariant violation
+   |
+45 |     invariant r_a != 0
+   |                   ^^
+
+houdafny.dfy(46,18): Error: this loop invariant could not be proved on entry
+   |
+46 |     invariant r_b != 0
+   |                   ^^
+
+houdafny.dfy(46,18): Related message: loop invariant violation
+   |
+46 |     invariant r_b != 0
+   |                   ^^
+
+houdafny.dfy(46,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+46 |     invariant r_b != 0
+   |                   ^^
+
+houdafny.dfy(46,18): Related message: loop invariant violation
+   |
+46 |     invariant r_b != 0
+   |                   ^^
+
+houdafny.dfy(47,18): Error: this loop invariant could not be proved on entry
+   |
+47 |     invariant r_c != 0
+   |                   ^^
+
+houdafny.dfy(47,18): Related message: loop invariant violation
+   |
+47 |     invariant r_c != 0
+   |                   ^^
+
+houdafny.dfy(47,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+47 |     invariant r_c != 0
+   |                   ^^
+
+houdafny.dfy(47,18): Related message: loop invariant violation
+   |
+47 |     invariant r_c != 0
+   |                   ^^
+
+houdafny.dfy(49,18): Error: this loop invariant could not be proved on entry
+   |
+49 |     invariant l_a != l_b
+   |                   ^^
+
+houdafny.dfy(49,18): Related message: loop invariant violation
+   |
+49 |     invariant l_a != l_b
+   |                   ^^
+
+houdafny.dfy(50,18): Error: this loop invariant could not be proved on entry
+   |
+50 |     invariant l_a != l_c
+   |                   ^^
+
+houdafny.dfy(50,18): Related message: loop invariant violation
+   |
+50 |     invariant l_a != l_c
+   |                   ^^
+
+houdafny.dfy(51,18): Error: this loop invariant could not be proved on entry
+   |
+51 |     invariant l_a != l_size
+   |                   ^^
+
+houdafny.dfy(51,18): Related message: loop invariant violation
+   |
+51 |     invariant l_a != l_size
+   |                   ^^
+
+houdafny.dfy(52,18): Error: this loop invariant could not be proved on entry
+   |
+52 |     invariant l_a != r_a
+   |                   ^^
+
+houdafny.dfy(52,18): Related message: loop invariant violation
+   |
+52 |     invariant l_a != r_a
+   |                   ^^
+
+houdafny.dfy(52,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+52 |     invariant l_a != r_a
+   |                   ^^
+
+houdafny.dfy(52,18): Related message: loop invariant violation
+   |
+52 |     invariant l_a != r_a
+   |                   ^^
+
+houdafny.dfy(53,18): Error: this loop invariant could not be proved on entry
+   |
+53 |     invariant l_a != r_b
+   |                   ^^
+
+houdafny.dfy(53,18): Related message: loop invariant violation
+   |
+53 |     invariant l_a != r_b
+   |                   ^^
+
+houdafny.dfy(53,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+53 |     invariant l_a != r_b
+   |                   ^^
+
+houdafny.dfy(53,18): Related message: loop invariant violation
+   |
+53 |     invariant l_a != r_b
+   |                   ^^
+
+houdafny.dfy(54,18): Error: this loop invariant could not be proved on entry
+   |
+54 |     invariant l_a != r_c
+   |                   ^^
+
+houdafny.dfy(54,18): Related message: loop invariant violation
+   |
+54 |     invariant l_a != r_c
+   |                   ^^
+
+houdafny.dfy(54,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+54 |     invariant l_a != r_c
+   |                   ^^
+
+houdafny.dfy(54,18): Related message: loop invariant violation
+   |
+54 |     invariant l_a != r_c
+   |                   ^^
+
+houdafny.dfy(55,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+55 |     invariant l_a != r_j
+   |                   ^^
+
+houdafny.dfy(55,18): Related message: loop invariant violation
+   |
+55 |     invariant l_a != r_j
+   |                   ^^
+
+houdafny.dfy(56,18): Error: this loop invariant could not be proved on entry
+   |
+56 |     invariant l_b != l_c
+   |                   ^^
+
+houdafny.dfy(56,18): Related message: loop invariant violation
+   |
+56 |     invariant l_b != l_c
+   |                   ^^
+
+houdafny.dfy(57,18): Error: this loop invariant could not be proved on entry
+   |
+57 |     invariant l_b != l_size
+   |                   ^^
+
+houdafny.dfy(57,18): Related message: loop invariant violation
+   |
+57 |     invariant l_b != l_size
+   |                   ^^
+
+houdafny.dfy(58,18): Error: this loop invariant could not be proved on entry
+   |
+58 |     invariant l_b != r_a
+   |                   ^^
+
+houdafny.dfy(58,18): Related message: loop invariant violation
+   |
+58 |     invariant l_b != r_a
+   |                   ^^
+
+houdafny.dfy(58,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+58 |     invariant l_b != r_a
+   |                   ^^
+
+houdafny.dfy(58,18): Related message: loop invariant violation
+   |
+58 |     invariant l_b != r_a
+   |                   ^^
+
+houdafny.dfy(59,18): Error: this loop invariant could not be proved on entry
+   |
+59 |     invariant l_b != r_b
+   |                   ^^
+
+houdafny.dfy(59,18): Related message: loop invariant violation
+   |
+59 |     invariant l_b != r_b
+   |                   ^^
+
+houdafny.dfy(59,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+59 |     invariant l_b != r_b
+   |                   ^^
+
+houdafny.dfy(59,18): Related message: loop invariant violation
+   |
+59 |     invariant l_b != r_b
+   |                   ^^
+
+houdafny.dfy(60,18): Error: this loop invariant could not be proved on entry
+   |
+60 |     invariant l_b != r_c
+   |                   ^^
+
+houdafny.dfy(60,18): Related message: loop invariant violation
+   |
+60 |     invariant l_b != r_c
+   |                   ^^
+
+houdafny.dfy(60,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+60 |     invariant l_b != r_c
+   |                   ^^
+
+houdafny.dfy(60,18): Related message: loop invariant violation
+   |
+60 |     invariant l_b != r_c
+   |                   ^^
+
+houdafny.dfy(61,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+61 |     invariant l_b != r_j
+   |                   ^^
+
+houdafny.dfy(61,18): Related message: loop invariant violation
+   |
+61 |     invariant l_b != r_j
+   |                   ^^
+
+houdafny.dfy(62,18): Error: this loop invariant could not be proved on entry
+   |
+62 |     invariant l_c != l_size
+   |                   ^^
+
+houdafny.dfy(62,18): Related message: loop invariant violation
+   |
+62 |     invariant l_c != l_size
+   |                   ^^
+
+houdafny.dfy(63,18): Error: this loop invariant could not be proved on entry
+   |
+63 |     invariant l_c != r_a
+   |                   ^^
+
+houdafny.dfy(63,18): Related message: loop invariant violation
+   |
+63 |     invariant l_c != r_a
+   |                   ^^
+
+houdafny.dfy(63,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+63 |     invariant l_c != r_a
+   |                   ^^
+
+houdafny.dfy(63,18): Related message: loop invariant violation
+   |
+63 |     invariant l_c != r_a
+   |                   ^^
+
+houdafny.dfy(64,18): Error: this loop invariant could not be proved on entry
+   |
+64 |     invariant l_c != r_b
+   |                   ^^
+
+houdafny.dfy(64,18): Related message: loop invariant violation
+   |
+64 |     invariant l_c != r_b
+   |                   ^^
+
+houdafny.dfy(64,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+64 |     invariant l_c != r_b
+   |                   ^^
+
+houdafny.dfy(64,18): Related message: loop invariant violation
+   |
+64 |     invariant l_c != r_b
+   |                   ^^
+
+houdafny.dfy(65,18): Error: this loop invariant could not be proved on entry
+   |
+65 |     invariant l_c != r_c
+   |                   ^^
+
+houdafny.dfy(65,18): Related message: loop invariant violation
+   |
+65 |     invariant l_c != r_c
+   |                   ^^
+
+houdafny.dfy(65,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+65 |     invariant l_c != r_c
+   |                   ^^
+
+houdafny.dfy(65,18): Related message: loop invariant violation
+   |
+65 |     invariant l_c != r_c
+   |                   ^^
+
+houdafny.dfy(66,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+66 |     invariant l_c != r_j
+   |                   ^^
+
+houdafny.dfy(66,18): Related message: loop invariant violation
+   |
+66 |     invariant l_c != r_j
+   |                   ^^
+
+houdafny.dfy(67,21): Error: this loop invariant could not be proved on entry
+   |
+67 |     invariant l_size != r_a
+   |                      ^^
+
+houdafny.dfy(67,21): Related message: loop invariant violation
+   |
+67 |     invariant l_size != r_a
+   |                      ^^
+
+houdafny.dfy(67,21): Error: this invariant could not be proved to be maintained by the loop
+   |
+67 |     invariant l_size != r_a
+   |                      ^^
+
+houdafny.dfy(67,21): Related message: loop invariant violation
+   |
+67 |     invariant l_size != r_a
+   |                      ^^
+
+houdafny.dfy(68,21): Error: this loop invariant could not be proved on entry
+   |
+68 |     invariant l_size != r_b
+   |                      ^^
+
+houdafny.dfy(68,21): Related message: loop invariant violation
+   |
+68 |     invariant l_size != r_b
+   |                      ^^
+
+houdafny.dfy(68,21): Error: this invariant could not be proved to be maintained by the loop
+   |
+68 |     invariant l_size != r_b
+   |                      ^^
+
+houdafny.dfy(68,21): Related message: loop invariant violation
+   |
+68 |     invariant l_size != r_b
+   |                      ^^
+
+houdafny.dfy(69,21): Error: this loop invariant could not be proved on entry
+   |
+69 |     invariant l_size != r_c
+   |                      ^^
+
+houdafny.dfy(69,21): Related message: loop invariant violation
+   |
+69 |     invariant l_size != r_c
+   |                      ^^
+
+houdafny.dfy(69,21): Error: this invariant could not be proved to be maintained by the loop
+   |
+69 |     invariant l_size != r_c
+   |                      ^^
+
+houdafny.dfy(69,21): Related message: loop invariant violation
+   |
+69 |     invariant l_size != r_c
+   |                      ^^
+
+houdafny.dfy(71,18): Error: this loop invariant could not be proved on entry
+   |
+71 |     invariant r_a != r_b
+   |                   ^^
+
+houdafny.dfy(71,18): Related message: loop invariant violation
+   |
+71 |     invariant r_a != r_b
+   |                   ^^
+
+houdafny.dfy(71,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+71 |     invariant r_a != r_b
+   |                   ^^
+
+houdafny.dfy(71,18): Related message: loop invariant violation
+   |
+71 |     invariant r_a != r_b
+   |                   ^^
+
+houdafny.dfy(72,18): Error: this loop invariant could not be proved on entry
+   |
+72 |     invariant r_a != r_c
+   |                   ^^
+
+houdafny.dfy(72,18): Related message: loop invariant violation
+   |
+72 |     invariant r_a != r_c
+   |                   ^^
+
+houdafny.dfy(72,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+72 |     invariant r_a != r_c
+   |                   ^^
+
+houdafny.dfy(72,18): Related message: loop invariant violation
+   |
+72 |     invariant r_a != r_c
+   |                   ^^
+
+houdafny.dfy(73,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+73 |     invariant r_a != r_j
+   |                   ^^
+
+houdafny.dfy(73,18): Related message: loop invariant violation
+   |
+73 |     invariant r_a != r_j
+   |                   ^^
+
+houdafny.dfy(74,18): Error: this loop invariant could not be proved on entry
+   |
+74 |     invariant r_b != r_c
+   |                   ^^
+
+houdafny.dfy(74,18): Related message: loop invariant violation
+   |
+74 |     invariant r_b != r_c
+   |                   ^^
+
+houdafny.dfy(74,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+74 |     invariant r_b != r_c
+   |                   ^^
+
+houdafny.dfy(74,18): Related message: loop invariant violation
+   |
+74 |     invariant r_b != r_c
+   |                   ^^
+
+houdafny.dfy(75,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+75 |     invariant r_b != r_j
+   |                   ^^
+
+houdafny.dfy(75,18): Related message: loop invariant violation
+   |
+75 |     invariant r_b != r_j
+   |                   ^^
+
+houdafny.dfy(76,18): Error: this invariant could not be proved to be maintained by the loop
+   |
+76 |     invariant r_c != r_j
+   |                   ^^
+
+houdafny.dfy(76,18): Related message: loop invariant violation
+   |
+76 |     invariant r_c != r_j
+   |                   ^^
+
+houdafny.dfy(86,8): Error: assertion might not hold
+   |
+86 |   assert(forall i: int :: (read(l_a, i) == read(r_a, i)) && (forall i: int :: (read(l_b, i) == read(r_b, i)) && forall i: int :: (read(l_c, i) == read(r_c, i))));
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 53 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(36,21): Error: this loop invariant could not be proved on entry
+   |
+36 |     invariant l_size >= l_i
+   |                      ^^
+
+houdafny.dfy(36,21): Related message: loop invariant violation
+   |
+36 |     invariant l_size >= l_i
+   |                      ^^
+
+houdafny.dfy(52,8): Error: assertion might not hold
+   |
+52 |   assert(forall i: int :: (read(l_a, i) == read(r_a, i)) && (forall i: int :: (read(l_b, i) == read(r_b, i)) && forall i: int :: (read(l_c, i) == read(r_c, i))));
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 2 errors
+
+Writing Dafny to houdafny.dfy...
+Done
+Running Dafny verification...
+houdafny.dfy(51,8): Error: assertion might not hold
+   |
+51 |   assert(forall i: int :: (read(l_a, i) == read(r_a, i)) && (forall i: int :: (read(l_b, i) == read(r_b, i)) && forall i: int :: (read(l_c, i) == read(r_c, i))));
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+Writing output to ./results/alignments/dafny/barthe/unaligned/loop-pipelining-una.dfy...
+Done
+
+Per-Task Times (ms)
+-------------------
+align-none: 0
+aligned-crel: 0
+invars-daikon: 2062
+houdafny: 7873
+aligned-output: 0
+write-product: 0
+
+KestRel completed in 9936ms
+Verified: false
+
+real	0m10.002s
+user	0m12.563s
+sys	0m0.852s

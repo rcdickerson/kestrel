@@ -8,12 +8,14 @@ use std::collections::HashMap;
 #[derive(Clone, Debug)]
 pub struct Source {
   items: Vec<Item>,
+  termin_checking: bool,
 }
 
 impl Source {
   pub fn new() -> Self {
     Source {
       items: Vec::new(),
+      termin_checking: true,
     }
   }
 
@@ -32,8 +34,14 @@ impl Source {
     self
   }
 
+  pub fn disable_termination_checking(&mut self) -> &mut Self {
+    self.termin_checking = false;
+    self
+  }
+
   pub fn write(&self) -> (String, HashMap<String, (usize, usize)>) {
     let mut writer = Writer::new();
+    if !self.termin_checking { writer.disable_termination_checking(); }
     for item in &self.items {
       item.emit(&mut writer);
     }

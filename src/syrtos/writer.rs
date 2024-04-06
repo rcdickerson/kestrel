@@ -5,6 +5,7 @@ pub struct Writer {
   cur_line: Vec<String>,
   indent_level: usize,
   while_lines: HashMap<String, (usize, usize)>,
+  termin_checking: bool,
 }
 
 impl Writer {
@@ -14,6 +15,7 @@ impl Writer {
       cur_line: Vec::new(),
       indent_level: 0,
       while_lines: HashMap::new(),
+      termin_checking: true,
     }
   }
 
@@ -57,6 +59,15 @@ impl Writer {
   pub fn dedent(&mut self) -> &mut Self {
     self.indent_level -= 2;
     self
+  }
+
+  pub fn disable_termination_checking(&mut self) -> &mut Self {
+    self.termin_checking = false;
+    self
+  }
+
+  pub fn check_termination(&self) -> bool {
+    self.termin_checking
   }
 }
 

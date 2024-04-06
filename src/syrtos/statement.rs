@@ -78,6 +78,9 @@ impl Statement {
         } else {
           writer.write(")").new_line();
           writer.indent();
+          if !writer.check_termination() {
+            writer.write("decreases *").new_line();
+          }
           for invar in invariants {
             writer.write("invariant ");
             invar.emit(writer, false);

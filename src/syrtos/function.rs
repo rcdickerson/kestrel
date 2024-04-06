@@ -46,6 +46,13 @@ impl Function {
     match &self.body {
       None => { writer.new_line(); },
       Some(stmt) => {
+        if !writer.check_termination() {
+          writer.new_line()
+                .indent()
+                .write("decreases *")
+                .dedent()
+                .new_line();
+        }
         writer.write(" {").new_line();
         writer.indent();
         stmt.emit(writer);

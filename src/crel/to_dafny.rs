@@ -6,7 +6,7 @@ impl CRel {
   pub fn to_dafny(&self) -> (String, HashMap<String, (usize, usize)>) {
     let mut source = Daf::Source::new();
     crel_to_daf(self, &mut source);
-    source.write()
+    source.disable_termination_checking().write()
   }
 }
 

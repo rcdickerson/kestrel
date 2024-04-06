@@ -32,6 +32,7 @@ void sll_length(int lst_in) {
   int len = 0;
   while(sll_null(lst) == 0) {
     _invariant("r(left.lst, right.lst) == 1");
+    _invariant("left.len == right.len");
     len = len + 1;
     lst = sll_next(lst);
   }

@@ -107,7 +107,11 @@ impl ExtractorArg {
 fn main() {
   let args = Args::parse();
   let spec = parse_spec(&args.input).unwrap();
-  let raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
+  let mut raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
+  if args.extractor == ExtractorArg::Unaligned {
+    // Annotated invariants are relational.
+    raw_crel.clear_invariants();
+  }
   let unaligned_crel = UnalignedCRel::from(&raw_crel, &spec);
   let unaligned_eggroll = unaligned_crel.main.to_eggroll();
 

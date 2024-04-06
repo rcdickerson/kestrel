@@ -33,7 +33,7 @@ void search(int tree_in, int val_in) {
   int val = val_in;
   int found = 0;
   while(bst_null(bst_left(tree)) == 0) {
-    _invariant("left.val <= right.val");
+//    _invariant("left.val <= right.val");
     tree = bst_left(tree);
   }
   if(val < bst_val(tree)) {

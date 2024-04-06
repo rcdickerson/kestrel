@@ -1,6 +1,7 @@
 pub mod ast;
 pub mod auto_fun_impl;
 pub mod blockify;
+pub mod clear_invariants;
 pub mod collect_vars;
 pub mod count_loops;
 pub mod daikon_converter;

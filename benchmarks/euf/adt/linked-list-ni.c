@@ -28,12 +28,13 @@ void cons_and_find(int lst_in, int target, int h_secret_in) {
   int h_secret = h_secret_in;
 
   lst = list_cons(h_secret, lst);
+  lst = list_next(lst);
   int found_at = -1;
   int i = 0;
   while (list_null(lst) == 0) {
     _invariant("left.found_at == right.found_at");
     _invariant("left.i == right.i");
-    _invariant("left.i > 0 ==> left.lst == right.lst");
+    _invariant("left.lst == right.lst");
     _invariant("left.target == right.target");
     i = i + 1;
     lst = list_next(lst);

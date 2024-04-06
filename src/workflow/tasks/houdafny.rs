@@ -67,9 +67,9 @@ impl Task for Houdafny {
         let (loop_id, offset) = loop_id_for_line(&while_lines, line)
             .expect(format!("No loop on line {}", line).as_str());
         if by_loop_id.get(&loop_id).is_none() {
-          by_loop_id.insert(loop_id.clone(), Vec::new());
+          by_loop_id.insert(loop_id.clone(), HashSet::new());
         }
-        by_loop_id.get_mut(&loop_id).unwrap().push(offset);
+        by_loop_id.get_mut(&loop_id).unwrap().insert(offset - 1);
       }
       context.aligned_crel.as_mut().expect("missing aligned CRel")
         .walk(&mut InvarRemover::new(&by_loop_id));
@@ -78,11 +78,11 @@ impl Task for Houdafny {
 }
 
 struct InvarRemover<'a> {
-  bad_invars: &'a HashMap<String, Vec<usize>>
+  bad_invars: &'a HashMap<String, HashSet<usize>>
 }
 
 impl <'a> InvarRemover<'a> {
-  fn new(bad_invars: &'a HashMap<String, Vec<usize>>) -> Self {
+  fn new(bad_invars: &'a HashMap<String, HashSet<usize>>) -> Self {
     InvarRemover { bad_invars }
   }
 }
@@ -93,11 +93,11 @@ impl CRelVisitor for InvarRemover<'_> {
       Statement::While{loop_id, invariants, ..} => {
         if loop_id.is_some() && !invariants.is_empty() {
           self.bad_invars.get(loop_id.as_ref().unwrap()).map(|to_remove| {
-            let mut to_remove = to_remove.clone();
+            let mut to_remove = to_remove.iter().collect::<Vec<_>>();
             to_remove.sort();
             to_remove.reverse();
             for idx in to_remove {
-              invariants.remove(idx);
+              invariants.remove(*idx);
             }
           });
         }

@@ -1,5 +1,5 @@
 /* @KESTREL
- * pre:   left.x == right.x;
+ * pre:   left.x_in == right.x_in;
  * left:  left;
  * right: right;
  * post:  left.y == right.y;
@@ -11,7 +11,8 @@ void _test_gen(int x) {
   _main(x, x);
 }
 
-void left(int x) {
+void left(int x_in) {
+  int x = x_in;
   int y = 0;
   int z = 2 * x;
   int i = 0;
@@ -23,7 +24,8 @@ void left(int x) {
   }
 }
 
-void right(int x) {
+void right(int x_in) {
+  int x = x_in;
   int y = 0;
   int z = x;
   int i = 0;

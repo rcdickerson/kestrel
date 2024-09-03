@@ -61,7 +61,7 @@ impl OutputMode {
 
     let new_main = CRel::FunctionDefinition {
       specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
-      name: "Main".to_string(),
+      name: "Product".to_string(),
       params: main_fun.params.clone(),
       body: Box::new(new_body),
     };

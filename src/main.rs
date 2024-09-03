@@ -117,6 +117,7 @@ fn main() {
 
   let mut context = Context::new(args.input);
   context.spec = Some(&spec);
+
   context.unaligned_crel = Some(&unaligned_crel);
   context.unaligned_eggroll = Some(&unaligned_eggroll);
   context.output_path = args.output.clone();

@@ -32,7 +32,6 @@ int left(int n_in, int m_in) {
    }
    i = i + 1;
   }
-  //  return k;
 }
 
 int right(int n_in, int m_in) {
@@ -45,5 +44,4 @@ int right(int n_in, int m_in) {
     k = k + m;
     i = i + 1;
   }
-  //  return k;
 }

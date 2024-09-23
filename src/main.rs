@@ -59,6 +59,28 @@ struct Args {
   #[arg(short, long)]
   verbose: bool,
 
+
+  // Ablation study flags for cost function.
+
+  /// Disable relation size sub-metric in simulated annealing cost function.
+  #[arg(long)]
+  af_relation_size: bool,
+
+  /// Disable relational update matching sub-metric in simulated annealing cost function.
+  #[arg(long)]
+  af_update_matching: bool,
+
+  /// Disable loop head matching sub-metric in simulated annealing cost function.
+  #[arg(long)]
+  af_loop_head_matching: bool,
+
+  /// Disable loop double update sub-metric in simulated annealing cost function.
+  #[arg(long)]
+  af_loop_double_updates: bool,
+
+  /// Disable loop executions sub-metric in simulated annealing cost function.
+  #[arg(long)]
+  af_loop_executions: bool,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
@@ -142,8 +164,13 @@ fn main() {
           workflow.add_task(Houdafny::new());
         }
       }
-      workflow.add_task_unless_verifed(
-        AlignSa::new(args.sa_start_random, args.sa_max_iterations))
+      let mut align_sa_task = AlignSa::new(args.sa_start_random, args.sa_max_iterations);
+      if args.af_relation_size { align_sa_task.ablate_relation_size() }
+      if args.af_update_matching { align_sa_task.ablate_update_matching() }
+      if args.af_loop_head_matching { align_sa_task.ablate_loop_head_matching() }
+      if args.af_loop_double_updates { align_sa_task.ablate_loop_double_updates() }
+      if args.af_loop_executions { align_sa_task.ablate_loop_executions() }
+      workflow.add_task_unless_verifed(align_sa_task);
     },
   }
   workflow.add_task_unless_verifed(AlignedCRel::new());

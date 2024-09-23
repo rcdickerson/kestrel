@@ -35,6 +35,39 @@ impl SAScore {
     }
   }
 
+  /// Constructor for ablation study.
+  pub fn new_ablation(program: &CRel, trace: &Trace,
+                      af_relation_size: bool,
+                      af_update_matching: bool,
+                      af_loop_head_matching: bool,
+                      af_loop_double_updates: bool,
+                      af_loop_executions: bool) -> Self {
+    let rel_change_summary = relations_change_summary(trace);
+    let loop_change_summaries = loop_change_summaries(trace);
+    let relation_size = if af_relation_size { score_avg_rel_size(&rel_change_summary) } else { 0.0 };
+    let update_matching = if af_update_matching { score_rel_update_left_right_match(&rel_change_summary) } else { 0.0 };
+    let (loop_head_matching, loop_double_updates) =
+      if af_loop_head_matching && af_loop_double_updates {
+        score_loop_head_similarity(&loop_change_summaries)
+      } else if af_loop_head_matching {
+        let (lhm, _) = score_loop_head_similarity(&loop_change_summaries);
+        (lhm, 0.0)
+      } else if af_loop_double_updates {
+        let (_, ldu) = score_loop_head_similarity(&loop_change_summaries);
+        (0.0, ldu)
+      } else {
+        (0.0, 0.0)
+      };
+    let loop_executions = if af_loop_executions { score_loop_executions(program, trace) } else { 0.0 };
+    SAScore {
+      relation_size,
+      update_matching,
+      loop_head_matching,
+      loop_double_updates,
+      loop_executions,
+    }
+  }
+
   pub fn total(&self) -> f32 {
     (0.2 * self.relation_size)
       + (0.2 * self.update_matching)
@@ -319,7 +352,12 @@ fn score_loop_executions(program: &CRel, trace: &Trace) -> f32 {
   }
 }
 
-pub fn sa_score(trace_states: &Vec<State>, trace_fuel: usize, expr: RecExpr<Eggroll>) -> f32 {
+pub fn sa_score_ablate(trace_states: &Vec<State>, trace_fuel: usize, expr: RecExpr<Eggroll>,
+                       af_relation_size: bool,
+                       af_update_matching: bool,
+                       af_loop_head_matching: bool,
+                       af_loop_double_updates: bool,
+                       af_loop_executions: bool) -> f32 {
   let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string(), &to_crel::Config::default());
   let fundefs = crate::crel::fundef::extract_fundefs(&crel).1;
   let body = fundefs
@@ -329,12 +367,20 @@ pub fn sa_score(trace_states: &Vec<State>, trace_fuel: usize, expr: RecExpr<Eggr
 
   let score_state = |state: &State| -> f32 {
     let exec = run(&body, state.clone(), trace_fuel, Some(&fundefs));
-    SAScore::new(&crel, &exec.trace).total()
+    SAScore::new_ablation(&crel, &exec.trace,
+                          af_relation_size,
+                          af_update_matching,
+                          af_loop_head_matching,
+                          af_loop_double_updates,
+                          af_loop_executions).total()
   };
 
   trace_states.iter().map(score_state).sum::<f32>() / (trace_states.len() as f32)
 }
 
+pub fn sa_score(trace_states: &Vec<State>, trace_fuel: usize, expr: RecExpr<Eggroll>) -> f32 {
+  sa_score_ablate(trace_states, trace_fuel, expr, true, true, true, true, true)
+}
 
 #[cfg(test)]
 mod test {

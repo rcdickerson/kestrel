@@ -8,6 +8,11 @@ use egg::*;
 pub struct AlignSa {
   start_random: bool,
   max_iterations: usize,
+  af_relation_size: bool,
+  af_update_matching: bool,
+  af_loop_head_matching: bool,
+  af_loop_double_updates: bool,
+  af_loop_executions: bool,
 }
 
 impl AlignSa {
@@ -15,7 +20,32 @@ impl AlignSa {
     AlignSa {
       start_random,
       max_iterations,
+      af_relation_size: true,
+      af_update_matching: true,
+      af_loop_head_matching: true,
+      af_loop_double_updates: true,
+      af_loop_executions: true,
     }
+  }
+
+  pub fn ablate_relation_size(&mut self) {
+    self.af_relation_size = false;
+  }
+
+  pub fn ablate_update_matching(&mut self) {
+    self.af_update_matching = false;
+  }
+
+  pub fn ablate_loop_head_matching(&mut self) {
+    self.af_loop_head_matching = false;
+  }
+
+  pub fn ablate_loop_double_updates(&mut self) {
+    self.af_loop_double_updates = false;
+  }
+
+  pub fn ablate_loop_executions(&mut self) {
+    self.af_loop_executions = false;
   }
 }
 
@@ -41,7 +71,12 @@ impl Task for AlignSa {
       num_trace_states, &context.spec().pre, Some(&decls), generator, 1000);
     let annealer = Annealer::new(&runner.egraph);
     let best = annealer.find_best(self.max_iterations, runner.roots[0], init,
-                                  |expr| { sa_score(&trace_states, trace_fuel, expr) });
+                                  |expr| { sa_score_ablate(&trace_states, trace_fuel, expr,
+                                                           self.af_relation_size,
+                                                           self.af_update_matching,
+                                                           self.af_loop_head_matching,
+                                                           self.af_loop_double_updates,
+                                                           self.af_loop_executions) });
     context.aligned_eggroll.replace(best);
   }
 }

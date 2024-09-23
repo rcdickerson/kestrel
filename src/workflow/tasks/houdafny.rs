@@ -43,7 +43,7 @@ impl Task for Houdafny {
       // Run Dafny.
       println!("Running Dafny verification...");
       let dafny_result = Command::new("dafny")
-        .args(["verify", "houdafny.dfy", "--error-limit", "0"])
+        .args(["verify", "houdafny.dfy", "--error-limit", "0", "--allow-warnings"])
         .output()
         .expect("failure executing dafny");
       let dafny_output = match std::str::from_utf8(&dafny_result.stdout) {

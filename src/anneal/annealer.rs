@@ -1,0 +1,108 @@
+use egg::*;
+use rand::{Rng, rngs::ThreadRng, seq::SliceRandom};
+use std::collections::HashMap;
+use std::collections::HashSet;
+
+pub struct Annealer<'a, L: Language, N: Analysis<L>> {
+  egraph: &'a EGraph<L, N>,
+}
+impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
+
+  pub fn new(egraph: &'a EGraph<L, N>) -> Self {
+    Annealer{egraph}
+  }
+
+  pub fn find_best<F>(&self,
+                      max_iterations: usize,
+                      root: egg::Id,
+                      init: Option<RecExpr<L>>,
+                      fitness: F)
+                      -> RecExpr<L>
+    where F: Fn(&RecExpr<L>) -> f32
+  {
+    println!("Starting simulated annealing...");
+
+    let mut seen_selections = HashSet::new();
+
+    let mut rng = rand::thread_rng();
+    let mut current = match init {
+      None => self.random_expression(root),
+      Some(init) => init,
+    };
+    let mut score = fitness(&current);
+
+    let mut best = current.clone();
+    let mut best_score = score;
+    let mut last_best_at = 0;
+    println!("Initial score: {}", best_score);
+
+    for k in 0..max_iterations {
+      if k - last_best_at > 2000 {
+        println!("Simulated annealing converged after {} iterations", k);
+        break;
+      }
+
+      seen_selections.insert(current.clone());
+
+      let temp = 1.0 - (k as f32) / ((1 + max_iterations) as f32);
+      let neighbor = self.neighbor(&current);
+      let n_score = fitness(&neighbor);
+
+      if n_score < best_score {
+        best = neighbor.clone();
+        best_score = n_score;
+        last_best_at = k;
+        println!("Score {} at temperature {}", best_score, temp);
+      }
+      let transition = if n_score <= score { true } else {
+        // println!("--------------------------------------");
+        // println!("Transitioning with probability: {}", ((score - n_score) as f32 / temp).exp());
+        // println!("temp: {}", temp);
+        // println!("best: {}", best_score);
+        // println!("current: {}", score);
+        // println!("neighbor: {}", n_score);
+        ((score - n_score) / temp).exp() > rng.gen()
+      };
+      if transition {
+        current = neighbor;
+        score = n_score;
+      }
+    }
+    println!("Simulated annealing complete.");
+    println!("Saw {} configurations", seen_selections.len());
+    println!("Best score: {}", best_score);
+    best
+  }
+
+  fn neighbor(&self, expr: &RecExpr<L>) -> RecExpr<L> {
+    expr.clone()
+  }
+
+  fn random_expression(&self, root: egg::Id) -> RecExpr<L> {
+    let random = RandomExtractor::new();
+    let (_, expr) = Extractor::new(self.egraph, random).find_best(root);
+    expr
+  }
+}
+
+/// Assign random costs to every e-node. Effectively extracts
+/// a random element from the search space.
+struct RandomExtractor {
+  rng: ThreadRng,
+}
+
+impl RandomExtractor {
+  fn new() -> Self {
+    Self { rng: rand::thread_rng() }
+  }
+}
+
+impl<L: Language> CostFunction<L> for RandomExtractor {
+  type Cost = usize;
+  fn cost<C>(&mut self, _: &L, _costs: C) -> Self::Cost
+  where
+    C: FnMut(Id) -> Self::Cost,
+  {
+    self.rng.gen_range(0..100)
+  }
+}

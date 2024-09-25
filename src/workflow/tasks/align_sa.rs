@@ -1,4 +1,4 @@
-use crate::annealer::*;
+use crate::anneal::*;
 use crate::crel::eval::*;
 use crate::eggroll::cost_functions::sa::*;
 use crate::workflow::context::*;

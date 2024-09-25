@@ -352,7 +352,7 @@ fn score_loop_executions(program: &CRel, trace: &Trace) -> f32 {
   }
 }
 
-pub fn sa_score_ablate(trace_states: &Vec<State>, trace_fuel: usize, expr: RecExpr<Eggroll>,
+pub fn sa_score_ablate(trace_states: &Vec<State>, trace_fuel: usize, expr: &RecExpr<Eggroll>,
                        af_relation_size: bool,
                        af_update_matching: bool,
                        af_loop_head_matching: bool,
@@ -378,7 +378,7 @@ pub fn sa_score_ablate(trace_states: &Vec<State>, trace_fuel: usize, expr: RecEx
   trace_states.iter().map(score_state).sum::<f32>() / (trace_states.len() as f32)
 }
 
-pub fn sa_score(trace_states: &Vec<State>, trace_fuel: usize, expr: RecExpr<Eggroll>) -> f32 {
+pub fn sa_score(trace_states: &Vec<State>, trace_fuel: usize, expr: &RecExpr<Eggroll>) -> f32 {
   sa_score_ablate(trace_states, trace_fuel, expr, true, true, true, true, true)
 }
 

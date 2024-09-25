@@ -1,4 +1,4 @@
-pub mod annealer;
+pub mod anneal;
 pub mod crel;
 pub mod daikon;
 pub mod eggroll;

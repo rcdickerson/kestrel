@@ -17,8 +17,8 @@ pub fn rewrites(with_loop_sched: bool) -> Vec<Rewrite<Eggroll, ()>> {
     rewrite!("push-rel-if-else-l"; "(<|> (if-else ?c ?t ?e) ?s)" => "(if-else ?c (<|> ?t ?s) (<|> ?e ?s))"),
     rewrite!("push-rel-if-r"; "(<|> ?s (if ?c ?t))" => "(if-else ?c (<|> ?s ?t) ?s)"),
     rewrite!("push-rel-if-else-r"; "(<|> ?s (if-else ?c ?t ?e))" => "(if-else ?c (<|> ?s ?t) (<|> ?s ?e))"),
-    rewrite!("unroll-l"; "(<|> (while ?e ?i ?c) ?s)" => "(<|> (seq (if ?e ?c) (while ?e ?i ?c)) ?s)"),
-    rewrite!("unroll-r"; "(<|> ?s (while ?e ?i ?c))" => "(<|> ?s (seq (if ?e ?c) (while ?e ?i ?c)))"),
+//    rewrite!("unroll-l"; "(<|> (while ?e ?i ?c) ?s)" => "(<|> (seq (if ?e ?c) (while ?e ?i ?c)) ?s)"),
+//    rewrite!("unroll-r"; "(<|> ?s (while ?e ?i ?c))" => "(<|> ?s (seq (if ?e ?c) (while ?e ?i ?c)))"),
   ];
   if with_loop_sched {
     rewrites.append(&mut vec![

@@ -1,4 +1,4 @@
 pub mod annealer;
-//mod selection;
+pub mod choice_graph;
 
 pub use annealer::Annealer;

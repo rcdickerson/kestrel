@@ -1,15 +1,16 @@
 use egg::*;
-use rand::{Rng, rngs::ThreadRng, seq::SliceRandom};
-use std::collections::HashMap;
+use crate::anneal::choice_graph::*;
+use rand::{Rng, rngs::ThreadRng};
 use std::collections::HashSet;
 
 pub struct Annealer<'a, L: Language, N: Analysis<L>> {
   egraph: &'a EGraph<L, N>,
+  choice_graph: ChoiceGraph<L>,
 }
 impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
 
   pub fn new(egraph: &'a EGraph<L, N>) -> Self {
-    Annealer{egraph}
+    Annealer{egraph, choice_graph: ChoiceGraph::new(egraph)}
   }
 
   pub fn find_best<F>(&self,
@@ -45,7 +46,9 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
       seen_selections.insert(current.clone());
 
       let temp = 1.0 - (k as f32) / ((1 + max_iterations) as f32);
-      let neighbor = self.neighbor(&current);
+      let choices = ChoicePath::from_rec_expr(&self.choice_graph, &current);
+      let neighbor_choices = self.choice_graph.neighbor(&choices);
+      let neighbor = self.choice_graph.to_rec_expr(&neighbor_choices);
       let n_score = fitness(&neighbor);
 
       if n_score < best_score {
@@ -72,10 +75,6 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
     println!("Saw {} configurations", seen_selections.len());
     println!("Best score: {}", best_score);
     best
-  }
-
-  fn neighbor(&self, expr: &RecExpr<L>) -> RecExpr<L> {
-    expr.clone()
   }
 
   fn random_expression(&self, root: egg::Id) -> RecExpr<L> {

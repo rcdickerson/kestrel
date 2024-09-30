@@ -119,13 +119,14 @@ impl Statement {
       Statement::Return(expr) => Statement::Return (
         expr.as_ref().map(|expr| Box::new(mapper.map_expression(&expr).map(mapper)))
       ),
-      Statement::While{loop_id, invariants, condition, body} => Statement::While {
+      Statement::While{loop_id, invariants, condition, body, is_runoff} => Statement::While {
         loop_id: loop_id.clone(),
         invariants: invariants.clone(),
         condition: Box::new(mapper.map_expression(condition).map(mapper)),
         body: body.as_ref().map(|stmt| {
           Box::new(mapper.map_statement(&stmt).map(mapper))
-        })
+        }),
+        is_runoff: *is_runoff,
       },
     }
   }

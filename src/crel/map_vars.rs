@@ -82,11 +82,12 @@ impl MapVars for Statement {
       Statement::Return(expr) => {
         Statement::Return(expr.as_ref().map(|expr| Box::new(expr.map_vars(f))))
       },
-      Statement::While{loop_id, invariants: invariant, condition, body} => Statement::While {
+      Statement::While{loop_id, invariants: invariant, condition, body, is_runoff} => Statement::While {
         loop_id: loop_id.clone(),
         invariants: invariant.clone(),
         condition: Box::new(condition.map_vars(f)),
-        body: body.as_ref().map(|body| Box::new(body.map_vars(f)))
+        body: body.as_ref().map(|body| Box::new(body.map_vars(f))),
+        is_runoff: *is_runoff,
       },
     }
   }

@@ -11,6 +11,7 @@ pub use trace::Tag;
 pub use trace::{Trace, TraceState, TraceStateValue};
 
 use crate::crel::ast::*;
+use uuid::Uuid;
 
 pub fn run<'a>(stmt: &Statement, state: State, max_trace: usize,
            fundefs: Option<&'a HashMap<String, FunDef>>) -> Execution<'a> {
@@ -64,14 +65,15 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
       }
       exec.set_return_flag();
     },
-    Statement::While{condition, body, ..} => {
-      exec.push_tag(Tag::LoopStart);
+    Statement::While{condition, body, is_runoff, ..} => {
+      let id = Uuid::new_v4();
+      exec.push_tag(if *is_runoff { Tag::RunoffStart(id) } else { Tag::LoopStart(id) });
       eval_expression(condition, exec);
       while exec.value_is_true() {
         match body {
           None => (),
           Some(stmt) => {
-            exec.push_tag(Tag::LoopHead);
+            exec.push_tag(if *is_runoff { Tag::RunoffHead(id) } else { Tag::LoopHead(id) });
             eval_statement(stmt, exec);
             if exec.cf_break() { break; }
             eval_expression(condition, exec);
@@ -80,7 +82,7 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
         }
       }
       exec.clear_break_flag();
-      exec.push_tag(Tag::LoopEnd);
+      exec.push_tag(if *is_runoff { Tag::RunoffEnd(id) } else { Tag::LoopEnd(id) });
     },
   }
 }

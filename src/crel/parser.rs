@@ -325,6 +325,7 @@ fn trans_while_statement(expr: &Node<c::WhileStatement>) -> Statement {
   let body = if stmt.is_none() { None } else { Some(Box::new(stmt)) };
   Statement::While {
     loop_id: None,
+    is_runoff: false,
     invariants: invars,
     condition,
     body

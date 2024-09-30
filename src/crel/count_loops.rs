@@ -1,13 +1,45 @@
 use crate::crel::ast::*;
 
+pub struct LoopCounts {
+  pub num_loops: usize,
+  pub num_runoffs: usize,
+}
+
+impl LoopCounts {
+  pub fn zero() -> Self {
+    LoopCounts { num_loops: 0, num_runoffs: 0 }
+  }
+
+  pub fn plus(&self, other: &LoopCounts) -> Self {
+    LoopCounts {
+      num_loops: self.num_loops + other.num_loops,
+      num_runoffs: self.num_runoffs + other.num_runoffs,
+    }
+  }
+}
+
+impl std::iter::Sum for LoopCounts {
+  fn sum<I>(iter: I) -> Self
+    where I: Iterator<Item = LoopCounts>
+  {
+    let mut num_loops = 0;
+    let mut num_runoffs = 0;
+    for count in iter {
+      num_loops += count.num_loops;
+      num_runoffs += count.num_runoffs;
+    }
+    LoopCounts { num_loops, num_runoffs }
+  }
+}
+
 pub trait CountLoops {
-  fn count_loops(&self) -> usize;
+  fn count_loops(&self) -> LoopCounts;
 }
 
 impl CountLoops for CRel {
-  fn count_loops(&self) -> usize {
+  fn count_loops(&self) -> LoopCounts {
     match self {
-      CRel::Declaration(_) => 0,
+      CRel::Declaration(_) => LoopCounts::zero(),
       CRel::FunctionDefinition{specifiers:_, name:_, params:_, body} => {
         body.count_loops()
       },
@@ -17,43 +49,49 @@ impl CountLoops for CRel {
 }
 
 impl CountLoops for Expression {
-  fn count_loops(&self) -> usize {
+  fn count_loops(&self) -> LoopCounts {
     match self {
-      Expression::Identifier{name:_} => 0,
-      Expression::ConstInt(_) => 0,
-      Expression::ConstFloat(_) => 0,
-      Expression::StringLiteral(_) => 0,
-      Expression::Call{callee:_, args:_} => 0,
+      Expression::Identifier{name:_} => LoopCounts::zero(),
+      Expression::ConstInt(_) => LoopCounts::zero(),
+      Expression::ConstFloat(_) => LoopCounts::zero(),
+      Expression::StringLiteral(_) => LoopCounts::zero(),
+      Expression::Call{callee:_, args:_} => LoopCounts::zero(),
       Expression::Unop{expr, op: _} => expr.count_loops(),
-      Expression::Binop{lhs, rhs, op: _} => lhs.count_loops() + rhs.count_loops(),
-      Expression::Forall{..} => 0,
+      Expression::Binop{lhs, rhs, op: _} => lhs.count_loops().plus(&rhs.count_loops()),
+      Expression::Forall{..} => LoopCounts::zero(),
       Expression::Statement(stmt) => stmt.count_loops(),
     }
   }
 }
 
 impl CountLoops for Statement {
-  fn count_loops(&self) -> usize {
+  fn count_loops(&self) -> LoopCounts {
     match self {
       Statement::BasicBlock(items) => items.iter().map(|i| i.count_loops()).sum(),
-      Statement::Break => 0,
+      Statement::Break => LoopCounts::zero(),
       Statement::Compound(items) => items.iter().map(|i| i.count_loops()).sum(),
       Statement::Expression(expr) => expr.count_loops(),
       Statement::If{condition:_, then, els} => {
-        then.count_loops() + match els {
-          None => 0,
+        let else_count = match els {
+          None => LoopCounts::zero(),
           Some(stmt) => stmt.count_loops(),
-        }
+        };
+        then.count_loops().plus(&else_count)
       }
-      Statement::None => 0,
+      Statement::None => LoopCounts::zero(),
       Statement::Relation{lhs, rhs} => {
-        lhs.count_loops() + rhs.count_loops()
+        lhs.count_loops().plus(&rhs.count_loops())
       },
-      Statement::Return(_) => 0,
-      Statement::While{condition, body, ..} => {
-        1 + condition.count_loops() + match body {
-          None => 0,
+      Statement::Return(_) => LoopCounts::zero(),
+      Statement::While{condition, body, is_runoff, ..} => {
+        let cond_loops = condition.count_loops();
+        let body_loops = match body {
+          None => LoopCounts::zero(),
           Some(body) => body.count_loops(),
+        };
+        LoopCounts {
+          num_loops: cond_loops.num_loops + body_loops.num_loops + (if *is_runoff {0} else {1}),
+          num_runoffs: cond_loops.num_runoffs + body_loops.num_runoffs + (if *is_runoff {1} else {0}),
         }
       },
     }
@@ -61,24 +99,24 @@ impl CountLoops for Statement {
 }
 
 impl CountLoops for Declaration {
-  fn count_loops(&self) -> usize {
+  fn count_loops(&self) -> LoopCounts {
     match &self.initializer {
-      None => 0,
+      None => LoopCounts::zero(),
       Some(expr) => expr.count_loops(),
     }
   }
 }
 
 impl CountLoops for DeclarationSpecifier {
-  fn count_loops(&self) -> usize { 0 }
+  fn count_loops(&self) -> LoopCounts { LoopCounts::zero() }
 }
 
 impl CountLoops for Declarator {
-  fn count_loops(&self) -> usize { 0 }
+  fn count_loops(&self) -> LoopCounts { LoopCounts::zero() }
 }
 
 impl CountLoops for BlockItem {
-  fn count_loops(&self) -> usize {
+  fn count_loops(&self) -> LoopCounts {
     match self {
       BlockItem::Declaration(decl) => decl.count_loops(),
       BlockItem::Statement(stmt) => stmt.count_loops(),

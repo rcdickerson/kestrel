@@ -206,36 +206,41 @@ fn relations_change_summary(trace: &Trace) -> VariableChangeSummary {
 }
 
 fn loop_change_summaries(trace: &Trace) -> Vec<VariableChangeSummary> {
-  let mut summaries: Vec<VariableChangeSummary> = Vec::new();
-  let mut stack: Vec<Vec<(&TraceState, &TraceState)>> = Vec::new(); // To handle nested loops.
-
-  let mut cur_states: Option<Vec<(&TraceState, &TraceState)>> = None;
-  let mut start_state: Option<&TraceState> = None;
+  let mut trace_segments_by_loop = HashMap::new();
   for item in &trace.items {
     match item.tag {
-      Tag::LoopStart => {
-        if cur_states.is_some() { stack.push(cur_states.unwrap()); }
-        cur_states = Some(Vec::new());
-      }
-      Tag::LoopHead => match start_state {
-        None => start_state = Some(&item.state),
-        Some(cur_start_state) => match &mut cur_states {
-          None => panic!("Saw LoopHead before LoopStart"),
-          Some(states) => {
-            states.push((cur_start_state, &item.state));
-            start_state = Some(&item.state);
-          },
-        }
-      },
-      Tag::LoopEnd => match cur_states {
-        None => panic!("Saw LoopEnd before LoopStart"),
-        Some(states) => {
-          summaries.push(VariableChangeSummary::new(&states));
-          cur_states = stack.pop();
-          start_state = None;
-        },
+      Tag::LoopStart(id)
+        | Tag::RunoffStart(id)
+        | Tag::LoopHead(id)
+        | Tag::RunoffHead(id)
+        | Tag::LoopEnd(id)
+        | Tag::RunoffEnd(id) => match trace_segments_by_loop.get_mut(&id) {
+          None => { trace_segments_by_loop.insert(id, vec!(item)); },
+          Some(vec) => vec.push(item),
       },
       _ => (),
+    }
+  }
+
+  let mut summaries: Vec<VariableChangeSummary> = Vec::new();
+
+  for loop_trace in trace_segments_by_loop.values() {
+    let mut cur_state: Option<&TraceState> = None;
+    let mut states: Vec<(&TraceState, &TraceState)> = Vec::new();
+    for item in loop_trace {
+      match item.tag {
+        Tag::LoopHead(_) | Tag::RunoffHead(_) => match cur_state {
+          None => cur_state = Some(&item.state),
+          Some(state) => {
+            states.push((state, &item.state));
+            cur_state = Some(&item.state);
+          },
+        },
+        _ => (),
+      }
+    }
+    if !states.is_empty() {
+      summaries.push(VariableChangeSummary::new(&states));
     }
   }
   summaries
@@ -342,17 +347,23 @@ fn score_loop_head_similarity(summaries: &Vec<VariableChangeSummary>) -> (f32, f
 }
 
 /// The number of executed loops as a percentage of total loops.
-/// Goal: Favor programs with fewer loop executions. (Especially programs
-/// whose post-lockstep "runoffs" do not execute.)
+/// Goal: Favor programs with fewer loop executions, especially programs
+/// whose post-lockstep "runoffs" do not execute.
 fn score_loop_executions(program: &CRel, trace: &Trace) -> f32 {
-  let num_executed_loops = trace.count_executed_loops();
-  let num_loops = program.count_loops();
-  if num_loops == 0 { 0.0 } else {
-    (num_executed_loops as f32) / (num_loops as f32)
-  }
+  let (num_executed_loops, num_executed_runoffs) = trace.count_executed_loops();
+  let loop_counts = program.count_loops();
+  let loop_score = if loop_counts.num_loops == 0 { 0.0 } else {
+    (num_executed_loops as f32) / (loop_counts.num_loops as f32)
+  };
+  let runoff_score = if loop_counts.num_runoffs == 0 { 0.0} else {
+    (num_executed_runoffs as f32) / (loop_counts.num_runoffs as f32)
+  };
+  (0.25 * loop_score) + (0.75 * runoff_score)
 }
 
-pub fn sa_score_ablate(trace_states: &Vec<State>, trace_fuel: usize, expr: &RecExpr<Eggroll>,
+pub fn sa_score_ablate(trace_states: &Vec<State>,
+                       trace_fuel: usize,
+                       expr: &RecExpr<Eggroll>,
                        af_relation_size: bool,
                        af_update_matching: bool,
                        af_loop_head_matching: bool,
@@ -376,6 +387,32 @@ pub fn sa_score_ablate(trace_states: &Vec<State>, trace_fuel: usize, expr: &RecE
   };
 
   trace_states.iter().map(score_state).sum::<f32>() / (trace_states.len() as f32)
+}
+
+pub fn sa_score_ablate_debug(trace_states: &Vec<State>,
+                       trace_fuel: usize,
+                       expr: &RecExpr<Eggroll>,
+                       af_relation_size: bool,
+                       af_update_matching: bool,
+                       af_loop_head_matching: bool,
+                       af_loop_double_updates: bool,
+                       af_loop_executions: bool) {
+  let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string(), &to_crel::Config::default());
+  let fundefs = crate::crel::fundef::extract_fundefs(&crel).1;
+  let body = fundefs
+    .get(&"main".to_string())
+    .expect("Missing main function")
+    .body.clone();
+
+  for state in trace_states {
+    let exec = run(&body, state.clone(), trace_fuel, Some(&fundefs));
+    SAScore::new_ablation(&crel, &exec.trace,
+                          af_relation_size,
+                          af_update_matching,
+                          af_loop_head_matching,
+                          af_loop_double_updates,
+                          af_loop_executions).print();
+  }
 }
 
 pub fn sa_score(trace_states: &Vec<State>, trace_fuel: usize, expr: &RecExpr<Eggroll>) -> f32 {

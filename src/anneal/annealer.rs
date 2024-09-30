@@ -13,13 +13,16 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
     Annealer{egraph, choice_graph: ChoiceGraph::new(egraph)}
   }
 
-  pub fn find_best<F>(&self,
+  pub fn find_best<F, G>(&self,
                       max_iterations: usize,
                       root: egg::Id,
                       init: Option<RecExpr<L>>,
-                      fitness: F)
+                      fitness: F,
+                      debug_info: G)
                       -> RecExpr<L>
-    where F: Fn(&RecExpr<L>) -> f32
+  where
+      F: Fn(&RecExpr<L>) -> f32,
+      G: Fn(&RecExpr<L>) -> (),
   {
     println!("Starting simulated annealing...");
 
@@ -35,12 +38,22 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
     let mut best = current.clone();
     let mut best_score = score;
     let mut last_best_at = 0;
+    let mut reset_count = 0;
+    let reset_threshold = max_iterations / 10;
+
     println!("Initial score: {}", best_score);
 
     for k in 0..max_iterations {
-      if k - last_best_at > 2000 {
-        println!("Simulated annealing converged after {} iterations", k);
-        break;
+      if k - last_best_at > reset_threshold {
+        if reset_count > 2 {
+          println!("Simulated annealing converged after {} iterations", k);
+          break;
+        }
+        println!("No new best seen in {} iterations, resetting", reset_threshold);
+        current = best.clone();
+        score = best_score;
+        last_best_at = k;
+        reset_count += 1;
       }
 
       seen_selections.insert(current.clone());
@@ -55,7 +68,9 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
         best = neighbor.clone();
         best_score = n_score;
         last_best_at = k;
+        reset_count = 0;
         println!("Score {} at temperature {}", best_score, temp);
+        debug_info(&best);
       }
       let transition = if n_score <= score { true } else {
         // println!("--------------------------------------");

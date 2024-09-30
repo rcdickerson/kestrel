@@ -229,13 +229,13 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
       Sexp::Atom(Atom::S(s)) if s == "while-no-body" => {
         let condition = Box::new(expect_expression(&sexps[1], config));
         let invariants = expect_invariants(&sexps[2], config).values().map(|v| v.clone()).collect();
-        Statement::While{loop_id: None, invariants, condition, body: None}
+        Statement::While{loop_id: None, invariants, condition, body: None, is_runoff: false}
       },
       Sexp::Atom(Atom::S(s)) if s == "while" => {
         let condition = Box::new(expect_expression(&sexps[1], config));
         let invariants = expect_invariants(&sexps[2], config).values().map(|v| v.clone()).collect();
         let body = Some(Box::new(expect_statement(&sexps[3], config)));
-        Statement::While{loop_id: None, invariants, condition, body}
+        Statement::While{loop_id: None, invariants, condition, body, is_runoff: false}
       },
       Sexp::Atom(Atom::S(s)) if s == "while-lockstep" => {
         let left_unrolls = expect_i64(&sexps[1]);
@@ -309,16 +309,19 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
           BlockItem::Statement(Statement::Compound(unrolls2)),
           BlockItem::Statement(Statement::While {
             loop_id: None,
+            is_runoff: false,
             invariants: combined_invars,
             condition: Box::new(conj),
             body: Some(Box::new(body))}),
           BlockItem::Statement(Statement::While {
             loop_id: None,
+            is_runoff: true,
             invariants: invars1.values().map(|v| v.clone()).collect(),
             condition: Box::new(cond1),
             body: Some(Box::new(runoff_body_1))}),
           BlockItem::Statement(Statement::While {
             loop_id: None,
+            is_runoff: true,
             invariants: invars2.values().map(|v| v.clone()).collect(),
             condition: Box::new(cond2),
             body: Some(Box::new(runoff_body_2))}),
@@ -477,17 +480,20 @@ fn expect_while_scheduled(sexps: &[Sexp], config: &Config) -> Statement {
     BlockItem::Statement(Statement::Compound(unrolls2)),
     BlockItem::Statement(Statement::While {
       loop_id: None,
+      is_runoff: false,
       invariants: combined_invars,
       condition: Box::new(conj),
       body: Some(Box::new(bodies))}),
     BlockItem::Statement(Statement::While {
       loop_id: None,
+      is_runoff: false,
       invariants: invars1.values().map(|v| v.clone()).collect(),
       condition: Box::new(cond1),
       body: Some(Box::new(body1.clone()))}),
       //body: Some(Box::new(runoff_body_1))}),
     BlockItem::Statement(Statement::While {
       loop_id: None,
+      is_runoff: false,
       invariants: invars2.values().map(|v| v.clone()).collect(),
       condition: Box::new(cond2),
       body: Some(Box::new(body2.clone()))}),

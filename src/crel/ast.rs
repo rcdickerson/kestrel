@@ -201,6 +201,7 @@ pub enum Statement {
     invariants: Vec<Expression>,
     condition: Box<Expression>,
     body: Option<Box<Statement>>,
+    is_runoff: bool,
   },
 }
 

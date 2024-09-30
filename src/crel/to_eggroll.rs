@@ -134,7 +134,7 @@ fn statement_to_eggroll(stmt: &Statement) -> String {
                               invariants_to_eggroll(invariants),
                               statement_to_eggroll(stmt)),
       }
-    }
+    },
   }
 }
 

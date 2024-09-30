@@ -59,7 +59,7 @@ impl Task for AlignSa {
     }
 
     let num_trace_states = 10;
-    let trace_fuel = 10000;
+    let trace_fuel = 100000000;
 
     let init = if self.start_random { None } else { context.aligned_eggroll.clone() };
     let runner = Runner::default()
@@ -76,7 +76,15 @@ impl Task for AlignSa {
                                                            self.af_update_matching,
                                                            self.af_loop_head_matching,
                                                            self.af_loop_double_updates,
-                                                           self.af_loop_executions) });
+                                                           self.af_loop_executions) },
+                                  |expr| { sa_score_ablate_debug(&trace_states, trace_fuel, expr,
+                                                           self.af_relation_size,
+                                                           self.af_update_matching,
+                                                           self.af_loop_head_matching,
+                                                           self.af_loop_double_updates,
+                                                           self.af_loop_executions) },
+
+    );
     context.aligned_eggroll.replace(best);
   }
 }

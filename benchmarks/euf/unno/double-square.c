@@ -6,7 +6,8 @@
  */
 
 void _test_gen(int x) {
-  x = x % 100;
+  if (x < 0) { x = x * -1; }
+  x = x % 1000;
   _main(x, x);
 }
 

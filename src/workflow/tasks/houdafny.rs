@@ -32,16 +32,16 @@ impl Task for Houdafny {
         context.unaligned_crel().global_decls.clone(),
         &Some(dafny_path.clone()));
 
-      println!("Writing Dafny to {}...", dafny_path);
+      // println!("Writing Dafny to {}...", dafny_path);
       let mut file = File::create(&Path::new(dafny_path.clone().as_str()))
         .unwrap_or_else(|_| panic!("Error creating file: {}", dafny_path));
       match file.write_all(dafny_prog.as_bytes()) {
-        Ok(_) => println!("Done"),
+        Ok(_) => (), // println!("Done"),
         Err(err) => panic!("Error writing output file: {}", err),
       }
 
       // Run Dafny.
-      println!("Running Dafny verification...");
+      // println!("Running Dafny verification...");
       let dafny_result = Command::new("dafny")
         .args(["verify", "houdafny.dfy", "--error-limit", "0", "--allow-warnings"])
         .output()

@@ -56,13 +56,15 @@ impl Blockify for Statement {
         }
       },
       Statement::Return(_) => self.clone(),
-      Statement::While{loop_id, invariants: invariant, condition, body, is_runoff} => {
+      Statement::While{loop_id, runoff_link_id, invariants: invariant, condition, body, is_runoff, is_merged} => {
         Statement::While {
           loop_id: loop_id.clone(),
+          runoff_link_id: runoff_link_id.clone(),
           invariants: invariant.clone(),
           condition: condition.clone(),
           body: body.as_ref().map(|stmt| Box::new(stmt.blockify())),
           is_runoff: *is_runoff,
+          is_merged: *is_merged,
         }
       },
     }
@@ -106,17 +108,19 @@ fn blockify_items(items: &Vec<BlockItem>) -> Vec<BlockItem> {
         Statement::Return(expr) => {
           current_block.push(BlockItem::Statement(Statement::Return(expr)))
         },
-        Statement::While{loop_id, invariants: invariant, condition, body, is_runoff} => {
+        Statement::While{loop_id, runoff_link_id, invariants: invariant, condition, body, is_runoff, is_merged} => {
           if !current_block.is_empty() {
             blocks.push(BlockItem::Statement(Statement::BasicBlock(current_block.clone())));
             current_block = vec!{};
           }
           blocks.push(BlockItem::Statement(Statement::While{
             loop_id,
+            runoff_link_id,
             invariants: invariant,
             condition,
             body,
             is_runoff,
+            is_merged,
           }))
         },
       },

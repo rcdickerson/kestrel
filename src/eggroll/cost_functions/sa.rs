@@ -100,7 +100,7 @@ struct VariableChangeSummary {
 
   /// All the left and right variable names (without the l_ and r_ prefixes)
   /// encountered in the summarized states.
-  all_vars:     HashSet<String>,
+  all_vars: HashSet<String>,
 
   /// The variables (without l_ and r_ prefixes) whose value was changed on
   /// the left, on the right, or both somewhere in the summarized states.
@@ -210,11 +210,14 @@ fn loop_change_summaries(trace: &Trace) -> Vec<VariableChangeSummary> {
   for item in &trace.items {
     match item.tag {
       Tag::LoopStart(id)
-        | Tag::RunoffStart(id)
+        | Tag::MergedStart{id,..}
+        | Tag::RunoffStart{id,..}
         | Tag::LoopHead(id)
-        | Tag::RunoffHead(id)
+        | Tag::MergedHead{id,..}
+        | Tag::RunoffHead{id,..}
         | Tag::LoopEnd(id)
-        | Tag::RunoffEnd(id) => match trace_segments_by_loop.get_mut(&id) {
+        | Tag::MergedEnd{id,..}
+        | Tag::RunoffEnd{id,..} => match trace_segments_by_loop.get_mut(&id) {
           None => { trace_segments_by_loop.insert(id, vec!(item)); },
           Some(vec) => vec.push(item),
       },
@@ -229,7 +232,7 @@ fn loop_change_summaries(trace: &Trace) -> Vec<VariableChangeSummary> {
     let mut states: Vec<(&TraceState, &TraceState)> = Vec::new();
     for item in loop_trace {
       match item.tag {
-        Tag::LoopHead(_) | Tag::RunoffHead(_) => match cur_state {
+        Tag::LoopHead(_) | Tag::MergedHead{..} | Tag::RunoffHead{..} => match cur_state {
           None => cur_state = Some(&item.state),
           Some(state) => {
             states.push((state, &item.state));
@@ -337,28 +340,25 @@ fn score_loop_head_similarity(summaries: &Vec<VariableChangeSummary>) -> (f32, f
     exact_ratios.push((exact_count as f32) / (loop_summary.changed_vars.len() as f32));
     double_update_ratios.push((num_double_updates as f32) / (loop_summary.changed_vars.len() as f32));
   }
-  let exact_avg = if exact_ratios.is_empty() {1.0} else {
+  let exact_avg = if exact_ratios.is_empty() {0.0} else {
     exact_ratios.iter().sum::<f32>() / (exact_ratios.len() as f32)
   };
-  let double_update_avg = if double_update_ratios.is_empty() {1.0} else {
+  let double_update_avg = if double_update_ratios.is_empty() {0.0} else {
     double_update_ratios.iter().sum::<f32>() / (double_update_ratios.len() as f32)
   };
   (1.0 - exact_avg, 1.0 - double_update_avg)
 }
 
-/// The number of executed loops as a percentage of total loops.
-/// Goal: Favor programs with fewer loop executions, especially programs
-/// whose post-lockstep "runoffs" do not execute.
+/// The number of merged loops without runoff executions as a
+/// percentage of total loops.
+/// Goal: Favor programs whose post-lockstep "runoffs" do not execute.
 fn score_loop_executions(program: &CRel, trace: &Trace) -> f32 {
-  let (num_executed_loops, num_executed_runoffs) = trace.count_executed_loops();
-  let loop_counts = program.count_loops();
-  let loop_score = if loop_counts.num_loops == 0 { 0.0 } else {
-    (num_executed_loops as f32) / (loop_counts.num_loops as f32)
-  };
-  let runoff_score = if loop_counts.num_runoffs == 0 { 0.0} else {
-    (num_executed_runoffs as f32) / (loop_counts.num_runoffs as f32)
-  };
-  (0.25 * loop_score) + (0.75 * runoff_score)
+  let merged_no_runoffs = trace.count_merged_loops_without_runoff_execs();
+  let total_merged = program.count_loops().num_merged;
+  if total_merged == 0 { 1.0 } else {
+    //println!("Score: {}", (merged_no_runoffs as f32) / (total_merged as f32));
+    (merged_no_runoffs as f32) / (total_merged as f32)
+  }
 }
 
 pub fn sa_score_ablate(trace_states: &Vec<State>,

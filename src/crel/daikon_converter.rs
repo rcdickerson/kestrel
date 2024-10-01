@@ -120,7 +120,7 @@ impl DaikonConverter {
       Statement::Return(expr) => Statement::Return(expr.clone().map(|e| {
         Box::new(self.convert_expression(*e))
       })),
-      Statement::While{loop_id, invariants: invariant, condition, body, is_runoff} => {
+      Statement::While{loop_id, runoff_link_id, invariants: invariant, condition, body, is_runoff, is_merged} => {
         let checkpoint = self.push_scope();
         let (id, lh_call) = self.add_loop_head(loop_id.clone().unwrap());
         let new_body = match &body {
@@ -132,10 +132,12 @@ impl DaikonConverter {
         self.pop_scope(checkpoint);
         Statement::While{
           loop_id: Some(id),
+          runoff_link_id: runoff_link_id.clone(),
           invariants: invariant.clone(),
           condition: condition.clone(),
           body: Some(Box::new(new_body)),
           is_runoff: *is_runoff,
+          is_merged: *is_merged,
         }
       },
     }

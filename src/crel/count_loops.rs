@@ -2,17 +2,19 @@ use crate::crel::ast::*;
 
 pub struct LoopCounts {
   pub num_loops: usize,
+  pub num_merged: usize,
   pub num_runoffs: usize,
 }
 
 impl LoopCounts {
   pub fn zero() -> Self {
-    LoopCounts { num_loops: 0, num_runoffs: 0 }
+    LoopCounts { num_loops: 0, num_merged: 0, num_runoffs: 0 }
   }
 
   pub fn plus(&self, other: &LoopCounts) -> Self {
     LoopCounts {
       num_loops: self.num_loops + other.num_loops,
+      num_merged: self.num_merged + other.num_merged,
       num_runoffs: self.num_runoffs + other.num_runoffs,
     }
   }
@@ -23,12 +25,14 @@ impl std::iter::Sum for LoopCounts {
     where I: Iterator<Item = LoopCounts>
   {
     let mut num_loops = 0;
+    let mut num_merged = 0;
     let mut num_runoffs = 0;
     for count in iter {
       num_loops += count.num_loops;
+      num_merged += count.num_merged;
       num_runoffs += count.num_runoffs;
     }
-    LoopCounts { num_loops, num_runoffs }
+    LoopCounts { num_loops, num_merged, num_runoffs }
   }
 }
 
@@ -83,14 +87,15 @@ impl CountLoops for Statement {
         lhs.count_loops().plus(&rhs.count_loops())
       },
       Statement::Return(_) => LoopCounts::zero(),
-      Statement::While{condition, body, is_runoff, ..} => {
+      Statement::While{condition, body, is_runoff, is_merged, ..} => {
         let cond_loops = condition.count_loops();
         let body_loops = match body {
           None => LoopCounts::zero(),
           Some(body) => body.count_loops(),
         };
         LoopCounts {
-          num_loops: cond_loops.num_loops + body_loops.num_loops + (if *is_runoff {0} else {1}),
+          num_loops: cond_loops.num_loops + body_loops.num_loops + 1,
+          num_merged: cond_loops.num_loops + body_loops.num_loops + (if *is_merged {1} else {0}),
           num_runoffs: cond_loops.num_runoffs + body_loops.num_runoffs + (if *is_runoff {1} else {0}),
         }
       },

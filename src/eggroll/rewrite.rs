@@ -3,6 +3,7 @@ use egg::*;
 
 pub fn rewrites(with_loop_sched: bool) -> Vec<Rewrite<Eggroll, ()>> {
   let mut rewrites = vec![
+
     rewrite!("prod-assoc-l"; "(seq ?a (seq ?b ?c))" => "(seq (seq ?a ?b) ?c)"),
     rewrite!("prod-assoc-r"; "(seq (seq ?a ?b) ?c)" => "(seq ?a (seq ?b ?c))"),
     rewrite!("rel-embed"; "(<|> ?x ?y)" => "(seq (<| ?x) (|> ?y))"),
@@ -20,12 +21,11 @@ pub fn rewrites(with_loop_sched: bool) -> Vec<Rewrite<Eggroll, ()>> {
   ];
   if with_loop_sched {
     rewrites.append(&mut vec![
-      rewrite!("unroll-l"; "(<|> (while ?e ?i ?c) ?s)" => "(<|> (seq (if ?e ?c) (while ?e ?i ?c)) ?s)"),
-      rewrite!("unroll-r"; "(<|> ?s (while ?e ?i ?c))" => "(<|> ?s (seq (if ?e ?c) (while ?e ?i ?c)))"),
-      rewrite!("while-scheduled21"; "(<|> (while ?e1 ?i1 ?c1) (while ?e2 ?i2 ?c2))"
-                                 => "(while-scheduled 0 0 2 1 ?e1 ?e2 ?i1 ?i2 ?c1 ?c2)"),
-      rewrite!("while-scheduled12"; "(<|> (while ?e1 ?i1 ?c1) (while ?e2 ?i2 ?c2))"
-                                 => "(while-scheduled 0 0 1 2 ?e1 ?e2 ?i1 ?i2 ?c1 ?c2)"),
+//      rewrite!("unroll-while"; "(while ?e ?i ?c)" => "(seq (if ?e ?c) (while ?e ?i ?c))"),
+//      rewrite!("while-scheduled21"; "(<|> (while ?e1 ?i1 ?c1) (while ?e2 ?i2 ?c2))"
+//                                 => "(while-scheduled 0 0 2 1 ?e1 ?e2 ?i1 ?i2 ?c1 ?c2)"),
+//      rewrite!("while-scheduled12"; "(<|> (while ?e1 ?i1 ?c1) (while ?e2 ?i2 ?c2))"
+//                                 => "(while-scheduled 0 0 1 2 ?e1 ?e2 ?i1 ?i2 ?c1 ?c2)"),
 
 /*
       rewrite!("unroll-lock-l01"; "(while-lockstep 0 0 ?e1 ?e2 ?i1 ?i2 ?c1 ?c2 ?body)"
@@ -45,7 +45,6 @@ pub fn rewrites(with_loop_sched: bool) -> Vec<Rewrite<Eggroll, ()>> {
                                 => "(while-scheduled 0 1 ?sl ?sr ?e1 ?e2 ?i1 ?i2 ?c1 ?c2)"),
       rewrite!("unroll-sched-r12"; "(while-scheduled 0 1 ?sl ?sr ?e1 ?e2 ?i1 ?i2 ?c1 ?c2)"
                                 => "(while-scheduled 0 2 ?sl ?sr ?e1 ?e2 ?i1 ?i2 ?c1 ?c2)"),
-*/
 
       rewrite!("rev-while-scheduled21"; "(while-scheduled ?ul ?ur 2 1 ?e1 ?e2 ?i1 ?i2 ?c1 ?c2)"
                                      => "(<|> (while ?e1 ?i1 ?c1) (while ?e2 ?i2 ?c2))"),
@@ -53,6 +52,7 @@ pub fn rewrites(with_loop_sched: bool) -> Vec<Rewrite<Eggroll, ()>> {
                                      => "(<|> (while ?e1 ?i1 ?c1) (while ?e2 ?i2 ?c2))"),
       rewrite!("rev-while-lockstep"; "(while-lockstep 0 0 ?e1 ?e2 ?i1 ?i2 ?c1 ?c2 (<|> ?c1 ?c2))"
                                   => "(<|> (while ?e1 ?i1 ?c1) (while ?e2 ?i2 ?c2))"),
+*/
 
 
     ]);

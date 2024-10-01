@@ -7,7 +7,7 @@
 
 void _test_gen(int x) {
   if (x < 0) { x = x * -1; }
-  x = x % 1000;
+  x = x % 100;
   _main(x, x);
 }
 
@@ -20,7 +20,7 @@ void left(int x_in) {
     _invariant("2 * r_y == l_y");
     _invariant("2 * r_z == l_z");
     z = z - 1;
-    y = y+x;
+    y = y + x;
   }
 }
 
@@ -31,7 +31,7 @@ void right(int x_in) {
   z = x;
   while (z>0) {
     z = z - 1;
-    y = y+x;
+    y = y + x;
   }
   y = 2*y;
 }

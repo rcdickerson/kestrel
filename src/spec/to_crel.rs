@@ -37,8 +37,10 @@ impl KCondToCRel for KestrelCond {
         };
         let wloop = crel::Statement::While {
           loop_id: None,
+          runoff_link_id: None,
           invariants: Vec::new(),
           is_runoff: false,
+          is_merged: false,
           condition: Box::new(crel::Expression::Binop {
             lhs: Box::new(crel::Expression::Identifier{name: index_var.clone()}),
             rhs: Box::new(end.to_crel()),

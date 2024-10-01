@@ -9,9 +9,12 @@ pub enum Tag {
   LoopStart(Uuid),
   LoopHead(Uuid),
   LoopEnd(Uuid),
-  RunoffStart(Uuid),
-  RunoffHead(Uuid),
-  RunoffEnd(Uuid),
+  MergedStart{id: Uuid, runoff_link_id: Option<Uuid>},
+  MergedHead{id: Uuid, runoff_link_id: Option<Uuid>},
+  MergedEnd{id: Uuid, runoff_link_id: Option<Uuid>},
+  RunoffStart{id: Uuid, runoff_link_id: Option<Uuid>},
+  RunoffHead{id: Uuid, runoff_link_id: Option<Uuid>},
+  RunoffEnd{id: Uuid, runoff_link_id: Option<Uuid>},
   RelationStart,
   RelationMid,
   RelationEnd,
@@ -105,10 +108,16 @@ impl Trace {
     let mut current_heads = Vec::new();
     for item in &self.items {
       match item {
-        TraceItem{tag: Tag::LoopHead(_), state} => {
+        TraceItem{tag: Tag::LoopHead(_), state}
+        | TraceItem{tag: Tag::MergedHead{..}, state}
+        | TraceItem{tag: Tag::RunoffHead{..}, state}
+        => {
           current_heads.push(state);
         },
-        TraceItem{tag: Tag::LoopEnd(_), state:_} => {
+        TraceItem{tag: Tag::LoopEnd(_), state:_}
+        | TraceItem{tag: Tag::MergedEnd{..}, state:_}
+        | TraceItem{tag: Tag::RunoffEnd{..}, state:_}
+        => {
           all_heads.push(current_heads);
           current_heads = Vec::new();
         },
@@ -136,20 +145,41 @@ impl Trace {
     all_rels
   }
 
-  pub fn count_executed_loops(&self) -> (usize, usize) {
+  pub fn count_executed_loops(&self) -> (usize, usize, usize) {
     let mut loop_heads = HashSet::new();
+    let mut merged_heads = HashSet::new();
     let mut runoff_heads = HashSet::new();
     for item in &self.items {
       match item {
         TraceItem{tag: Tag::LoopHead(id), state:_} => {
           loop_heads.insert(id);
         },
-        TraceItem{tag: Tag::RunoffHead(id), state:_} => {
+        TraceItem{tag: Tag::MergedHead{id,..}, state:_} => {
+          merged_heads.insert(id);
+        },
+        TraceItem{tag: Tag::RunoffHead{id,..}, state:_} => {
           runoff_heads.insert(id);
         },
         _ => (),
       }
     }
-    (loop_heads.len(), runoff_heads.len())
+    (loop_heads.len(), merged_heads.len(), runoff_heads.len())
+  }
+
+  pub fn count_merged_loops_without_runoff_execs(&self) -> usize {
+    let mut merged_heads = HashSet::new();
+    let mut runoff_heads = HashSet::new();
+    for item in &self.items {
+      match item {
+        TraceItem{tag: Tag::MergedHead{runoff_link_id,..}, state:_} => {
+          runoff_link_id.map(|id| merged_heads.insert(id));
+        },
+        TraceItem{tag: Tag::RunoffHead{runoff_link_id,..}, state:_} => {
+          runoff_link_id.map(|id| runoff_heads.insert(id));
+        },
+        _ => (),
+      }
+    }
+    merged_heads.difference(&runoff_heads).collect::<Vec<_>>().len()
   }
 }

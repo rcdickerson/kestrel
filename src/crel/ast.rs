@@ -198,10 +198,12 @@ pub enum Statement {
   Return(Option<Box<Expression>>),
   While {
     loop_id: Option<String>,
+    runoff_link_id: Option<uuid::Uuid>,
     invariants: Vec<Expression>,
     condition: Box<Expression>,
     body: Option<Box<Statement>>,
     is_runoff: bool,
+    is_merged: bool,
   },
 }
 

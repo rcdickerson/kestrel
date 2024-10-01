@@ -65,15 +65,27 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
       }
       exec.set_return_flag();
     },
-    Statement::While{condition, body, is_runoff, ..} => {
+    Statement::While{condition, body, is_runoff, is_merged, runoff_link_id, ..} => {
       let id = Uuid::new_v4();
-      exec.push_tag(if *is_runoff { Tag::RunoffStart(id) } else { Tag::LoopStart(id) });
+      let (start_tag, head_tag, end_tag) = if *is_merged {
+        (Tag::MergedStart{id, runoff_link_id: runoff_link_id.clone()},
+         Tag::MergedHead{id, runoff_link_id: runoff_link_id.clone()},
+         Tag::MergedEnd{id, runoff_link_id: runoff_link_id.clone()})
+      } else if *is_runoff {
+        (Tag::RunoffStart{id, runoff_link_id: runoff_link_id.clone()},
+         Tag::RunoffHead{id, runoff_link_id: runoff_link_id.clone()},
+         Tag::RunoffEnd{id, runoff_link_id: runoff_link_id.clone()})
+      } else {
+        (Tag::LoopStart(id), Tag::LoopHead(id), Tag::LoopEnd(id))
+      };
+
+      exec.push_tag(start_tag);
       eval_expression(condition, exec);
       while exec.value_is_true() {
         match body {
           None => (),
           Some(stmt) => {
-            exec.push_tag(if *is_runoff { Tag::RunoffHead(id) } else { Tag::LoopHead(id) });
+            exec.push_tag(head_tag.clone());
             eval_statement(stmt, exec);
             if exec.cf_break() { break; }
             eval_expression(condition, exec);
@@ -82,7 +94,7 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
         }
       }
       exec.clear_break_flag();
-      exec.push_tag(if *is_runoff { Tag::RunoffEnd(id) } else { Tag::LoopEnd(id) });
+      exec.push_tag(end_tag);
     },
   }
 }

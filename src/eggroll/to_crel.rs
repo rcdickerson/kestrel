@@ -229,13 +229,13 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
       Sexp::Atom(Atom::S(s)) if s == "while-no-body" => {
         let condition = Box::new(expect_expression(&sexps[1], config));
         let invariants = expect_invariants(&sexps[2], config).values().map(|v| v.clone()).collect();
-        Statement::While{loop_id: None, invariants, condition, body: None, is_runoff: false}
+        Statement::While{loop_id: None, runoff_link_id: None, invariants, condition, body: None, is_runoff: false, is_merged: false}
       },
       Sexp::Atom(Atom::S(s)) if s == "while" => {
         let condition = Box::new(expect_expression(&sexps[1], config));
         let invariants = expect_invariants(&sexps[2], config).values().map(|v| v.clone()).collect();
         let body = Some(Box::new(expect_statement(&sexps[3], config)));
-        Statement::While{loop_id: None, invariants, condition, body, is_runoff: false}
+        Statement::While{loop_id: None, runoff_link_id: None, invariants, condition, body, is_runoff: false, is_merged: false}
       },
       Sexp::Atom(Atom::S(s)) if s == "while-lockstep" => {
         let left_unrolls = expect_i64(&sexps[1]);
@@ -304,24 +304,32 @@ fn expect_statement(sexp: &Sexp, config: &Config) -> Statement {
           unrolls2.push(next_iter);
         }
 
+        let runoff_link_id = Some(uuid::Uuid::new_v4());
+
         let stmts = vec! [
           BlockItem::Statement(Statement::Compound(unrolls1)),
           BlockItem::Statement(Statement::Compound(unrolls2)),
           BlockItem::Statement(Statement::While {
             loop_id: None,
+            runoff_link_id: runoff_link_id.clone(),
             is_runoff: false,
+            is_merged: true,
             invariants: combined_invars,
             condition: Box::new(conj),
             body: Some(Box::new(body))}),
           BlockItem::Statement(Statement::While {
             loop_id: None,
+            runoff_link_id: runoff_link_id.clone(),
             is_runoff: true,
+            is_merged: false,
             invariants: invars1.values().map(|v| v.clone()).collect(),
             condition: Box::new(cond1),
             body: Some(Box::new(runoff_body_1))}),
           BlockItem::Statement(Statement::While {
             loop_id: None,
+            runoff_link_id: runoff_link_id.clone(),
             is_runoff: true,
+            is_merged: false,
             invariants: invars2.values().map(|v| v.clone()).collect(),
             condition: Box::new(cond2),
             body: Some(Box::new(runoff_body_2))}),
@@ -475,29 +483,35 @@ fn expect_while_scheduled(sexps: &[Sexp], config: &Config) -> Statement {
     rhs: Box::new(body2_rel),
   };
 
+  let runoff_link_id = Some(uuid::Uuid::new_v4());
+
   let stmts = vec! [
     BlockItem::Statement(Statement::Compound(unrolls1)),
     BlockItem::Statement(Statement::Compound(unrolls2)),
     BlockItem::Statement(Statement::While {
       loop_id: None,
+      runoff_link_id: runoff_link_id.clone(),
       is_runoff: false,
+      is_merged: true,
       invariants: combined_invars,
       condition: Box::new(conj),
       body: Some(Box::new(bodies))}),
     BlockItem::Statement(Statement::While {
       loop_id: None,
-      is_runoff: false,
+      runoff_link_id: runoff_link_id.clone(),
+      is_runoff: true,
+      is_merged: false,
       invariants: invars1.values().map(|v| v.clone()).collect(),
       condition: Box::new(cond1),
       body: Some(Box::new(body1.clone()))}),
-      //body: Some(Box::new(runoff_body_1))}),
     BlockItem::Statement(Statement::While {
       loop_id: None,
-      is_runoff: false,
+      runoff_link_id: runoff_link_id.clone(),
+      is_runoff: true,
+      is_merged: false,
       invariants: invars2.values().map(|v| v.clone()).collect(),
       condition: Box::new(cond2),
       body: Some(Box::new(body2.clone()))}),
-      //body: Some(Box::new(runoff_body_2))}),
   ];
   Statement::Compound(stmts)
 }

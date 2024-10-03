@@ -362,6 +362,50 @@ Section Equiv.
     f_equiv.
   Qed.
 
+  Lemma repeatR_eqv : forall s1 s2 n,
+      <{ <| repeat_c n s1 | repeat_c n s2 |> }> ==R <{ repeatR n <{ <| s1 | s2 |> }>  }>.
+  Proof.
+    induction n; simpl; intros.
+    - reflexivity.
+    - rewrite rel_def.
+      rewrite prod_hom_l.
+      rewrite prod_hom_r.
+      rewrite <- IHn.
+      rewrite (rel_def s1 s2).
+      rewrite !prod_seq_assoc.
+      f_equiv.
+      rewrite <- prod_seq_assoc.
+      rewrite <- rel_comm.
+      rewrite prod_seq_assoc.
+      f_equiv.
+      rewrite <- rel_def; reflexivity.
+  Qed.
+
+  Lemma repeatR_moreR_eqv : forall s1 s2 n m,
+      <{ <| repeat_c n s1 | repeat_c (n + m) s2 |> }> ==R <{ repeatR n <{ <| s1 | s2 |> }>;; <| skip | repeat_c m s2 |>  }>.
+  Proof.
+    intros; rewrite repeat_c_plus.
+    rewrite rel_def.
+    rewrite prod_hom_r.
+    rewrite <- prod_seq_assoc.
+    rewrite <- rel_def.
+    rewrite repeatR_eqv; reflexivity.
+  Qed.
+
+  Lemma repeatR_moreL_eqv : forall s1 s2 n m,
+      <{ <| repeat_c (n + m) s1 | repeat_c n s2 |> }> ==R <{ repeatR n <{ <| s1 | s2 |> }>;; <| repeat_c m s1 | skip |>  }>.
+  Proof.
+    intros; rewrite repeat_c_plus.
+    rewrite rel_def.
+    rewrite prod_hom_l.
+    rewrite prod_seq_assoc.
+    rewrite <- rel_comm.
+    rewrite <- prod_seq_assoc.
+    rewrite <- rel_def.
+    rewrite repeatR_eqv.
+    reflexivity.
+  Qed.
+
 End Equiv.
 
 Module notations.

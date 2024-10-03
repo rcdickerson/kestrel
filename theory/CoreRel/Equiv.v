@@ -332,8 +332,8 @@ Section Equiv.
         intros; first [discriminate | injection Heqr; intros; subst; clear Heqr].
       + clear IHaceval1; specialize (IHaceval2 _ _ eq_refl H4).
         eapply block_eqv_cong.
-        eapply If_while_eq.
-        eapply If_while_eq.
+        eapply while_unroll_eq.
+        eapply while_unroll_eq.
         eapply CR.Semantics.BigStep_Denotational_Sound.
         eapply CR.Semantics.Denotational_BigStep_Adequate in IHaceval2.
         revert H H0 H1_ IHaceval2.
@@ -348,6 +348,18 @@ Section Equiv.
           inversion IHaceval2; subst; intros; eauto.
       + eapply CR.Semantics.BigStep_Denotational_Sound; eauto.
       + eapply CR.Semantics.BigStep_Denotational_Sound; eauto.
+  Qed.
+
+  Lemma whileSt_lockstep : forall b1 b2 s1 s2 n m,
+      <{ <| while b1 do s1 end | while b2 do s2 end |>  }>
+      ==R <{whileR <|b1 | b2|> do <| repeat_c (S n) <{if b1 then s1 else skip end}> | repeat_c (S m) <{if b2 then s2 else skip end}>|> end;;
+          <| while b1 do s1 end | while b2 do s2 end |> }>.
+  Proof.
+    intros.
+    rewrite (while_body_repeat_eq (S n)) by lia.
+    rewrite (while_body_repeat_eq (S m) (PeanoNat.Nat.lt_0_succ _) b2 s2).
+    rewrite whileR_lockstep at 1.
+    f_equiv.
   Qed.
 
 End Equiv.

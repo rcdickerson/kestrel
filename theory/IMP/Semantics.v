@@ -589,6 +589,85 @@ Qed.
    programs with a single hole representing where a command can be
    plugged in:*)
 
+Lemma ceval_while_cond_false :
+  forall b c st st',
+    st =[ while b do c end ]=> st' ->
+    beval st' b = false.
+Proof.
+  intros; remember <{while b do c end}>; revert H Heqc0; clear;
+    intro; induction H; intros; try congruence; eauto.
+Qed.
+
+Lemma ceval_repeat_cond_false :
+  forall n b c st st',
+    st =[ repeat_c n <{if b then c else skip end}> ]=> st' ->
+    beval st b = false ->
+    st = st'.
+Proof.
+  induction n; simpl; intros; eauto.
+  - inversion H; subst; eauto.
+  - inversion H; subst; eauto.
+    inversion H3; subst; try congruence.
+    inversion H9; subst; eauto.
+Qed.
+
+Lemma while_body_finite:
+  forall n st st' b c,
+    st =[ repeat_c n <{if b then c else skip end }> ]=> st' ->
+    beval st' b = false ->
+    st =[ while b do c end ]=> st'.
+Proof.
+  induction n; simpl; intros.
+  - inversion H; subst; econstructor; eauto.
+  - inversion H; subst.
+    inversion H3; subst.
+    + econstructor; eauto.
+    + inversion H9; subst.
+      eapply ceval_repeat_cond_false in H6; subst; eauto.
+      inversion H; subst.
+      inversion H4; subst; try congruence.
+      inversion H12; subst; eauto.
+Qed.
+
+Lemma repeat_finite_more:
+  forall n m,
+    forall st st' b c,
+    st =[ repeat_c n <{if b then c else skip end }> ]=> st' ->
+    beval st' b = false ->
+    st =[ repeat_c (n + m) <{if b then c else skip end }> ]=> st'.
+Proof.
+  induction n; simpl; intros; eauto.
+  - inversion H; subst; induction m; eauto.
+    simpl.
+    econstructor.
+    + apply E_IfFalse; eauto.
+    + eauto.
+  - inversion H; subst; eauto.
+    inversion H3; subst.
+    + econstructor.
+      econstructor; eauto.
+      eapply IHn; eauto.
+    + inversion H9; subst.
+      econstructor.
+      apply E_IfFalse; eauto.
+      eauto.
+Qed.
+
+Lemma finite_while_repeat :
+  forall st st' b c,
+    st =[ while b do c end ]=> st' ->
+    exists n, st =[ repeat_c n <{if b then c else skip end }> ]=> st'.
+Proof.
+  intros; remember <{while b do c end}>.
+  induction H; inversion Heqc0; injection Heqc0; intros; clear Heqc0; subst.
+  - exists 0; simpl; econstructor.
+  - clear IHceval1; destruct (IHceval2 (eq_refl _)) as [n' ?].
+    exists (S n'); simpl.
+    econstructor; eauto.
+    econstructor; eauto.
+Qed.
+
+
 End Semantics.
 
 Module notations.

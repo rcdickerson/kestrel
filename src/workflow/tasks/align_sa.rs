@@ -64,7 +64,7 @@ impl Task for AlignSa {
     let init = if self.start_random { None } else { context.aligned_eggroll.clone() };
     let runner = Runner::default()
       .with_expr(&context.unaligned_eggroll().parse().unwrap())
-      .run(&crate::eggroll::rewrite::rewrites(true));
+      .run(&crate::eggroll::rewrite::rewrites());
     let generator = context.unaligned_crel().fundefs.get(&"_test_gen".to_string());
     let decls = context.unaligned_crel().global_decls_and_params();
     let trace_states = rand_states_satisfying(

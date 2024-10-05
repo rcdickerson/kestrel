@@ -21,7 +21,7 @@ impl Task for WriteDot {
     let runner = Runner::default()
       .with_expr(&context.unaligned_eggroll().parse().unwrap())
       .with_iter_limit(5)
-      .run(&rewrites(true));
+      .run(&rewrites());
     write_file(&runner.egraph.dot().to_string(), "egraph.dot");
   }
 }

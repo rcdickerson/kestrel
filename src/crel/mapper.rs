@@ -104,6 +104,11 @@ impl Statement {
       Statement::Expression(expr) => Statement::Expression (
         Box::new(mapper.map_expression(expr).map(mapper))
       ),
+      Statement::GuardedRepeat{repetitions, condition, body} => Statement::GuardedRepeat {
+        repetitions: *repetitions,
+        condition: Box::new(mapper.map_expression(condition)),
+        body: Box::new(mapper.map_statement(body)),
+      },
       Statement::If{condition, then, els} => Statement::If {
         condition: Box::new(mapper.map_expression(condition).map(mapper)),
         then: Box::new(mapper.map_statement(then).map(mapper)),

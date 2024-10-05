@@ -18,7 +18,7 @@ impl Task for ComputeSpace {
   fn run(&self, context: &mut Context) {
     let runner = Runner::default()
       .with_expr(&context.unaligned_eggroll().parse().unwrap())
-      .run(&crate::eggroll::rewrite::rewrites(true));
+      .run(&crate::eggroll::rewrite::rewrites());
     let seen = &mut HashSet::new();
     println!("\nAlignment space size: {}", space_size(&runner.egraph, runner.roots[0], seen));
   }

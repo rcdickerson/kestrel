@@ -39,10 +39,10 @@ impl CostFunction<Eggroll> for MinLoops {
           1 + costs(children[1]).num_loops
         },
         Eggroll::WhileNoBody(_) => 1,
-        Eggroll::WhileLockstep(children) => {
-          1 + costs(children[4]).num_loops
+        Eggroll::WhileRel(children) => {
+          1 + costs(children[4]).num_loops + costs(children[5]).num_loops
         },
-        Eggroll::WhileScheduled(children) => {
+        Eggroll::GuardedRepeatWhile(children) => {
           1 + costs(children[4]).num_loops + costs(children[5]).num_loops
         },
         _ => {

@@ -66,6 +66,11 @@ impl MapVars for Statement {
       Statement::Compound(items) => {
         Statement::Compound(items.iter().map(|i| i.map_vars(f)).collect())
       },
+      Statement::GuardedRepeat{repetitions, condition, body} => Statement::GuardedRepeat {
+        repetitions: *repetitions,
+        condition: Box::new(condition.map_vars(f)),
+        body: Box::new(body.map_vars(f)),
+      },
       Statement::Expression(expr) => {
         Statement::Expression(Box::new(expr.map_vars(f)))
       },

@@ -105,6 +105,10 @@ impl Statement {
         visitor.visit_expression(expr);
         expr.walk(visitor);
       },
+      Statement::GuardedRepeat{body, ..} => {
+        visitor.visit_statement(body);
+        body.walk(visitor);
+      },
       Statement::If{then, els, ..} => {
         visitor.visit_statement(then);
         then.walk(visitor);

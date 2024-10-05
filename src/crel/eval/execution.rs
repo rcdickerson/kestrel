@@ -99,7 +99,8 @@ impl <'a> Execution<'a> {
   }
 
   pub fn set_location_by_name(&mut self, name: &String) {
-    let loc = self.current_state.lookup_loc(name).unwrap();
+    let loc = self.current_state.lookup_loc(name)
+      .expect(format!("Name not found: {}", name).as_str());
     self.set_location(loc.clone())
   }
 

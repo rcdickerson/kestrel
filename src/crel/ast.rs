@@ -185,6 +185,11 @@ pub enum Statement {
   Break,
   Compound(Vec<BlockItem>),
   Expression(Box<Expression>),
+  GuardedRepeat {
+    repetitions: usize,
+    condition: Box<Expression>,
+    body: Box<Statement>,
+  },
   If {
     condition: Box<Expression>,
     then: Box<Statement>,

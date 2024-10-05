@@ -36,6 +36,14 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
         if exec.cf_break() { break };
       }
     },
+    Statement::GuardedRepeat{repetitions, condition, body} => {
+      for _ in 0..*repetitions {
+        eval_expression(condition, exec);
+        if exec.value_is_true() {
+          eval_statement(body, exec);
+        }
+      }
+    },
     Statement::Expression(expr) => {
       eval_expression(expr, exec);
     },

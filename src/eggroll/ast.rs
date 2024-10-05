@@ -46,8 +46,12 @@ define_language! {
     // make these kinds of rewrites within the
     // expanded form, but we may want to revisit this
     // tradeoff in the future.
-    "while-lockstep" = WhileLockstep([Id; 9]),
-    "while-scheduled" = WhileScheduled([Id; 10]),
+    // "while-lockstep" = WhileLockstep([Id; 9]),
+    // "while-scheduled" = WhileScheduled([Id; 10]),
+
+    "while-rel" = WhileRel([Id; 6]),
+    "guarded-repeat" = GuardedRepeat([Id; 2]),
+    "guarded-repeat-while-rel" = GuardedRepeatWhile([Id; 6]),
 
     // Invariants
     "invariants" = Invariants(Vec<Id>),

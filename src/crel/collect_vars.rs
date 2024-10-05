@@ -48,6 +48,9 @@ impl CollectVars for Statement {
       Statement::Break => HashSet::new(),
       Statement::Compound(items) => all_vars(items.clone()),
       Statement::Expression(expr) => expr.vars(),
+      Statement::GuardedRepeat{condition, body, ..} => {
+        union_all(vec!(condition.vars(), body.vars()))
+      }
       Statement::If{condition, then, els} => {
         union_all(vec!(
           condition.vars(),

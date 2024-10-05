@@ -41,6 +41,11 @@ impl Blockify for Statement {
       Statement::Expression(expr) => {
         Statement::Expression(Box::new(expr.blockify()))
       },
+      Statement::GuardedRepeat{repetitions, condition, body} => Statement::GuardedRepeat {
+        repetitions: *repetitions,
+        condition: condition.clone(),
+        body: Box::new(body.blockify()),
+      },
       Statement::If{condition, then, els} => {
         Statement::If {
           condition: condition.clone(),
@@ -90,6 +95,13 @@ fn blockify_items(items: &Vec<BlockItem>) -> Vec<BlockItem> {
         Statement::Expression(expr) => {
           current_block.push(BlockItem::Statement(Statement::Expression(expr)))
         },
+        Statement::GuardedRepeat{repetitions, condition, body} => {
+          if !current_block.is_empty() {
+            blocks.push(BlockItem::Statement(Statement::BasicBlock(current_block.clone())));
+            current_block = vec!{};
+          }
+          blocks.push(BlockItem::Statement(Statement::GuardedRepeat{repetitions, condition, body}));
+        }
         Statement::If{condition, then, els} => {
           if !current_block.is_empty() {
             blocks.push(BlockItem::Statement(Statement::BasicBlock(current_block.clone())));

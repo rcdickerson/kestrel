@@ -1,45 +1,41 @@
 use egg::*;
-use crate::anneal::choice_graph::*;
-use rand::{Rng, rngs::ThreadRng};
-use std::collections::HashSet;
+use crate::anneal::jumper::*;
+use rand::Rng;
 
-pub struct Annealer<'a, L: Language, N: Analysis<L>> {
-  egraph: &'a EGraph<L, N>,
-  choice_graph: ChoiceGraph<L>,
+pub struct Annealer {
 }
-impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
 
-  pub fn new(egraph: &'a EGraph<L, N>) -> Self {
-    Annealer{egraph, choice_graph: ChoiceGraph::new(egraph)}
+impl Annealer {
+  pub fn new() -> Self {
+    Annealer { }
   }
 
-  pub fn find_best<F, G>(&self,
-                      max_iterations: usize,
-                      root: egg::Id,
-                      init: Option<RecExpr<L>>,
-                      fitness: F,
-                      debug_info: G)
-                      -> RecExpr<L>
-  where
+  pub fn find_best<L, J, F, D>(&self,
+                               max_iterations: usize,
+                               init: Option<RecExpr<L>>,
+                               jumper: &mut J,
+                               fitness: F,
+                               debug_info: D)
+                               -> RecExpr<L>
+    where
+      L: Language,
+      J: Jumper<L>,
       F: Fn(&RecExpr<L>) -> f32,
-      G: Fn(&RecExpr<L>) -> (),
+      D: Fn(&RecExpr<L>) -> (),
   {
     println!("Starting simulated annealing...");
 
-    let mut seen_selections = HashSet::new();
-
-    let mut rng = rand::thread_rng();
-    let mut current = match init {
-      None => self.random_expression(root),
-      Some(init) => init,
+    match init {
+      None => jumper.set_selection_random(),
+      Some(init) => jumper.set_selection(&init),
     };
-    let mut score = fitness(&current);
 
-    let mut best = current.clone();
-    let mut best_score = score;
+    let mut best = jumper.selected_program();
+    let mut best_score = fitness(&best);
     let mut last_best_at = 0;
     let mut reset_count = 0;
     let reset_threshold = max_iterations / 10;
+    let mut rng = rand::thread_rng();
 
     println!("Initial score: {}", best_score);
 
@@ -50,73 +46,37 @@ impl<'a, L: Language, N: Analysis<L>> Annealer<'a, L, N> {
           break;
         }
         println!("No new best seen in {} iterations, resetting", reset_threshold);
-        current = best.clone();
-        score = best_score;
+        jumper.set_selection(&best);
         last_best_at = k;
         reset_count += 1;
       }
 
-      seen_selections.insert(current.clone());
-
       let temp = 1.0 - (k as f32) / ((1 + max_iterations) as f32);
-      let choices = ChoicePath::from_rec_expr(&self.choice_graph, &current);
-      let neighbor_choices = self.choice_graph.neighbor(&choices);
-      let neighbor = self.choice_graph.to_rec_expr(&neighbor_choices);
-      let n_score = fitness(&neighbor);
+      jumper.pick_random_neighbor();
+      let neighbor = jumper.neighbor_program();
+      let neighbor_score = fitness(&neighbor);
 
-      if n_score < best_score {
-        best = neighbor.clone();
-        best_score = n_score;
-        last_best_at = k;
-        reset_count = 0;
-        println!("Score {} at temperature {}", best_score, temp);
-        debug_info(&best);
-      }
-      let transition = if n_score <= score { true } else {
+      let transition = if neighbor_score < best_score { true } else {
         // println!("--------------------------------------");
         // println!("Transitioning with probability: {}", ((score - n_score) as f32 / temp).exp());
         // println!("temp: {}", temp);
         // println!("best: {}", best_score);
         // println!("current: {}", score);
         // println!("neighbor: {}", n_score);
-        ((score - n_score) / temp).exp() > rng.gen()
+        ((best_score - neighbor_score) / temp).exp() > rng.gen()
       };
       if transition {
-        current = neighbor;
-        score = n_score;
+        jumper.jump_to_neighbor();
+        best = jumper.selected_program();
+        best_score = neighbor_score;
+        last_best_at = k;
+        reset_count = 0;
+        println!("Transitioning with score {} at temperature {}", best_score, temp);
+//        debug_info(&best);
       }
     }
     println!("Simulated annealing complete.");
-    println!("Saw {} configurations", seen_selections.len());
     println!("Best score: {}", best_score);
     best
-  }
-
-  fn random_expression(&self, root: egg::Id) -> RecExpr<L> {
-    let random = RandomExtractor::new();
-    let (_, expr) = Extractor::new(self.egraph, random).find_best(root);
-    expr
-  }
-}
-
-/// Assign random costs to every e-node. Effectively extracts
-/// a random element from the search space.
-struct RandomExtractor {
-  rng: ThreadRng,
-}
-
-impl RandomExtractor {
-  fn new() -> Self {
-    Self { rng: rand::thread_rng() }
-  }
-}
-
-impl<L: Language> CostFunction<L> for RandomExtractor {
-  type Cost = usize;
-  fn cost<C>(&mut self, _: &L, _costs: C) -> Self::Cost
-  where
-    C: FnMut(Id) -> Self::Cost,
-  {
-    self.rng.gen_range(0..100)
   }
 }

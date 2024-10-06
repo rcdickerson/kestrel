@@ -2,11 +2,13 @@ use crate::crel::ast::*;
 use sexp::{Atom, Sexp};
 use std::collections::HashMap;
 
+#[derive(Debug, Clone)]
 pub struct Config {
   pub assert_name: Option<String>,
   pub assume_name: Option<String>,
   pub nondet_name: Option<String>,
 }
+
 impl Config {
   pub fn default() -> Self {
     Config {

@@ -1,6 +1,7 @@
 use crate::anneal::*;
 use crate::crel::eval::*;
 use crate::eggroll::cost_functions::sa::*;
+use crate::eggroll::eggroll_jumper::EggrollJumper;
 use crate::workflow::context::*;
 use crate::workflow::task::*;
 use egg::*;
@@ -69,8 +70,9 @@ impl Task for AlignSa {
     let decls = context.unaligned_crel().global_decls_and_params();
     let trace_states = rand_states_satisfying(
       num_trace_states, &context.spec().pre, Some(&decls), generator, 1000);
-    let annealer = Annealer::new(&runner.egraph);
-    let best = annealer.find_best(self.max_iterations, runner.roots[0], init,
+    let mut jumper = EggrollJumper::new(&runner.egraph);
+    let annealer = Annealer::new();
+    let best = annealer.find_best(self.max_iterations, init, &mut jumper,
                                   |expr| { sa_score_ablate(&trace_states, trace_fuel, expr,
                                                            self.af_relation_size,
                                                            self.af_update_matching,

@@ -17,6 +17,12 @@ Section Syntax.
   | ACIf (b1 b2 : @bexp I) (r1 r2 : algn_com) : algn_com
   | ACWhile (b1 b2 : @bexp I) (r : algn_com) : algn_com.
 
+  Fixpoint repeatR (n : nat) (r : algn_com) : algn_com :=
+    match n with
+      0 => ACBlock CSkip CSkip
+    | S n => ACSeq r (repeatR n r)
+    end.
+
 End Syntax.
 
 Module notations.

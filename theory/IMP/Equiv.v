@@ -319,6 +319,19 @@ Proof.
     + assumption.
 Qed.
 
+Lemma seq_opt_skip :
+  forall c,
+    <{c; skip}> ==C c.
+Proof.
+  intros c (st, st'); split; intros In_st.
+  - (* (st, st') ∈ [[c; skip]] -> (st, st') ∈ [[c]] *)
+    simpl in *; In_inversion; firstorder.
+  - (* (st, st') ∈ [[c]] -> (st, st') ∈ [[c; skip]] *)
+    simpl in *. In_intro.
+    + eassumption.
+    + reflexivity.
+Qed.
+
 (* Using the denotational semantics of commands, we can show that if
    the condition of an if expression is equivalent to true, the entire
    expression is semantically equivalent to the then branch: *)
@@ -351,21 +364,279 @@ Proof.
     + assumption.
 Qed.
 
-Lemma If_while_eq :
+Theorem seq_assoc :
+  forall c1 c2 c3,
+    <{ (c1; c2); c3 }> ==C <{ c1; c2; c3 }>.
+Proof.
+  intros c1 c2 c3 (st, st'); simpl; split.
+  - firstorder.
+  - firstorder.
+Qed.
+
+Theorem if_seq_eqv :
+  forall b c1 c2 c3,
+    <{ if b then c1 else c2 end; c3 }> ==C <{if b then c1; c3 else c2; c3 end}> .
+Proof.
+  intros b c1 c2 c3 (st, st'); firstorder.
+Qed.
+
+Lemma while_unroll_eq :
   forall b c,
     <{while b do c end}> ==C <{if b then (c; while b do c end) else skip end }>.
 Proof.
   unfold com_eqv; intros.
-  eapply Same_set_trans.
+  etransitivity.
   - simpl; apply LFP_unfold.
     apply while_body_monotone.
   - simpl; intros (st, st'); split; In_intro; intros;
-      In_inversion.
-    + (* The denotation of [if] is built from the denotations of each branch *)
-      right. firstorder.
-    + left. firstorder.
-    + right. firstorder.
-    + left. firstorder.
+      In_inversion; firstorder.
+Qed.
+
+Lemma while_unroll_n_eq :
+  forall n b c,
+    <{while b do c end}> ==C <{repeat_c n <{if b then c else skip end }>; while b do c end }>.
+Proof.
+  induction n; simpl; intros.
+  - rewrite seq_skip_opt; reflexivity.
+  - rewrite while_unroll_eq at 1.
+    rewrite IHn at 1.
+    rewrite !if_seq_eqv, !seq_assoc.
+    intros (st, st'); split; intros;
+      eapply BigStep_Denotational_Sound;
+      eapply Denotational_BigStep_Adequate in H.
+    + inversion H; subst.
+      * econstructor; eauto.
+      * eapply E_IfFalse; eauto.
+        inversion H6; subst; econstructor; eauto.
+        inversion H; subst; try congruence.
+        econstructor.
+        -- instantiate (1 := st').
+           revert H5; clear; induction n; intros; simpl; eauto.
+           econstructor.
+           econstructor.
+           eapply E_IfFalse; eauto.
+           econstructor.
+           eauto.
+        -- econstructor; eauto.
+    + inversion H; subst.
+      * econstructor; eauto.
+      * inversion H6; subst; inversion H2; subst.
+        eapply E_IfFalse; eauto.
+        inversion H7; subst.
+        eapply ceval_repeat_cond_false in H3; eauto; subst.
+        inversion H9; subst; try congruence.
+Qed.
+
+Lemma while_body_while_eq :
+  forall b c,
+    <{while b do c end}> ==C <{while b do (while b do c end) end }>.
+Proof.
+  unfold com_eqv; intros.
+  intros (st, st'); split; intros;
+    eapply BigStep_Denotational_Sound;
+    eapply Denotational_BigStep_Adequate in H.
+  - remember <{while b do c end}>; induction H; try congruence.
+    + injection Heqc0; intros; subst;
+        econstructor; eauto.
+    + clear IHceval1.
+      injection Heqc0; intros; subst.
+      specialize (IHceval2 (eq_refl _)).
+      econstructor.
+      eauto.
+      eapply E_WhileTrue; eauto.
+      econstructor; eauto using ceval_while_cond_false.
+  - remember <{while b do (while b do c end) end}>; induction H; try congruence.
+    + injection Heqc0; intros; subst;
+        econstructor; eauto.
+    + clear IHceval1.
+      injection Heqc0; intros; subst.
+      specialize (IHceval2 (eq_refl _)).
+      replace st'' with st'; eauto.
+      apply ceval_while_cond_false in H0.
+      inversion IHceval2; subst; try congruence.
+Qed.
+
+Lemma while_body_if_eq :
+  forall b c,
+    <{while b do c end}> ==C <{while b do (if b then c else skip end) end }>.
+Proof.
+  unfold com_eqv; intros.
+  intros (st, st'); split; intros;
+    eapply BigStep_Denotational_Sound;
+    eapply Denotational_BigStep_Adequate in H.
+  - remember <{while b do c end}>; induction H; try congruence.
+    + injection Heqc0; intros; subst;
+        econstructor; eauto.
+    + clear IHceval1.
+      injection Heqc0; intros; subst.
+      specialize (IHceval2 (eq_refl _)).
+      econstructor; eauto.
+      econstructor; eauto.
+  - remember <{while b do (if b then c else skip end) end}>; induction H; try congruence.
+    + injection Heqc0; intros; subst;
+        econstructor; eauto.
+    + clear IHceval1.
+      injection Heqc0; intros; subst.
+      specialize (IHceval2 (eq_refl _)).
+      econstructor; eauto.
+      inversion H0; subst; try congruence.
+Qed.
+
+Lemma repeat_c_plus :
+  forall m n c,
+      repeat_c (m + n) c ==C <{repeat_c m c; repeat_c n c}>.
+Proof.
+  induction m; intros.
+  - simpl; rewrite seq_skip_opt; reflexivity.
+  - simpl; rewrite IHm, seq_assoc; reflexivity.
+Qed.
+
+Lemma repeat_c_mult :
+  forall m n c,
+      repeat_c (m * n) c ==C <{repeat_c m (repeat_c n c)}>.
+Proof.
+  induction m; intros.
+  - simpl; reflexivity.
+  - simpl; rewrite repeat_c_plus, IHm; reflexivity.
+Qed.
+
+Lemma eqv_step
+  : forall c c' st st',
+    c ==C c' ->
+    st =[ c]=> st' -> st =[c']=> st'.
+Proof.
+  intros.
+  eapply Denotational_BigStep_Adequate.
+  apply H.
+  eapply BigStep_Denotational_Sound; eassumption.
+Qed.
+
+Lemma guarded_repeat
+  : forall n st st' b c,
+    st =[ if b then (repeat_c n <{ if b then c else skip end }>) else skip end ]=> st'
+    -> st =[ repeat_c n <{ if b then c else skip end }> ]=> st'.
+Proof.
+  induction n; simpl; intros.
+  - inversion H; subst; eauto.
+  - inversion H; subst; eauto.
+    inversion H; subst.
+    + inversion H6; inversion H8; subst.
+      econstructor; eauto.
+    + econstructor.
+      eapply E_IfFalse; eauto.
+      inversion H6; subst.
+      eapply IHn; eapply E_IfFalse; eauto.
+Qed.
+
+Lemma guarded_repeat'
+  : forall n st st' b c,
+    st =[ repeat_c n <{ if b then c else skip end }> ]=> st'
+    -> st =[ if b then (repeat_c n <{ if b then c else skip end }>) else skip end ]=> st'.
+Proof.
+  induction n; simpl; intros.
+  - inversion H; subst.
+    destruct (beval st' b) eqn: ?.
+    + econstructor; eauto.
+    + eapply E_IfFalse; eauto.
+  - inversion H; subst; eauto.
+    inversion H2; subst.
+    + econstructor; eauto.
+    + inversion H8; subst.
+      eapply E_IfFalse; eauto.
+      eapply ceval_repeat_cond_false in H5; eauto; subst; econstructor.
+Qed.
+
+Lemma repeat_c_refine_body
+  : forall n st st' c c',
+    (forall st st', st =[c]=> st' -> st =[c']=> st')
+    -> st =[ repeat_c n c ]=> st'
+    -> st =[ repeat_c n c' ]=> st'.
+Proof.
+  induction n; simpl; intros.
+  - eauto.
+  - inversion H0; subst; econstructor; eauto.
+Qed.
+
+Lemma repeat_c_eqv_body
+  : forall n st st' c c',
+    (c ==C c')
+    -> st =[ repeat_c n c ]=> st'
+    -> st =[ repeat_c n c' ]=> st'.
+Proof.
+  induction n; simpl; intros.
+  - eauto.
+  - inversion H0; subst; econstructor; eauto.
+    eapply Denotational_BigStep_Adequate.
+    apply H.
+    eapply BigStep_Denotational_Sound; assumption.
+Qed.
+
+Lemma while_body_dup_n_eq :
+  forall m n,
+    0 < n ->
+    forall b c,
+      <{while b do (repeat_c n <{if b then c else skip end}>) end }> ==C <{while b do (repeat_c (m + n) <{if b then c else skip end}>) end }>.
+Proof.
+  intros.
+  unfold com_eqv; intros.
+  intros (st, st'); split; intros.
+  - eapply BigStep_Denotational_Sound.
+    eapply Denotational_BigStep_Adequate in H0.
+    generalize (ceval_while_cond_false _ _ _ _ H0); intros.
+    eapply finite_while_repeat in H0; destruct H0 as [n' repeatc].
+    eapply (while_body_finite n'); eauto.
+    eapply repeat_c_refine_body with (c' := (repeat_c n <{ if b then c else skip end }>)) in repeatc;
+      eauto using guarded_repeat.
+    eapply repeat_c_refine_body; [intros; apply guarded_repeat'; apply H0 | ].
+    eapply eqv_step.
+    apply repeat_c_mult.
+    eapply eqv_step in repeatc; [ | symmetry; apply repeat_c_mult].
+    replace (n' * (m + n)) with ((n' * n) + (n' * m)) by lia.
+    eapply repeat_finite_more; eauto.
+  - eapply BigStep_Denotational_Sound.
+    eapply Denotational_BigStep_Adequate in H0.
+    generalize (ceval_while_cond_false _ _ _ _ H0); intros.
+    eapply finite_while_repeat in H0; destruct H0 as [n' repeatc].
+    eapply repeat_c_refine_body with (c' := (repeat_c (m + n) <{ if b then c else skip end }>)) in repeatc;
+      eauto using guarded_repeat.
+    eapply eqv_step in repeatc; [ | symmetry; apply repeat_c_mult].
+    replace (n' * (m + n)) with ((n' * n) + (n' * m)) in repeatc by lia.
+    eapply (while_body_finite (n' + m * n')); eauto.
+    eapply repeat_c_refine_body; [intros; apply guarded_repeat'; apply H0 | ].
+    eapply eqv_step.
+    apply repeat_c_mult.
+    destruct n.
+    inversion H.
+    rewrite !PeanoNat.Nat.mul_succ_r, !Nat.mul_add_distr_r.
+    rewrite PeanoNat.Nat.mul_succ_r in repeatc.
+    replace (n' * n + m * n' * n + (n' + m * n')) with (n' * n + n' + n' * m + (m * n' * n)) by lia.
+    eapply repeat_finite_more in repeatc; eauto.
+Qed.
+
+Corollary while_body_repeat_eq :
+  forall n,
+    0 < n ->
+    forall b c,
+      <{while b do c end}> ==C <{while b do (repeat_c n <{if b then c else skip end}>) end }>.
+Proof.
+  intros; rewrite while_body_if_eq.
+  generalize (fun H => while_body_dup_n_eq n 1 H b c).
+  simpl; intro.
+  rewrite seq_opt_skip in H0.
+  rewrite H0 by lia.
+  symmetry.
+  rewrite (while_body_dup_n_eq 1 n H), PeanoNat.Nat.add_1_r; reflexivity.
+Qed.
+
+Lemma while_body_dup_2_eq :
+  forall b c,
+    <{while b do c end}> ==C <{while b do (if b then c else skip end; if b then c else skip end) end }>.
+Proof.
+  intros.
+  rewrite (while_body_repeat_eq 2) by lia.
+  simpl.
+  rewrite seq_opt_skip.
+  reflexivity.
 Qed.
 
 End Equiv.

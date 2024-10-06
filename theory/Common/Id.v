@@ -1,4 +1,4 @@
-From stdpp Require Import stringmap  mapset.
+From stdpp Require Import stringmap mapset.
 From Coq Require Import String.
 
 (* This class allows us to avoid carrying around the bazillion of hypotheses
@@ -6,16 +6,16 @@ From Coq Require Import String.
 
 Class Id A M := {
   (* Constraints. *)
-  id_finmap_fmap :: FMap M | 0;
-  id_finmap_lookup :: ∀ C, Lookup A C (M C) | 0;
-  id_finmap_empty :: ∀ C, Empty (M C) | 0;
-  id_finmap_partial_alter :: ∀ C, PartialAlter A C (M C) | 0;
-  id_finmap_omap :: OMap M | 0;
-  id_finmap_merge :: Merge M | 0;
-  id_finmap_to_list :: ∀ C, FinMapToList A C (M C) | 0;
+    id_finmap_fmap :: FMap M | 0;
+    id_finmap_lookup :: ∀ C, Lookup A C (M C) | 0;
+    id_finmap_empty :: ∀ C, Empty (M C) | 0;
+    id_finmap_partial_alter :: ∀ C, PartialAlter A C (M C) | 0;
+    id_finmap_omap :: OMap M | 0;
+    id_finmap_merge :: Merge M | 0;
+    id_finmap_fold :: forall C, MapFold A C (M C) | 0;
 
-  (* Properties that we care about. *)
-  id_eq_decision :: EqDecision A | 0;
+    (* Properties that we care about. *)
+    id_eq_decision :: EqDecision A | 0;
     id_finmap :: FinMap A M | 0
   }.
 
@@ -84,9 +84,8 @@ Section Id_prod.
     fun A B C f MA2 MB2 => (id_finmap_merge A B C f (fst MA2) (fst MB2),
                              id_finmap_merge A B C f (snd MA2) (snd MB2)).
 
-  Definition prod_id_finmap_to_list : ∀ C, FinMapToList prod_I C (prod_M C) :=
-    fun C M2 => (map (fun ic => (inl (fst ic), snd ic)) (id_finmap_to_list C (fst M2)) ++
-                     map (fun ic => (inr (fst ic), snd ic)) (id_finmap_to_list C (snd M2))).
+  Definition prod_id_finmap_fold : ∀ C, MapFold prod_I C (prod_M C) :=
+    fun C A f a M2 => id_finmap_fold C A (fun i => f (inl i)) a (fst M2).
 
   Definition prod_id_eq_decision : EqDecision prod_I.
     unfold EqDecision.
@@ -101,10 +100,14 @@ Definition fin_map_prod : @FinMap prod_I prod_M
                                  prod_id_finmap_partial_alter
                                  prod_id_finmap_omap
                                  prod_id_finmap_merge
-                                 prod_id_finmap_to_list
+                                 prod_id_finmap_fold
                                  prod_id_eq_decision.
 Proof.
   constructor; simpl.
+  - unfold prod_M, prod_I; simpl; intros A [m11 m12] [m21 m22] ?.
+    rewrite (map_eq m11 m21), (map_eq m12 m22); auto.
+    + intro; specialize (H (inr i)); unfold lookup; eauto.
+    + intro; specialize (H (inl i)); unfold lookup; eauto.
 Admitted.
 
 #[global]

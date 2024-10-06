@@ -100,6 +100,15 @@ Inductive com : Type :=
   | CSeq (c1 c2 : com)
   | CIf (b : bexp) (c1 c2 : com)
   | CWhile (b : bexp) (c : com).
+
+(* This is a meta-function for sequencing multiple several copies of a
+   command together *)
+Fixpoint repeat_c (n : nat) (c : com) : com :=
+  match n with
+  | 0 => CSkip
+  | S n => CSeq c (repeat_c n c)
+  end.
+
 End Syntax.
 
 Module notations.

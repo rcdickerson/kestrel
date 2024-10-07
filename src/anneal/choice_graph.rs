@@ -73,7 +73,7 @@ impl <'a, L: Language> ChoiceGraph<L> {
         let choice = class.choices.choose(&mut rand::thread_rng()).unwrap();
         ChoicePath {
           id: Uuid::new_v4(),
-          node: choice.node.clone(),
+          choice_node: choice.clone(),
           class_id: class.id,
           choice: choice.id,
           children: choice.children.iter()
@@ -106,11 +106,12 @@ impl <'a, L: Language> ChoiceGraph<L> {
                      node_idx: usize) -> Option<ChoicePath<L>> {
     let node = &nodes[node_idx];
     'search: for index in class.indices_of(&node) {
+      let choice_node = &class.choices[index];
       let choice_children = &class.choices[index].children;
       if choice_children.len() == 0 {
         return Some(ChoicePath {
           id: Uuid::new_v4(),
-          node: node.clone(),
+          choice_node: choice_node.clone(),
           class_id: class.id,
           choice: index,
           children: Vec::new(),
@@ -128,7 +129,7 @@ impl <'a, L: Language> ChoiceGraph<L> {
       }
       return Some(ChoicePath {
         id: Uuid::new_v4(),
-        node: node.clone(),
+        choice_node: choice_node.clone(),
         class_id: class.id,
         choice: index,
         children: child_paths,
@@ -177,11 +178,10 @@ impl <'a, L: Language> ChoiceGraph<L> {
     possibilities
   }
 
-  pub fn switch_choice(&self, path: &ChoicePath<L>, subpath: &ChoicePath<L>) -> ChoicePath<L> {
-    let mut choices = self.classes[subpath.class_id].choices.clone();
-    choices.retain(|choice| choice.id != subpath.choice);
-    let new_choice = choices.choose(&mut rand::thread_rng())
-      .expect("no other choices available");
+  pub fn switch_choice(&self,
+                       path: &ChoicePath<L>,
+                       subpath: &ChoicePath<L>,
+                       new_choice: &ChoiceNode<L>) -> ChoicePath<L> {
     self.switch_rec(path, subpath, new_choice)
   }
 
@@ -193,7 +193,7 @@ impl <'a, L: Language> ChoiceGraph<L> {
       let mut force_picks = path.children.clone();
       ChoicePath {
         id: Uuid::new_v4(),
-        node: new_choice.node.clone(),
+        choice_node: new_choice.clone(),
         class_id: path.class_id,
         choice: new_choice.id,
         children: new_choice.children.iter()
@@ -203,12 +203,12 @@ impl <'a, L: Language> ChoiceGraph<L> {
     } else {
       ChoicePath {
         id: path.id,
-        node: path.node.clone(),
+        choice_node: path.choice_node().clone(),
         class_id: path.class_id,
         choice: path.choice,
         children: path.children.iter()
             .map(|child| self.switch_rec(child, to_change, new_choice))
-            .collect()
+            .collect(),
       }
     }
   }
@@ -255,15 +255,28 @@ pub struct ChoiceNode<L: Language> {
   id: usize,
   node: L,
   children: Vec<usize>,
+  metadata: HashMap<String, String>,
 }
 
 impl <L: Language> ChoiceNode<L> {
   pub fn new(id: usize, node: L) -> Self {
-    ChoiceNode { id, node, children: Vec::new() }
+    ChoiceNode { id, node, children: Vec::new(), metadata: HashMap::new() }
   }
 
   pub fn push_child(&mut self, child: usize) {
     self.children.push(child);
+  }
+
+  pub fn put_metadata(&mut self, key: String, value: String) {
+    self.metadata.insert(key, value);
+  }
+
+  pub fn put_metadata_usize(&mut self, key: String, value: usize) {
+    self.metadata.insert(key, value.to_string());
+  }
+
+  pub fn get_metadata_usize(&self, key: &String) -> Option<usize> {
+    self.metadata.get(key).map(|data| data.parse::<usize>().unwrap())
   }
 }
 
@@ -271,15 +284,20 @@ impl <L: Language> ChoiceNode<L> {
 #[derive(Debug, Clone)]
 pub struct ChoicePath<L: Language> {
   id: Uuid,
-  node: L,
+  choice_node: ChoiceNode<L>,
   class_id: usize,
   choice: usize,
   children: Vec<ChoicePath<L>>,
 }
 
 impl <L: Language> ChoicePath<L> {
+
+  pub fn choice_node(&self) -> &ChoiceNode<L> {
+    &self.choice_node
+  }
+
   pub fn node(&self) -> &L {
-    &self.node
+    &self.choice_node.node
   }
 
   pub fn to_rec_expr(&self) -> RecExpr<L> {
@@ -297,7 +315,7 @@ impl <L: Language> ChoicePath<L> {
       nodes.append(&mut child_nodes);
       child_indices.push((nodes.len() - 1).into());
     }
-    let mut node = self.node.clone();
+    let mut node = self.node().clone();
     for (i, child_id) in child_indices.iter().enumerate() {
       node.children_mut()[i] = *child_id;
     }

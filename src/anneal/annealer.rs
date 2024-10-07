@@ -10,17 +10,17 @@ impl Annealer {
     Annealer { }
   }
 
-  pub fn find_best<L, J, F, D>(&self,
-                               max_iterations: usize,
-                               init: Option<RecExpr<L>>,
-                               jumper: &mut J,
-                               fitness: F,
-                               debug_info: D)
-                               -> RecExpr<L>
+  pub fn find_best<L, J, F, D, M>(&self,
+                                  max_iterations: usize,
+                                  init: Option<RecExpr<L>>,
+                                  jumper: &mut J,
+                                  fitness: F,
+                                  debug_info: D)
+                                  -> (RecExpr<L>, M)
     where
       L: Language,
-      J: Jumper<L>,
-      F: Fn(&RecExpr<L>) -> f32,
+      J: Jumper<L, M>,
+      F: Fn(&RecExpr<L>, &M) -> f32,
       D: Fn(&RecExpr<L>) -> (),
   {
     println!("Starting simulated annealing...");
@@ -30,8 +30,8 @@ impl Annealer {
       Some(init) => jumper.set_selection(&init),
     };
 
-    let mut best = jumper.selected_program();
-    let mut best_score = fitness(&best);
+    let (mut best, mut best_meta) = jumper.selected_program();
+    let mut best_score = fitness(&best, &best_meta);
     let mut last_best_at = 0;
     let mut reset_count = 0;
     let reset_threshold = max_iterations / 10;
@@ -53,8 +53,8 @@ impl Annealer {
 
       let temp = 1.0 - (k as f32) / ((1 + max_iterations) as f32);
       jumper.pick_random_neighbor();
-      let neighbor = jumper.neighbor_program();
-      let neighbor_score = fitness(&neighbor);
+      let (neighbor, neighbor_meta) = jumper.neighbor_program();
+      let neighbor_score = fitness(&neighbor, &neighbor_meta);
 
       let transition = if neighbor_score < best_score { true } else {
         // println!("--------------------------------------");
@@ -67,16 +67,16 @@ impl Annealer {
       };
       if transition {
         jumper.jump_to_neighbor();
-        best = jumper.selected_program();
+        (best, best_meta) = jumper.selected_program();
         best_score = neighbor_score;
         last_best_at = k;
         reset_count = 0;
-        println!("Transitioning with score {} at temperature {}", best_score, temp);
-//        debug_info(&best);
+        // println!("Transitioning with score {} at temperature {}", best_score, temp);
+        // debug_info(&best);
       }
     }
     println!("Simulated annealing complete.");
     println!("Best score: {}", best_score);
-    best
+    (best, best_meta)
   }
 }

@@ -72,19 +72,19 @@ impl Task for AlignSa {
       num_trace_states, &context.spec().pre, Some(&decls), generator, 1000);
     let mut jumper = EggrollJumper::new(&runner.egraph);
     let annealer = Annealer::new();
-    let best = annealer.find_best(self.max_iterations, init, &mut jumper,
-                                  |expr| { sa_score_ablate(&trace_states, trace_fuel, expr,
-                                                           self.af_relation_size,
-                                                           self.af_update_matching,
-                                                           self.af_loop_head_matching,
-                                                           self.af_loop_double_updates,
-                                                           self.af_loop_executions) },
-                                  |expr| { sa_score_ablate_debug(&trace_states, trace_fuel, expr,
-                                                           self.af_relation_size,
-                                                           self.af_update_matching,
-                                                           self.af_loop_head_matching,
-                                                           self.af_loop_double_updates,
-                                                           self.af_loop_executions) },
+    let (best, meta) = annealer.find_best(self.max_iterations, init, &mut jumper,
+        |expr, meta| { sa_score_ablate(&trace_states, trace_fuel, expr,
+                                       self.af_relation_size,
+                                       self.af_update_matching,
+                                       self.af_loop_head_matching,
+                                       self.af_loop_double_updates,
+                                       self.af_loop_executions) },
+        |expr| { sa_score_ablate_debug(&trace_states, trace_fuel, expr,
+                                       self.af_relation_size,
+                                       self.af_update_matching,
+                                       self.af_loop_head_matching,
+                                       self.af_loop_double_updates,
+                                       self.af_loop_executions) },
 
     );
     context.aligned_eggroll.replace(best);

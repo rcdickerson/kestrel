@@ -1,5 +1,6 @@
 use crate::crel::ast::*;
 use crate::eggroll::ast::*;
+use crate::eggroll::to_crel;
 use crate::spec::*;
 use crate::unaligned::*;
 use egg::*;
@@ -12,6 +13,7 @@ pub struct Context<'a> {
   pub unaligned_crel: Option<&'a UnalignedCRel>,
   pub unaligned_eggroll: Option<&'a String>,
   pub aligned_eggroll: Option<RecExpr<Eggroll>>,
+  pub aligned_eggroll_repetitions: Option<to_crel::GuardedRepetitions>,
   pub aligned_crel: Option<CRel>,
   pub aligned_output: Option<String>,
   pub output_path: Option<String>,
@@ -29,6 +31,7 @@ impl Context<'_> {
       unaligned_crel: None,
       unaligned_eggroll: None,
       aligned_eggroll: None,
+      aligned_eggroll_repetitions: None,
       aligned_crel: None,
       aligned_output: None,
       output_path: None,

@@ -1,6 +1,6 @@
 use crate::anneal::*;
 use crate::crel::eval::*;
-use crate::eggroll::cost_functions::sa::*;
+use crate::eggroll::cost_functions::sa2::*;
 use crate::eggroll::eggroll_jumper::EggrollJumper;
 use crate::workflow::context::*;
 use crate::workflow::task::*;
@@ -73,20 +73,21 @@ impl Task for AlignSa {
     let mut jumper = EggrollJumper::new(&runner.egraph);
     let annealer = Annealer::new();
     let (best, meta) = annealer.find_best(self.max_iterations, init, &mut jumper,
-        |expr, meta| { sa_score_ablate(&trace_states, trace_fuel, expr,
+        |expr, meta| { sa_score_ablate(&trace_states, trace_fuel, expr, meta,
                                        self.af_relation_size,
                                        self.af_update_matching,
                                        self.af_loop_head_matching,
                                        self.af_loop_double_updates,
                                        self.af_loop_executions) },
-        |expr| { sa_score_ablate_debug(&trace_states, trace_fuel, expr,
-                                       self.af_relation_size,
-                                       self.af_update_matching,
-                                       self.af_loop_head_matching,
-                                       self.af_loop_double_updates,
-                                       self.af_loop_executions) },
+        |expr, meta| { sa_score_ablate_debug(&trace_states, trace_fuel, expr, meta,
+                                             self.af_relation_size,
+                                             self.af_update_matching,
+                                             self.af_loop_head_matching,
+                                             self.af_loop_double_updates,
+                                             self.af_loop_executions) },
 
     );
     context.aligned_eggroll.replace(best);
+    context.aligned_eggroll_repetitions.replace(meta);
   }
 }

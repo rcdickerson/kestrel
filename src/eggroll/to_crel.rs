@@ -1,4 +1,4 @@
-use crate::crel::ast::*;
+ use crate::crel::ast::*;
 use sexp::{Atom, Sexp};
 use std::collections::HashMap;
 
@@ -22,7 +22,7 @@ impl Config {
 #[derive(Debug, Clone)]
 pub struct GuardedRepetitions {
   guarded_reps: HashMap<String, usize>,
-  loop_reps: HashMap<String, usize>,
+  loop_reps: HashMap<String, (usize, usize)>,
 }
 
 impl GuardedRepetitions {
@@ -31,6 +31,14 @@ impl GuardedRepetitions {
       guarded_reps: HashMap::new(),
       loop_reps: HashMap::new(),
     }
+  }
+
+  pub fn set_repetitions(&mut self, id: String, reps: usize) {
+    self.guarded_reps.insert(id, reps);
+  }
+
+  pub fn set_loop_repetitions(&mut self, id: String, lhs_reps: usize, rhs_reps: usize) {
+    self.loop_reps.insert(id, (lhs_reps, rhs_reps));
   }
 }
 
@@ -251,7 +259,7 @@ fn expect_statement(sexp: &Sexp, ctx: &Context) -> Statement {
         Statement::GuardedRepeat{repetitions: 1, condition, body}
       },
       Sexp::Atom(Atom::S(s)) if s == "guarded-repeat-while-rel" => {
-        expect_guarded_repeat_while_rel(sexps, 1, 1, ctx)
+        expect_guarded_repeat_while_rel(&sexps, ctx)
       },
       Sexp::Atom(Atom::S(s)) if s == "return" => {
         Statement::Return(Some(Box::new(expect_expression(&sexps[1], ctx))))
@@ -418,19 +426,20 @@ fn expect_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
   Statement::Compound(stmts)
 }
 
-fn expect_guarded_repeat_while_rel(sexps: &[Sexp],
-                                   lhs_repetitions: usize,
-                                   rhs_repetitions: usize,
-                                   ctx: &Context) -> Statement {
-  let cond1 = expect_expression(&sexps[1], ctx);
-  let cond2 = expect_expression(&sexps[2], ctx);
+fn expect_guarded_repeat_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
+  let id = expect_string(&sexps[1]);
+  let (lhs_reps, rhs_reps) = ctx.repetitions.loop_reps.get(&id).unwrap_or(&(1, 1));
+
+  let cond1 = expect_expression(&sexps[2], ctx);
+  let cond2 = expect_expression(&sexps[3], ctx);
   let conj = Expression::Binop {
     lhs: Box::new(cond1.clone()),
     rhs: Box::new(cond2.clone()),
     op: BinaryOp::And,
   };
-  let invars1 = expect_invariants(&sexps[3], ctx);
-  let invars2 = expect_invariants(&sexps[4], ctx);
+  let invars1 = expect_invariants(&sexps[4], ctx);
+  let invars2 = expect_invariants(&sexps[5], ctx);
+
   let mut combined_invars: Vec<_> = invars1.values().map(|v| v.clone()).collect();
   for (sexp, expr) in &invars2 {
     if !invars1.contains_key(sexp) {
@@ -438,7 +447,7 @@ fn expect_guarded_repeat_while_rel(sexps: &[Sexp],
     }
   }
 
-  let body1 = expect_statement(&sexps[5], ctx);
+  let body1 = expect_statement(&sexps[6], ctx);
   let runoff_body_1 = match ctx.config.assume_name.clone() {
     None => body1.clone(),
     Some(assume_name) => Statement::Compound(vec!(
@@ -452,7 +461,7 @@ fn expect_guarded_repeat_while_rel(sexps: &[Sexp],
     )),
   };
 
-  let body2 = expect_statement(&sexps[6], ctx);
+  let body2 = expect_statement(&sexps[7], ctx);
   let runoff_body_2 = match ctx.config.assume_name.clone() {
     None => body2.clone(),
     Some(assume_name) => Statement::Compound(vec!(
@@ -468,12 +477,12 @@ fn expect_guarded_repeat_while_rel(sexps: &[Sexp],
 
   let repeats = Statement::Relation {
     lhs: Box::new(Statement::GuardedRepeat{
-      repetitions: lhs_repetitions,
+      repetitions: *lhs_reps,
       condition: Box::new(cond1.clone()),
       body: Box::new(body1.clone())
     }),
     rhs: Box::new(Statement::GuardedRepeat{
-      repetitions: rhs_repetitions,
+      repetitions: *rhs_reps,
       condition: Box::new(cond2.clone()),
       body: Box::new(body2.clone())
     }),

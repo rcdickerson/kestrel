@@ -364,12 +364,15 @@ fn score_loop_executions(program: &CRel, trace: &Trace) -> f32 {
 pub fn sa_score_ablate(trace_states: &Vec<State>,
                        trace_fuel: usize,
                        expr: &RecExpr<Eggroll>,
+                       repetitions: &to_crel::GuardedRepetitions,
                        af_relation_size: bool,
                        af_update_matching: bool,
                        af_loop_head_matching: bool,
                        af_loop_double_updates: bool,
                        af_loop_executions: bool) -> f32 {
-  let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string(), &to_crel::Config::default());
+  let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string(),
+                                                      &to_crel::Config::default(),
+                                                      repetitions);
   let fundefs = crate::crel::fundef::extract_fundefs(&crel).1;
   let body = fundefs
     .get(&"main".to_string())
@@ -390,14 +393,17 @@ pub fn sa_score_ablate(trace_states: &Vec<State>,
 }
 
 pub fn sa_score_ablate_debug(trace_states: &Vec<State>,
-                       trace_fuel: usize,
-                       expr: &RecExpr<Eggroll>,
-                       af_relation_size: bool,
-                       af_update_matching: bool,
-                       af_loop_head_matching: bool,
-                       af_loop_double_updates: bool,
-                       af_loop_executions: bool) {
-  let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string(), &to_crel::Config::default());
+                             trace_fuel: usize,
+                             expr: &RecExpr<Eggroll>,
+                             repetitions: &to_crel::GuardedRepetitions,
+                             af_relation_size: bool,
+                             af_update_matching: bool,
+                             af_loop_head_matching: bool,
+                             af_loop_double_updates: bool,
+                             af_loop_executions: bool) {
+  let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string(),
+                                                      &to_crel::Config::default(),
+                                                      repetitions);
   let fundefs = crate::crel::fundef::extract_fundefs(&crel).1;
   let body = fundefs
     .get(&"main".to_string())
@@ -415,8 +421,11 @@ pub fn sa_score_ablate_debug(trace_states: &Vec<State>,
   }
 }
 
-pub fn sa_score(trace_states: &Vec<State>, trace_fuel: usize, expr: &RecExpr<Eggroll>) -> f32 {
-  sa_score_ablate(trace_states, trace_fuel, expr, true, true, true, true, true)
+pub fn sa_score(trace_states: &Vec<State>,
+                trace_fuel: usize,
+                expr: &RecExpr<Eggroll>,
+                repetitions: &to_crel::GuardedRepetitions) -> f32 {
+  sa_score_ablate(trace_states, trace_fuel, expr, repetitions, true, true, true, true, true)
 }
 
 #[cfg(test)]

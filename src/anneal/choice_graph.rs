@@ -14,7 +14,11 @@ pub struct ChoiceGraph<L>
 }
 
 impl <'a, L: Language> ChoiceGraph<L> {
-  pub fn new<N: Analysis<L>>(egraph: &EGraph<L, N>) -> Self {
+  pub fn new<N, M>(egraph: &EGraph<L, N>, metadata: M) -> Self
+    where
+      N: Analysis<L>,
+      M: Fn(&L) -> Option<Vec<(String, String)>>
+  {
     let mut classes = Vec::with_capacity(egraph.number_of_classes());
     let mut eclass_to_class_id = HashMap::new();
     let mut roots = Vec::new();
@@ -22,7 +26,7 @@ impl <'a, L: Language> ChoiceGraph<L> {
       let class_id = classes.len();
       let mut class = ChoiceClass::new(class_id);
       for node in &eclass.nodes {
-        class.add_choice(node.clone());
+        class.add_choice(node.clone(), metadata(node));
       }
       if eclass.parents().len() == 0 {
         roots.push(class_id);
@@ -225,8 +229,17 @@ impl <'a, L: Language> ChoiceClass<L> {
     ChoiceClass{ id, choices: Vec::new() }
   }
 
-  pub fn add_choice(&mut self, node: L) {
-    let choice_node = ChoiceNode::new(self.choices.len(), node);
+  pub fn len(&self) -> usize {
+    self.choices.len()
+  }
+
+  pub fn add_choice(&mut self, node: L, metadata: Option<Vec<(String, String)>>) {
+    let mut choice_node = ChoiceNode::new(self.choices.len(), node);
+    metadata.map(|data| {
+      for (key, value) in data {
+        choice_node.put_metadata(key, value);
+      }
+    });
     self.choices.push(choice_node);
   }
 
@@ -275,6 +288,10 @@ impl <L: Language> ChoiceNode<L> {
     self.metadata.insert(key, value.to_string());
   }
 
+  pub fn get_metadata(&self, key: &String) -> Option<&String> {
+    self.metadata.get(key)
+  }
+
   pub fn get_metadata_usize(&self, key: &String) -> Option<usize> {
     self.metadata.get(key).map(|data| data.parse::<usize>().unwrap())
   }
@@ -292,12 +309,20 @@ pub struct ChoicePath<L: Language> {
 
 impl <L: Language> ChoicePath<L> {
 
+  pub fn id(&self) -> &Uuid {
+    &self.id
+  }
+
   pub fn choice_node(&self) -> &ChoiceNode<L> {
     &self.choice_node
   }
 
   pub fn node(&self) -> &L {
     &self.choice_node.node
+  }
+
+  pub fn children(&self) -> &Vec<ChoicePath<L>> {
+    &self.children
   }
 
   pub fn to_rec_expr(&self) -> RecExpr<L> {

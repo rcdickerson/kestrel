@@ -4,10 +4,13 @@ use crate::eggroll::ast::*;
 use crate::eggroll::to_crel::GuardedRepetitions;
 use egg::*;
 use rand::seq::SliceRandom;
+use std::collections::HashSet;
+use std::collections::VecDeque;
 
+const REPETITIONS_ID_KEY: &str = "eggroll.jumper.repetitions.id";
 const REPETITIONS_KEY: &str = "eggroll.jumper.repetitions";
-const REPETITIONS_LHS_KEY: &str = "eggroll.jumper.repetitions_lhs";
-const REPETITIONS_RHS_KEY: &str = "eggroll.jumper.repetitions_rhs";
+const REPETITIONS_LHS_KEY: &str = "eggroll.jumper.repetitions.lhs";
+const REPETITIONS_RHS_KEY: &str = "eggroll.jumper.repetitions.rhs";
 
 #[derive(Clone)]
 pub struct EggrollJumper {
@@ -21,8 +24,20 @@ impl EggrollJumper {
   pub fn new<N>(egraph: &EGraph<Eggroll, N>) -> Self
     where N: Analysis<Eggroll>,
   {
+    let choice_graph = ChoiceGraph::new(egraph, |node| {
+      match node {
+        Eggroll::GuardedRepeatWhile(children) => {
+          let id_node = &egraph[children[0]].nodes[0];
+          match id_node {
+            Eggroll::RawString(id) => Some(vec![(REPETITIONS_ID_KEY.to_string(), id.clone())]),
+            _ => None,
+          }
+        },
+        _ => None,
+      }
+    });
     EggrollJumper {
-      choice_graph: ChoiceGraph::new(egraph),
+      choice_graph,
       selected: None,
       possible_changes: Vec::new(),
       neighbor: None,
@@ -47,6 +62,38 @@ impl EggrollJumper {
   }
 
   fn extract_repetitions(&self, path: &ChoicePath<Eggroll>) -> GuardedRepetitions {
+    let mut reps = GuardedRepetitions::new();
+    let mut work_queue = VecDeque::new();
+    let mut seen = HashSet::new();
+    work_queue.push_back(path);
+    while !work_queue.is_empty() {
+      let subpath = work_queue.pop_front().unwrap();
+      if seen.contains(subpath.id()) {
+        continue;
+      }
+      seen.insert(subpath.id());
+      match subpath.node() {
+        Eggroll::GuardedRepeatWhile(_) => {
+          let id = subpath.choice_node().get_metadata(&REPETITIONS_ID_KEY.to_string())
+            .expect("missing ID on GuardedRepeatWhile subpath");
+          let lhs_reps = subpath.choice_node()
+            .get_metadata_usize(&REPETITIONS_LHS_KEY.to_string());
+          let rhs_reps = subpath.choice_node()
+            .get_metadata_usize(&REPETITIONS_RHS_KEY.to_string());
+          match (lhs_reps, rhs_reps) {
+            (Some(lhs), Some(rhs)) => {
+              reps.set_loop_repetitions(id.clone(), lhs, rhs)
+            },
+            _ => reps.set_loop_repetitions(id.clone(), 1, 1),
+          }
+        },
+        _ => (),
+      }
+      for child in subpath.children() {
+        work_queue.push_back(child);
+      }
+    }
+    reps
   }
 }
 
@@ -61,7 +108,7 @@ impl Jumper<Eggroll, GuardedRepetitions> for EggrollJumper {
 
   fn pick_random_neighbor(&mut self) {
     if self.possible_changes.is_empty() {
-      println!("no possible jumps found");
+      panic!("no possible jumps");
     }
     let selection = self.selected.clone().expect("no current selection");
     let to_change = self.possible_changes.choose(&mut rand::thread_rng()).unwrap();
@@ -94,15 +141,15 @@ impl Jumper<Eggroll, GuardedRepetitions> for EggrollJumper {
       },
       Eggroll::GuardedRepeatWhile(_) => {
         let lhs_reps = to_change.choice_node().get_metadata_usize(&REPETITIONS_LHS_KEY.to_string());
-        let rhs_reps = to_change.choice_node().get_metadata_usize(&REPETITIONS_LHS_KEY.to_string());
+        let rhs_reps = to_change.choice_node().get_metadata_usize(&REPETITIONS_RHS_KEY.to_string());
         match (lhs_reps, rhs_reps) {
           (Some(lhs_reps), Some(rhs_reps)) => {
-            push_with_loop_repetitions(lhs_reps + 1, rhs_reps);
-            push_with_loop_repetitions(lhs_reps, rhs_reps + 1);
-            if lhs_reps > 0 {
+            if lhs_reps + 1 != rhs_reps { push_with_loop_repetitions(lhs_reps + 1, rhs_reps) };
+            if lhs_reps != rhs_reps + 1 { push_with_loop_repetitions(lhs_reps, rhs_reps + 1) };
+            if lhs_reps > 0 && lhs_reps - 1 != rhs_reps {
               push_with_loop_repetitions(lhs_reps - 1, rhs_reps);
             }
-            if rhs_reps > 0 {
+            if rhs_reps > 0 && lhs_reps != rhs_reps - 1 {
               push_with_loop_repetitions(lhs_reps, rhs_reps - 1);
             }
           },

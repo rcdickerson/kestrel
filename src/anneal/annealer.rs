@@ -21,7 +21,8 @@ impl Annealer {
       L: Language,
       J: Jumper<L, M>,
       F: Fn(&RecExpr<L>, &M) -> f32,
-      D: Fn(&RecExpr<L>) -> (),
+      D: Fn(&RecExpr<L>, &M) -> (),
+      M: std::fmt::Debug,
   {
     println!("Starting simulated annealing...");
 
@@ -38,13 +39,14 @@ impl Annealer {
     let mut rng = rand::thread_rng();
 
     println!("Initial score: {}", best_score);
+//    println!("{:?}", debug_info(&best, &best_meta));
 
     for k in 0..max_iterations {
       if k - last_best_at > reset_threshold {
-        if reset_count > 2 {
-          println!("Simulated annealing converged after {} iterations", k);
-          break;
-        }
+//        if reset_count > 2 {
+//          println!("Simulated annealing converged after {} iterations", k);
+//          break;
+//        }
         println!("No new best seen in {} iterations, resetting", reset_threshold);
         jumper.set_selection(&best);
         last_best_at = k;
@@ -55,6 +57,19 @@ impl Annealer {
       jumper.pick_random_neighbor();
       let (neighbor, neighbor_meta) = jumper.neighbor_program();
       let neighbor_score = fitness(&neighbor, &neighbor_meta);
+
+      if neighbor_score < best_score {
+        (best, best_meta) = jumper.neighbor_program();
+        best_score = neighbor_score;
+        last_best_at = k;
+        reset_count = 0;
+        println!("New best: {}", best_score);
+        //println!("New best: {:?}", debug_info(&best, &best_meta));
+        if best_score < 0.000000001 {
+          println!("Simulated annealing converged after {} iterations.", k);
+          return (best, best_meta);
+        }
+      }
 
       let transition = if neighbor_score < best_score { true } else {
         // println!("--------------------------------------");
@@ -67,10 +82,6 @@ impl Annealer {
       };
       if transition {
         jumper.jump_to_neighbor();
-        (best, best_meta) = jumper.selected_program();
-        best_score = neighbor_score;
-        last_best_at = k;
-        reset_count = 0;
         // println!("Transitioning with score {} at temperature {}", best_score, temp);
         // debug_info(&best);
       }

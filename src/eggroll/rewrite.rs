@@ -45,24 +45,6 @@ struct UnrollWhile {
   inv: Var,
   body: Var,
 }
-impl UnrollWhile {
-  pub fn already_unrolled(&self, egraph: &mut EGraph<Eggroll, ()>, matched_id: Id) -> bool {
-    for sibling in &egraph[matched_id].nodes {
-      match sibling {
-        Eggroll::Seq(children) => {
-          for left_child in &egraph[children[0]].nodes {
-            match left_child {
-              Eggroll::GuardedRepeat(_) => return true,
-              _ => (),
-            }
-          }
-        },
-        _ => (),
-      }
-    }
-    false
-  }
-}
 impl Applier<Eggroll, ()> for UnrollWhile {
   fn apply_one(&self,
                egraph: &mut EGraph<Eggroll, ()>,
@@ -70,9 +52,6 @@ impl Applier<Eggroll, ()> for UnrollWhile {
                subst: &Subst,
                _: Option<&PatternAst<Eggroll>>,
                _: Symbol) -> Vec<Id> {
-//    if self.already_unrolled(egraph, matched_id) {
-//      return vec![]
-//    }
     let hasher = &mut DefaultHasher::new();
     self.hash(hasher);
     let id = format!("id{}", hasher.finish()).to_string();
@@ -119,33 +98,5 @@ impl Applier<Eggroll, ()> for ScheduleWhile {
     } else {
       vec![]
     }
-  }
-}
-
-fn disjoint(vars: Vec<&'static str>)
-            -> impl Fn(&mut EGraph<Eggroll, ()>, Id, &Subst)
-            -> bool {
-  let vars = vars.into_iter().map(|var| var.parse().unwrap()).collect::<Vec<_>>();
-  move |egraph, _, subst| {
-    for a in &vars {
-      for b in &vars {
-        if a == b { continue; }
-        if egraph[subst[*a]].id == egraph[subst[*b]].id {
-          return false
-        }
-      }
-    }
-    return true
-  }
-}
-
-fn ok_seq(a: &'static str, b: &'static str, c: &'static str)
-            -> impl Fn(&mut EGraph<Eggroll, ()>, Id, &Subst)
-            -> bool {
-  let a = a.parse().unwrap();
-  let b = b.parse().unwrap();
-  let c = c.parse().unwrap();
-  move |egraph, match_id, subst| {
-    egraph[subst[a]].id != match_id && egraph[subst[b]].id != match_id && egraph[subst[c]].id != match_id
   }
 }

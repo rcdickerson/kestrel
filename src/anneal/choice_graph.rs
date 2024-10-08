@@ -1,3 +1,5 @@
+use crate::anneal::choice_node::*;
+use crate::anneal::choice_path::*;
 use egg::*;
 use rand::seq::SliceRandom;
 use std::collections::HashMap;
@@ -58,36 +60,42 @@ impl <'a, L: Language> ChoiceGraph<L> {
     &self.classes
   }
 
-  pub fn random_path(&self) -> ChoicePath<L> {
+  pub fn random_path<F>(&self, filter: &F) -> ChoicePath<L>
+    where F: Fn(&ChoiceNode<L>) -> bool
+  {
     let root = *self.roots.choose(&mut rand::thread_rng()).unwrap();
-    self.random_path_from(root)
+    self.random_path_from(root, filter)
   }
 
-  pub fn random_path_from(&self, root: usize) -> ChoicePath<L> {
-    self.random_path_from_with_picks(root, &mut Vec::new())
+  pub fn random_path_from<F>(&self, root: usize, filter: &F) -> ChoicePath<L>
+    where F: Fn(&ChoiceNode<L>) -> bool
+  {
+    self.random_path_from_with_picks(root, &mut Vec::new(), filter)
   }
 
-  pub fn random_path_from_with_picks(&self,
-                                     root: usize,
-                                     force_picks: &mut Vec<ChoicePath<L>>)
-                                     -> ChoicePath<L> {
+  pub fn random_path_from_with_picks<F>(&self,
+                                        root: usize,
+                                        force_picks: &mut Vec<ChoicePath<L>>,
+                                        filter: &F)
+                                     -> ChoicePath<L>
+    where F: Fn(&ChoiceNode<L>) -> bool
+  {
     let class = &self.classes[root];
-    match force_picks.iter().position(|choice| choice.class_id == class.id) {
+    match force_picks.iter().position(|choice| choice.class_id() == class.id) {
       None => {
-        let choice = class.choices.choose(&mut rand::thread_rng()).unwrap();
-        ChoicePath {
-          id: Uuid::new_v4(),
-          choice_node: choice.clone(),
-          class_id: class.id,
-          choice: choice.id,
-          children: choice.children.iter()
-            .map(|child| self.random_path_from_with_picks(*child, force_picks))
-            .collect(),
-        }
+        let filtered = class.choices.clone().into_iter().filter(filter).collect::<Vec<_>>();
+        let choices = if filtered.is_empty() { class.choices.clone() } else { filtered };
+        let choice = choices.choose(&mut rand::thread_rng()).unwrap();
+        let mut path = ChoicePath::new(Uuid::new_v4(), choice.clone(), class.id, choice.id());
+        for child in choice.children().iter()
+          .map(|child| self.random_path_from_with_picks(*child, force_picks, filter)) {
+            path.push_child(child);
+          }
+        path
       },
       Some(idx) => {
         let forced = force_picks[idx].clone();
-        force_picks.retain(|path| path.id != forced.id);
+        force_picks.retain(|path| path.id() != forced.id());
         forced
       }
     }
@@ -111,19 +119,13 @@ impl <'a, L: Language> ChoiceGraph<L> {
     let node = &nodes[node_idx];
     'search: for index in class.indices_of(&node) {
       let choice_node = &class.choices[index];
-      let choice_children = &class.choices[index].children;
+      let choice_children = &class.choices[index].children();
       if choice_children.len() == 0 {
-        return Some(ChoicePath {
-          id: Uuid::new_v4(),
-          choice_node: choice_node.clone(),
-          class_id: class.id,
-          choice: index,
-          children: Vec::new(),
-        });
+        return Some(ChoicePath::new(Uuid::new_v4(), choice_node.clone(), class.id, index));
       }
 
       let mut child_paths = Vec::new();
-      for (choice_child, node_child) in std::iter::zip(choice_children, node.children()) {
+      for (choice_child, node_child) in std::iter::zip(*choice_children, node.children()) {
         let child_class = &self.classes[*choice_child];
         let child_path = self.from_expr_nodes(child_class, nodes, usize::from(*node_child));
         match child_path {
@@ -131,28 +133,25 @@ impl <'a, L: Language> ChoiceGraph<L> {
           Some(path) => child_paths.push(path),
         }
       }
-      return Some(ChoicePath {
-        id: Uuid::new_v4(),
-        choice_node: choice_node.clone(),
-        class_id: class.id,
-        choice: index,
-        children: child_paths,
-      });
+      let mut path = ChoicePath::new(Uuid::new_v4(), choice_node.clone(), class.id, index);
+      for child in child_paths {
+        path.push_child(child);
+      }
+      return Some(path);
     }
     None
   }
 
   pub fn lookup_class(&self, path: &ChoicePath<L>) -> &ChoiceClass<L> {
-    &self.classes[path.class_id]
+    &self.classes[path.class_id()]
   }
 
   pub fn other_root_choices(&self, path: &ChoicePath<L>) -> Vec<ChoiceNode<L>> {
     let class = self.lookup_class(path);
     let mut choices = Vec::new();
     for (i, choice) in (&class.choices).into_iter().enumerate() {
-      if i != path.choice {
-        choices.push(choice.clone())
-      }
+      if i == path.choice() { continue; }
+      choices.push(choice.clone())
     }
     choices
   }
@@ -167,53 +166,55 @@ impl <'a, L: Language> ChoiceGraph<L> {
     work_queue.push_back(path);
     while !work_queue.is_empty() {
       let current = work_queue.pop_front().unwrap();
-      if seen.contains(&current.id) {
+      if seen.contains(&current.id()) {
         continue;
       }
-      seen.insert(current.id);
+      seen.insert(current.id());
 
       if num_neighbors(current) > 0 {
         possibilities.push(current.clone());
       }
-      for child in &current.children {
+      for child in current.children() {
         work_queue.push_back(child);
       }
     }
     possibilities
   }
 
-  pub fn switch_choice(&self,
-                       path: &ChoicePath<L>,
-                       subpath: &ChoicePath<L>,
-                       new_choice: &ChoiceNode<L>) -> ChoicePath<L> {
-    self.switch_rec(path, subpath, new_choice)
+  pub fn switch_choice<F>(&self,
+                          path: &ChoicePath<L>,
+                          subpath: &ChoicePath<L>,
+                          new_choice: &ChoiceNode<L>,
+                          filter: &F)
+                          -> ChoicePath<L>
+    where F: Fn(&ChoiceNode<L>) -> bool
+  {
+    self.switch_rec(path, subpath, new_choice, filter)
   }
 
-  fn switch_rec(&self,
-                path: &ChoicePath<L>,
-                to_change: &ChoicePath<L>,
-                new_choice: &ChoiceNode<L>) -> ChoicePath<L> {
-    if path.id == to_change.id {
-      let mut force_picks = path.children.clone();
-      ChoicePath {
-        id: Uuid::new_v4(),
-        choice_node: new_choice.clone(),
-        class_id: path.class_id,
-        choice: new_choice.id,
-        children: new_choice.children.iter()
-            .map(|child| self.random_path_from_with_picks(*child, &mut force_picks))
-            .collect(),
-      }
+  fn switch_rec<F>(&self,
+                   path: &ChoicePath<L>,
+                   to_change: &ChoicePath<L>,
+                   new_choice: &ChoiceNode<L>,
+                   filter: &F)
+                   -> ChoicePath<L>
+    where F: Fn(&ChoiceNode<L>) -> bool
+  {
+    if path.id() == to_change.id() {
+      let mut force_picks = path.children().clone();
+      let mut new_path = ChoicePath::new(Uuid::new_v4(), new_choice.clone(), path.class_id(), new_choice.id());
+      for child in new_choice.children().iter()
+        .map(|child| self.random_path_from_with_picks(*child, &mut force_picks, filter)) {
+          new_path.push_child(child);
+        }
+      new_path
     } else {
-      ChoicePath {
-        id: path.id,
-        choice_node: path.choice_node().clone(),
-        class_id: path.class_id,
-        choice: path.choice,
-        children: path.children.iter()
-            .map(|child| self.switch_rec(child, to_change, new_choice))
-            .collect(),
-      }
+      let mut new_path = ChoicePath::new(path.id().clone(), path.choice_node().clone(), path.class_id(), path.choice());
+      for child in path.children().iter()
+        .map(|child| self.switch_rec(child, to_change, new_choice, filter)) {
+          new_path.push_child(child);
+        }
+      new_path
     }
   }
 }
@@ -254,97 +255,10 @@ impl <'a, L: Language> ChoiceClass<L> {
   pub fn indices_of(&self, node: &L) -> Vec<usize> {
     let mut all_matches = Vec::new();
     for (index, choice) in self.choices.iter().enumerate() {
-      if node.matches(&choice.node) {
+      if node.matches(choice.node()) {
         all_matches.push(index);
       }
     }
     all_matches
-  }
-}
-
-
-#[derive(Debug, Clone)]
-pub struct ChoiceNode<L: Language> {
-  id: usize,
-  node: L,
-  children: Vec<usize>,
-  metadata: HashMap<String, String>,
-}
-
-impl <L: Language> ChoiceNode<L> {
-  pub fn new(id: usize, node: L) -> Self {
-    ChoiceNode { id, node, children: Vec::new(), metadata: HashMap::new() }
-  }
-
-  pub fn push_child(&mut self, child: usize) {
-    self.children.push(child);
-  }
-
-  pub fn put_metadata(&mut self, key: String, value: String) {
-    self.metadata.insert(key, value);
-  }
-
-  pub fn put_metadata_usize(&mut self, key: String, value: usize) {
-    self.metadata.insert(key, value.to_string());
-  }
-
-  pub fn get_metadata(&self, key: &String) -> Option<&String> {
-    self.metadata.get(key)
-  }
-
-  pub fn get_metadata_usize(&self, key: &String) -> Option<usize> {
-    self.metadata.get(key).map(|data| data.parse::<usize>().unwrap())
-  }
-}
-
-
-#[derive(Debug, Clone)]
-pub struct ChoicePath<L: Language> {
-  id: Uuid,
-  choice_node: ChoiceNode<L>,
-  class_id: usize,
-  choice: usize,
-  children: Vec<ChoicePath<L>>,
-}
-
-impl <L: Language> ChoicePath<L> {
-
-  pub fn id(&self) -> &Uuid {
-    &self.id
-  }
-
-  pub fn choice_node(&self) -> &ChoiceNode<L> {
-    &self.choice_node
-  }
-
-  pub fn node(&self) -> &L {
-    &self.choice_node.node
-  }
-
-  pub fn children(&self) -> &Vec<ChoicePath<L>> {
-    &self.children
-  }
-
-  pub fn to_rec_expr(&self) -> RecExpr<L> {
-    RecExpr::from(self.to_node_vec())
-  }
-
-  pub fn to_node_vec(&self) -> Vec<L> {
-    let mut nodes = Vec::new();
-    let mut child_indices = Vec::<egg::Id>::new();
-    for child in &self.children {
-      let mut child_nodes = child.to_node_vec();
-      for child_node in &mut child_nodes {
-        child_node.update_children(|child_id| (usize::from(child_id) + nodes.len()).into());
-      }
-      nodes.append(&mut child_nodes);
-      child_indices.push((nodes.len() - 1).into());
-    }
-    let mut node = self.node().clone();
-    for (i, child_id) in child_indices.iter().enumerate() {
-      node.children_mut()[i] = *child_id;
-    }
-    nodes.push(node);
-    nodes
   }
 }

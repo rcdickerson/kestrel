@@ -254,15 +254,16 @@ fn expect_statement(sexp: &Sexp, ctx: &Context) -> Statement {
         Statement::Compound(vec!(BlockItem::Declaration(expect_declaration(sexp, ctx))))
       },
       Sexp::Atom(Atom::S(s)) if s == "guarded-repeat" => {
-        let condition = Box::new(expect_expression(&sexps[1], ctx));
-        let body = Box::new(expect_statement(&sexps[2], ctx));
-        Statement::GuardedRepeat{repetitions: 1, condition, body}
+        expect_guarded_repeat(&sexps, ctx)
       },
       Sexp::Atom(Atom::S(s)) if s == "guarded-repeat-while-rel" => {
         expect_guarded_repeat_while_rel(&sexps, ctx)
       },
       Sexp::Atom(Atom::S(s)) if s == "return" => {
         Statement::Return(Some(Box::new(expect_expression(&sexps[1], ctx))))
+      },
+      Sexp::Atom(Atom::S(s)) if s == "unrolled-while" => {
+        expect_unrolled_while(&sexps, ctx)
       },
       Sexp::Atom(Atom::S(s)) if s == "while-no-body" => {
         let condition = Box::new(expect_expression(&sexps[1], ctx));
@@ -424,6 +425,39 @@ fn expect_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
       body: Some(Box::new(runoff_body_2))}),
   ];
   Statement::Compound(stmts)
+}
+
+fn expect_guarded_repeat(sexps: &[Sexp], ctx: &Context) -> Statement {
+  let id = expect_string(&sexps[1]);
+  let repetitions = *ctx.repetitions.guarded_reps.get(&id).unwrap_or(&1);
+  let condition = Box::new(expect_expression(&sexps[2], ctx));
+  let body = Box::new(expect_statement(&sexps[3], ctx));
+  Statement::GuardedRepeat{repetitions, condition, body}
+}
+
+fn expect_unrolled_while(sexps: &[Sexp], ctx: &Context) -> Statement {
+  let id = expect_string(&sexps[1]);
+  let condition = Box::new(expect_expression(&sexps[2], ctx));
+  let invariants = expect_invariants(&sexps[3], ctx).values().map(|v| v.clone()).collect();
+  let body = Box::new(expect_statement(&sexps[4], ctx));
+
+  let repetitions = *ctx.repetitions.guarded_reps.get(&id).unwrap_or(&1);
+  Statement::Compound(vec![
+    BlockItem::Statement(Statement::GuardedRepeat {
+      repetitions,
+      condition: condition.clone(),
+      body: body.clone(),
+    }),
+    BlockItem::Statement(Statement::While{
+      loop_id: None,
+      runoff_link_id: None,
+      invariants,
+      condition,
+      body: Some(body),
+      is_runoff: false,
+      is_merged: false
+    })
+  ])
 }
 
 fn expect_guarded_repeat_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {

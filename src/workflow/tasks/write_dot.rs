@@ -20,7 +20,7 @@ impl Task for WriteDot {
     println!("Writing egraph structure to egraph.dot");
     let runner = Runner::default()
       .with_expr(&context.unaligned_eggroll().parse().unwrap())
-      // .with_iter_limit(5)
+//      .with_iter_limit(5)
       .run(&rewrites());
     write_file(&runner.egraph.dot().to_string(), "egraph.dot");
   }

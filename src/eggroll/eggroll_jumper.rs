@@ -1,4 +1,5 @@
 use crate::anneal::choice_graph::*;
+use crate::anneal::choice_path::*;
 use crate::anneal::jumper::*;
 use crate::eggroll::ast::*;
 use crate::eggroll::to_crel::GuardedRepetitions;
@@ -26,6 +27,13 @@ impl EggrollJumper {
   {
     let choice_graph = ChoiceGraph::new(egraph, |node| {
       match node {
+        Eggroll::GuardedRepeat(children) => {
+          let id_node = &egraph[children[0]].nodes[0];
+          match id_node {
+            Eggroll::RawString(id) => Some(vec![(REPETITIONS_ID_KEY.to_string(), id.clone())]),
+            _ => None,
+          }
+        },
         Eggroll::GuardedRepeatWhile(children) => {
           let id_node = &egraph[children[0]].nodes[0];
           match id_node {
@@ -73,6 +81,14 @@ impl EggrollJumper {
       }
       seen.insert(subpath.id());
       match subpath.node() {
+        Eggroll::GuardedRepeat(_) => {
+          let id = subpath.choice_node().get_metadata(&REPETITIONS_ID_KEY.to_string())
+            .expect("missing ID on GuardedRepeat subpath");
+          match subpath.choice_node().get_metadata_usize(&REPETITIONS_KEY.to_string()) {
+            Some(n) => reps.set_repetitions(id.clone(), n),
+            None => reps.set_repetitions(id.clone(), 1),
+          }
+        },
         Eggroll::GuardedRepeatWhile(_) => {
           let id = subpath.choice_node().get_metadata(&REPETITIONS_ID_KEY.to_string())
             .expect("missing ID on GuardedRepeatWhile subpath");
@@ -103,13 +119,14 @@ impl Jumper<Eggroll, GuardedRepetitions> for EggrollJumper {
   }
 
   fn set_selection_random(&mut self) {
-    self.set_selection_from_path(&self.choice_graph.random_path());
+    self.set_selection_from_path(&self.choice_graph.random_path(&(|_| true)));
   }
 
   fn pick_random_neighbor(&mut self) {
     if self.possible_changes.is_empty() {
       panic!("no possible jumps");
     }
+
     let selection = self.selected.clone().expect("no current selection");
     let to_change = self.possible_changes.choose(&mut rand::thread_rng()).unwrap();
     let mut options = self.choice_graph.other_root_choices(to_change);
@@ -162,8 +179,12 @@ impl Jumper<Eggroll, GuardedRepetitions> for EggrollJumper {
     options.append(&mut rep_options);
     options.append(&mut loop_rep_options);
     let chosen = options.choose(&mut rand::thread_rng()).unwrap();
-
-    self.neighbor = Some(self.choice_graph.switch_choice(&selection, to_change, chosen));
+    self.neighbor = Some(self.choice_graph.switch_choice(&selection, to_change, chosen, &|choice| {
+      match choice.node() {
+        Eggroll::Seq(_) => false,
+        _ => true
+      }
+    }));
   }
 
   fn selected_program(&self) -> (RecExpr<Eggroll>, GuardedRepetitions) {

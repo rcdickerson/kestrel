@@ -55,7 +55,7 @@ fn score_runoff_iterations(program: &CRel, trace: &Trace) -> f32 {
       _ => (),
     }
   }
-  if total_count == 0 { 0.0 } else {
+  if total_count == 0 { 1.0 } else {
     (runoff_count as f32) / (total_count as f32)
   }
 }
@@ -77,7 +77,7 @@ fn score_merged_loops(program: &CRel, trace: &Trace) -> f32 {
     }
   }
   let total_count = merged_count + unmerged_count;
-  if total_count == 0 { 0.0 } else {
+  if total_count == 0 { 1.0 } else {
     (unmerged_count as f32) / (total_count as f32)
   }
 }
@@ -91,6 +91,7 @@ pub fn sa_score_ablate(trace_states: &Vec<State>,
                        af_loop_head_matching: bool,
                        af_loop_double_updates: bool,
                        af_loop_executions: bool) -> f32 {
+  println!("Generating CRel...");
   let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string(),
                                                       &to_crel::Config::default(),
                                                       repetitions);
@@ -100,12 +101,15 @@ pub fn sa_score_ablate(trace_states: &Vec<State>,
     .expect("Missing main function")
     .body.clone();
 
+  println!("Executing...");
   let score_state = |state: &State| -> f32 {
     let exec = run(&body, state.clone(), trace_fuel, Some(&fundefs));
     SAScore2::new(&crel, &exec.trace).total()
   };
 
-  trace_states.iter().map(score_state).sum::<f32>() / (trace_states.len() as f32)
+  let score = trace_states.iter().map(score_state).sum::<f32>() / (trace_states.len() as f32);
+  println!("Score: {}", score);
+  score
 }
 
 pub fn sa_score_ablate_debug(trace_states: &Vec<State>,

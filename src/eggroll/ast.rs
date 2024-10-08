@@ -27,6 +27,7 @@ define_language! {
     "if-else"       = IfElse([Id; 3]),
     "while"         = While([Id; 3]),
     "while-no-body" = WhileNoBody([Id; 2]),
+    "while-rel"     = WhileRel([Id; 6]),
     "index"         = Index([Id; 2]),
     "seq"           = Seq([Id; 2]),
     "assert"        = Assert(Id),
@@ -49,8 +50,8 @@ define_language! {
     // "while-lockstep" = WhileLockstep([Id; 9]),
     // "while-scheduled" = WhileScheduled([Id; 10]),
 
-    "while-rel" = WhileRel([Id; 6]),
-    "guarded-repeat" = GuardedRepeat([Id; 2]),
+    "guarded-repeat" = GuardedRepeat([Id; 3]),
+    //"unrolled-while" = UnrolledWhile([Id; 4]),
     "guarded-repeat-while-rel" = GuardedRepeatWhile([Id; 7]),
 
     // Invariants

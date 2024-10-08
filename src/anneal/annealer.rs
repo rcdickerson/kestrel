@@ -42,7 +42,6 @@ impl Annealer {
     //println!("{:?}", debug_info(&best, &best_meta));
 
     for k in 0..max_iterations {
-      println!("{}", k);
       if k - last_best_at > reset_threshold {
 //        if reset_count > 2 {
 //          println!("Simulated annealing converged after {} iterations", k);

@@ -91,7 +91,6 @@ pub fn sa_score_ablate(trace_states: &Vec<State>,
                        af_loop_head_matching: bool,
                        af_loop_double_updates: bool,
                        af_loop_executions: bool) -> f32 {
-  println!("Generating CRel...");
   let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string(),
                                                       &to_crel::Config::default(),
                                                       repetitions);
@@ -101,14 +100,12 @@ pub fn sa_score_ablate(trace_states: &Vec<State>,
     .expect("Missing main function")
     .body.clone();
 
-  println!("Executing...");
   let score_state = |state: &State| -> f32 {
     let exec = run(&body, state.clone(), trace_fuel, Some(&fundefs));
     SAScore2::new(&crel, &exec.trace).total()
   };
 
   let score = trace_states.iter().map(score_state).sum::<f32>() / (trace_states.len() as f32);
-  println!("Score: {}", score);
   score
 }
 

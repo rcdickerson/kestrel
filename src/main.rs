@@ -51,6 +51,10 @@ struct Args {
   #[arg(long)]
   sa_start_random: bool,
 
+  /// Set the maximum number of random elements tried with the 'random' extraction method.
+  #[arg(long, default_value_t=1000)]
+  random_extraction_bound: usize,
+
   /// Count and print the size of the alignment state space.
   #[arg(short, long)]
   space_size: bool,
@@ -98,6 +102,10 @@ enum ExtractorArg {
 
   /// Output the naive product program without doing any alignment.
   Unaligned,
+
+  /// Try random extractions from the e-graph. Number of random
+  /// elements is set with the random_extraction_bound argument.
+  Random,
 }
 
 impl ExtractorArg {
@@ -107,6 +115,7 @@ impl ExtractorArg {
       ExtractorArg::MILP       => "milp".to_string(),
       ExtractorArg::SA         => "sa".to_string(),
       ExtractorArg::Unaligned  => "unaligned".to_string(),
+      ExtractorArg::Random     => "random".to_string(),
     }
   }
 }
@@ -156,6 +165,7 @@ fn main() {
     ExtractorArg::Unaligned => workflow.add_task(AlignNone::new()),
     ExtractorArg::CountLoops => workflow.add_task(AlignCountLoops::new()),
     ExtractorArg::MILP => workflow.add_task(AlignMilp::new()),
+    ExtractorArg::Random => workflow.add_task(AlignRandom::new(args.random_extraction_bound)),
     ExtractorArg::SA => {
       if !args.sa_start_random {
         workflow.add_task(AlignCountLoops::new());

@@ -7,6 +7,7 @@ use egg::*;
 use std::path::Path;
 use std::time::{Duration, Instant};
 
+#[derive(Clone)]
 pub struct Context<'a> {
   pub task_name: String,
   pub spec: Option<&'a KestrelSpec>,

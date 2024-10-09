@@ -95,7 +95,7 @@ impl <'a, L: Language> ChoiceGraph<L> {
       },
       Some(idx) => {
         let forced = force_picks[idx].clone();
-        force_picks.retain(|path| path.id() != forced.id());
+        //force_picks.retain(|path| path.id() != forced.id());
         forced
       }
     }

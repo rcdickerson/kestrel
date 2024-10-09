@@ -168,6 +168,7 @@ pub fn aexpr(i: &str) -> IResult<&str, CondAExpr> {
     aexpr_binop("-", CondABinop::Sub),
     aexpr_binop("*", CondABinop::Mul),
     aexpr_binop("/", CondABinop::Div),
+    aexpr_binop("%", CondABinop::Mod),
     aexp_int,
     aexp_float,
     aexp_funcall,

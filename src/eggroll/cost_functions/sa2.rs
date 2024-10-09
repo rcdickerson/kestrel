@@ -23,6 +23,11 @@ impl SAScore2 {
   }
 
   pub fn total(&self) -> f32 {
+    // if self.merged_loops > 0.75 {
+    //   (0.5 * self.runoff_iterations) + (0.5 * self.merged_loops)
+    // } else {
+    //   self.runoff_iterations
+    // }
     (0.5 * self.runoff_iterations) + (0.5 * self.merged_loops)
   }
 
@@ -81,6 +86,9 @@ fn score_merged_loops(program: &CRel, trace: &Trace) -> f32 {
     (unmerged_count as f32) / (total_count as f32)
   }
 }
+
+//fn score_merged_ifs(program: &CRel, trace: &Trace) -> f32 {
+//}
 
 pub fn sa_score_ablate(trace_states: &Vec<State>,
                        trace_fuel: usize,

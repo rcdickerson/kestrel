@@ -27,11 +27,11 @@ define_language! {
     "if-else"       = IfElse([Id; 3]),
     "while"         = While([Id; 3]),
     "while-no-body" = WhileNoBody([Id; 2]),
-    "while-rel"     = WhileRel([Id; 6]),
     "index"         = Index([Id; 2]),
     "seq"           = Seq([Id; 2]),
     "assert"        = Assert(Id),
     "break"         = Break,
+    "skip"          = Skip,
 
     // An abbreviated form of :
     //   while c1 && c2 { b1; b2 };
@@ -51,7 +51,6 @@ define_language! {
     // "while-scheduled" = WhileScheduled([Id; 10]),
 
     "guarded-repeat" = GuardedRepeat([Id; 3]),
-    //"unrolled-while" = UnrolledWhile([Id; 4]),
     "guarded-repeat-while-rel" = GuardedRepeatWhile([Id; 7]),
 
     // Invariants
@@ -97,5 +96,7 @@ define_language! {
     "<|>" = Rel([Id; 2]),
     "<|"  = RelLeft(Id),
     "|>"  = RelRight(Id),
+    "while-rel" = WhileRel([Id; 6]),
+    "if-rel"    = IfRel([Id; 6]),
   }
 }

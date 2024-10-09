@@ -205,6 +205,7 @@ fn expect_expression(sexp: &Sexp, ctx: &Context) -> Expression {
 fn expect_statement(sexp: &Sexp, ctx: &Context) -> Statement {
   match &sexp {
     Sexp::Atom(Atom::S(s)) if s == "break" => Statement::Break,
+    Sexp::Atom(Atom::S(s)) if s == "skip" => Statement::Compound(vec![]),
     Sexp::Atom(Atom::S(s)) if s == "return-none" => Statement::Return(None),
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "basic-block" => {
@@ -234,6 +235,70 @@ fn expect_statement(sexp: &Sexp, ctx: &Context) -> Statement {
         let then = Box::new(expect_statement(&sexps[2], ctx));
         let els  = Some(Box::new(expect_statement(&sexps[3], ctx)));
         Statement::If{condition, then, els}
+      },
+      Sexp::Atom(Atom::S(s)) if s == "if-rel" => {
+        let cond1 = Box::new(expect_expression(&sexps[1], ctx));
+        let cond2 = Box::new(expect_expression(&sexps[2], ctx));
+        let then1 = expect_statement(&sexps[3], ctx);
+        let then2 = expect_statement(&sexps[4], ctx);
+        let els1  = expect_statement(&sexps[5], ctx);
+        let els2  = expect_statement(&sexps[6], ctx);
+
+        let cond_both = Box::new(Expression::Binop {
+          lhs: cond1.clone(),
+          rhs: cond2.clone(),
+          op: BinaryOp::And
+        });
+        let cond_left_only = Box::new(Expression::Binop {
+          lhs: cond1.clone(),
+          rhs: Box::new(Expression::Unop {op: UnaryOp::Not, expr: cond2.clone()}),
+          op: BinaryOp::And
+        });
+        let cond_right_only = Box::new(Expression::Binop {
+          lhs: Box::new(Expression::Unop {op: UnaryOp::Not, expr: cond1.clone()}),
+          rhs: cond2.clone(),
+          op: BinaryOp::And
+        });
+        let cond_neither = Box::new(Expression::Binop {
+          lhs: Box::new(Expression::Unop {op: UnaryOp::Not, expr: cond1.clone()}),
+          rhs: cond2.clone(),
+          op: BinaryOp::And
+        });
+
+        let then_then = Box::new(Statement::Compound(vec![
+          BlockItem::Statement(then1.clone()),
+          BlockItem::Statement(then2.clone())
+        ]));
+        let then_else = Box::new(Statement::Compound(vec![
+          BlockItem::Statement(then1.clone()),
+          BlockItem::Statement(els2.clone())
+        ]));
+        let else_then = Box::new(Statement::Compound(vec![
+          BlockItem::Statement(els1.clone()),
+          BlockItem::Statement(then2.clone())
+        ]));
+        let else_else = Box::new(Statement::Compound(vec![
+          BlockItem::Statement(els1.clone()),
+          BlockItem::Statement(els2.clone())
+        ]));
+
+        Statement::If {
+          condition: cond_both,
+          then: then_then,
+          els: Some(Box::new(Statement::If {
+            condition: cond_left_only,
+            then: then_else,
+            els: Some(Box::new(Statement::If {
+              condition: cond_right_only,
+              then: else_then,
+              els: Some(Box::new(Statement::If {
+                condition: cond_neither,
+                then: else_else,
+                els: None,
+              }))
+            }))
+          }))
+        }
       },
       Sexp::Atom(Atom::S(s)) if s == "<|>" => {
         let lhs = Box::new(expect_statement(&sexps[1], ctx));

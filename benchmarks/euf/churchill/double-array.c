@@ -1,15 +1,15 @@
 /* @KESTREL
- * pre: left.arr_in == right.arr_in
+ * pre: (forall i: int :: read(left.arr_in, i) == read(right.arr_in, i))
      && left.arr_size_in == right.arr_size_in
      && left.arr_size_in > 0
      && (forall i: int, j: int, a: int, x: int :: (i == j) ==> read(store(a, i, x), j) == x)
      && (forall i: int, j: int, a: int, x: int :: (i != j) ==> read(store(a, i, x), j) == read(a, j));
  * left:  left;
  * right: right;
- * post:  left.arr == right.arr;
+ * post:  (forall i: int :: read(left.arr, i) == read(right.arr, i)) && left.arr == right.arr;
  */
 
-// post:  (forall i: int :: read(left.arr, i) == read(right.arr, i)) && left.arr == right.arr;
+
 
 int read(int arr_id, int index);
 int store(int arr_id, int index, int value);

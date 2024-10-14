@@ -215,10 +215,6 @@ pub enum Statement {
   },
 }
 
-pub fn loop_head_name(id: &Uuid) -> String {
-  format!("_loop_head_{}", id.to_string().replace("-", ""))
-}
-
 impl Statement {
   pub fn is_none(&self) -> bool {
     match self {
@@ -233,4 +229,8 @@ impl Statement {
 pub enum BlockItem {
   Declaration(Declaration),
   Statement(Statement),
+}
+
+pub fn loop_head_name(id: &Uuid) -> String {
+  format!("_loop_head_{}", id.to_string().replace("-", ""))
 }

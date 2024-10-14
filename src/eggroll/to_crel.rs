@@ -328,9 +328,9 @@ fn expect_statement(sexp: &Sexp, ctx: &Context) -> Statement {
       Sexp::Atom(Atom::S(s)) if s == "return" => {
         Statement::Return(Some(Box::new(expect_expression(&sexps[1], ctx))))
       },
-      Sexp::Atom(Atom::S(s)) if s == "unrolled-while" => {
-        expect_unrolled_while(&sexps, ctx)
-      },
+//      Sexp::Atom(Atom::S(s)) if s == "unrolled-while" => {
+//        expect_unrolled_while(&sexps, ctx)
+//      },
       Sexp::Atom(Atom::S(s)) if s == "while-no-body" => {
         let condition = Box::new(expect_expression(&sexps[1], ctx));
         let invariants = expect_invariants(&sexps[2], ctx).values().map(|v| v.clone()).collect();
@@ -361,9 +361,9 @@ fn expect_statement(sexp: &Sexp, ctx: &Context) -> Statement {
       Sexp::Atom(Atom::S(s)) if s == "while-rel" => {
         expect_while_rel(sexps, ctx)
       },
-      Sexp::Atom(Atom::S(s)) if s == "while-scheduled" => {
-        expect_while_scheduled(sexps, ctx)
-      },
+//      Sexp::Atom(Atom::S(s)) if s == "while-scheduled" => {
+//        expect_while_scheduled(sexps, ctx)
+//      },
       _ => Statement::Expression(Box::new(expect_expression(sexp, ctx)))
     },
     _ => Statement::Expression(Box::new(expect_expression(sexp, ctx)))
@@ -517,31 +517,31 @@ fn expect_guarded_repeat(sexps: &[Sexp], ctx: &Context) -> Statement {
   Statement::GuardedRepeat{id, repetitions, condition, body}
 }
 
-fn expect_unrolled_while(sexps: &[Sexp], ctx: &Context) -> Statement {
-  let id = expect_string(&sexps[1]);
-  let condition = Box::new(expect_expression(&sexps[2], ctx));
-  let invariants = expect_invariants(&sexps[3], ctx).values().map(|v| v.clone()).collect();
-  let body = Box::new(expect_statement(&sexps[4], ctx));
+// fn expect_unrolled_while(sexps: &[Sexp], ctx: &Context) -> Statement {
+//   let id = expect_string(&sexps[1]);
+//   let condition = Box::new(expect_expression(&sexps[2], ctx));
+//   let invariants = expect_invariants(&sexps[3], ctx).values().map(|v| v.clone()).collect();
+//   let body = Box::new(expect_statement(&sexps[4], ctx));
 
-  let repetitions = *ctx.repetitions.guarded_reps.get(&id).unwrap_or(&1);
-  Statement::Compound(vec![
-    BlockItem::Statement(Statement::GuardedRepeat {
-      id,
-      repetitions,
-      condition: condition.clone(),
-      body: body.clone(),
-    }),
-    BlockItem::Statement(Statement::While{
-      id: Uuid::new_v4(),
-      runoff_link_id: None,
-      invariants,
-      condition,
-      body: Some(body),
-      is_runoff: false,
-      is_merged: false
-    })
-  ])
-}
+//   let repetitions = *ctx.repetitions.guarded_reps.get(&id).unwrap_or(&1);
+//   Statement::Compound(vec![
+//     BlockItem::Statement(Statement::GuardedRepeat {
+//       id,
+//       repetitions,
+//       condition: condition.clone(),
+//       body: body.clone(),
+//     }),
+//     BlockItem::Statement(Statement::While{
+//       id: Uuid::new_v4(),
+//       runoff_link_id: None,
+//       invariants,
+//       condition,
+//       body: Some(body),
+//       is_runoff: false,
+//       is_merged: false
+//     })
+//   ])
+// }
 
 fn expect_guarded_repeat_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
   let id = expect_string(&sexps[1]);
@@ -644,6 +644,7 @@ fn expect_guarded_repeat_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
   Statement::Compound(stmts)
 }
 
+/*
 fn expect_while_scheduled(sexps: &[Sexp], ctx: &Context) -> Statement {
   let left_unrolls = expect_i64(&sexps[1]);
   let right_unrolls = expect_i64(&sexps[2]);
@@ -754,6 +755,7 @@ fn expect_while_scheduled(sexps: &[Sexp], ctx: &Context) -> Statement {
   ];
   Statement::Compound(stmts)
 }
+*/
 
 fn expect_specifiers(sexp: &Sexp) -> Vec<DeclarationSpecifier> {
   match &sexp {

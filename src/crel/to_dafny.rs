@@ -29,7 +29,7 @@ fn crel_to_daf(crel: &CRel, source: &mut Daf::Source) {
     CRel::Seq(seq) => {
       for crel in seq { crel_to_daf(crel, source) }
     }
-  }
+  };
 }
 
 fn fun_to_daf(specifiers: &Vec<DeclarationSpecifier>,

@@ -134,10 +134,9 @@ impl DaikonConverter {
       Statement::Return(expr) => Statement::Return(expr.clone().map(|e| {
         Box::new(self.convert_expression(*e))
       })),
-      Statement::While{runoff_link_id, invariants: invariant, condition, body, is_runoff, is_merged, ..} => {
-        let new_id = Uuid::new_v4(); // Some loops may have been duplicated, assign fresh IDs.
+      Statement::While{id, runoff_link_id, invariants: invariant, condition, body, is_runoff, is_merged} => {
         let checkpoint = self.push_scope();
-        let (_, lh_call) = self.add_loop_head(loop_head_name(&new_id));
+        let (_, lh_call) = self.add_loop_head(loop_head_name(id));
         let new_body = match &body {
           Option::None => Statement::Expression(Box::new(lh_call)),
           Option::Some(b) => Statement::Compound(vec![
@@ -146,7 +145,7 @@ impl DaikonConverter {
         };
         self.pop_scope(checkpoint);
         Statement::While{
-          id: new_id,
+          id: id.clone(),
           runoff_link_id: runoff_link_id.clone(),
           invariants: invariant.clone(),
           condition: condition.clone(),

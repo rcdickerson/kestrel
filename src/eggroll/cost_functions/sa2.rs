@@ -9,16 +9,22 @@ use egg::*;
 pub struct SAScore2 {
   pub runoff_iterations: f32,
   pub merged_loops: f32,
+  pub af_merge_count: bool,
+  pub af_runoff_execs: bool,
 }
 
 impl SAScore2 {
 
-  pub fn new(program: &CRel, trace: &Trace) -> Self {
+  pub fn new(program: &CRel, trace: &Trace,
+             af_merge_count: bool,
+             af_runoff_execs: bool) -> Self {
     let runoff_iterations = score_runoff_iterations(program, trace);
     let merged_loops = score_merged_loops(program, trace);
     SAScore2 {
       runoff_iterations,
       merged_loops,
+      af_merge_count,
+      af_runoff_execs,
     }
   }
 
@@ -94,11 +100,8 @@ pub fn sa_score_ablate(trace_states: &Vec<State>,
                        trace_fuel: usize,
                        expr: &RecExpr<Eggroll>,
                        repetitions: &to_crel::GuardedRepetitions,
-                       af_relation_size: bool,
-                       af_update_matching: bool,
-                       af_loop_head_matching: bool,
-                       af_loop_double_updates: bool,
-                       af_loop_executions: bool) -> f32 {
+                       af_merge_count: bool,
+                       af_runoff_execs: bool) -> f32 {
   let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string(),
                                                       &to_crel::Config::default(),
                                                       repetitions);
@@ -110,7 +113,7 @@ pub fn sa_score_ablate(trace_states: &Vec<State>,
 
   let score_state = |state: &State| -> f32 {
     let exec = run(&body, state.clone(), trace_fuel, Some(&fundefs));
-    SAScore2::new(&crel, &exec.trace).total()
+    SAScore2::new(&crel, &exec.trace, af_merge_count, af_runoff_execs).total()
   };
 
   let score = trace_states.iter().map(score_state).sum::<f32>() / (trace_states.len() as f32);
@@ -121,11 +124,8 @@ pub fn sa_score_ablate_debug(trace_states: &Vec<State>,
                              trace_fuel: usize,
                              expr: &RecExpr<Eggroll>,
                              repetitions: &to_crel::GuardedRepetitions,
-                             af_relation_size: bool,
-                             af_update_matching: bool,
-                             af_loop_head_matching: bool,
-                             af_loop_double_updates: bool,
-                             af_loop_executions: bool) {
+                             af_merge_count: bool,
+                             af_runoff_execs: bool) {
   let crel = crate::eggroll::to_crel::eggroll_to_crel(&expr.to_string(),
                                                       &to_crel::Config::default(),
                                                       repetitions);
@@ -137,7 +137,7 @@ pub fn sa_score_ablate_debug(trace_states: &Vec<State>,
 
   for state in trace_states {
     let exec = run(&body, state.clone(), trace_fuel, Some(&fundefs));
-    SAScore2::new(&crel, &exec.trace).print();
+    SAScore2::new(&crel, &exec.trace, af_merge_count, af_runoff_execs).print();
   }
 }
 
@@ -145,5 +145,5 @@ pub fn sa_score(trace_states: &Vec<State>,
                 trace_fuel: usize,
                 expr: &RecExpr<Eggroll>,
                 repetitions: &to_crel::GuardedRepetitions) -> f32 {
-  sa_score_ablate(trace_states, trace_fuel, expr, repetitions, true, true, true, true, true)
+  sa_score_ablate(trace_states, trace_fuel, expr, repetitions, true, true)
 }

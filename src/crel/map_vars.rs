@@ -66,7 +66,8 @@ impl MapVars for Statement {
       Statement::Compound(items) => {
         Statement::Compound(items.iter().map(|i| i.map_vars(f)).collect())
       },
-      Statement::GuardedRepeat{repetitions, condition, body} => Statement::GuardedRepeat {
+      Statement::GuardedRepeat{id, repetitions, condition, body} => Statement::GuardedRepeat {
+        id: id.clone(),
         repetitions: *repetitions,
         condition: Box::new(condition.map_vars(f)),
         body: Box::new(body.map_vars(f)),
@@ -87,8 +88,8 @@ impl MapVars for Statement {
       Statement::Return(expr) => {
         Statement::Return(expr.as_ref().map(|expr| Box::new(expr.map_vars(f))))
       },
-      Statement::While{loop_id, runoff_link_id, invariants: invariant, condition, body, is_runoff, is_merged} => Statement::While {
-        loop_id: loop_id.clone(),
+      Statement::While{id, runoff_link_id, invariants: invariant, condition, body, is_runoff, is_merged} => Statement::While {
+        id: id.clone(),
         runoff_link_id: runoff_link_id.clone(),
         invariants: invariant.clone(),
         condition: Box::new(condition.map_vars(f)),

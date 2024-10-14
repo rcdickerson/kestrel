@@ -1,6 +1,6 @@
 use crate::anneal::*;
 use crate::crel::eval::*;
-use crate::eggroll::cost_functions::sa2::*;
+use crate::eggroll::cost_functions::sa::*;
 use crate::eggroll::eggroll_jumper::EggrollJumper;
 use crate::workflow::context::*;
 use crate::workflow::task::*;

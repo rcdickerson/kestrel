@@ -145,7 +145,7 @@ fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
     Statement::Expression(expr) => {
       Daf::Statement::Expression(Box::new(expression_to_daf(expr)))
     },
-    Statement::GuardedRepeat{repetitions, condition, body} => {
+    Statement::GuardedRepeat{repetitions, condition, body, ..} => {
       let mut ifs = Vec::new();
       for _ in 0..*repetitions {
         ifs.push(Daf::Statement::If {
@@ -171,11 +171,11 @@ fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
       None => { Daf::Statement::Return(None) },
       Some(ret) => { Daf::Statement::Return(Some(Box::new(expression_to_daf(ret)))) },
     },
-    Statement::While{loop_id, invariants, condition, body, ..} => {
+    Statement::While{id, invariants, condition, body, ..} => {
       let condition = Box::new(expression_to_daf(condition));
       let invariants = invariants.iter().map(|invar| expression_to_daf(invar)).collect();
       let body = body.as_ref().map(|stmt| Box::new(statement_to_daf(stmt)));
-      Daf::Statement::While{loop_id: loop_id.clone(), invariants, condition, body}
+      Daf::Statement::While{loop_id: Some(loop_head_name(id)), invariants, condition, body}
     },
   }
 }

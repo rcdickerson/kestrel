@@ -51,10 +51,6 @@ struct Args {
   #[arg(long)]
   sa_start_random: bool,
 
-  /// Set the maximum number of random elements tried with the 'random' extraction method.
-  #[arg(long, default_value_t=1000)]
-  random_extraction_bound: usize,
-
   /// Count and print the size of the alignment state space.
   #[arg(short, long)]
   space_size: bool,
@@ -165,29 +161,29 @@ fn main() {
     ExtractorArg::Unaligned => workflow.add_task(AlignNone::new()),
     ExtractorArg::CountLoops => workflow.add_task(AlignCountLoops::new()),
     ExtractorArg::MILP => workflow.add_task(AlignMilp::new()),
-    ExtractorArg::Random => workflow.add_task(AlignRandom::new(args.random_extraction_bound)),
+    ExtractorArg::Random => workflow.add_task(AlignRandom::new()),
     ExtractorArg::SA => {
       if !args.sa_start_random {
         workflow.add_task(AlignCountLoops::new());
         workflow.add_task(AlignedCRel::new());
         if args.infer_invariants {
-          workflow.add_task(InvarsDaikon::new());
-          workflow.add_task(Houdafny::new());
+          workflow.add_task(InvarsDaikon::new(None));
+          workflow.add_task(Houdafny::new(None));
         }
       }
-      let mut align_sa_task = AlignSa::new(args.sa_start_random, args.sa_max_iterations);
-      if args.af_relation_size { align_sa_task.ablate_relation_size() }
-      if args.af_update_matching { align_sa_task.ablate_update_matching() }
-      if args.af_loop_head_matching { align_sa_task.ablate_loop_head_matching() }
-      if args.af_loop_double_updates { align_sa_task.ablate_loop_double_updates() }
-      if args.af_loop_executions { align_sa_task.ablate_loop_executions() }
+      let mut align_sa_task = AlignSa2::new(args.sa_start_random, args.sa_max_iterations);
+      // if args.af_relation_size { align_sa_task.ablate_relation_size() }
+      // if args.af_update_matching { align_sa_task.ablate_update_matching() }
+      // if args.af_loop_head_matching { align_sa_task.ablate_loop_head_matching() }
+      // if args.af_loop_double_updates { align_sa_task.ablate_loop_double_updates() }
+      // if args.af_loop_executions { align_sa_task.ablate_loop_executions() }
       workflow.add_task_unless_verifed(align_sa_task);
     },
   }
   workflow.add_task_unless_verifed(AlignedCRel::new());
   if args.infer_invariants {
-    workflow.add_task_unless_verifed(InvarsDaikon::new());
-    workflow.add_task_unless_verifed(Houdafny::new());
+    workflow.add_task_unless_verifed(InvarsDaikon::new(None));
+    workflow.add_task_unless_verifed(Houdafny::new(None));
   }
   workflow.add_task(AlignedOutput::new(args.output_mode));
   match args.output {

@@ -1,6 +1,7 @@
- use crate::crel::ast::*;
+use crate::crel::ast::*;
 use sexp::{Atom, Sexp};
 use std::collections::HashMap;
+use uuid::Uuid;
 
 #[derive(Debug, Clone)]
 pub struct Config {
@@ -333,13 +334,29 @@ fn expect_statement(sexp: &Sexp, ctx: &Context) -> Statement {
       Sexp::Atom(Atom::S(s)) if s == "while-no-body" => {
         let condition = Box::new(expect_expression(&sexps[1], ctx));
         let invariants = expect_invariants(&sexps[2], ctx).values().map(|v| v.clone()).collect();
-        Statement::While{loop_id: None, runoff_link_id: None, invariants, condition, body: None, is_runoff: false, is_merged: false}
+        Statement::While {
+          id: Uuid::new_v4(),
+          runoff_link_id: None,
+          invariants,
+          condition,
+          body: None,
+          is_runoff: false,
+          is_merged: false
+        }
       },
       Sexp::Atom(Atom::S(s)) if s == "while" => {
         let condition = Box::new(expect_expression(&sexps[1], ctx));
         let invariants = expect_invariants(&sexps[2], ctx).values().map(|v| v.clone()).collect();
         let body = Some(Box::new(expect_statement(&sexps[3], ctx)));
-        Statement::While{loop_id: None, runoff_link_id: None, invariants, condition, body, is_runoff: false, is_merged: false}
+        Statement::While {
+          id: Uuid::new_v4(),
+          runoff_link_id: None,
+          invariants,
+          condition,
+          body,
+          is_runoff: false,
+          is_merged: false
+        }
       },
       Sexp::Atom(Atom::S(s)) if s == "while-rel" => {
         expect_while_rel(sexps, ctx)
@@ -465,7 +482,7 @@ fn expect_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
 
   let stmts = vec! [
     BlockItem::Statement(Statement::While {
-      loop_id: None,
+      id: Uuid::new_v4(),
       runoff_link_id: runoff_link_id.clone(),
       is_runoff: false,
       is_merged: true,
@@ -473,7 +490,7 @@ fn expect_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
       condition: Box::new(conj),
       body: Some(Box::new(body))}),
     BlockItem::Statement(Statement::While {
-      loop_id: None,
+      id: Uuid::new_v4(),
       runoff_link_id: runoff_link_id.clone(),
       is_runoff: true,
       is_merged: false,
@@ -481,7 +498,7 @@ fn expect_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
       condition: Box::new(cond1),
       body: Some(Box::new(runoff_body_1))}),
     BlockItem::Statement(Statement::While {
-      loop_id: None,
+      id: Uuid::new_v4(),
       runoff_link_id: runoff_link_id.clone(),
       is_runoff: true,
       is_merged: false,
@@ -497,7 +514,7 @@ fn expect_guarded_repeat(sexps: &[Sexp], ctx: &Context) -> Statement {
   let repetitions = *ctx.repetitions.guarded_reps.get(&id).unwrap_or(&1);
   let condition = Box::new(expect_expression(&sexps[2], ctx));
   let body = Box::new(expect_statement(&sexps[3], ctx));
-  Statement::GuardedRepeat{repetitions, condition, body}
+  Statement::GuardedRepeat{id, repetitions, condition, body}
 }
 
 fn expect_unrolled_while(sexps: &[Sexp], ctx: &Context) -> Statement {
@@ -509,12 +526,13 @@ fn expect_unrolled_while(sexps: &[Sexp], ctx: &Context) -> Statement {
   let repetitions = *ctx.repetitions.guarded_reps.get(&id).unwrap_or(&1);
   Statement::Compound(vec![
     BlockItem::Statement(Statement::GuardedRepeat {
+      id,
       repetitions,
       condition: condition.clone(),
       body: body.clone(),
     }),
     BlockItem::Statement(Statement::While{
-      loop_id: None,
+      id: Uuid::new_v4(),
       runoff_link_id: None,
       invariants,
       condition,
@@ -576,11 +594,13 @@ fn expect_guarded_repeat_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
 
   let repeats = Statement::Relation {
     lhs: Box::new(Statement::GuardedRepeat{
+      id: Uuid::new_v4().to_string().replace("-", ""),
       repetitions: *lhs_reps,
       condition: Box::new(cond1.clone()),
       body: Box::new(body1.clone())
     }),
     rhs: Box::new(Statement::GuardedRepeat{
+      id: Uuid::new_v4().to_string().replace("-", ""),
       repetitions: *rhs_reps,
       condition: Box::new(cond2.clone()),
       body: Box::new(body2.clone())
@@ -597,7 +617,7 @@ fn expect_guarded_repeat_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
 
   let stmts = vec! [
     BlockItem::Statement(Statement::While {
-      loop_id: None,
+      id: Uuid::new_v4(),
       runoff_link_id: runoff_link_id.clone(),
       is_runoff: false,
       is_merged: true,
@@ -605,7 +625,7 @@ fn expect_guarded_repeat_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
       condition: Box::new(conj),
       body: Some(Box::new(body))}),
     BlockItem::Statement(Statement::While {
-      loop_id: None,
+      id: Uuid::new_v4(),
       runoff_link_id: runoff_link_id.clone(),
       is_runoff: true,
       is_merged: false,
@@ -613,7 +633,7 @@ fn expect_guarded_repeat_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
       condition: Box::new(cond1),
       body: Some(Box::new(runoff_body_1))}),
     BlockItem::Statement(Statement::While {
-      loop_id: None,
+      id: Uuid::new_v4(),
       runoff_link_id: runoff_link_id.clone(),
       is_runoff: true,
       is_merged: false,
@@ -708,7 +728,7 @@ fn expect_while_scheduled(sexps: &[Sexp], ctx: &Context) -> Statement {
     BlockItem::Statement(Statement::Compound(unrolls1)),
     BlockItem::Statement(Statement::Compound(unrolls2)),
     BlockItem::Statement(Statement::While {
-      loop_id: None,
+      id: Uuid::new_v4(),
       runoff_link_id: runoff_link_id.clone(),
       is_runoff: false,
       is_merged: true,
@@ -716,7 +736,7 @@ fn expect_while_scheduled(sexps: &[Sexp], ctx: &Context) -> Statement {
       condition: Box::new(conj),
       body: Some(Box::new(bodies))}),
     BlockItem::Statement(Statement::While {
-      loop_id: None,
+      id: Uuid::new_v4(),
       runoff_link_id: runoff_link_id.clone(),
       is_runoff: true,
       is_merged: false,
@@ -724,7 +744,7 @@ fn expect_while_scheduled(sexps: &[Sexp], ctx: &Context) -> Statement {
       condition: Box::new(cond1),
       body: Some(Box::new(body1.clone()))}),
     BlockItem::Statement(Statement::While {
-      loop_id: None,
+      id: Uuid::new_v4(),
       runoff_link_id: runoff_link_id.clone(),
       is_runoff: true,
       is_merged: false,

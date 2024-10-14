@@ -1,3 +1,5 @@
+use uuid::Uuid;
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum CRel {
   Declaration(Declaration),
@@ -186,6 +188,7 @@ pub enum Statement {
   Compound(Vec<BlockItem>),
   Expression(Box<Expression>),
   GuardedRepeat {
+    id: String,
     repetitions: usize,
     condition: Box<Expression>,
     body: Box<Statement>,
@@ -202,7 +205,7 @@ pub enum Statement {
   },
   Return(Option<Box<Expression>>),
   While {
-    loop_id: Option<String>,
+    id: Uuid,
     runoff_link_id: Option<uuid::Uuid>,
     invariants: Vec<Expression>,
     condition: Box<Expression>,
@@ -210,6 +213,10 @@ pub enum Statement {
     is_runoff: bool,
     is_merged: bool,
   },
+}
+
+pub fn loop_head_name(id: &Uuid) -> String {
+  format!("_loop_head_{}", id.to_string().replace("-", ""))
 }
 
 impl Statement {

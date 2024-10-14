@@ -10,12 +10,22 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 use std::process::Command;
+use std::process::Stdio;
+use std::time::Duration;
+use wait_timeout::ChildExt;
 
-pub struct Houdafny { }
+pub struct Houdafny {
+  timeout_secs: u64,
+}
 
 impl Houdafny {
-  pub fn new() -> Self {
-    Houdafny {}
+  pub fn new(timeout_secs: Option<u64>) -> Self {
+    Houdafny {
+      timeout_secs: match timeout_secs {
+        Some(to) => to,
+        None => 3600,
+      }
+    }
   }
 }
 
@@ -42,19 +52,31 @@ impl Task for Houdafny {
 
       // Run Dafny.
       // println!("Running Dafny verification...");
-      let dafny_result = Command::new("dafny")
+      let mut child = Command::new("dafny")
         .args(["verify", "houdafny.dfy", "--error-limit", "0", "--allow-warnings"])
-        .output()
-        .expect("failure executing dafny");
-      let dafny_output = match std::str::from_utf8(&dafny_result.stdout) {
-        Ok(s) => s,
-        Err(e) => panic!("Error reading dafny output: {}", e),
+        .stdout(Stdio::piped())
+        .spawn()
+        .unwrap();
+
+      let timeout = Duration::from_secs(self.timeout_secs);
+      let status = match child.wait_timeout(timeout).unwrap() {
+        Some(status) => status,
+        None => {
+          println!("Dafny timed out.");
+          context.timed_out = true;
+          child.kill().unwrap();
+          child.wait().unwrap();
+          return;
+        }
       };
+
+      let mut dafny_output = String::new();
+      child.stdout.unwrap().read_to_string(&mut dafny_output).unwrap();
 
       // Check to see if we're done, either successfull verification or
       // some failure without bad invariants.
       println!("{}", dafny_output);
-      if dafny_result.status.success() {
+      if status.success() {
         context.verified = true;
         break;
       }
@@ -90,9 +112,9 @@ impl <'a> InvarRemover<'a> {
 impl CRelVisitor for InvarRemover<'_> {
   fn visit_statement(&mut self, stmt: &mut Statement) {
     match stmt {
-      Statement::While{loop_id, invariants, ..} => {
-        if loop_id.is_some() && !invariants.is_empty() {
-          self.bad_invars.get(loop_id.as_ref().unwrap()).map(|to_remove| {
+      Statement::While{id, invariants, ..} => {
+        if !invariants.is_empty() {
+          self.bad_invars.get(&loop_head_name(id)).map(|to_remove| {
             let mut to_remove = to_remove.iter().collect::<Vec<_>>();
             to_remove.sort();
             to_remove.reverse();

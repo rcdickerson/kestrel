@@ -41,7 +41,8 @@ impl Blockify for Statement {
       Statement::Expression(expr) => {
         Statement::Expression(Box::new(expr.blockify()))
       },
-      Statement::GuardedRepeat{repetitions, condition, body} => Statement::GuardedRepeat {
+      Statement::GuardedRepeat{id, repetitions, condition, body} => Statement::GuardedRepeat {
+        id: id.clone(),
         repetitions: *repetitions,
         condition: condition.clone(),
         body: Box::new(body.blockify()),
@@ -61,9 +62,9 @@ impl Blockify for Statement {
         }
       },
       Statement::Return(_) => self.clone(),
-      Statement::While{loop_id, runoff_link_id, invariants: invariant, condition, body, is_runoff, is_merged} => {
+      Statement::While{id, runoff_link_id, invariants: invariant, condition, body, is_runoff, is_merged} => {
         Statement::While {
-          loop_id: loop_id.clone(),
+          id: id.clone(),
           runoff_link_id: runoff_link_id.clone(),
           invariants: invariant.clone(),
           condition: condition.clone(),
@@ -95,12 +96,12 @@ fn blockify_items(items: &Vec<BlockItem>) -> Vec<BlockItem> {
         Statement::Expression(expr) => {
           current_block.push(BlockItem::Statement(Statement::Expression(expr)))
         },
-        Statement::GuardedRepeat{repetitions, condition, body} => {
+        Statement::GuardedRepeat{id, repetitions, condition, body} => {
           if !current_block.is_empty() {
             blocks.push(BlockItem::Statement(Statement::BasicBlock(current_block.clone())));
             current_block = vec!{};
           }
-          blocks.push(BlockItem::Statement(Statement::GuardedRepeat{repetitions, condition, body}));
+          blocks.push(BlockItem::Statement(Statement::GuardedRepeat{id, repetitions, condition, body}));
         }
         Statement::If{condition, then, els} => {
           if !current_block.is_empty() {
@@ -120,13 +121,13 @@ fn blockify_items(items: &Vec<BlockItem>) -> Vec<BlockItem> {
         Statement::Return(expr) => {
           current_block.push(BlockItem::Statement(Statement::Return(expr)))
         },
-        Statement::While{loop_id, runoff_link_id, invariants: invariant, condition, body, is_runoff, is_merged} => {
+        Statement::While{id, runoff_link_id, invariants: invariant, condition, body, is_runoff, is_merged} => {
           if !current_block.is_empty() {
             blocks.push(BlockItem::Statement(Statement::BasicBlock(current_block.clone())));
             current_block = vec!{};
           }
           blocks.push(BlockItem::Statement(Statement::While{
-            loop_id,
+            id,
             runoff_link_id,
             invariants: invariant,
             condition,

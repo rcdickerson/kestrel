@@ -21,6 +21,7 @@ pub struct Context<'a> {
   pub task_timings: Vec<(String, Duration)>,
   pub start_time: Option<Instant>,
   pub completion_time: Option<Duration>,
+  pub timed_out: bool,
   pub verified: bool,
 }
 
@@ -39,6 +40,7 @@ impl Context<'_> {
       task_timings: Vec::new(),
       start_time: None,
       completion_time: None,
+      timed_out: false,
       verified: false,
     }
   }

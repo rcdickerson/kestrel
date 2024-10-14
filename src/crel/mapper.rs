@@ -104,7 +104,8 @@ impl Statement {
       Statement::Expression(expr) => Statement::Expression (
         Box::new(mapper.map_expression(expr).map(mapper))
       ),
-      Statement::GuardedRepeat{repetitions, condition, body} => Statement::GuardedRepeat {
+      Statement::GuardedRepeat{id, repetitions, condition, body} => Statement::GuardedRepeat {
+        id: id.clone(),
         repetitions: *repetitions,
         condition: Box::new(mapper.map_expression(condition)),
         body: Box::new(mapper.map_statement(body)),
@@ -124,8 +125,8 @@ impl Statement {
       Statement::Return(expr) => Statement::Return (
         expr.as_ref().map(|expr| Box::new(mapper.map_expression(&expr).map(mapper)))
       ),
-      Statement::While{loop_id, runoff_link_id, invariants, condition, body, is_runoff, is_merged} => Statement::While {
-        loop_id: loop_id.clone(),
+      Statement::While{id, runoff_link_id, invariants, condition, body, is_runoff, is_merged} => Statement::While {
+        id: id.clone(),
         runoff_link_id: runoff_link_id.clone(),
         invariants: invariants.clone(),
         condition: Box::new(mapper.map_expression(condition).map(mapper)),

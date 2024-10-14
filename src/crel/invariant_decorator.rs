@@ -15,11 +15,9 @@ impl InvariantDecorator<'_> {
 impl CRelVisitor for InvariantDecorator<'_> {
   fn visit_statement(&mut self, statement: &mut Statement) {
     match statement {
-      Statement::While{loop_id, invariants, ..} => {
-        loop_id.as_ref().map(|id| {
-          self.imap.get(id).map(|invs| {
-            invariants.append(&mut invs.clone())
-          })
+      Statement::While{id, invariants, ..} => {
+        self.imap.get(&loop_head_name(id)).map(|invs| {
+          invariants.append(&mut invs.clone())
         });
       },
       _ => ()

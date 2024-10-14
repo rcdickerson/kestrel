@@ -1,4 +1,5 @@
 use crate::crel::ast::*;
+use uuid::Uuid;
 
 pub struct DaikonConverter {
   lh_decls: Vec<CRel>,
@@ -73,12 +74,13 @@ impl DaikonConverter {
         _ => ()
       }
     }
+    decls.dedup();
     decls
   }
 
   fn convert_statement(&mut self, stmt: Statement) -> Statement {
-    let mut stmt = stmt.clone();
-    stmt.assign_loop_ids();
+    //let stmt = stmt.clone();
+    //stmt.assign_loop_ids();
 
     match &stmt {
       Statement::BasicBlock(items) => {
@@ -97,11 +99,16 @@ impl DaikonConverter {
         Statement::Expression(
           Box::new(self.convert_expression(*expr.clone())))
       },
-      Statement::GuardedRepeat{repetitions, condition, body} => {
+      Statement::GuardedRepeat{id, repetitions, condition, body} => {
+        let checkpoint = self.push_scope();
+        let condition = Box::new(self.convert_expression(*condition.clone()));
+        let body = Box::new(self.convert_statement(*body.clone()));
+        self.pop_scope(checkpoint);
         Statement::GuardedRepeat {
+          id: id.clone(),
           repetitions: *repetitions,
-          condition: Box::new(self.convert_expression(*condition.clone())),
-          body: Box::new(self.convert_statement(*body.clone())),
+          condition,
+          body,
         }
       },
       Statement::If{condition, then, els} => {
@@ -127,9 +134,10 @@ impl DaikonConverter {
       Statement::Return(expr) => Statement::Return(expr.clone().map(|e| {
         Box::new(self.convert_expression(*e))
       })),
-      Statement::While{loop_id, runoff_link_id, invariants: invariant, condition, body, is_runoff, is_merged} => {
+      Statement::While{runoff_link_id, invariants: invariant, condition, body, is_runoff, is_merged, ..} => {
+        let new_id = Uuid::new_v4(); // Some loops may have been duplicated, assign fresh IDs.
         let checkpoint = self.push_scope();
-        let (id, lh_call) = self.add_loop_head(loop_id.clone().unwrap());
+        let (_, lh_call) = self.add_loop_head(loop_head_name(&new_id));
         let new_body = match &body {
           Option::None => Statement::Expression(Box::new(lh_call)),
           Option::Some(b) => Statement::Compound(vec![
@@ -138,7 +146,7 @@ impl DaikonConverter {
         };
         self.pop_scope(checkpoint);
         Statement::While{
-          loop_id: Some(id),
+          id: new_id,
           runoff_link_id: runoff_link_id.clone(),
           invariants: invariant.clone(),
           condition: condition.clone(),

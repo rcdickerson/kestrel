@@ -1,5 +1,6 @@
 use crate::crel::ast as crel;
 use crate::spec::condition::*;
+use uuid::Uuid;
 
 pub trait KCondToCRel {
   fn to_crel(&self, kind: StatementKind) -> crel::Statement;
@@ -36,7 +37,7 @@ impl KCondToCRel for KestrelCond {
           initializer: Some(start.to_crel()),
         };
         let wloop = crel::Statement::While {
-          loop_id: None,
+          id: Uuid::new_v4(),
           runoff_link_id: None,
           invariants: Vec::new(),
           is_runoff: false,

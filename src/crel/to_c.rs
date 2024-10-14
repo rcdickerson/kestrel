@@ -156,7 +156,7 @@ fn statement_to_c(stmt: &Statement) -> C::Statement {
     Statement::Expression(expr) => {
       C::Statement::Expression(Box::new(expression_to_c(expr)))
     },
-    Statement::GuardedRepeat{repetitions, condition, body} => {
+    Statement::GuardedRepeat{repetitions, condition, body, ..} => {
       let mut ifs = Vec::new();
       for _ in 0..*repetitions {
         ifs.push(C::Statement::If {

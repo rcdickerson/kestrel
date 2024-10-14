@@ -4,6 +4,7 @@ use crate::spec::to_crel::*;
 use lang_c::ast as c;
 use lang_c::driver::{Config, parse};
 use lang_c::span::Node;
+use uuid::Uuid;
 
 type ExprWithInvars = (Expression, Vec<Expression>);
 type StmtWithInvars = (Statement,  Vec<Expression>);
@@ -324,7 +325,7 @@ fn trans_while_statement(expr: &Node<c::WhileStatement>) -> Statement {
   let (stmt, invars) = trans_statement(&expr.node.statement);
   let body = if stmt.is_none() { None } else { Some(Box::new(stmt)) };
   Statement::While {
-    loop_id: None,
+    id: Uuid::new_v4(),
     runoff_link_id: None,
     is_runoff: false,
     is_merged: false,

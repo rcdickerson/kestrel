@@ -34,7 +34,7 @@ impl Annealer {
     let (mut best, mut best_meta) = jumper.selected_program();
     let mut best_score = fitness(&best, &best_meta);
     let mut last_best_at = 0;
-    let mut reset_count = 0;
+//    let mut reset_count = 0;
     let reset_threshold = max_iterations / 10;
     let mut rng = rand::thread_rng();
 
@@ -50,7 +50,7 @@ impl Annealer {
         println!("No new best seen in {} iterations, resetting", reset_threshold);
         jumper.set_selection(&best);
         last_best_at = k;
-        reset_count += 1;
+//        reset_count += 1;
       }
 
       let temp = 1.0 - (k as f32) / ((1 + max_iterations) as f32);
@@ -62,7 +62,7 @@ impl Annealer {
         (best, best_meta) = jumper.neighbor_program();
         best_score = neighbor_score;
         last_best_at = k;
-        reset_count = 0;
+//        reset_count = 0;
         println!("New best: {}", best_score);
         //println!("New best: {:?}", debug_info(&best, &best_meta));
         if best_score < 0.000000001 {

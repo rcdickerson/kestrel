@@ -474,9 +474,7 @@ fn expect_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
       BlockItem::Statement(body2.clone()),
     )),
   };
-  let body = Statement::Compound(vec!(
-    BlockItem::Statement(body1),
-    BlockItem::Statement(body2)));
+  let body = expect_statement(&sexps[7], ctx);
 
   let runoff_link_id = Some(uuid::Uuid::new_v4());
 

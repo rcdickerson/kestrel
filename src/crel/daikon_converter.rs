@@ -74,6 +74,7 @@ impl DaikonConverter {
         _ => ()
       }
     }
+    decls.sort();
     decls.dedup();
     decls
   }

@@ -96,7 +96,7 @@ define_language! {
     "<|>" = Rel([Id; 2]),
     "<|"  = RelLeft(Id),
     "|>"  = RelRight(Id),
-    "while-rel" = WhileRel([Id; 6]),
+    "while-rel" = WhileRel([Id; 7]),
     "if-rel"    = IfRel([Id; 6]),
   }
 }

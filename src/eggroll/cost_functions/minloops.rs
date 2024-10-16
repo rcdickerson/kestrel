@@ -36,14 +36,14 @@ impl CostFunction<Eggroll> for MinLoops {
     {
       let num_loops = match enode {
         Eggroll::While(children) => {
-          1 + costs(children[1]).num_loops
+          1 + costs(children[2]).num_loops
         },
         Eggroll::WhileNoBody(_) => 1,
         Eggroll::WhileRel(children) => {
-          1 + costs(children[4]).num_loops + costs(children[5]).num_loops
+          1 + costs(children[6]).num_loops
         },
         Eggroll::GuardedRepeatWhile(children) => {
-          1 + costs(children[4]).num_loops + costs(children[5]).num_loops
+          1 + costs(children[5]).num_loops + costs(children[6]).num_loops
         },
         _ => {
           enode.fold(0, |sum, id| sum + costs(id).num_loops)

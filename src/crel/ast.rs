@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use uuid::Uuid;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -60,7 +61,7 @@ impl Declaration {
   }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct ParameterDeclaration {
   pub specifiers: Vec<DeclarationSpecifier>,
   pub declarator: Option<Declarator>,
@@ -85,6 +86,53 @@ impl ParameterDeclaration {
       declarator: self.declarator.as_ref().unwrap().clone(),
       initializer: None,
     })
+  }
+}
+
+impl PartialOrd for ParameterDeclaration {
+  fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+    match &self.declarator {
+      None => match other.declarator {
+        None => Some(Ordering::Equal),
+        _ => Some(Ordering::Less),
+      },
+      Some(decl) => match &other.declarator {
+        None => Some(Ordering::Greater),
+        Some(other_decl) => decl.name().partial_cmp(&other_decl.name()),
+      }
+    }
+  }
+}
+
+impl PartialEq for ParameterDeclaration {
+  fn eq(&self, other: &ParameterDeclaration) -> bool {
+    match &self.declarator {
+      None => match other.declarator {
+        None => true,
+        _ => false,
+      },
+      Some(decl) => match &other.declarator {
+        None => false,
+        Some(other_decl) => decl.name().eq(&other_decl.name()),
+      }
+    }
+  }
+}
+
+impl Eq for ParameterDeclaration { }
+
+impl Ord for ParameterDeclaration {
+  fn cmp(&self, other: &Self) -> Ordering {
+    match &self.declarator {
+      None => match other.declarator {
+        None => Ordering::Equal,
+        _ => Ordering::Less,
+      },
+      Some(decl) => match &other.declarator {
+        None => Ordering::Greater,
+        Some(other_decl) => decl.name().cmp(&other_decl.name()),
+      }
+    }
   }
 }
 

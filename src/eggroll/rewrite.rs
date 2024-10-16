@@ -17,7 +17,7 @@ pub fn rewrites() -> Vec<Rewrite<Eggroll, ()>> {
     rewrite!("embed-hom-r"; "(|> (seq ?x ?y))" => "(seq (|> ?x) (|> ?y))"),
     rewrite!("while-align"; "(<|> (while ?e1 ?i1 ?c1) (while ?e2 ?i2 ?c2))"
                          => "(while-rel ?e1 ?e2 ?i1 ?i2 ?c1 ?c2 (<|> ?c1 ?c2))"),
-    rewrite!("while-sched"; "(while-rel ?e1 ?e2 ?i1 ?i2 ?c1 ?c2)"
+    rewrite!("while-sched"; "(while-rel ?e1 ?e2 ?i1 ?i2 ?c1 ?c2 ?b)"
              => { ScheduleWhile {
                     cond1: "?e1".parse().unwrap(),
                     cond2: "?e2".parse().unwrap(),
@@ -25,6 +25,7 @@ pub fn rewrites() -> Vec<Rewrite<Eggroll, ()>> {
                     inv2: "?i2".parse().unwrap(),
                     body1: "?c1".parse().unwrap(),
                     body2: "?c2".parse().unwrap(),
+                    combined: "?b".parse().unwrap(),
                 }}),
     rewrite!("while-unroll"; "(while ?e ?i ?c)"
              => { UnrollWhile {
@@ -88,6 +89,7 @@ struct ScheduleWhile {
   inv2: Var,
   body1: Var,
   body2: Var,
+  combined: Var,
 }
 impl Applier<Eggroll, ()> for ScheduleWhile {
   fn apply_one(&self,
@@ -104,7 +106,8 @@ impl Applier<Eggroll, ()> for ScheduleWhile {
       [rep_id,
        subst[self.cond1], subst[self.cond2],
        subst[self.inv1], subst[self.inv2],
-       subst[self.body1], subst[self.body2]]));
+       subst[self.body1], subst[self.body2],
+       subst[self.combined]]));
     if egraph.union(matched_id, rep_while) {
       vec![rep_while]
     } else {

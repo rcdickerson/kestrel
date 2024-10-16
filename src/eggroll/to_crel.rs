@@ -590,6 +590,8 @@ fn expect_guarded_repeat_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
     )),
   };
 
+  let combined_body = expect_statement(&sexps[7], ctx);
+
   let repeats = Statement::Relation {
     lhs: Box::new(Statement::GuardedRepeat{
       id: Uuid::new_v4().to_string().replace("-", ""),
@@ -606,8 +608,7 @@ fn expect_guarded_repeat_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
   };
 
   let body = Statement::Compound(vec!(
-    BlockItem::Statement(body1),
-    BlockItem::Statement(body2),
+    BlockItem::Statement(combined_body),
     BlockItem::Statement(repeats),
   ));
 

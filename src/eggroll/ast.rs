@@ -51,7 +51,7 @@ define_language! {
     // "while-scheduled" = WhileScheduled([Id; 10]),
 
     "guarded-repeat" = GuardedRepeat([Id; 3]),
-    "guarded-repeat-while-rel" = GuardedRepeatWhile([Id; 7]),
+    "guarded-repeat-while-rel" = GuardedRepeatWhile([Id; 8]),
 
     // Invariants
     "invariants" = Invariants(Vec<Id>),

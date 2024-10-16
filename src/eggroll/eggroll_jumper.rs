@@ -5,6 +5,7 @@ use crate::eggroll::ast::*;
 use crate::eggroll::to_crel::GuardedRepetitions;
 use egg::*;
 use rand::seq::SliceRandom;
+use std::collections::HashMap;
 use std::collections::HashSet;
 use std::collections::VecDeque;
 
@@ -19,6 +20,7 @@ pub struct EggrollJumper {
   selected: Option<ChoicePath<Eggroll>>,
   possible_changes: Vec<ChoicePath<Eggroll>>,
   neighbor: Option<ChoicePath<Eggroll>>,
+  loop_reps_by_id: HashMap<usize, (usize, usize)>,
 }
 
 impl EggrollJumper {
@@ -49,6 +51,7 @@ impl EggrollJumper {
       selected: None,
       possible_changes: Vec::new(),
       neighbor: None,
+      loop_reps_by_id: HashMap::new(),
     }
   }
 
@@ -100,7 +103,7 @@ impl EggrollJumper {
             (Some(lhs), Some(rhs)) => {
               reps.set_loop_repetitions(id.clone(), lhs, rhs)
             },
-            _ => reps.set_loop_repetitions(id.clone(), 1, 1),
+            _ => reps.set_loop_repetitions(id.clone(), 0, 0),
           }
         },
         _ => (),
@@ -157,20 +160,23 @@ impl Jumper<Eggroll, GuardedRepetitions> for EggrollJumper {
         },
       },
       Eggroll::GuardedRepeatWhile(_) => {
-        let lhs_reps = to_change.choice_node().get_metadata_usize(&REPETITIONS_LHS_KEY.to_string());
-        let rhs_reps = to_change.choice_node().get_metadata_usize(&REPETITIONS_RHS_KEY.to_string());
-        match (lhs_reps, rhs_reps) {
-          (Some(lhs_reps), Some(rhs_reps)) => {
-            if lhs_reps + 1 != rhs_reps { push_with_loop_repetitions(lhs_reps + 1, rhs_reps) };
-            if lhs_reps != rhs_reps + 1 { push_with_loop_repetitions(lhs_reps, rhs_reps + 1) };
-            if lhs_reps > 0 && lhs_reps - 1 != rhs_reps {
-              push_with_loop_repetitions(lhs_reps - 1, rhs_reps);
-            }
-            if rhs_reps > 0 && lhs_reps != rhs_reps - 1 {
-              push_with_loop_repetitions(lhs_reps, rhs_reps - 1);
-            }
-          },
-          _ => push_with_loop_repetitions(1, 0),
+        let lhs_reps_lookup = to_change.choice_node().get_metadata_usize(&REPETITIONS_LHS_KEY.to_string());
+        let rhs_reps_lookup = to_change.choice_node().get_metadata_usize(&REPETITIONS_RHS_KEY.to_string());
+        let (lhs_reps, rhs_reps) = match (lhs_reps_lookup, rhs_reps_lookup) {
+          (Some(lhs_reps), Some(rhs_reps)) => (lhs_reps, rhs_reps),
+          _ => match self.loop_reps_by_id.get(&to_change.choice_node().id()) {
+            None => {self.loop_reps_by_id.insert(to_change.choice_node().id(), (1, 0)); (1, 0)},
+            Some(reps) => *reps,
+          }
+        };
+
+        if lhs_reps + 1 != rhs_reps { push_with_loop_repetitions(lhs_reps + 1, rhs_reps) };
+        if lhs_reps != rhs_reps + 1 { push_with_loop_repetitions(lhs_reps, rhs_reps + 1) };
+        if lhs_reps > 0 && lhs_reps - 1 != rhs_reps {
+          push_with_loop_repetitions(lhs_reps - 1, rhs_reps);
+        }
+        if rhs_reps > 0 && lhs_reps != rhs_reps - 1 {
+          push_with_loop_repetitions(lhs_reps, rhs_reps - 1);
         }
       },
       _ => (),
@@ -179,6 +185,16 @@ impl Jumper<Eggroll, GuardedRepetitions> for EggrollJumper {
     options.append(&mut rep_options);
     options.append(&mut loop_rep_options);
     let chosen = options.choose(&mut rand::thread_rng()).unwrap();
+
+    let chosen_lhs_reps = chosen.get_metadata_usize(&REPETITIONS_LHS_KEY.to_string());
+    let chosen_rhs_reps = chosen.get_metadata_usize(&REPETITIONS_RHS_KEY.to_string());
+    match (chosen_lhs_reps, chosen_rhs_reps) {
+      (Some(lhs), Some(rhs)) => {
+        self.loop_reps_by_id.insert(chosen.id(), (lhs, rhs));
+      },
+      _ => (),
+    }
+
     self.neighbor = Some(self.choice_graph.switch_choice(&selection, to_change, chosen, &|choice| {
       match choice.node() {
         Eggroll::Seq(_) => false,

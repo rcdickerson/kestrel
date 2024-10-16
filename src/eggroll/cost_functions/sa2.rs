@@ -1,4 +1,3 @@
-use crate::crel::count_loops::*;
 use crate::crel::ast::CRel;
 use crate::crel::eval::*;
 use crate::eggroll::ast::*;
@@ -48,7 +47,7 @@ impl SAScore2 {
 
 /// The number of runoff loop iterations as a ratio of total loop iterations.
 /// Goal: Favor programs whose post-lockstep "runoffs" do not execute.
-fn score_runoff_iterations(program: &CRel, trace: &Trace) -> f32 {
+fn score_runoff_iterations(_: &CRel, trace: &Trace) -> f32 {
   let mut total_count = 0;
   let mut runoff_count = 0;
   for item in &trace.items {
@@ -73,7 +72,7 @@ fn score_runoff_iterations(program: &CRel, trace: &Trace) -> f32 {
 
 /// The number of unmerged loops as a percentage of total loops.
 /// Goal: Favor programs which merge loops.
-fn score_merged_loops(program: &CRel, trace: &Trace) -> f32 {
+fn score_merged_loops(_: &CRel, trace: &Trace) -> f32 {
   let mut unmerged_count = 0;
   let mut merged_count = 0;
   for item in &trace.items {
@@ -92,9 +91,6 @@ fn score_merged_loops(program: &CRel, trace: &Trace) -> f32 {
     (unmerged_count as f32) / (total_count as f32)
   }
 }
-
-//fn score_merged_ifs(program: &CRel, trace: &Trace) -> f32 {
-//}
 
 pub fn sa_score_ablate(trace_states: &Vec<State>,
                        trace_fuel: usize,
@@ -116,8 +112,7 @@ pub fn sa_score_ablate(trace_states: &Vec<State>,
     SAScore2::new(&crel, &exec.trace, af_merge_count, af_runoff_execs).total()
   };
 
-  let score = trace_states.iter().map(score_state).sum::<f32>() / (trace_states.len() as f32);
-  score
+  trace_states.iter().map(score_state).sum::<f32>() / (trace_states.len() as f32)
 }
 
 pub fn sa_score_ablate_debug(trace_states: &Vec<State>,

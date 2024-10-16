@@ -43,7 +43,6 @@ impl Task for AlignSa2 {
 
     let num_trace_states = 10;
     let trace_fuel = 100000;
-
     let init = if self.start_random { None } else { context.aligned_eggroll.clone() };
     let runner = Runner::default()
       .with_expr(&context.unaligned_eggroll().parse().unwrap())

@@ -23,7 +23,7 @@ impl Config {
 #[derive(Debug, Clone)]
 pub struct GuardedRepetitions {
   guarded_reps: HashMap<String, usize>,
-  loop_reps: HashMap<String, (usize, usize)>,
+  pub loop_reps: HashMap<String, (usize, usize)>,
 }
 
 impl GuardedRepetitions {
@@ -543,7 +543,12 @@ fn expect_guarded_repeat(sexps: &[Sexp], ctx: &Context) -> Statement {
 
 fn expect_guarded_repeat_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
   let id = expect_string(&sexps[1]);
-  let (lhs_reps, rhs_reps) = ctx.repetitions.loop_reps.get(&id).unwrap_or(&(1, 1));
+  let (lhs_reps, rhs_reps) = ctx.repetitions.loop_reps.get(&id).unwrap_or(&(0, 0));
+
+  // match ctx.repetitions.loop_reps.get(&id) {
+  //   None => println!("No rep ids found"),
+  //   Some(_) => println!("Translating with reps: {} {}", lhs_reps, rhs_reps),
+  // }
 
   let cond1 = expect_expression(&sexps[2], ctx);
   let cond2 = expect_expression(&sexps[3], ctx);

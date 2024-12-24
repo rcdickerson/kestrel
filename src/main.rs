@@ -16,7 +16,7 @@ struct Args {
   output: Option<String>,
 
   /// Output format.
-  #[arg(long, value_enum, default_value_t = OutputMode::Seahorn)]
+  #[arg(long, value_enum, default_value_t = OutputMode::Dafny)]
   output_mode: OutputMode,
 
   /// Append verification summary data as a comma-separated value line
@@ -62,25 +62,13 @@ struct Args {
 
   // Ablation study flags for cost function.
 
-  /// Disable relation size sub-metric in simulated annealing cost function.
+  /// Disable loop fusion counting in the cost function.
   #[arg(long)]
-  af_relation_size: bool,
+  af_fusion: bool,
 
-  /// Disable relational update matching sub-metric in simulated annealing cost function.
+  /// Disable runoff loop iteration counting in the cost function.
   #[arg(long)]
-  af_update_matching: bool,
-
-  /// Disable loop head matching sub-metric in simulated annealing cost function.
-  #[arg(long)]
-  af_loop_head_matching: bool,
-
-  /// Disable loop double update sub-metric in simulated annealing cost function.
-  #[arg(long)]
-  af_loop_double_updates: bool,
-
-  /// Disable loop executions sub-metric in simulated annealing cost function.
-  #[arg(long)]
-  af_loop_executions: bool,
+  af_runoffs: bool,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
@@ -98,10 +86,6 @@ enum ExtractorArg {
 
   /// Output the naive product program without doing any alignment.
   Unaligned,
-
-  /// Try random extractions from the e-graph. Number of random
-  /// elements is set with the random_extraction_bound argument.
-  Random,
 }
 
 impl ExtractorArg {
@@ -111,7 +95,6 @@ impl ExtractorArg {
       ExtractorArg::MILP       => "milp".to_string(),
       ExtractorArg::SA         => "sa".to_string(),
       ExtractorArg::Unaligned  => "unaligned".to_string(),
-      ExtractorArg::Random     => "random".to_string(),
     }
   }
 }
@@ -161,7 +144,6 @@ fn main() {
     ExtractorArg::Unaligned => workflow.add_task(AlignNone::new()),
     ExtractorArg::CountLoops => workflow.add_task(AlignCountLoops::new()),
     ExtractorArg::MILP => workflow.add_task(AlignMilp::new()),
-    ExtractorArg::Random => workflow.add_task(AlignRandom::new()),
     ExtractorArg::SA => {
       if !args.sa_start_random {
         workflow.add_task(AlignCountLoops::new());
@@ -171,12 +153,7 @@ fn main() {
           workflow.add_task(Houdafny::new(None));
         }
       }
-      let mut align_sa_task = AlignSa2::new(args.sa_start_random, args.sa_max_iterations);
-      // if args.af_relation_size { align_sa_task.ablate_relation_size() }
-      // if args.af_update_matching { align_sa_task.ablate_update_matching() }
-      // if args.af_loop_head_matching { align_sa_task.ablate_loop_head_matching() }
-      // if args.af_loop_double_updates { align_sa_task.ablate_loop_double_updates() }
-      // if args.af_loop_executions { align_sa_task.ablate_loop_executions() }
+      let align_sa_task = AlignSa2::new(args.sa_start_random, args.sa_max_iterations);
       workflow.add_task_unless_verifed(align_sa_task);
     },
   }

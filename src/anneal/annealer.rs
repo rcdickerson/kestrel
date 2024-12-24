@@ -10,18 +10,16 @@ impl Annealer {
     Annealer { }
   }
 
-  pub fn find_best<L, J, F, D, M>(&self,
+  pub fn find_best<L, J, F, M>(&self,
                                   max_iterations: usize,
                                   init: Option<RecExpr<L>>,
                                   jumper: &mut J,
-                                  fitness: F,
-                                  debug_info: D)
+                                  fitness: F)
                                   -> (RecExpr<L>, M)
     where
       L: Language,
       J: Jumper<L, M>,
       F: Fn(&RecExpr<L>, &M) -> f32,
-      D: Fn(&RecExpr<L>, &M) -> (),
       M: std::fmt::Debug,
   {
     println!("Starting simulated annealing...");
@@ -34,23 +32,22 @@ impl Annealer {
     let (mut best, mut best_meta) = jumper.selected_program();
     let mut best_score = fitness(&best, &best_meta);
     let mut last_best_at = 0;
-//    let mut reset_count = 0;
+    let mut reset_count = 0;
     let reset_threshold = max_iterations / 10;
     let mut rng = rand::thread_rng();
 
     println!("Initial score: {}", best_score);
-    //println!("{:?}", debug_info(&best, &best_meta));
 
     for k in 0..max_iterations {
       if k - last_best_at > reset_threshold {
-//        if reset_count > 2 {
-//          println!("Simulated annealing converged after {} iterations", k);
-//          break;
-//        }
+        if reset_count > 2 {
+          println!("Simulated annealing converged after {} iterations", k);
+          break;
+        }
         println!("No new best seen in {} iterations, resetting", reset_threshold);
         jumper.set_selection(&best);
         last_best_at = k;
-//        reset_count += 1;
+        reset_count += 1;
       }
 
       let temp = 1.0 - (k as f32) / ((1 + max_iterations) as f32);
@@ -62,9 +59,8 @@ impl Annealer {
         (best, best_meta) = jumper.neighbor_program();
         best_score = neighbor_score;
         last_best_at = k;
-//        reset_count = 0;
+        reset_count = 0;
         println!("New best: {}", best_score);
-        //println!("New best: {:?}", debug_info(&best, &best_meta));
         if best_score < 0.000000001 {
           println!("Simulated annealing converged after {} iterations.", k);
           return (best, best_meta);
@@ -83,7 +79,6 @@ impl Annealer {
       if transition {
         jumper.jump_to_neighbor();
         // println!("Transitioning with score {} at temperature {}", best_score, temp);
-        // debug_info(&best);
       }
     }
     println!("Simulated annealing complete.");

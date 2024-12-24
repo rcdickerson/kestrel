@@ -1,8 +1,6 @@
 pub mod align_count_loops;
 pub mod align_milp;
 pub mod align_none;
-pub mod align_random;
-pub mod align_random_with_cost;
 pub mod align_sa;
 pub mod align_sa2;
 pub mod aligned_crel;
@@ -19,8 +17,6 @@ pub mod write_summary;
 pub use align_count_loops::*;
 pub use align_milp::*;
 pub use align_none::*;
-pub use align_random::*;
-pub use align_random_with_cost::*;
 pub use align_sa::*;
 pub use align_sa2::*;
 pub use aligned_crel::*;

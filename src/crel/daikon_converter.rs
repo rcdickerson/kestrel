@@ -1,5 +1,4 @@
 use crate::crel::ast::*;
-use uuid::Uuid;
 
 pub struct DaikonConverter {
   lh_decls: Vec<CRel>,

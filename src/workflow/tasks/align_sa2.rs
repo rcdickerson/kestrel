@@ -57,10 +57,6 @@ impl Task for AlignSa2 {
         |expr, meta| { sa_score_ablate(&trace_states, trace_fuel, expr, meta,
                                        self.af_merge_count,
                                        self.af_runoff_execs) },
-        |expr, meta| { sa_score_ablate_debug(&trace_states, trace_fuel, expr, meta,
-                                       self.af_merge_count,
-                                       self.af_runoff_execs) },
-
     );
     context.aligned_eggroll.replace(best);
     context.aligned_eggroll_repetitions.replace(meta);

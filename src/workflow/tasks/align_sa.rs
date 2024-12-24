@@ -79,13 +79,6 @@ impl Task for AlignSa {
                                        self.af_loop_head_matching,
                                        self.af_loop_double_updates,
                                        self.af_loop_executions) },
-        |expr, meta| { sa_score_ablate_debug(&trace_states, trace_fuel, expr, meta,
-                                             self.af_relation_size,
-                                             self.af_update_matching,
-                                             self.af_loop_head_matching,
-                                             self.af_loop_double_updates,
-                                             self.af_loop_executions) },
-
     );
     context.aligned_eggroll.replace(best);
     context.aligned_eggroll_repetitions.replace(meta);

@@ -6,7 +6,6 @@ default-run = "kestrel"
 
 [dependencies]
 clap = { version = "4.2.1", features = ["derive"] }
-coin_cbc = "0.1.7"
 egg = "0.9.3"
 either = "1.9"
 lang-c = "0.15"
@@ -20,7 +19,7 @@ wait-timeout = "0.2.0"
 [dependencies.uuid]
 version = "1.10.0"
 features = [
-    "v4",                # Lets you generate random UUIDs
+    "v4",                # Generate random UUIDs
     "fast-rng",          # Use a faster (but still sufficiently random) RNG
     "macro-diagnostics", # Enable better diagnostics for compile-time UUIDs
 ]

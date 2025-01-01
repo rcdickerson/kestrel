@@ -76,10 +76,6 @@ enum ExtractorArg {
   /// Local cost function extractor that minimizes total number of loops.
   CountLoops,
 
- /// Non-local extraction which optimizes an objective function via
-  /// mixed-integer linear programming.
-  MILP,
-
   /// Non-local extraction which optimizes an objective function via simulated
   /// annealing.
   SA,
@@ -92,7 +88,6 @@ impl ExtractorArg {
   fn tag(&self) -> String {
     match self {
       ExtractorArg::CountLoops => "count-loops".to_string(),
-      ExtractorArg::MILP       => "milp".to_string(),
       ExtractorArg::SA         => "sa".to_string(),
       ExtractorArg::Unaligned  => "unaligned".to_string(),
     }
@@ -143,7 +138,6 @@ fn main() {
   match args.extractor {
     ExtractorArg::Unaligned => workflow.add_task(AlignNone::new()),
     ExtractorArg::CountLoops => workflow.add_task(AlignCountLoops::new()),
-    ExtractorArg::MILP => workflow.add_task(AlignMilp::new()),
     ExtractorArg::SA => {
       if !args.sa_start_random {
         workflow.add_task(AlignCountLoops::new());

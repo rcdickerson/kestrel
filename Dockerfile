@@ -18,10 +18,6 @@ RUN apt-get install -y cargo
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y dafny
 
-# Coin CBC
-RUN apt-get install -y coinor-cbc
-RUN apt-get install -y coinor-libcbc-dev
-
 # Java
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y openjdk-8-jdk

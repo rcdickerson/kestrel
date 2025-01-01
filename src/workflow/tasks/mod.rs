@@ -1,5 +1,4 @@
 pub mod align_count_loops;
-pub mod align_milp;
 pub mod align_none;
 pub mod align_sa;
 pub mod align_sa2;
@@ -15,7 +14,6 @@ pub mod write_product;
 pub mod write_summary;
 
 pub use align_count_loops::*;
-pub use align_milp::*;
 pub use align_none::*;
 pub use align_sa::*;
 pub use align_sa2::*;

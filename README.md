@@ -12,10 +12,6 @@ given to various off-the-shelf non-relational verifiers.
 KestRel requires the following system libraries and utilites:
 
 - [Clang](https://clang.llvm.org/) for C parsing and compiling.
-- [Coin CBC](https://github.com/coin-or/Cbc) for mixed-integer linear
-  programming extraction. At the time of writing, these dependencies
-  can be installed on Debian-based Linux distributions via `apt-get
-  install coinor-cbc coinor-libcbc-dev`
 - [Daikon](https://plse.cs.washington.edu/daikon/) for invariant
   detection, including the
   [Kvasir](http://plse.cs.washington.edu/daikon/download/doc/daikon.html#Kvasir)

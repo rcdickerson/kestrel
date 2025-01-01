@@ -1,7 +1,6 @@
 pub mod align_count_loops;
 pub mod align_none;
 pub mod align_sa;
-pub mod align_sa2;
 pub mod aligned_crel;
 pub mod aligned_output;
 pub mod compute_space;
@@ -16,7 +15,6 @@ pub mod write_summary;
 pub use align_count_loops::*;
 pub use align_none::*;
 pub use align_sa::*;
-pub use align_sa2::*;
 pub use aligned_crel::*;
 pub use aligned_output::*;
 pub use compute_space::*;

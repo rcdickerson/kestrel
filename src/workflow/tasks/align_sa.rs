@@ -9,11 +9,8 @@ use egg::*;
 pub struct AlignSa {
   start_random: bool,
   max_iterations: usize,
-  af_relation_size: bool,
-  af_update_matching: bool,
-  af_loop_head_matching: bool,
-  af_loop_double_updates: bool,
-  af_loop_executions: bool,
+  ablate_fusion: bool,
+  ablate_runoffs: bool,
 }
 
 impl AlignSa {
@@ -21,32 +18,17 @@ impl AlignSa {
     AlignSa {
       start_random,
       max_iterations,
-      af_relation_size: true,
-      af_update_matching: true,
-      af_loop_head_matching: true,
-      af_loop_double_updates: true,
-      af_loop_executions: true,
-    }
+      ablate_fusion: false,
+      ablate_runoffs: false,
+   }
   }
 
-  pub fn ablate_relation_size(&mut self) {
-    self.af_relation_size = false;
+  pub fn ablate_fusion(&mut self) {
+    self.ablate_fusion = true;
   }
 
-  pub fn ablate_update_matching(&mut self) {
-    self.af_update_matching = false;
-  }
-
-  pub fn ablate_loop_head_matching(&mut self) {
-    self.af_loop_head_matching = false;
-  }
-
-  pub fn ablate_loop_double_updates(&mut self) {
-    self.af_loop_double_updates = false;
-  }
-
-  pub fn ablate_loop_executions(&mut self) {
-    self.af_loop_executions = false;
+  pub fn ablate_runoffs(&mut self) {
+    self.ablate_runoffs = true;
   }
 }
 
@@ -60,8 +42,7 @@ impl Task for AlignSa {
     }
 
     let num_trace_states = 10;
-    let trace_fuel = 100000000;
-
+    let trace_fuel = 100000;
     let init = if self.start_random { None } else { context.aligned_eggroll.clone() };
     let runner = Runner::default()
       .with_expr(&context.unaligned_eggroll().parse().unwrap())
@@ -69,16 +50,13 @@ impl Task for AlignSa {
     let generator = context.unaligned_crel().fundefs.get(&"_test_gen".to_string());
     let decls = context.unaligned_crel().global_decls_and_params();
     let trace_states = rand_states_satisfying(
-      num_trace_states, &context.spec().pre, Some(&decls), generator, 1000);
+      num_trace_states, &context.spec().pre, Some(&decls), generator, 100000);
     let mut jumper = EggrollJumper::new(&runner.egraph);
     let annealer = Annealer::new();
     let (best, meta) = annealer.find_best(self.max_iterations, init, &mut jumper,
-        |expr, meta| { sa_score_ablate(&trace_states, trace_fuel, expr, meta,
-                                       self.af_relation_size,
-                                       self.af_update_matching,
-                                       self.af_loop_head_matching,
-                                       self.af_loop_double_updates,
-                                       self.af_loop_executions) },
+        |expr, meta| { sa_score(&trace_states, trace_fuel, expr, meta,
+                                self.ablate_fusion,
+                                self.ablate_runoffs) },
     );
     context.aligned_eggroll.replace(best);
     context.aligned_eggroll_repetitions.replace(meta);

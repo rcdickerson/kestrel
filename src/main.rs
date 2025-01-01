@@ -35,7 +35,7 @@ struct Args {
 
   /// Which technique to use for extracting the aligned program from the
   /// saturated e-graph.
-  #[arg(value_enum, default_value_t = ExtractorArg::CountLoops)]
+  #[arg(value_enum, default_value_t = ExtractorArg::SA)]
   extractor: ExtractorArg,
 
   /// If set, infers invariants via Houdini-style refinement.
@@ -147,7 +147,9 @@ fn main() {
           workflow.add_task(Houdafny::new(None));
         }
       }
-      let align_sa_task = AlignSa2::new(args.sa_start_random, args.sa_max_iterations);
+      let mut align_sa_task = AlignSa::new(args.sa_start_random, args.sa_max_iterations);
+      if args.af_fusion  { align_sa_task.ablate_fusion() }
+      if args.af_runoffs { align_sa_task.ablate_runoffs() }
       workflow.add_task_unless_verifed(align_sa_task);
     },
   }

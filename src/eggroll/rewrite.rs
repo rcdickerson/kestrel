@@ -42,8 +42,6 @@ pub fn rewrites() -> Vec<Rewrite<Eggroll, ()>> {
     //              (if-else (&& ?c1 (not ?c2)) (<|> ?t1 ?e2)
     //              (if-else (&& (not ?c1) ?c2) (<|> ?e1 ?t2)
     //              (<|> ?e1 ?e2))))"),
-    // rewrite!("push-rel-if-l"; "(<|> (if-else ?c ?t ?e) ?s)" => "(if-rel ?c (const-int 1) ?t ?s ?e ?s)"),
-    // rewrite!("push-rel-if-r"; "(<|> ?s (if-else ?c ?t ?e))" => "(if-rel (const-int 1) ?c ?s ?t ?s ?e)"),
 
     rewrite!("push-rel-if-l"; "(<|> (if ?c ?t) ?s)" => "(if-else ?c (<|> ?t ?s) ?s)"),
     rewrite!("push-rel-if-else-l"; "(<|> (if-else ?c ?t ?e) ?s)" => "(if-else ?c (<|> ?t ?s) (<|> ?e ?s))"),

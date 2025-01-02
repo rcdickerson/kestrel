@@ -54,7 +54,7 @@ void _test_gen(int _o1, int _cardSet1, int _cardRarity1, int _cardId1, int _card
 
 void left(void) {
 
-     int ret;
+     int ret = 0;
 
      if (left_o1 == left_o2){
        ret = 0;
@@ -83,7 +83,7 @@ void left(void) {
 
 void right(void) {
 
-     int ret;
+     int ret = 0;
 
      if (right_o1 == right_o2){
        ret = 0;

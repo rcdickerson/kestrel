@@ -41,7 +41,7 @@ int compare(int o1_departureTimeIsBefore,
             int o2_departureTransportCompany,
             int o2_departureTransportType) {
 
-      int rv;
+      int rv = 0;
       // Times
       // ---- rv = Int.compare(o1.departureTime, o2.departureTime);
       if (o1_departureTime < o2_departureTime) {

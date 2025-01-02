@@ -28,7 +28,6 @@ impl SAScore {
   }
 
   pub fn total(&self) -> f32 {
-    println!("Ablate fusion: {}", self.ablate_fusion);
     (if self.ablate_fusion {0.5} else {0.5 * self.merged_loops}) +
     (if self.ablate_runoffs {0.5} else {0.5 * self.runoff_iterations})
   }

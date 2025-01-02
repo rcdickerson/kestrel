@@ -37,7 +37,7 @@ void compare(int o1,
              int o2_getCardId,
              int o2_cardType) {
 
-     int ret;
+     int ret = 0;
 
      if (o1 == o2){
        ret = 0;

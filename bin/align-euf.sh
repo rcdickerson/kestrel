@@ -56,10 +56,10 @@ do
             output_file="$output_dir/$file_basename-${technique:0:3}".c
         fi
 
-        (time timeout 5m $kestrel_exec --infer-invariants --output-summary $summary_file -i $file -o $output_file --output-mode=$out_mode $technique --sa-max-iterations=12000) > "$log_dir/$file_basename".log 2>&1
+        (time timeout 5m $kestrel_exec --infer-invariants --output-summary $summary_file -i $file -o $output_file --output-mode=$out_mode $technique --sa-max-iterations=120000) > "$log_dir/$file_basename".log 2>&1
 
         # sa random start:
-        # (time timeout 5m $kestrel_exec --infer-invariants --output-summary $summary_file -i $file -o $output_file --output-mode=$out_mode $technique --sa-start-random --sa-max-iterations=12000) > "$log_dir/$file_basename".log 2>&1
+        # (time timeout 5m $kestrel_exec --infer-invariants --output-summary $summary_file -i $file -o $output_file --output-mode=$out_mode $technique --sa-start-random --sa-max-iterations=120000) > "$log_dir/$file_basename".log 2>&1
     done
   done
 done

@@ -16,7 +16,7 @@
 
 void cmp(int o1_score, int o1_seq1start, int o1_seq2start,
          int o2_score, int o2_seq1start, int o2_seq2start) {
-    int ret;
+    int ret = 0;
 
     // first compare scores
     if (o1_score > o2_score) {
@@ -27,10 +27,10 @@ void cmp(int o1_score, int o1_seq1start, int o1_seq2start,
     }
 
     // scores are equal, go on with the position
-    else if ((o1_seq1start + o1_seq2start) < (o2_seq1start+o2_seq2start)) {
+    else if ((o1_seq1start + o1_seq2start) < (o2_seq1start + o2_seq2start)) {
         ret = -1; /* o1 is farther left */
     }
-    else if ((o1_seq1start + o1_seq2start) > (o2_seq1start+o2_seq2start)) {
+    else if ((o1_seq1start + o1_seq2start) > (o2_seq1start + o2_seq2start)) {
         ret = 1; /* o2 is farther left */
     }
     else {

@@ -101,6 +101,7 @@ impl EggrollJumper {
             .get_metadata_usize(&REPETITIONS_RHS_KEY.to_string());
           match (lhs_reps, rhs_reps) {
             (Some(lhs), Some(rhs)) => {
+              println!("Reps: ({}, {})", lhs, rhs);
               reps.set_loop_repetitions(id.clone(), lhs, rhs)
             },
             _ => reps.set_loop_repetitions(id.clone(), 0, 0),

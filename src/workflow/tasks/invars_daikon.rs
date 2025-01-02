@@ -115,7 +115,10 @@ impl Task for InvarsDaikon {
     }
     let mut invariants = match parse_invariants(&daikon_output) {
       Result::Ok(map) => map.iter().map(|(key, val)| {
-        let crel_val = val.iter().map(|v| v.to_crel()).collect::<Vec<_>>();
+        let crel_val = val.iter()
+          .filter(|v| !v.contains_binop_a(&crate::spec::condition::CondABinop::Mod))
+          .map(|v| v.to_crel())
+          .collect::<Vec<_>>();
         (key.clone(), crel_val)
       }).collect::<HashMap<_, _>>(),
       Result::Err(err) => panic!("Error parsing Daikon invariants: {}", err),

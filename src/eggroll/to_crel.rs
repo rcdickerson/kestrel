@@ -511,7 +511,7 @@ fn expect_guarded_repeat(sexps: &[Sexp], ctx: &Context) -> Statement {
 
 fn expect_guarded_repeat_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
   let id = expect_string(&sexps[1]);
-  let (lhs_reps, rhs_reps) = ctx.repetitions.loop_reps.get(&id).unwrap_or(&(0, 0));
+  let (lhs_reps, rhs_reps) = ctx.repetitions.loop_reps.get(&id).unwrap_or(&(1, 0));
 
   let cond1 = expect_expression(&sexps[2], ctx);
   let cond2 = expect_expression(&sexps[3], ctx);

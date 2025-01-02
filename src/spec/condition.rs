@@ -68,6 +68,20 @@ impl CondAExpr {
       },
     }
   }
+
+  pub fn contains_binop_a(&self, binop: &CondABinop) -> bool {
+    match self {
+      CondAExpr::Var(..) => false,
+      CondAExpr::QualifiedVar{..} => false,
+      CondAExpr::Int(_) => false,
+      CondAExpr::Float(_) => false,
+      CondAExpr::Unop{aexp, ..} => aexp.contains_binop_a(binop),
+      CondAExpr::Binop{lhs, rhs, op} => {
+        op == binop || lhs.contains_binop_a(binop) || rhs.contains_binop_a(binop)
+      },
+      CondAExpr::FunCall{args, ..} => args.iter().any(|arg| arg.contains_binop_a(binop))
+    }
+  }
 }
 
 pub fn qualified_state_var(exec: &String, name: &String) -> String {
@@ -132,6 +146,18 @@ impl CondBExpr {
         vars.insert(name.clone());
         vars
       }
+    }
+  }
+
+  pub fn contains_binop_a(&self, binop: &CondABinop) -> bool {
+    match self {
+      CondBExpr::True => false,
+      CondBExpr::False => false,
+      CondBExpr::Unop{bexp, ..} => bexp.contains_binop_a(binop),
+      CondBExpr::BinopA{lhs, rhs, ..} => lhs.contains_binop_a(binop) || rhs.contains_binop_a(binop),
+      CondBExpr::BinopB{lhs, rhs, ..} => lhs.contains_binop_a(binop) || rhs.contains_binop_a(binop),
+      CondBExpr::Forall{condition, ..} => condition.contains_binop_a(binop),
+      CondBExpr::Predicate{args, ..} => args.iter().any(|arg| arg.contains_binop_a(binop)),
     }
   }
 }

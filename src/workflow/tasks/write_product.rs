@@ -1,3 +1,6 @@
+//! Writes the final product program to disk in accordance with the
+//! user-provided [OutputMode].
+
 use crate::output_mode::*;
 use crate::workflow::context::*;
 use crate::workflow::task::*;

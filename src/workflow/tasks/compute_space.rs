@@ -1,3 +1,6 @@
+//! Computes the size of the space of possibile alignments represented
+//! by the [Context]'s e-graph.
+
 use crate::eggroll::ast::*;
 use crate::workflow::context::*;
 use crate::workflow::task::*;

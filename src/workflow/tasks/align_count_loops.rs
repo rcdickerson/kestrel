@@ -1,3 +1,13 @@
+//! Extracts an aligned program from the [Context]'s e-graph using the
+//! [MinLoops] cost function.
+
+//! [MinLoops] is a *local* cost function (each node cost depends only
+//! on the cost of its direct children), leading to very efficient
+//! extraction. However, it only considers syntactic properties around
+//! the number of merged loops, and is not capable of finding
+//! alignments with desirable semantic properties which require
+//! operations such as loop scheduling or unrolling.
+
 use crate::eggroll::cost_functions::minloops::*;
 use crate::workflow::context::*;
 use crate::workflow::task::*;

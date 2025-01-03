@@ -1,3 +1,5 @@
+//! Converts the [Context]'s aligned [Eggroll] into [CRel].
+
 use crate::crel::ast::*;
 use crate::crel::mapper::*;
 use crate::eggroll::to_crel::*;

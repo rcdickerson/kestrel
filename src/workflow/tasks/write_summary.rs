@@ -1,3 +1,6 @@
+//! Writes an entry to a summary file. This file summarizes results
+//! for batch KestRel runs.
+
 use std::fs::OpenOptions;
 use std::io::prelude::*;
 use crate::workflow::context::*;

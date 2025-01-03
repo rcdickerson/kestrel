@@ -1,3 +1,6 @@
+//! Converts the [Context]'s aligned [CRel] into the desired output as
+//! specified by the user-provided [OutputMode].
+
 use crate::output_mode::*;
 use crate::workflow::context::*;
 use crate::workflow::task::*;

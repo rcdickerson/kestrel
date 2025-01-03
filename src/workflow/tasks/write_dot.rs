@@ -1,3 +1,6 @@
+//! Writes the [Context]'s e-graph as a
+//! [GraphViz](https://graphviz.org) dot file.
+
 use crate::eggroll::rewrite::*;
 use crate::workflow::context::*;
 use crate::workflow::task::*;

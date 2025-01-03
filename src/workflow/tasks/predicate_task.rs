@@ -1,3 +1,6 @@
+//! A meta-[Task] which executes its enclosed task only when some
+//! predicate holds during the workflow execution.
+
 use crate::workflow::context::*;
 use crate::workflow::task::*;
 

@@ -1,3 +1,10 @@
+//! Extracts an aligned program using simulated annealing over
+//! candidate programs taken from the [Context]'s e-graph. The
+//! simulated annealing takes much longer to converge to an extraction
+//! than, e.g., counting fused loops, but is able to find alignments
+//! with desirable semantic properties which require operations like
+//! loops scheduling and unrolling.
+
 use crate::anneal::*;
 use crate::crel::eval::*;
 use crate::eggroll::cost_functions::sa::*;

@@ -1,3 +1,5 @@
+//! Prints some piece of information to the console.
+
 use crate::workflow::context::*;
 use crate::workflow::task::*;
 

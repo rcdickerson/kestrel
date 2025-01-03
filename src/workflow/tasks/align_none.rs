@@ -1,3 +1,6 @@
+//! Creates a product program with no alignment by naively
+//! concatenating the input programs together.
+
 use crate::workflow::context::*;
 use crate::workflow::task::*;
 

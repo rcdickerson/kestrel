@@ -1,3 +1,5 @@
+//! A collection of [Task]s used in various KestRel [Workflow]s.
+
 pub mod align_count_loops;
 pub mod align_none;
 pub mod align_sa;

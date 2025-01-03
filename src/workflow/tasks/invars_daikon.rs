@@ -1,3 +1,7 @@
+//! Invokes Daikon to discover candidate invariants. Decorates the
+//! [Context]'s aligned [CRel] with the invariant candidates. (The set
+//! of candidates can be further refined with, e.g., [Houdafny].)
+
 use crate::crel::ast::*;
 use crate::crel::mapper::*;
 use crate::daikon::invariant_parser::*;

@@ -1,3 +1,7 @@
+//! [Houdini](https://www.cs.utexas.edu/~isil/cs389L/houdini-6up.pdf)-style
+//! invariant inference which uses Dafny to check candidate
+//! invariants.
+
 use crate::crel::ast::*;
 use crate::crel::visitor::CRelVisitor;
 use crate::output_mode::*;
@@ -14,7 +18,11 @@ use std::process::Stdio;
 use std::time::Duration;
 use wait_timeout::ChildExt;
 
+/// A [Task] for performing invariant inference using the Houdafny
+/// pipeline.
 pub struct Houdafny {
+  /// How long in seconds we are willing to wait for Dafny to decide
+  /// validity of candidate invariants.
   timeout_secs: u64,
 }
 

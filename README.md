@@ -164,4 +164,5 @@ Run `make` in the `theory` directory.
 | Alignment Equivalence | Definition 3.3 | CoreRel/Equiv.v  | `align_eqv` |
 | Reification preserves Eqivalence | Theorem 3.4 | CoreRel/Equiv.v | `reify_preserves_eqv` |
 | Soundness of Product Program | Corollary 3.5 |  CoreRel/Equiv.v | `product_program_sound` |
+| CoreRel Realignment Laws | Figure 13 |  CoreRel/Equiv.v | `whileR_unroll`, etc. |
 | Stuttered Loop Example | Figure 3 | CoreRel/Examples.v | `paper_example1_eqv` |

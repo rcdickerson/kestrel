@@ -127,3 +127,41 @@ fail without this.)
 See the [docker run
 documentation](https://docs.docker.com/reference/cli/docker/container/run/)
 for more ways to use the image.
+
+
+## Theory
+
+The `theory` directory contains a Coq formalization of the CoreRel
+calculus and its metatheory, as described in Sections 3 of the paper.
+
+### Requirements
+
+- `coq` (8.19.2, although other versions may also work)
+- `coq-stdpp` (>= 1.11.0)
+
+The easiest way to install `coq-stdpp` is via opam:
+
+```
+opam repo add coq-released https://coq.inria.fr/opam/released
+opam update
+opam install coq-stdpp
+```
+
+### Building
+
+Run `make` in the `theory` directory.
+
+### Key Definitions
+
+| Definition  / Theorem   |     Paper     |       File   | Name |
+| ------------------ | -------- | ------- | ------- |
+| Imp Syntax  |     Figure 10     |  IMP/Syntax.v |  `com` |
+| Imp Semantics  |                   |  IMP/Semantics.v |  `ceval` |
+| CoreRel Syntax  |     Figure 10     |  CoreRel/Syntax.v |  `algn_com` |
+| CoreRel Semantics  |     Figure 11     |  CoreRel/Semantics.v |  `aceval` |
+| Embedding is Sound   | Theorem 3.2 |  CoreRel/Embed.v |`embed_is_iso` |
+| Reification of CoreRel  |     Figure 12     |  CoreRel/Embed.v |  `reify_com` |
+| Alignment Equivalence | Definition 3.3 | CoreRel/Equiv.v  | `align_eqv` |
+| Reification preserves Eqivalence | Theorem 3.4 | CoreRel/Equiv.v | `reify_preserves_eqv` |
+| Soundness of Product Program | Corollary 3.5 |  CoreRel/Equiv.v | `product_program_sound` |
+| Stuttered Loop Example | Figure 3 | CoreRel/Examples.v | `paper_example1_eqv` |

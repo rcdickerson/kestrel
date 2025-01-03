@@ -1,3 +1,5 @@
+//! A utility for constructing C program syntax.
+
 mod expression;
 mod function;
 mod method;

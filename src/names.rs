@@ -1,3 +1,5 @@
+//! Utilities for working with names in program syntax.
+
 use std::collections::HashSet;
 
 pub trait CollectVars {

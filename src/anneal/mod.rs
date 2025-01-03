@@ -1,3 +1,5 @@
+//! Simulated annealing for semantic e-graph extraction.
+
 pub mod annealer;
 pub mod choice_graph;
 pub mod choice_node;

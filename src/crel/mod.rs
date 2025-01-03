@@ -1,3 +1,5 @@
+//! A C-like intermediate language supporting relational groupings.
+
 pub mod ast;
 pub mod auto_fun_impl;
 pub mod blockify;

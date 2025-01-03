@@ -1,3 +1,5 @@
+//! Representation of unaligned programs given as input to KestRel.
+
 use crate::crel::ast::*;
 use crate::crel::blockify::*;
 use crate::crel::fundef::FunDef;

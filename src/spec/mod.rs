@@ -1,3 +1,5 @@
+//! The specification language used throughout KestRel.
+
 pub mod condition;
 pub mod parser;
 pub mod to_crel;

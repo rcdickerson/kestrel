@@ -1,3 +1,6 @@
+//! A lisp-like intermediate language defined for use with the
+//! [Egg](https://egraphs-good.github.io/) e-graph library.
+
 use egg::*;
 
 define_language! {

@@ -1,3 +1,5 @@
+//! The main entry point for KestRel executions.
+
 use clap::{Parser, ValueEnum};
 use kestrel::output_mode::*;
 use kestrel::spec::parser::parse_spec;

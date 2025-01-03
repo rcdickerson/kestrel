@@ -1,3 +1,5 @@
+//! Implementors represent some step in a KestRel [Workflow].
+
 use crate::workflow::context::*;
 
 pub trait Task {

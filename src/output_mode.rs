@@ -1,3 +1,5 @@
+//! Configuration for KestRel's supported output modes.
+
 use clap::ValueEnum;
 use crate::crel::ast::*;
 use crate::crel::auto_fun_impl::*;

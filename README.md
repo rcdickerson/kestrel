@@ -17,15 +17,17 @@ KestRel requires the following system libraries and utilites:
   [Kvasir](http://plse.cs.washington.edu/daikon/download/doc/daikon.html#Kvasir)
   Daikon frontend for C. Note Kvasir is only supported on x86
   architectures.
-- [Dafny](https://dafny.org/) for Houdini-style invariant inference
-  and certain verification pipelines.
 - [Java Runtime Environment](https://www.java.com) for running Daikon.
+- [Dafny](https://dafny.org/) for certain invariant inference and
+  verification pipelines.
 - [SeaHorn](https://seahorn.github.io/) for certain verification
   pipelines.
 
 KestRel is written in [Rust](https://www.rust-lang.org/), and manages
 its library dependencies with
 [Cargo](https://doc.rust-lang.org/cargo/).
+
+## Kicking the Tires
 
 ## Building KestRel
 

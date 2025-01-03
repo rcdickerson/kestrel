@@ -1,3 +1,7 @@
+//! An ordered collection of [Task]s which carry out some KestRel
+//! execution pipeline. Workflows are centered around a [Context],
+//! which holds data pertinent to the verification task.
+
 use crate::workflow::context::*;
 use crate::workflow::predicate_task::*;
 use crate::workflow::task::*;

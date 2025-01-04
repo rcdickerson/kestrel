@@ -24,32 +24,19 @@ impl Annealer {
   {
     println!("Starting simulated annealing...");
 
-    match init {
+    match &init {
       None => jumper.set_selection_random(),
       Some(init) => jumper.set_selection(&init),
     };
 
     let (mut best, mut best_meta) = jumper.selected_program();
     let mut best_score = fitness(&best, &best_meta);
-    let mut last_best_at = 0;
-    let mut reset_count = 0;
-    let reset_threshold = max_iterations / 10;
+
     let mut rng = rand::thread_rng();
 
     println!("Initial score: {}", best_score);
 
     for k in 0..max_iterations {
-      if k - last_best_at > reset_threshold {
-        if reset_count > 2 {
-          println!("Simulated annealing converged after {} iterations", k);
-          break;
-        }
-        println!("No new best seen in {} iterations, resetting", reset_threshold);
-        jumper.set_selection(&best);
-        last_best_at = k;
-        reset_count += 1;
-      }
-
       let temp = 1.0 - (k as f32) / ((1 + max_iterations) as f32);
       jumper.pick_random_neighbor();
       let (neighbor, neighbor_meta) = jumper.neighbor_program();
@@ -58,8 +45,6 @@ impl Annealer {
       if neighbor_score < best_score {
         (best, best_meta) = jumper.neighbor_program();
         best_score = neighbor_score;
-        last_best_at = k;
-        reset_count = 0;
         println!("New best: {}", best_score);
         if best_score < 0.000000001 {
           println!("Simulated annealing converged after {} iterations.", k);

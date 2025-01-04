@@ -18,8 +18,10 @@ pub fn rewrites() -> Vec<Rewrite<Eggroll, ()>> {
     rewrite!("rel-unembed"; "(seq (<| ?x) (|> ?y))" => "(<|> ?x ?y)"),
     rewrite!("embed-hom-l"; "(<| (seq ?x ?y))" => "(seq (<| ?x) (<| ?y))"),
     rewrite!("embed-hom-r"; "(|> (seq ?x ?y))" => "(seq (|> ?x) (|> ?y))"),
+
     rewrite!("while-align"; "(<|> (while ?e1 ?i1 ?c1) (while ?e2 ?i2 ?c2))"
                          => "(while-rel ?e1 ?e2 ?i1 ?i2 ?c1 ?c2 (<|> ?c1 ?c2))"),
+
     rewrite!("while-sched"; "(while-rel ?e1 ?e2 ?i1 ?i2 ?c1 ?c2 ?b)"
              => { ScheduleWhile {
                     cond1: "?e1".parse().unwrap(),
@@ -30,6 +32,7 @@ pub fn rewrites() -> Vec<Rewrite<Eggroll, ()>> {
                     body2: "?c2".parse().unwrap(),
                     combined: "?b".parse().unwrap(),
                 }}),
+
     rewrite!("while-unroll"; "(while ?e ?i ?c)"
              => { UnrollWhile {
                     cond: "?e".parse().unwrap(),
@@ -39,12 +42,6 @@ pub fn rewrites() -> Vec<Rewrite<Eggroll, ()>> {
     rewrite!("if-else-skip"; "(if ?c ?t)" => "(if-else ?c ?t skip)"),
     rewrite!("if-align"; "(<|> (if-else ?c1 ?t1 ?e1) (if-else ?c2 ?t2 ?e2))"
                       => "(if-rel ?c1 ?c2 ?t1 ?t2 ?e1 ?e2)"),
-
-    rewrite!("if-rel-expand"; "(if-rel ?c1 ?c2 ?t1 ?t2 ?e1 ?e2)"
-             => "(if-else (&& ?c1 ?c2)       (<|> ?t1 ?t2)
-                 (if-else (&& ?c1 (not ?c2)) (<|> ?t1 ?e2)
-                 (if-else (&& (not ?c1) ?c2) (<|> ?e1 ?t2)
-                 (<|> ?e1 ?e2))))"),
 
     rewrite!("push-rel-if-l"; "(<|> (if ?c ?t) ?s)" => "(if-else ?c (<|> ?t ?s) ?s)"),
     rewrite!("push-rel-if-else-l"; "(<|> (if-else ?c ?t ?e) ?s)" => "(if-else ?c (<|> ?t ?s) (<|> ?e ?s))"),

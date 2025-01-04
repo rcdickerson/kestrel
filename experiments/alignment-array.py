@@ -1,3 +1,4 @@
+from csv
 from datetime import datetime
 import os
 from pathlib import Path
@@ -10,11 +11,59 @@ OUTPUT_ROOT_DIR = './results'
 LOG_DIR_NAME = 'logs'
 ALIGNMENT_DIR_NAME = 'alignments'
 SUMMARY_FILE_NAME = 'summary.txt'
-EXTRACTION_TECHNIQUES = ['sa'] #['unaligned', 'count-loops', 'sa']
+EXTRACTION_TECHNIQUES = ['unaligned', 'count-loops', 'sa']
 KESTREL_BIN = './target/release/kestrel'
 SEAHORN_BIN = 'sea'
-SA_MAX_ITERATIONS = 300000
+SA_MAX_ITERATIONS = 30000
 TIMEOUT_SEC = 60 * 5
+
+def latex_cell(data):
+  (time, success) = data
+  if time == 'TIMEOUT':
+    return time
+  elif success:
+    return "\\textcolor{DarkGreen}{\\ding{52}} " + f"({time} ms)"
+  else:
+    return "\\textcolor{red}{\\ding{54}} " + f"({time} ms)"
+
+def write_latex(output_dir):
+  names = set()
+  naive = {}
+  syntactic = {}
+  semantic = {}
+  with open(os.path.join(output_dir, SUMMARY_FILE_NAME), 'r') as summary_file:
+    for row in csv.reader(summary_file):
+      bench_name = Path(os.path.basename(row[0])).stem
+      time = row[2]
+      success = row[3] == "true"
+      names.add(bench_name)
+      if row[1] == 'unaligned':
+        naive[bench_name] = (time, success)
+      elif row[1] == 'count-loops':
+        syntactic[bench_name] = (time, success)
+      elif row[1] == 'sa':
+        semantic[bench_name] = (time, success)
+      else:
+        raise ValueError(f"Unrecognized extraction technique: {row[1]}")
+
+  with open(os.path.join(output_dir, SUMMARY_LATEX_NAME), 'w') as latex_file:
+    latex_file.write("\\documentclass{article} \n" \
+                     "\\usepackage{pifont} \n" \
+                     "\\usepackage{xcolor} \n" \
+                     "\\definecolor{DarkGreen}{HTML}{006400} \n" \
+                     "\\begin{document} \n" \
+                     "\\begin{tabular}{l|l|l|l} \n" \
+                     "\\hline \n" \
+                     "\\textbf{Benchmark} & \\textbf{Na\\\"{i}ve} & \\textbf{Syntactic} & \\textbf{Full} \\\\ \n" \
+                     "\\hline\n")
+    for name in sorted(names):
+      latex_file.write(f"{name} & " \
+                       f"{latex_cell(naive[name])} & " \
+                       f"{latex_cell(syntactic[name])} & " \
+                       f"{latex_cell(semantic[name])} \\\\ \n")
+    latex_file.write("\\hline \n"
+                     "\\end{tabular} \n" \
+                     "\\end{document}")
 
 def run_benchmarks(output_dir):
   summary_file = os.path.join(output_dir, SUMMARY_FILE_NAME)
@@ -92,6 +141,7 @@ def main():
                             datetime.now().strftime('%Y_%m_%d-%H_%M_%S'))
   Path(output_dir).mkdir(parents=True, exist_ok=True)
   run_benchmarks(output_dir)
+  write_latex(output_dir)
 
 if __name__ == "__main__":
     main()

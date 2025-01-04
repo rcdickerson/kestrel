@@ -28,10 +28,6 @@ its library dependencies with
 [Cargo](https://doc.rust-lang.org/cargo/). All dependencies are present
 in KestRel's Docker image.
 
-## Kicking the Tires
-
-To get started
-
 ## Building KestRel
 
 Build KestRel using [Cargo](https://doc.rust-lang.org/cargo/) from the
@@ -88,7 +84,13 @@ mount the results directory to something that lives outside of the container
 using `-v <some local directory>:/kestrel/results`:
 
 ``` bash
-docker run --rm -v ./results/:/kestrel/results -it --ulimit nofile=262144:262144 --entrypoint bash kestrel
+docker run \
+  --rm \
+  -v ./results/:/kestrel/results \
+  -it \
+  --ulimit nofile=262144:262144 \
+  --entrypoint bash \
+  kestrel
 ```
 
 You can run the experiments as follows:
@@ -101,7 +103,7 @@ You can run the experiments as follows:
   study on extraction techniques and reproduces Figure 18 of the
   KestRel paper.
 
-- `python3 ./experiments/ablation-extraction.py` runs an ablation
+- `python3 ./experiments/ablation-cost.py` runs an ablation
   study on cost functions components and reproduces Figure 19 of the
   KestRel paper.
 

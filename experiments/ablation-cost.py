@@ -15,7 +15,7 @@ LOG_DIR_NAME = 'logs'
 ALIGNMENT_DIR_NAME = 'alignments'
 SUMMARY_FILE_NAME = 'summary.txt'
 ABLATIONS = [('runoff', ['--af-fusion', 'sa']), \
-             ('fussion', ['--af-runoffs', 'sa']), \
+             ('fusion', ['--af-runoffs', 'sa']), \
              ('combined', ['sa'])]
 KESTREL_BIN = './target/release/kestrel'
 SA_MAX_ITERATIONS = 30000

@@ -187,6 +187,49 @@ the `/kestrel` root directory, invoke experiment scripts with
   `summary.txt` CSV file formatted as above, as well as a
   `summary.tex` file containing the result table as in Figure 20.
 
+## Theory
+
+The `theory` directory contains a Coq formalization of the CoreRel
+calculus and its metatheory, as described in Sections 3 of the paper.
+The Coq formalization is not intended to be exercised within the
+KestRel container; the KestRel Docker image does not come bundled with
+Coq. The `theory` directory may be found in this artifact archive
+or on [Github](https://github.com/rcdickerson/kestrel/tree/main/theory).
+
+### Requirements
+
+- `coq` (8.19.2, although other versions may also work)
+- `coq-stdpp` (>= 1.11.0)
+
+The easiest way to install `coq-stdpp` is via opam:
+
+```
+opam repo add coq-released https://coq.inria.fr/opam/released
+opam update
+opam install coq-stdpp
+```
+
+### Building
+
+Run `make` in the `theory` directory.
+
+### Key Definitions
+
+| Definition  / Theorem            | Paper             | File                 | Name                    |
+| -------------------------------- | ----------------- | -------------------- | ----------------------- |
+| Imp Syntax                       | Figure 10         | IMP/Syntax.v         | `com`                   |
+| Imp Semantics                    |                   | IMP/Semantics.v      | `ceval`                 |
+| CoreRel Syntax                   | Figure 10         | CoreRel/Syntax.v     | `algn_com`              |
+| CoreRel Semantics                | Figure 11         | CoreRel/Semantics.v  | `aceval`                |
+| Embedding is Sound               | Theorem 3.2       | CoreRel/Embed.v      | `embed_is_iso`          |
+| Reification of CoreRel           | Figure 12         | CoreRel/Embed.v      | `reify_com`             |
+| Alignment Equivalence            | Definition 3.3    | CoreRel/Equiv.v      | `align_eqv`             |
+| Reification preserves Eqivalence | Theorem 3.4       | CoreRel/Equiv.v      | `reify_preserves_eqv`   |
+| Soundness of Product Program     | Corollary 3.5     | CoreRel/Equiv.v      | `product_program_sound` |
+| CoreRel Realignment Laws         | Figure 13         | CoreRel/Equiv.v      | `whileR_unroll`, etc.   |
+| Stuttered Loop Example           | Figure 3          | CoreRel/Examples.v   | `paper_example1_eqv`    |
+
+
 
 # Reusability Guide
 

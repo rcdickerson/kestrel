@@ -25,9 +25,12 @@ KestRel requires the following system libraries and utilites:
 
 KestRel is written in [Rust](https://www.rust-lang.org/), and manages
 its library dependencies with
-[Cargo](https://doc.rust-lang.org/cargo/).
+[Cargo](https://doc.rust-lang.org/cargo/). All dependencies are present
+in KestRel's Docker image.
 
 ## Kicking the Tires
+
+To get started
 
 ## Building KestRel
 
@@ -67,21 +70,45 @@ target/debug/kestrel --help
 
 ## Running Experiments
 
-The `bin` directory contains various scripts for running KestRel
-experiments.
+The `experiments` directory contains various scripts for running KestRel
+experiments. All experiments run KestRel on some set of `benchmarks` with
+three different alignment strategies:
 
-- `bin/run-alignments.sh` runs outputs alignments for a group of
-  benchmarks. It optionally takes three arguments: benchmark group,
-  extraction techique, and output mode. For example,
-  `bin/run-alignments.sh barthe count-loops dafny` runs all benchmarks
-  in the `barthe` directory using `count-loops` extraction and outputs
-  Dafny. The first and second argument default to `all`, which outputs
-  alignments for each possibility. The third argument defaults to
-  `seahorn` output.
+  1. `none`: naive concatenative alignment.
+  2. `count-loops`: syntactic extraction which maximizes the number
+     of fused loops.
+  3. `sa`: semantic extraction using simulated annealing.
 
-- `bin/verify-seahorn.sh` runs SeaHorn on all alignments output by
-  `bin/run-alignments.sh`. It is meant to be run from inside the
-  SeaHorn Docker image.
+Verification is attempted for each alignment, and logs, alignments,
+and a summary file are all written to a `./results/<timestamp>`
+directory.
+
+When running experiments from within the Docker container, it is recommended to
+mount the results directory to something that lives outside of the container
+using `-v <some local directory>:/kestrel/results`:
+
+``` bash
+docker run --rm -v ./results/:/kestrel/results -it --ulimit nofile=262144:262144 --entrypoint bash kestrel
+```
+
+You can run the experiments as follows:
+
+- `python3 ./experiments/alignment-euf.py` runs all benchmarks in
+  `benchmarks/euf` using Dafny as the backing verifier. This reproduces
+  the results in Table 1 of the KestRel paper.
+
+- `python3 ./experiments/ablation-extraction.py` runs an ablation
+  study on extraction techniques and reproduces Figure 18 of the
+  KestRel paper.
+
+- `python3 ./experiments/ablation-extraction.py` runs an ablation
+  study on cost functions components and reproduces Figure 19 of the
+  KestRel paper.
+
+- `python3 ./experiments/alignment-array.py` runs all benchmarks in
+  `benchmarks/array` using Seahorn as the backing verifier. This reproduces
+  the results in Figure 20 of the KestRel paper.
+
 
 ## KestRel Input Format
 
@@ -109,6 +136,13 @@ references to variables in the left and right executions prefixed with
 `left.` and `right.`, respectively. The `left` and `right` function
 names may refer to either the same or different function definitions
 contained in the input file.
+
+Invariant hints can be given to KestRel by calling a dummy
+`_invariant` function at the beginning of the loop body, passing a
+condition as a string. References to variables in the left and right
+executions should be prefixed with `l_` and `r_`, respectively. (It is
+on the roadmap to make this naming consistent with the `left.` and
+`right.` convention usesd in the file header.)
 
 For example, here is the `antonopolous/simple.c` KestRel input from
 the `benchmarks/euf` directory:
@@ -145,10 +179,6 @@ See the `benchmarks` directory for more examples of KestRel input.
 Containerization of KestRel with its dependencies is available via a
 [Docker](https://www.docker.com/) image.
 
-### Downloading the Docker Image
-
-Coming soon!
-
 ### Building the Docker Image
 
 To build the docker image from scratch, first make sure you have the
@@ -173,7 +203,7 @@ Once the image exists on your machine, you may run an interactive
 shell by saying:
 
 ``` bash
-docker run --rm -it --ulimit nofile=262144:262144 kestrel
+docker run --rm -it --ulimit nofile=262144:262144 --entrypoint bash kestrel
 ```
 
 (Note the increased file descriptor limit -- invariant inference may
@@ -183,7 +213,7 @@ See the [docker run
 documentation](https://docs.docker.com/reference/cli/docker/container/run/)
 for more ways to use the image.
 
-## Repository Structure and Documentation
+## Code Structure and Documentation
 
 You can generate
 [rustdoc](https://doc.rust-lang.org/rustdoc/index.html) for KestRel

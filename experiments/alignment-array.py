@@ -57,10 +57,7 @@ def run_benchmarks(output_dir):
           # Step 2: Ask Seahorn to verify.
           with open(os.path.join(log_dir, f"{Path(name).stem}-seahorn.log"), 'w') as logfile:
             try:
-                args = ['docker', 'run', \
-                        '-v', './results/:/home/usea/results', \
-                        '-it', 'seahorn/seahorn-llvm14:nightly', \
-                        SEAHORN_BIN, \
+                args = [SEAHORN_BIN, \
                         'pf', \
                         '-m64', \
                         '--horn-strictly-la=false', \

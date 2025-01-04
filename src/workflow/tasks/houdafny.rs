@@ -19,7 +19,8 @@ use std::time::Duration;
 use wait_timeout::ChildExt;
 
 /// A [Task] for performing invariant inference using the Houdafny
-/// pipeline.
+/// pipeline. If invariants are found which enable verification,
+/// sets the *verified* flag in the [Context] to true.
 pub struct Houdafny {
   /// How long in seconds we are willing to wait for Dafny to decide
   /// validity of candidate invariants.

@@ -40,10 +40,10 @@ def run_benchmarks(output_dir):
                       '--sa-max-iterations', str(SA_MAX_ITERATIONS), \
                       technique]
               try:
-                result = subprocess.call(args,
-                                         stdout=logfile,
-                                         stderr=subprocess.STDOUT,
-                                         timeout=TIMEOUT_SEC)
+                subprocess.run(args,
+                               stdout=logfile,
+                               stderr=subprocess.STDOUT,
+                               timeout=TIMEOUT_SEC)
               except subprocess.TimeoutExpired:
                 with open(summary_file, 'a') as summary:
                   summary.write(f"{benchmark},{technique},TIMEOUT,false\n")
@@ -51,10 +51,13 @@ def run_benchmarks(output_dir):
 
 def main():
   print("Building KestRel...")
-  subprocess.run(['cargo', 'build', '--release'])
+  build_result = subprocess.run(['cargo', 'build', '--release'])
+  if build_result.returncode != 0:
+    print("KestRel build failed!")
+    return
   output_dir = os.path.join(OUTPUT_ROOT_DIR,
                             datetime.now().strftime('%Y_%m_%d-%H_%M_%S'))
-  os.makedirs(output_dir)
+  Path(output_dir).mkdir(parents=True, exist_ok=True)
   run_benchmarks(output_dir)
 
 if __name__ == "__main__":

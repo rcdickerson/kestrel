@@ -18,6 +18,9 @@ RUN apt-get install -y cargo
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y dafny
 
+# Seahorn
+RUN docker pull seahorn/seahorn-llvm14:nightly
+
 # Java
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y openjdk-8-jdk

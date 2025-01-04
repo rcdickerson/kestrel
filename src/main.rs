@@ -104,8 +104,8 @@ impl ExtractorArg {
 ///      of CRel defined in the way the Egg library expects languages.
 ///   4. Hand the Eggroll off to Egg and ask Egg to perform equality saturation.
 ///   5. Extract an aligned program using the technique requested by the user.
-///   6. Convert the extracted Eggroll back to CRel, and then into a C product
-///      program.
+///   6. Convert the extracted Eggroll back to CRel, and then into a
+///      final product program.
 ///
 /// The reason we have two IRs (CRel and Eggroll) is to separate two
 /// orthogonal translation concerns: 1) converting between

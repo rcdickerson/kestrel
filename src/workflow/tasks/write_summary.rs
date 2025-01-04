@@ -26,7 +26,7 @@ impl Task for WriteSummary {
       .open(self.location.clone())
       .unwrap();
     let mut line = Vec::new();
-    line.push(context.task_name.clone());
+    line.push(context.workflow_name.clone());
     line.append(&mut self.tags.clone());
     line.push(format!("{}", context.elapsed_time().as_millis()));
     line.push(format!("{}", context.verified));

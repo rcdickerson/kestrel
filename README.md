@@ -15,8 +15,8 @@ KestRel requires the following system libraries and utilites:
 - [Daikon](https://plse.cs.washington.edu/daikon/) for invariant
   detection, including the
   [Kvasir](http://plse.cs.washington.edu/daikon/download/doc/daikon.html#Kvasir)
-  Daikon frontend for C. Note Kvasir is only supported on x86
-  architectures.
+  Daikon frontend for C. Note Kvasir is only supported on Linux
+  running on x86-64 architectures.
 - [Java Runtime Environment](https://www.java.com) for running Daikon.
 - [Dafny](https://dafny.org/) for certain invariant inference and
   verification pipelines.

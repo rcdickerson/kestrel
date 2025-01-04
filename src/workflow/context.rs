@@ -1,4 +1,4 @@
-//! A container for data needed in a KestRel verification [Workflow].
+//! Contains data needed in a KestRel verification [Workflow].
 
 use crate::crel::ast::*;
 use crate::eggroll::ast::*;
@@ -9,6 +9,7 @@ use egg::*;
 use std::path::Path;
 use std::time::{Duration, Instant};
 
+/// A container for data needed in a KestRel verification [Workflow].
 #[derive(Clone)]
 pub struct Context<'a> {
   pub workflow_name: String,

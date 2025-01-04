@@ -1,15 +1,31 @@
+//! A cost function which prioritizes minimizing the total number of
+//! loops. Since merging two loops into a single relational loop
+//! reduces the total number of loops, this has the effect of
+//! maximizing the number of merged loops.
+
+//! When two extractions have the same number of loops, this function
+//! looks at conditional path complexity and overall AST size as
+//! tiebreakers.
+
 use crate::eggroll::ast::*;
 use egg::*;
 use std::cmp::Ordering;
 
+/// A structure recording the loop cost of some piece of syntax.
 #[derive(Clone, Debug, PartialEq)]
 pub struct LoopCost {
+  /// The total number of loops in the program.
   num_loops: usize,
+  /// The conditional path complexity of the program (used as a
+  /// tiebreak).
   cond_paths: usize,
+  /// The total AST size of the program (used as a tiebreak).
   ast_size: usize,
 }
 
 impl LoopCost {
+  /// Construct a new [LoopCost] by adding the values of the given
+  /// cost to this cost.
   pub fn plus(&self, other: LoopCost) -> LoopCost {
     LoopCost {
       num_loops: self.num_loops + other.num_loops,
@@ -35,6 +51,8 @@ impl PartialOrd for LoopCost {
   }
 }
 
+/// An Egg cost function which computes [LoopCost]s for [Eggroll]
+/// programs.
 pub struct MinLoops;
 impl CostFunction<Eggroll> for MinLoops {
     type Cost = LoopCost;

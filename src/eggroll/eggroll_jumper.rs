@@ -1,3 +1,6 @@
+//! Perturbs [ChoicePath]s from e-graphs to generate neighbors for
+//! MCMC-based extraction.
+
 use crate::anneal::choice_graph::*;
 use crate::anneal::choice_path::*;
 use crate::anneal::jumper::*;

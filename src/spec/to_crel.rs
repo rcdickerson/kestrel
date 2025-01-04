@@ -1,3 +1,5 @@
+//! Converts a [KestrelCond] to a [CRel] boolean expression.
+
 use crate::crel::ast as crel;
 use crate::spec::condition::*;
 use uuid::Uuid;

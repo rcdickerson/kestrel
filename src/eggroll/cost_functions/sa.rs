@@ -1,3 +1,7 @@
+//! A cost function for use in simulated annealing extractions.
+//! Optimizes for higher numbers of merged loops and lower numbers of
+//! runoff loop iterations.
+
 use crate::crel::ast::CRel;
 use crate::crel::eval::*;
 use crate::eggroll::ast::*;

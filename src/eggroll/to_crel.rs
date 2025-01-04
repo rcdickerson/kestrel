@@ -1,3 +1,5 @@
+//! Converts an [Eggroll] term to a corresponding [CRel] term.
+
 use crate::crel::ast::*;
 use sexp::{Atom, Sexp};
 use std::collections::HashMap;

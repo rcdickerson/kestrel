@@ -1,8 +1,11 @@
+//! The rewrite rules which define the alignment search space.
+
 use std::hash::{DefaultHasher, Hash, Hasher};
 
 use crate::eggroll::ast::*;
 use egg::*;
 
+/// Constructs a vector of KestRel rewrite rules.
 pub fn rewrites() -> Vec<Rewrite<Eggroll, ()>> {
   vec![
     rewrite!("prod-assoc-l"; "(seq ?a (seq ?b ?c))" => "(seq (seq ?a ?b) ?c)"),
@@ -50,6 +53,7 @@ pub fn rewrites() -> Vec<Rewrite<Eggroll, ()>> {
   ]
 }
 
+/// Constructs an *unroll-while* with a random ID.
 #[derive(Hash, Debug)]
 struct UnrollWhile {
   cond: Var,
@@ -79,6 +83,7 @@ impl Applier<Eggroll, ()> for UnrollWhile {
   }
 }
 
+/// Constructs a *schedule-while* with a random ID.
 #[derive(Hash, Debug)]
 struct ScheduleWhile {
   cond1: Var,

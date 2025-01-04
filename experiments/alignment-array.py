@@ -13,7 +13,7 @@ SUMMARY_FILE_NAME = 'summary.txt'
 EXTRACTION_TECHNIQUES = ['sa'] #['unaligned', 'count-loops', 'sa']
 KESTREL_BIN = './target/release/kestrel'
 SEAHORN_BIN = 'sea'
-SA_MAX_ITERATIONS = 12000
+SA_MAX_ITERATIONS = 300000
 TIMEOUT_SEC = 60 * 5
 
 def run_benchmarks(output_dir):

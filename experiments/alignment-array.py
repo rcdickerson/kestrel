@@ -1,4 +1,4 @@
-from csv
+import csv
 from datetime import datetime
 import os
 from pathlib import Path
@@ -11,6 +11,7 @@ OUTPUT_ROOT_DIR = './results'
 LOG_DIR_NAME = 'logs'
 ALIGNMENT_DIR_NAME = 'alignments'
 SUMMARY_FILE_NAME = 'summary.txt'
+SUMMARY_LATEX_NAME = 'summary.tex'
 EXTRACTION_TECHNIQUES = ['unaligned', 'count-loops', 'sa']
 KESTREL_BIN = './target/release/kestrel'
 SEAHORN_BIN = 'sea'
@@ -82,7 +83,7 @@ def run_benchmarks(output_dir):
           benchmark = os.path.join(root, name)
           alignment_file = os.path.join(align_dir, f"{Path(name).stem}.c")
 
-          start = datetime.now().microseconds / 1000
+          start = datetime.now().microsecond / 1000
 
           # Step 1: Get an alignment from KestRel.
           with open(os.path.join(log_dir, f"{Path(name).stem}-alignment.log"), 'w') as logfile:
@@ -115,7 +116,7 @@ def run_benchmarks(output_dir):
                                         stdout=logfile,
                                         stderr=subprocess.STDOUT,
                                         timeout=TIMEOUT_SEC)
-                end = datetime.now().microseconds / 1000
+                end = datetime.now().microsecond / 1000
                 with open(summary_file, 'a') as summary:
                   if result.returncode == 0:
                     summary.write(f"{benchmark},{technique},{end - start},true\n")

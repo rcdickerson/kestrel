@@ -17,7 +17,6 @@ file](https://github.com/rcdickerson/kestrel).
 This archive contains:
 
 + This `overview.md` file.
-+ `kestrel.tar.gz`, an archived Docker image for executing KestRel.
 + `kestrel`, a directory containing the source code and Coq
   formalization for KestRel.
 
@@ -46,15 +45,15 @@ Docker is installed and behaving correctly.
 Once Docker Engine is installed, you need to load the KestRel
 image in one of the following ways:
 
-* If you have obtained the KestRel Docker image as a tar archive, you
-  can load it directly:
-  ```bash
-  # docker load < kestrel.tar.gz
-  ```
-
 * You can pull the image from Docker Hub:
   ```bash
   # docker pull rcdickerson/kestrel:oopsla2025
+  ```
+
+* You can build it from the `kestrel` directory included in this artifact:
+  ```bash
+  $ cd kestrel
+  # docker buildx build -t rcdickerson/kestrel:oopsla2025 .
   ```
 
 * You can obtain the KestRel source code and build the Docker image

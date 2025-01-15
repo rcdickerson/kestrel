@@ -1,9 +1,10 @@
-FROM buildpack-deps:jammy-scm
+FROM ubuntu:noble AS build
 SHELL ["/bin/bash", "-c"]
+#buildpack-deps:jammy-scm
 
 # Utilities
 RUN apt-get -y update
-RUN apt-get install -yqq git make wget
+RUN apt-get install -yqq git make wget curl unzip
 
 # C
 RUN apt-get install -yqq clang
@@ -13,13 +14,18 @@ RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Dafny
-RUN DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y dafny
+RUN apt-get install -yqq dotnet-sdk-8.0
+RUN wget https://github.com/dafny-lang/dafny/releases/download/v4.9.1/dafny-4.9.1-x64-ubuntu-20.04.zip
+RUN unzip dafny-4.9.1-x64-ubuntu-20.04.zip
+ENV PATH="/dafny:${PATH}"
 
 # Java
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y openjdk-8-jdk
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+
+# Python
+RUN apt-get install -yqq python3 pip
 
 # Daikon
 RUN apt-get install -y autotools-dev automake binutils-dev zlib1g-dev
@@ -31,7 +37,7 @@ RUN make -C $DAIKONDIR kvasir
 ENV PATH="$PATH:$DAIKONDIR/scripts"
 
 # Seahorn
-# ---- Taken from Seahorn's Dockerfiles ----
+# ---- Modified from Seahorn's Dockerfiles ----
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get install -yqq software-properties-common && \
     apt-get update && \
@@ -47,9 +53,10 @@ RUN apt-get install -yqq software-properties-common && \
       sudo \
       graphviz libgraphviz-dev python3-pygraphviz \
       lcov gcovr rsync \
-      clang-14 lldb-14 lld-14 clang-format-14 && \
-  pip3 install lit OutputCheck && \
-  pip3 install networkx
+      clang-14 lldb-14 lld-14 clang-format-14
+RUN apt-get install -yqq python3-networkx
+RUN pip3 install lit OutputCheck --break-system-packages
+RUN apt-get install -yqq libpolly-14-dev
 
 WORKDIR /tmp
 RUN wget https://github.com/Z3Prover/z3/releases/download/z3-4.8.9/z3-4.8.9-x64-ubuntu-16.04.zip && \
@@ -94,7 +101,7 @@ ENV PATH="/seahorn/build/run/bin:$PATH"
 
 # Fetch and build KestRel.
 WORKDIR /
-RUN pip3 install tqdm # Needed for experiment scripts.
+RUN apt install python3-tqdm # Needed for experiment scripts.
 RUN git clone https://github.com/rcdickerson/kestrel.git --depth 1
 WORKDIR /kestrel
 RUN cargo build --release

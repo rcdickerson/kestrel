@@ -102,6 +102,7 @@ ENV PATH="/seahorn/build/run/bin:$PATH"
 # Fetch and build KestRel.
 WORKDIR /
 RUN apt install python3-tqdm # Needed for experiment scripts.
+RUN echo "2"
 RUN git clone https://github.com/rcdickerson/kestrel.git --depth 1
 WORKDIR /kestrel
 RUN cargo build --release

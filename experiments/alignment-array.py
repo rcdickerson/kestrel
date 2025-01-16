@@ -94,10 +94,10 @@ def run_benchmarks(output_dir):
                         '--output-mode', 'seahorn', \
                         '--sa-max-iterations', str(SA_MAX_ITERATIONS), \
                         technique]
-                subprocess.run(args,
-                               stdout=logfile,
-                               stderr=subprocess.STDOUT,
-                               timeout=TIMEOUT_SEC)
+                subprocess.call(args,
+                                stdout=logfile,
+                                stderr=subprocess.STDOUT,
+                                timeout=TIMEOUT_SEC)
             except subprocess.TimeoutExpired:
                 with open(summary_file, 'a') as summary:
                   summary.write(f"{benchmark},{technique},TIMEOUT,false\n")
@@ -112,10 +112,10 @@ def run_benchmarks(output_dir):
                         '-m64', \
                         '--horn-strictly-la=false', \
                         alignment_file]
-                result = subprocess.run(args,
-                                        stdout=logfile,
-                                        stderr=subprocess.STDOUT,
-                                        timeout=TIMEOUT_SEC)
+                result = subprocess.call(args,
+                                         stdout=logfile,
+                                         stderr=subprocess.STDOUT,
+                                         timeout=TIMEOUT_SEC)
                 end = int(datetime.now().microsecond / 1000)
                 with open(summary_file, 'a') as summary:
                   if result.returncode == 0:

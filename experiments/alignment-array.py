@@ -1,5 +1,5 @@
 import csv
-from datetime import datetime
+from time import perf_counter
 import os
 from pathlib import Path
 import shutil
@@ -83,7 +83,7 @@ def run_benchmarks(output_dir):
           benchmark = os.path.join(root, name)
           alignment_file = os.path.join(align_dir, f"{Path(name).stem}.c")
 
-          start = int(datetime.now().microsecond / 1000)
+          start = perf_counter()
 
           # Step 1: Get an alignment from KestRel.
           with open(os.path.join(log_dir, f"{Path(name).stem}-alignment.log"), 'w') as logfile:
@@ -116,7 +116,7 @@ def run_benchmarks(output_dir):
                                          stdout=logfile,
                                          stderr=subprocess.STDOUT,
                                          timeout=TIMEOUT_SEC)
-                end = int(datetime.now().microsecond / 1000)
+                end = perf_counter()
                 with open(summary_file, 'a') as summary:
                   if result == 0:
                     summary.write(f"{benchmark},{technique},{end - start},true\n")

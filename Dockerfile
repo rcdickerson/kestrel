@@ -69,7 +69,7 @@ RUN curl -sSOL https://yices.csl.sri.com/releases/2.6.1/yices-2.6.1-x86_64-pc-li
   ./install-yices /opt/yices-2.6.1
 
 WORKDIR /
-RUN git clone https://github.com/seahorn/seahorn.git --depth 1
+RUN git clone https://github.com/seahorn/seahorn.git --depth 1 --branch dev14 --single-branch
 RUN rm -rf /seahorn/build /seahorn/debug /seahorn/release && \
   mkdir /seahorn/build && \
   rm -rf /seahorn/clam /seahorn/sea-dsa /seahorn/llvm-seahorn

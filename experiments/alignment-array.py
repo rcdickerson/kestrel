@@ -84,7 +84,7 @@ def run_benchmarks(output_dir):
           benchmark = os.path.join(root, name)
           alignment_file = os.path.join(align_dir, f"{Path(name).stem}.c")
 
-          start = perf_counter()
+          start = int(1000 * perf_counter())
 
           # Step 1: Get an alignment from KestRel.
           with open(os.path.join(log_dir, f"{Path(name).stem}-alignment.log"), 'w') as logfile:
@@ -117,7 +117,7 @@ def run_benchmarks(output_dir):
                                          stdout=logfile,
                                          stderr=subprocess.STDOUT,
                                          timeout=TIMEOUT_SEC)
-                end = perf_counter()
+                end = int(1000 * perf_counter())
                 with open(summary_file, 'a') as summary:
                   if result == 0:
                     summary.write(f"{benchmark},{technique},{end - start},true\n")

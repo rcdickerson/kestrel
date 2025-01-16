@@ -118,7 +118,7 @@ def run_benchmarks(output_dir):
                                          timeout=TIMEOUT_SEC)
                 end = int(datetime.now().microsecond / 1000)
                 with open(summary_file, 'a') as summary:
-                  if result.returncode == 0:
+                  if result == 0:
                     summary.write(f"{benchmark},{technique},{end - start},true\n")
                   else:
                     summary.write(f"{benchmark},{technique},{end - start},false\n")

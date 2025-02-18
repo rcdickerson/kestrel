@@ -1,0 +1,24 @@
+// ** represents an arbitrary value.
+// ?? represents a hole to be filled by the synthesizer.
+
+void play(int handValue) {
+
+  int handValue = **;
+  assume (2 <= handValue) && (handValue <= 20);
+
+  while (handValue < 21) {
+    int c = ??;
+    assert c >= 1 && c <= 10;
+    int card = **;
+    assume card == c;
+    handValue = handValue + card;
+  }
+  assert handValue == 21;
+}
+
+// Wanted solution:
+//   int c = if handValue <= 11 {
+//             10;
+//           } else {
+//             21 - handValue;
+//           };

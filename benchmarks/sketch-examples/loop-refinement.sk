@@ -1,0 +1,27 @@
+// ** represents an arbitrary value.
+// ?? represents a hole to be filled by the synthesizer.
+
+void product() {
+  int refinement_sum = 0;
+  int original_sum = 0;
+  while (refinement_sum <= 100 && original_sum <= 100) {
+    assert refinement_sum == original_sum; // invariant
+
+    // Universally quantified call.
+    refinement_r = **;
+    assume (0 <= refinement_r) && (refinement_r < 10) && (refinement_r % 2) == 1;
+
+    // Existentially quantified call.
+    int choice = ??;
+    assert (0 <= choice) && (choice < 10);
+    original_r = **;
+    assume original_r == choice;
+
+    refinement_sum = refinement_sum + refinement_r;
+    original_sum = original_sum + original_r;
+  }
+  assert original_sum == refinement_sum;
+}
+
+// Wanted solution:
+//   int choice = refinement_r;

@@ -1,0 +1,25 @@
+// ** represents an arbitrary value.
+// ?? represents a hole to be filled by the synthesizer.
+
+void product() {
+  // Both executions are existentially quantified.
+  int choice_1 = ??;
+  assert (choice_1 == 0) || (choice_1 == 1) || (choice_1 == 2);
+  int response_1 = **;
+  assume (choice_1 == 0 ==> response_1 == 200) &&
+         (choice_1 == 1 ==> response_1 == 400) &&
+         (choice_1 == 2 ==> response_1 == 500);
+
+  int choice_2 = ??;
+  assert (choice_2 == 0) || (choice_2 == 1) || (choice_2 == 2);
+  int response_2 = **;
+  assume (choice_2 == 0 ==> response_2 == 200) &&
+         (choice_2 == 1 ==> response_2 == 400) &&
+         (choice_2 == 2 ==> response_2 == 500);
+
+  assert success_1 != success_2;
+}
+
+// Wanted solution is anything where choice_1 != choice_2, for example:
+//   int choice_1 = 0;
+//   int choice_2 = 1;

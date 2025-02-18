@@ -1,0 +1,32 @@
+// ** represents an arbitrary value.
+// ?? represents a hole to be filled by the synthesizer.
+
+void product() {
+  int refinement_r = **;
+  assume (refinement_r == 0) || (refinement_r == 1);
+
+  int c = ??;
+  assert (c == 0) || (c == 1);
+  original_r = **;
+  assume original_r == c;
+
+  int ret;
+  if (refinement_r == 0 && original_r == 0) {
+    refinement_ret = 20;
+    original_ret = 20;
+  } else if (refinement_r == 0 && original_r != 0) {
+    refinement_ret = 20;
+    original_ret = 10;
+  } else if (refinement_r != 0 && original_r == 0) {
+    refinement_ret = 10;
+    original_ret = 20;
+  } else {
+    refinement_ret = 10;
+    original_ret = 10;
+  }
+
+  assert original_ret == refinement_ret;
+}
+
+// Wanted solution:
+//   int c = refinement_r;

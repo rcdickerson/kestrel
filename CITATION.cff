@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Dickerson
+    given-names: Robert
+    orcid: https://orcid.org/0000-0002-2697-2145
+  - family-names: Mukherjee
+    given-names: Prasita
+    orcid: https://orcid.org/0009-0001-4833-1496
+  - family-names: Delaware
+    given-names: Benjamin
+    orcid: https://orcid.org/0000-0002-1016-6261
+title: "KestRel"
+version: 0.1.0
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.14942558
+date-released: 2025-02-28

@@ -55,15 +55,17 @@ impl CountLoops for CRel {
 impl CountLoops for Expression {
   fn count_loops(&self) -> LoopCounts {
     match self {
-      Expression::Identifier{name:_} => LoopCounts::zero(),
-      Expression::ConstInt(_) => LoopCounts::zero(),
-      Expression::ConstFloat(_) => LoopCounts::zero(),
-      Expression::StringLiteral(_) => LoopCounts::zero(),
-      Expression::Call{callee:_, args:_} => LoopCounts::zero(),
-      Expression::Unop{expr, op: _} => expr.count_loops(),
-      Expression::Binop{lhs, rhs, op: _} => lhs.count_loops().plus(&rhs.count_loops()),
-      Expression::Forall{..} => LoopCounts::zero(),
-      Expression::Statement(stmt) => stmt.count_loops(),
+      Expression::Identifier{..}      => LoopCounts::zero(),
+      Expression::ConstInt(_)         => LoopCounts::zero(),
+      Expression::ConstFloat(_)       => LoopCounts::zero(),
+      Expression::StringLiteral(_)    => LoopCounts::zero(),
+      Expression::Call{..}            => LoopCounts::zero(),
+      Expression::ASpecCall{..}       => LoopCounts::zero(),
+      Expression::ESpecCall{..}       => LoopCounts::zero(),
+      Expression::Unop{expr, ..}      => expr.count_loops(),
+      Expression::Binop{lhs, rhs, ..} => lhs.count_loops().plus(&rhs.count_loops()),
+      Expression::Forall{..}          => LoopCounts::zero(),
+      Expression::Statement(stmt)     => stmt.count_loops(),
     }
   }
 }

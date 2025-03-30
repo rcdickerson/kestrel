@@ -151,6 +151,22 @@ impl Expression {
           arg.walk(visitor);
         }
       },
+      Expression::ASpecCall{callee, args} => {
+        visitor.visit_expression(callee);
+        callee.walk(visitor);
+        for arg in args.iter_mut() {
+          visitor.visit_expression(arg);
+          arg.walk(visitor);
+        }
+      },
+      Expression::ESpecCall{callee, args} => {
+        visitor.visit_expression(callee);
+        callee.walk(visitor);
+        for arg in args.iter_mut() {
+          visitor.visit_expression(arg);
+          arg.walk(visitor);
+        }
+      },
       Expression::Unop{expr, ..} => {
         visitor.visit_expression(expr);
         expr.walk(visitor);

@@ -154,6 +154,12 @@ fn eval_expression(expr: &Expression, exec: &mut Execution) {
         }
       }
     },
+    Expression::ASpecCall{callee, args} => {
+      // TODO
+    },
+    Expression::ESpecCall{callee, args} => {
+      // TODO
+    },
     Expression::Unop{expr, op} => eval_unop(expr, op, exec),
     Expression::Binop{lhs, rhs, op} => eval_binop(lhs, rhs, op, exec),
     Expression::Forall{..} => {

@@ -78,6 +78,8 @@ define_language! {
 
     // Functions
     "call"        = Call(Box<[Id]>),
+    "a-spec-call" = ASpecCall(Box<[Id]>),
+    "e-spec-call" = ESpecCall(Box<[Id]>),
     "fundef"      = FunDef([Id; 4]),
     "args"        = Args(Box<[Id]>),
     "params"      = Params(Box<[Id]>),

@@ -108,6 +108,22 @@ fn expression_to_c(expr: &Expression) -> C::Expression {
           .collect::<Vec<C::Expression>>(),
       }
     },
+    Expression::ASpecCall{ callee, args } => {
+      C::Expression::FnCall {
+        name: Box::new(expression_to_c(callee)),
+        args: args.iter()
+          .map(expression_to_c)
+          .collect::<Vec<C::Expression>>(),
+      }
+    },
+    Expression::ESpecCall{ callee, args } => {
+      C::Expression::FnCall {
+        name: Box::new(expression_to_c(callee)),
+        args: args.iter()
+          .map(expression_to_c)
+          .collect::<Vec<C::Expression>>(),
+      }
+    },
     Expression::Unop{ expr, op } => {
       let expr = Box::new(expression_to_c(expr));
       let op = match op {

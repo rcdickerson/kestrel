@@ -34,6 +34,14 @@ impl MapVars for Expression {
         callee: Box::new(callee.map_vars(f)),
         args: args.iter().map(|a| a.map_vars(f)).collect(),
       },
+      Expression::ASpecCall{callee, args} => Expression::Call {
+        callee: Box::new(callee.map_vars(f)),
+        args: args.iter().map(|a| a.map_vars(f)).collect(),
+      },
+      Expression::ESpecCall{callee, args} => Expression::Call {
+        callee: Box::new(callee.map_vars(f)),
+        args: args.iter().map(|a| a.map_vars(f)).collect(),
+      },
       Expression::Unop{expr, op} => Expression::Unop {
         expr: Box::new(expr.map_vars(f)),
         op: op.clone(),

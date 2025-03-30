@@ -119,6 +119,16 @@ fn expect_expression(sexp: &Sexp, ctx: &Context) -> Expression {
         let args = expect_args(&sexps[2], ctx);
         Expression::Call{ callee, args }
       },
+      Sexp::Atom(Atom::S(s)) if s == "a-spec-call" => {
+        let callee = Box::new(expect_expression(&sexps[1], ctx));
+        let args = expect_args(&sexps[2], ctx);
+        Expression::ASpecCall{ callee, args }
+      },
+      Sexp::Atom(Atom::S(s)) if s == "e-spec-call" => {
+        let callee = Box::new(expect_expression(&sexps[1], ctx));
+        let args = expect_args(&sexps[2], ctx);
+        Expression::ESpecCall{ callee, args }
+      },
       Sexp::Atom(Atom::S(s)) if s == "index" => {
         let lhs = Box::new(expect_expression(&sexps[1], ctx));
         let rhs = Box::new(expect_expression(&sexps[2], ctx));

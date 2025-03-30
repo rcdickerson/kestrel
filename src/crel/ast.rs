@@ -175,6 +175,14 @@ pub enum Expression {
     callee: Box<Expression>,
     args: Vec<Expression>,
   },
+  ASpecCall {
+    callee: Box<Expression>,
+    args: Vec<Expression>,
+  },
+  ESpecCall {
+    callee: Box<Expression>,
+    args: Vec<Expression>,
+  },
   Unop {
     expr: Box<Expression>,
     op: UnaryOp,

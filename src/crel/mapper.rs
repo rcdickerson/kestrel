@@ -155,6 +155,18 @@ impl Expression {
           mapper.map_expression(arg).map(mapper)
         }).collect(),
       },
+      Expression::ASpecCall{callee, args} => Expression::Call {
+        callee: Box::new(mapper.map_expression(callee).map(mapper)),
+        args: args.iter().map(|arg| {
+          mapper.map_expression(arg).map(mapper)
+        }).collect(),
+      },
+      Expression::ESpecCall{callee, args} => Expression::Call {
+        callee: Box::new(mapper.map_expression(callee).map(mapper)),
+        args: args.iter().map(|arg| {
+          mapper.map_expression(arg).map(mapper)
+        }).collect(),
+      },
       Expression::Unop{expr, op} => Expression::Unop {
         expr: Box::new(mapper.map_expression(expr).map(mapper)),
         op: op.clone(),

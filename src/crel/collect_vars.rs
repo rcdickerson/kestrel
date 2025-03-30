@@ -31,6 +31,18 @@ impl CollectVars for Expression {
           all_vars(args.clone()),
         ))
       },
+      Expression::ASpecCall{callee, args} => {
+        union_all(vec!(
+          callee.vars(),
+          all_vars(args.clone()),
+        ))
+      },
+      Expression::ESpecCall{callee, args} => {
+        union_all(vec!(
+          callee.vars(),
+          all_vars(args.clone()),
+        ))
+      },
       Expression::Unop{expr, op: _} => expr.vars(),
       Expression::Binop{lhs, rhs, op: _} => {
         union_all(vec!(lhs.vars(), rhs.vars()))

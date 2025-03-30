@@ -50,6 +50,22 @@ fn expression_to_eggroll(expr: &Expression) -> String {
         .join(" ");
       format!("(call {} (args {}))", callee_egg, args_egg)
     },
+    Expression::ASpecCall{callee, args} => {
+      let callee_egg = expression_to_eggroll(callee);
+      let args_egg = args.iter()
+        .map(expression_to_eggroll)
+        .collect::<Vec<String>>()
+        .join(" ");
+      format!("(a-spec-call {} (args {}))", callee_egg, args_egg)
+    },
+    Expression::ESpecCall{callee, args} => {
+      let callee_egg = expression_to_eggroll(callee);
+      let args_egg = args.iter()
+        .map(expression_to_eggroll)
+        .collect::<Vec<String>>()
+        .join(" ");
+      format!("(e-spec-call {} (args {}))", callee_egg, args_egg)
+    },
     Expression::Unop{expr, op} => match op {
       UnaryOp::Minus => format!("(neg {})", expression_to_eggroll(expr)),
       UnaryOp::Not => format!("(not {})", expression_to_eggroll(expr)),

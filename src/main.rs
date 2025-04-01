@@ -1,10 +1,13 @@
 //! The main entry point for KestRel executions.
 
 use clap::{Parser, ValueEnum};
+use kestrel::elaenia::parser::parse_elaenia_spec;
+use kestrel::elaenia::elaenia_context::ElaeniaContext;
 use kestrel::output_mode::*;
-use kestrel::spec::parser::parse_spec;
+use kestrel::spec::parser::parse_kestrel_spec;
 use kestrel::unaligned::*;
 use kestrel::workflow::*;
+use kestrel::workflow::stopwatch::Stopwatch;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -12,6 +15,10 @@ struct Args {
   /// Input file.
   #[arg(short, long)]
   input: String,
+
+  /// Specification format.
+  #[arg(long, value_enum, default_value_t = SpecFormat::Kestrel)]
+  spec_format: SpecFormat,
 
   /// Output file.
   #[arg(short, long)]
@@ -74,6 +81,16 @@ struct Args {
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+enum SpecFormat {
+  /// Default Kestrel specification format; everything is universally
+  /// quantified.
+  Kestrel,
+
+  /// Elaenia forall-exists specification format.
+  Elaenia,
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 enum ExtractorArg {
   /// Local cost function extractor that minimizes total number of loops.
   CountLoops,
@@ -113,27 +130,35 @@ impl ExtractorArg {
 /// into an Egg-compatible language definition.
 fn main() {
   let args = Args::parse();
-  let spec = parse_spec(&args.input).unwrap();
+  match args.spec_format {
+    SpecFormat::Kestrel => kestrel_workflow(args),
+    SpecFormat::Elaenia => elaenia_workflow(args),
+  };
+}
+
+fn kestrel_workflow(args: Args) {
   let mut raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
   if args.extractor == ExtractorArg::Unaligned {
     // Annotated invariants are relational.
     raw_crel.clear_invariants();
   }
-  let unaligned_crel = UnalignedCRel::from(&raw_crel, &spec);
+
+  let spec = parse_kestrel_spec(&args.input).unwrap();
+  let unaligned_crel = UnalignedCRel::from_kestrel_spec(&raw_crel, &spec);
   let unaligned_eggroll = unaligned_crel.main.to_eggroll();
 
-  let mut context = Context::new(args.input);
-  context.spec = Some(&spec);
-
-  context.unaligned_crel = Some(&unaligned_crel);
-  context.unaligned_eggroll = Some(&unaligned_eggroll);
+  let mut context = KestrelContext::new(args.input.clone());
+  context.spec = Some(spec);
+  context.unaligned_crel = Some(unaligned_crel);
+  context.unaligned_eggroll = Some(unaligned_eggroll);
   context.output_path = args.output.clone();
 
-  let mut workflow = Workflow::new(&mut context);
+  let mut workflow: Workflow<KestrelContext> = Workflow::new(context);
   if args.verbose {
-    workflow.add_task(PrintInfo::with_header("Unaligned Product Program", &|ctx| {
-      ctx.unaligned_crel().main.to_c().to_string()
-    }));
+    workflow.add_task(PrintInfo::with_header("Unaligned Product Program",
+        &|ctx: &KestrelContext| {
+          ctx.unaligned_crel().main.to_c().to_string()
+        }));
   }
   if args.dot { workflow.add_task(WriteDot::new()) }
   if args.space_size { workflow.add_task(ComputeSpace::new()) }
@@ -163,25 +188,51 @@ fn main() {
   workflow.add_task(AlignedOutput::new(args.output_mode));
   match args.output {
     Some(_) => workflow.add_task(WriteProduct::new(args.output_mode)),
-    None => workflow.add_task(PrintInfo::with_header("Aligned Product Program", &|ctx| {
-      ctx.aligned_output().clone()
-    })),
+    None => workflow.add_task(PrintInfo::with_header("Aligned Product Program",
+        &|ctx: &KestrelContext| {
+          ctx.aligned_output().clone()
+        })),
   }
-  workflow.add_task(PrintInfo::with_header("Per-Task Times (ms)", &|ctx| {
-    let mut lines = Vec::new();
-    for (task_name, duration) in &ctx.task_timings {
-      lines.push(format!("{}: {}", task_name, duration.as_millis()));
-    }
-    lines.join("\n") + "\n"
-  }));
+  workflow.add_task(PrintInfo::with_header("Per-Task Times (ms)",
+      &|ctx: &KestrelContext| {
+        let mut lines = Vec::new();
+        for (task_name, duration) in &ctx.task_timings() {
+          lines.push(format!("{}: {}", task_name, duration.as_millis()));
+        }
+        lines.join("\n") + "\n"
+      }));
   args.output_summary.map(|location| {
     workflow.add_task(WriteSummary::new(location, vec!(args.extractor.tag())));
   });
+
   workflow.execute();
 
-  if args.verbose {
-  };
+  println!("KestRel completed in {}ms", workflow.context().total_elapsed_time().as_millis());
+  println!("Verified: {}", workflow.context().verified);
+}
 
-  println!("KestRel completed in {}ms", workflow.context().elapsed_time().as_millis());
+
+fn elaenia_workflow(args: Args) {
+  let mut raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
+  if args.extractor == ExtractorArg::Unaligned {
+    // Annotated invariants are relational.
+    raw_crel.clear_invariants();
+  }
+
+  let spec = parse_elaenia_spec(&args.input).unwrap();
+  let unaligned_crel = UnalignedCRel::from_elaenia_spec(&raw_crel, &spec);
+  let unaligned_eggroll = unaligned_crel.main.to_eggroll();
+
+  let mut context = ElaeniaContext::new(args.input.clone());
+  context.spec = Some(spec);
+  context.unaligned_crel = Some(unaligned_crel);
+  context.unaligned_eggroll = Some(unaligned_eggroll);
+  context.output_path = args.output.clone();
+
+  let mut workflow = Workflow::new(context);
+
+  workflow.execute();
+
+  println!("KestRel completed in {}ms", workflow.context().total_elapsed_time().as_millis());
   println!("Verified: {}", workflow.context().verified);
 }

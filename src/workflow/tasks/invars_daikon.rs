@@ -7,7 +7,7 @@ use crate::crel::mapper::*;
 use crate::daikon::invariant_parser::*;
 use crate::output_mode::*;
 use crate::spec::to_crel::*;
-use crate::workflow::context::*;
+use crate::workflow::kestrel_context::KestrelContext;
 use crate::workflow::task::*;
 use std::collections::{HashMap, HashSet};
 use std::env;
@@ -34,10 +34,10 @@ impl InvarsDaikon {
   }
 }
 
-impl Task for InvarsDaikon {
+impl Task<KestrelContext> for InvarsDaikon {
   fn name(&self) -> String { "invars-daikon".to_string() }
 
-  fn run(&self, context: &mut Context) {
+  fn run(&self, context: &mut KestrelContext) {
     // Write Daikon output to file.
     let daikon_path = "daikon_output.c".to_string();
     println!("Writing Daikon to {}...", daikon_path);

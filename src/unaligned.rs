@@ -3,10 +3,12 @@
 use crate::crel::ast::*;
 use crate::crel::blockify::*;
 use crate::crel::fundef::FunDef;
+use crate::elaenia::elaenia_spec::ElaeniaSpec;
 use crate::names::*;
 use crate::spec::KestrelSpec;
 use std::collections::{HashMap, HashSet};
 
+#[derive(Clone)]
 pub struct UnalignedCRel {
   pub global_decls: Vec<Declaration>,
   pub fundefs: HashMap<String, FunDef>,
@@ -15,18 +17,28 @@ pub struct UnalignedCRel {
 }
 
 impl UnalignedCRel {
-  pub fn from(crel: &CRel, spec: &KestrelSpec) -> Self {
-    let (global_decls, fundefs) = crate::crel::fundef::extract_fundefs(crel);
 
-    let left_fun = fundefs.get(&spec.left)
-      .unwrap_or_else(|| panic!("Function not found: {}", spec.left));
-    let right_fun = fundefs.get(&spec.right)
-      .unwrap_or_else(|| panic!("Function not found: {}", spec.right));
+  pub fn from_kestrel_spec(crel: &CRel, spec: &KestrelSpec) -> Self {
+    UnalignedCRel::from(&crel, &spec.left, &spec.right)
+  }
+
+  pub fn from_elaenia_spec(crel: &CRel, spec: &ElaeniaSpec) -> Self {
+    UnalignedCRel::from(&crel, &spec.afun, &spec.efun)
+  }
+
+  pub fn from(crel: &CRel, left_fun_name: &String, right_fun_name: &String) -> Self {
+
+    let (global_decls, fundefs) = crate::crel::fundef::extract_fundefs(crel);
 
     let mut globals = global_vars(&global_decls);
     for f_seahorn in ["assume", "assert", "sassert"] {
       globals.insert(f_seahorn.to_string());
     }
+
+    let left_fun = fundefs.get(left_fun_name)
+      .unwrap_or_else(|| panic!("Function not found: {}", left_fun_name));
+    let right_fun = fundefs.get(right_fun_name)
+      .unwrap_or_else(|| panic!("Function not found: {}", right_fun_name));
 
     let left_fun = left_fun.map_vars(&|s: String| {
       if globals.contains(&s) { s } else { format!("l_{}", s) }
@@ -50,7 +62,7 @@ impl UnalignedCRel {
 
     UnalignedCRel {
       global_decls,
-      fundefs,
+      fundefs: fundefs.clone(),
       params,
       main,
     }

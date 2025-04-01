@@ -3,7 +3,8 @@
 
 use std::fs::OpenOptions;
 use std::io::prelude::*;
-use crate::workflow::context::*;
+use crate::workflow::KestrelContext;
+use crate::workflow::stopwatch::Stopwatch;
 use crate::workflow::task::*;
 
 pub struct WriteSummary {
@@ -17,9 +18,9 @@ impl WriteSummary {
   }
 }
 
-impl Task for WriteSummary {
+impl Task<KestrelContext> for WriteSummary {
   fn name(&self) -> String { "write-summary".to_string() }
-  fn run(&self, context: &mut Context) {
+  fn run(&self, context: &mut KestrelContext) {
     let mut file = OpenOptions::new()
       .create(true)
       .append(true)
@@ -28,7 +29,7 @@ impl Task for WriteSummary {
     let mut line = Vec::new();
     line.push(context.workflow_name.clone());
     line.append(&mut self.tags.clone());
-    line.push(format!("{}", context.elapsed_time().as_millis()));
+    line.push(format!("{}", context.total_elapsed_time().as_millis()));
     line.push(format!("{}", context.verified));
     if let Err(e) = writeln!(file, "{}", line.join(",")) {
       panic!("Unable to write to summary file: {}", e);

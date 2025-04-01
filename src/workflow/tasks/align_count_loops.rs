@@ -9,7 +9,7 @@
 //! operations such as loop scheduling or unrolling.
 
 use crate::eggroll::cost_functions::minloops::*;
-use crate::workflow::context::*;
+use crate::workflow::kestrel_context::KestrelContext;
 use crate::workflow::task::*;
 use egg::*;
 
@@ -21,9 +21,9 @@ impl AlignCountLoops {
   }
 }
 
-impl Task for AlignCountLoops {
+impl Task<KestrelContext> for AlignCountLoops {
   fn name(&self) -> String { "align-count-loops".to_string() }
-  fn run(&self, context: &mut Context) {
+  fn run(&self, context: &mut KestrelContext) {
     let runner = Runner::default()
       .with_expr(&context.unaligned_eggroll().parse().unwrap())
       .run(&crate::eggroll::rewrite::rewrites());

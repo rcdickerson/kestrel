@@ -5,7 +5,7 @@
 use crate::crel::ast::*;
 use crate::crel::visitor::CRelVisitor;
 use crate::output_mode::*;
-use crate::workflow::context::*;
+use crate::workflow::kestrel_context::KestrelContext;
 use crate::workflow::task::*;
 use regex::Regex;
 use std::collections::HashMap;
@@ -38,10 +38,10 @@ impl Houdafny {
   }
 }
 
-impl Task for Houdafny {
+impl Task<KestrelContext> for Houdafny {
   fn name(&self) -> String { "houdafny".to_string() }
 
-  fn run(&self, context: &mut Context) {
+  fn run(&self, context: &mut KestrelContext) {
     let dafny_path = "houdafny.dfy".to_string();
     loop {
       // Write current aligned program as Dafny file.

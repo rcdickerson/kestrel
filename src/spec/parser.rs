@@ -419,7 +419,7 @@ fn spec_comment(i: &str) -> IResult<&str, KestrelSpec> {
   delimited(tag("/*"), kestrel_spec, tag("*/"))(i)
 }
 
-pub fn parse_spec(input_file: &String) -> Result<KestrelSpec, String> {
+pub fn parse_kestrel_spec(input_file: &String) -> Result<KestrelSpec, String> {
   match fs::read_to_string(input_file) {
     Err(err) => Err(err.to_string()),
     Ok(input) => {

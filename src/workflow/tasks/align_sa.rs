@@ -9,7 +9,7 @@ use crate::anneal::*;
 use crate::crel::eval::*;
 use crate::eggroll::cost_functions::sa::*;
 use crate::eggroll::eggroll_jumper::EggrollJumper;
-use crate::workflow::context::*;
+use crate::workflow::kestrel_context::*;
 use crate::workflow::task::*;
 use egg::*;
 
@@ -39,10 +39,10 @@ impl AlignSa {
   }
 }
 
-impl Task for AlignSa {
+impl Task<KestrelContext> for AlignSa {
   fn name(&self) -> String { "align-sa".to_string() }
 
-  fn run(&self, context: &mut Context) {
+  fn run(&self, context: &mut KestrelContext) {
     if context.verified {
       println!("Verification complete; skipping simulated annealing alignment");
       return;

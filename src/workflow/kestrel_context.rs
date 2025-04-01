@@ -3,34 +3,34 @@
 use crate::crel::ast::*;
 use crate::eggroll::ast::*;
 use crate::eggroll::to_crel;
-use crate::spec::*;
+use crate::spec::KestrelSpec;
+use crate::workflow::Context;
+use crate::workflow::stopwatch::*;
 use crate::unaligned::*;
 use egg::*;
 use std::path::Path;
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
 /// A container for data needed in a KestRel verification [Workflow].
 #[derive(Clone)]
-pub struct Context<'a> {
+pub struct KestrelContext {
   pub workflow_name: String,
-  pub spec: Option<&'a KestrelSpec>,
-  pub unaligned_crel: Option<&'a UnalignedCRel>,
-  pub unaligned_eggroll: Option<&'a String>,
+  pub spec: Option<KestrelSpec>,
+  pub unaligned_crel: Option<UnalignedCRel>,
+  pub unaligned_eggroll: Option<String>,
   pub aligned_eggroll: Option<RecExpr<Eggroll>>,
   pub aligned_eggroll_repetitions: Option<to_crel::GuardedRepetitions>,
   pub aligned_crel: Option<CRel>,
   pub aligned_output: Option<String>,
   pub output_path: Option<String>,
-  pub task_timings: Vec<(String, Duration)>,
-  pub start_time: Option<Instant>,
-  pub completion_time: Option<Duration>,
+  pub stopwatch: WorkflowStopwatch,
   pub timed_out: bool,
   pub verified: bool,
 }
 
-impl Context<'_> {
+impl KestrelContext {
   pub fn new(workflow_name: String) -> Self {
-    Context {
+    KestrelContext {
       workflow_name,
       spec: None,
       unaligned_crel: None,
@@ -40,24 +40,22 @@ impl Context<'_> {
       aligned_crel: None,
       aligned_output: None,
       output_path: None,
-      task_timings: Vec::new(),
-      start_time: None,
-      completion_time: None,
+      stopwatch: WorkflowStopwatch::new(),
       timed_out: false,
       verified: false,
     }
   }
 
   pub fn spec(&self) -> &KestrelSpec {
-    self.spec.expect("Missing unaligned CRel")
+    self.spec.as_ref().expect("Missing specification")
   }
 
   pub fn unaligned_crel(&self) -> &UnalignedCRel {
-    self.unaligned_crel.expect("Missing unaligned CRel")
+    self.unaligned_crel.as_ref().expect("Missing unaligned CRel")
   }
 
   pub fn unaligned_eggroll(&self) -> &String {
-    self.unaligned_eggroll.expect("Missing unaligned eggroll")
+    self.unaligned_eggroll.as_ref().expect("Missing unaligned eggroll")
   }
 
   pub fn aligned_eggroll(&self) -> &RecExpr<Eggroll> {
@@ -81,20 +79,32 @@ impl Context<'_> {
       Path::new(&path).file_name().unwrap().to_str().unwrap().to_string()
     })
   }
+}
 
-  pub fn mark_started(&mut self) {
-    self.start_time.replace(Instant::now());
+impl Context for KestrelContext {
+  fn is_verified(&self) -> bool {
+    self.verified
+  }
+}
+
+impl Stopwatch for KestrelContext {
+ fn mark_started(&mut self) {
+    self.stopwatch.mark_started();
   }
 
-  pub fn mark_completed(&mut self) {
-    let elapsed = self.start_time.expect("Execution not marked as started").elapsed();
-    self.completion_time.replace(elapsed);
+  fn mark_completed(&mut self) {
+    self.stopwatch.mark_completed();
   }
 
-  pub fn elapsed_time(&self) -> Duration {
-    match self.completion_time {
-      Some(duration) => duration,
-      None => self.start_time.expect("Execution not marked as started").elapsed()
-    }
+  fn push_task_time(&mut self, task_name: String, duration: Duration) {
+    self.stopwatch.push_task_time(task_name, duration);
+  }
+
+  fn task_timings(&self) -> Vec<(String, Duration)> {
+    self.stopwatch.task_timings()
+  }
+
+  fn total_elapsed_time(&self) -> Duration {
+    self.stopwatch.total_elapsed_time()
   }
 }

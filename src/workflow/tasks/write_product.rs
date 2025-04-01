@@ -2,7 +2,7 @@
 //! user-provided [OutputMode].
 
 use crate::output_mode::*;
-use crate::workflow::context::*;
+use crate::workflow::kestrel_context::KestrelContext;
 use crate::workflow::task::*;
 use std::fs::File;
 use std::io::prelude::*;
@@ -18,9 +18,9 @@ impl WriteProduct {
   }
 }
 
-impl Task for WriteProduct {
+impl Task<KestrelContext> for WriteProduct {
   fn name(&self) -> String { "write-product".to_string() }
-  fn run(&self, context: &mut Context) {
+  fn run(&self, context: &mut KestrelContext) {
     println!("Writing output to {}...", context.output_path());
     let mut file = File::create(context.output_path())
       .unwrap_or_else(|_| panic!("Error creating file: {}", context.output_path()));

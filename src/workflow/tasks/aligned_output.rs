@@ -2,7 +2,7 @@
 //! specified by the user-provided [OutputMode].
 
 use crate::output_mode::*;
-use crate::workflow::context::*;
+use crate::workflow::kestrel_context::KestrelContext;
 use crate::workflow::task::*;
 
 pub struct AlignedOutput {
@@ -15,9 +15,9 @@ impl AlignedOutput {
   }
 }
 
-impl Task for AlignedOutput {
+impl Task<KestrelContext> for AlignedOutput {
   fn name(&self) -> String { "aligned-output".to_string() }
-  fn run(&self, context: &mut Context) {
+  fn run(&self, context: &mut KestrelContext) {
     context.aligned_output.replace(self.output_mode.crel_to_output(
       &context.aligned_crel(),
       &context.spec(),

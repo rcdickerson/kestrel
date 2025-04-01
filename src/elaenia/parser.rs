@@ -15,6 +15,7 @@ use nom::{
   IResult,
 };
 use regex::Regex;
+use std::fs;
 
 fn label(label: &str) -> impl Fn(&str) -> IResult<&str, ()> + '_ {
   move |i: &str| {
@@ -150,12 +151,19 @@ fn elaenia_spec(i: &str) -> IResult<&str, ElaeniaSpec> {
   Ok((i, ElaeniaSpec{pre, afun, efun, post, aspecs, especs}))
 }
 
-pub fn parse_elaenia(input: &String) -> Result<ElaeniaSpec, String> {
+fn parse_elaenia_comment(input: &String) -> Result<ElaeniaSpec, String> {
   let strip_re = Regex::new(r"(?m)\n|^\s*/\*|^\s*\*/|^\s*\*").unwrap();
   let stripped_input = strip_re.replace_all(input, "");
   match elaenia_spec(&stripped_input) {
     Ok((_, result)) => Ok(result),
     Err(e) => Err(e.to_string()),
+  }
+}
+
+pub fn parse_elaenia_spec(input_file: &String) -> Result<ElaeniaSpec, String> {
+  match fs::read_to_string(input_file) {
+    Err(err) => Err(err.to_string()),
+    Ok(input) => parse_elaenia_comment(&input),
   }
 }
 
@@ -223,7 +231,7 @@ mod test {
         }),
       }),
     };
-    let actual = parse_elaenia(&input).unwrap();
+    let actual = parse_elaenia_comment(&input).unwrap();
     assert_eq!(actual, expected);
   }
 }

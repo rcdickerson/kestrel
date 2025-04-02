@@ -1,7 +1,7 @@
 //! Creates a product program with no alignment by naively
 //! concatenating the input programs together.
 
-use crate::workflow::kestrel_context::KestrelContext;
+use crate::workflow::Context;
 use crate::workflow::task::*;
 
 pub struct AlignNone { }
@@ -12,11 +12,11 @@ impl AlignNone {
   }
 }
 
-impl Task<KestrelContext> for AlignNone {
+impl <Ctx: Context> Task<Ctx> for AlignNone {
   fn name(&self) -> String { "align-none".to_string() }
-  fn run(&self, context: &mut KestrelContext) {
+  fn run(&self, context: &mut Ctx) {
     println!("Treating naive product as final alignment.");
     let rec_expr = context.unaligned_eggroll().parse().unwrap();
-    context.aligned_eggroll.replace(rec_expr);
+    context.accept_aligned_eggroll(rec_expr);
   }
 }

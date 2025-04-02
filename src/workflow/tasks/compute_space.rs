@@ -2,7 +2,7 @@
 //! by the [Context]'s e-graph.
 
 use crate::eggroll::ast::*;
-use crate::workflow::kestrel_context::KestrelContext;
+use crate::workflow::Context;
 use crate::workflow::task::*;
 use egg::*;
 use std::collections::HashSet;
@@ -15,10 +15,10 @@ impl ComputeSpace {
   }
 }
 
-impl Task<KestrelContext> for ComputeSpace {
+impl <Ctx: Context> Task<Ctx> for ComputeSpace {
   fn name(&self) -> String { "compute-space".to_string() }
 
-  fn run(&self, context: &mut KestrelContext) {
+  fn run(&self, context: &mut Ctx) {
     let runner = Runner::default()
       .with_expr(&context.unaligned_eggroll().parse().unwrap())
       .run(&crate::eggroll::rewrite::rewrites());

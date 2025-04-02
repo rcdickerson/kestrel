@@ -2,12 +2,18 @@
 //! execution pipeline. Workflows are centered around a [Context],
 //! which holds data pertinent to the verification task.
 
+use crate::eggroll::ast::*;
+use crate::unaligned::UnalignedCRel;
 use crate::workflow::predicate_task::*;
 use crate::workflow::stopwatch::*;
 use crate::workflow::task::*;
+use egg::RecExpr;
 use std::time::Instant;
 
 pub trait Context {
+  fn unaligned_crel(&self) -> &UnalignedCRel;
+  fn unaligned_eggroll(&self) -> &String;
+  fn accept_aligned_eggroll(&mut self, eggroll: RecExpr<Eggroll>);
   fn is_verified(&self) -> bool;
 }
 

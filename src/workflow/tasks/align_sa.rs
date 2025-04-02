@@ -9,6 +9,7 @@ use crate::anneal::*;
 use crate::crel::eval::*;
 use crate::eggroll::cost_functions::sa::*;
 use crate::eggroll::eggroll_jumper::EggrollJumper;
+use crate::workflow::Context;
 use crate::workflow::kestrel_context::*;
 use crate::workflow::task::*;
 use egg::*;

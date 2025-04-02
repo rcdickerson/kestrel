@@ -82,6 +82,18 @@ impl KestrelContext {
 }
 
 impl Context for KestrelContext {
+  fn unaligned_crel(&self) -> &UnalignedCRel {
+    self.unaligned_crel()
+  }
+
+  fn unaligned_eggroll(&self) -> &String {
+    self.unaligned_eggroll()
+  }
+
+  fn accept_aligned_eggroll(&mut self, eggroll: RecExpr<Eggroll>) {
+    self.aligned_eggroll = Some(eggroll);
+  }
+
   fn is_verified(&self) -> bool {
     self.verified
   }

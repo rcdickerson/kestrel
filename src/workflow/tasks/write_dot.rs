@@ -2,7 +2,7 @@
 //! [GraphViz](https://graphviz.org) dot file.
 
 use crate::eggroll::rewrite::*;
-use crate::workflow::kestrel_context::KestrelContext;
+use crate::workflow::Context;
 use crate::workflow::task::*;
 use egg::*;
 use std::fs::File;
@@ -17,9 +17,9 @@ impl WriteDot {
   }
 }
 
-impl Task<KestrelContext> for WriteDot {
+impl <Ctx: Context> Task<Ctx> for WriteDot {
   fn name(&self) -> String { "write-dot".to_string() }
-  fn run(&self, context: &mut KestrelContext) {
+  fn run(&self, context: &mut Ctx) {
     println!("Writing egraph structure to egraph.dot");
     let runner = Runner::default()
       .with_expr(&context.unaligned_eggroll().parse().unwrap())

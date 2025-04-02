@@ -113,6 +113,14 @@ impl ExtractorArg {
   }
 }
 
+fn main() {
+  let args = Args::parse();
+  match args.spec_format {
+    SpecFormat::Kestrel => kestrel_workflow(args),
+    SpecFormat::Elaenia => elaenia_workflow(args),
+  };
+}
+
 /// The high-level KestRel workflow is:
 ///   1. Read in a C file and parse its @KESTREL spec.
 ///   2. Convert the C into CRel. CRel is a C-like IR which can represent
@@ -128,14 +136,6 @@ impl ExtractorArg {
 /// orthogonal translation concerns: 1) converting between
 /// non-relational and relational programs, and 2) packaging programs
 /// into an Egg-compatible language definition.
-fn main() {
-  let args = Args::parse();
-  match args.spec_format {
-    SpecFormat::Kestrel => kestrel_workflow(args),
-    SpecFormat::Elaenia => elaenia_workflow(args),
-  };
-}
-
 fn kestrel_workflow(args: Args) {
   let mut raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
   if args.extractor == ExtractorArg::Unaligned {
@@ -153,7 +153,7 @@ fn kestrel_workflow(args: Args) {
   context.unaligned_eggroll = Some(unaligned_eggroll);
   context.output_path = args.output.clone();
 
-  let mut workflow: Workflow<KestrelContext> = Workflow::new(context);
+  let mut workflow = Workflow::new(context);
   if args.verbose {
     workflow.add_task(PrintInfo::with_header("Unaligned Product Program",
         &|ctx: &KestrelContext| {
@@ -230,6 +230,19 @@ fn elaenia_workflow(args: Args) {
   context.output_path = args.output.clone();
 
   let mut workflow = Workflow::new(context);
+  if args.verbose {
+    workflow.add_task(PrintInfo::with_header("Unaligned Product Program",
+        &|ctx: &ElaeniaContext| {
+          ctx.unaligned_crel().main.to_c().to_string()
+        }));
+  }
+  if args.dot { workflow.add_task(WriteDot::new()) }
+  if args.space_size { workflow.add_task(ComputeSpace::new()) }
+  match args.extractor {
+    ExtractorArg::Unaligned => workflow.add_task(AlignNone::new()),
+    ExtractorArg::CountLoops => workflow.add_task(AlignCountLoops::new()),
+    ExtractorArg::SA => panic!("Semantic alignment currently unsupported for Elaenia workflows."),
+  }
 
   workflow.execute();
 

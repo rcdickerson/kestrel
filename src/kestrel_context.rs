@@ -1,30 +1,37 @@
+//! Contains data needed in a KestRel verification [Workflow].
+
 use crate::crel::ast::*;
 use crate::eggroll::ast::*;
 use crate::eggroll::to_crel::*;
-use crate::elaenia::elaenia_spec::*;
+use crate::spec::KestrelSpec;
 use crate::spec::condition::KestrelCond;
-use crate::unaligned::*;
 use crate::workflow::context::*;
-use egg::RecExpr;
+use crate::unaligned::*;
+use egg::*;
+use std::path::Path;
 use std::time::Duration;
 
+/// A container for data needed in a KestRel verification [Workflow].
 #[derive(Clone)]
-pub struct ElaeniaContext {
+pub struct KestrelContext {
   workflow_name: String,
-  spec: ElaeniaSpec,
+  spec: KestrelSpec,
   unaligned_crel: Option<UnalignedCRel>,
   unaligned_eggroll: Option<String>,
   aligned_eggroll: Option<RecExpr<Eggroll>>,
   aligned_eggroll_repetitions: Option<GuardedRepetitions>,
   aligned_crel: Option<CRel>,
+  aligned_output: Option<String>,
+  output_path: Option<String>,
+  output_filename: Option<String>,
   stopwatch: WorkflowStopwatch,
   timed_out: bool,
   verified: bool,
 }
 
-impl ElaeniaContext {
-  pub fn new(workflow_name: String, spec: ElaeniaSpec) -> Self {
-    ElaeniaContext {
+impl KestrelContext {
+  pub fn new(workflow_name: String, spec: KestrelSpec) -> Self {
+    KestrelContext {
       workflow_name,
       spec,
       unaligned_crel: None,
@@ -32,6 +39,9 @@ impl ElaeniaContext {
       aligned_eggroll: None,
       aligned_eggroll_repetitions: None,
       aligned_crel: None,
+      aligned_output: None,
+      output_path: None,
+      output_filename: None,
       stopwatch: WorkflowStopwatch::new(),
       timed_out: false,
       verified: false,
@@ -39,7 +49,7 @@ impl ElaeniaContext {
   }
 }
 
-impl Context for ElaeniaContext {
+impl Context for KestrelContext {
   fn workflow_name(&self) -> &String {
     &self.workflow_name
   }
@@ -69,7 +79,7 @@ impl Context for ElaeniaContext {
   }
 }
 
-impl AlignsCRel for ElaeniaContext {
+impl AlignsCRel for KestrelContext {
   fn unaligned_crel(&self) -> &Option<UnalignedCRel> {
     &self.unaligned_crel
   }
@@ -87,7 +97,7 @@ impl AlignsCRel for ElaeniaContext {
   }
 }
 
-impl AlignsEggroll for ElaeniaContext {
+impl AlignsEggroll for KestrelContext {
   fn unaligned_eggroll(&self) -> &Option<String> {
     &self.unaligned_eggroll
   }
@@ -113,7 +123,33 @@ impl AlignsEggroll for ElaeniaContext {
   }
 }
 
-impl Stopwatch for ElaeniaContext {
+impl OutputsAlignment for KestrelContext {
+  fn aligned_output(&self) -> &Option<String> {
+    &self.aligned_output
+  }
+
+  fn accept_aligned_output(&mut self, output: String) {
+    self.aligned_output = Some(output);
+  }
+
+  fn accept_output_path(&mut self, path: String) {
+    self.output_path = Some(path.clone());
+    self.output_filename = Some(Path::new(&path)
+      .file_name().unwrap()
+      .to_str().unwrap()
+      .to_string());
+  }
+
+  fn output_path(&self) -> &Option<String> {
+    &self.output_path
+  }
+
+  fn output_filename(&self) -> &Option<String> {
+    &self.output_filename
+  }
+}
+
+impl Stopwatch for KestrelContext {
  fn mark_started(&mut self) {
     self.stopwatch.mark_started();
   }

@@ -6,7 +6,8 @@ use crate::crel::auto_fun_impl::*;
 use crate::crel::daikon_converter::*;
 use crate::crel::fundef::*;
 use crate::eggroll::to_crel;
-use crate::spec::{*, to_crel::*};
+use crate::spec::condition::KestrelCond;
+use crate::spec::to_crel::*;
 use rand::Rng;
 use std::collections::HashMap;
 
@@ -23,31 +24,33 @@ impl OutputMode {
 
   pub fn crel_to_output(&self,
                         crel: &CRel,
-                        spec: &KestrelSpec,
+                        precond: &KestrelCond,
+                        postcond: &KestrelCond,
                         global_decls: Vec<Declaration>,
                         fundefs: HashMap<String, FunDef>,
                         filename: &Option<String>) -> String {
     match self {
       // TODO: Refactor these crel_to_* methods to exploit commonalities.
-      OutputMode::Dafny => self.crel_to_dafny(&crel, spec, global_decls, filename).0,
+      OutputMode::Dafny => self.crel_to_dafny(&crel, precond, postcond, global_decls, filename).0,
       OutputMode::Daikon => self.crel_to_daikon(&crel, global_decls, fundefs, filename),
-      _ => self.crel_to_c(&crel, spec, global_decls, filename),
+      _ => self.crel_to_c(&crel, precond, postcond, global_decls, filename),
     }
   }
 
   pub fn crel_to_dafny(&self,
                        crel: &CRel,
-                       spec: &KestrelSpec,
+                       precond: &KestrelCond,
+                       postcond: &KestrelCond,
                        global_decls: Vec<Declaration>,
                        filename: &Option<String>) -> (String, HashMap<String, (usize, usize)>) {
     let (_, fundefs) = crate::crel::fundef::extract_fundefs(crel);
     let main_fun = fundefs.get("main").expect("No main function found");
 
     let preconds = self.assume_name().map(|name| {
-      BlockItem::Statement(spec.pre.to_crel(StatementKind{crel_name: name}))
+      BlockItem::Statement(precond.to_crel(StatementKind{crel_name: name}))
     });
     let postconds = self.assert_name().map(|name| {
-      BlockItem::Statement(spec.post.to_crel(StatementKind{crel_name: name}))
+      BlockItem::Statement(postcond.to_crel(StatementKind{crel_name: name}))
     });
 
     let globals = global_decls.iter()
@@ -163,7 +166,8 @@ impl OutputMode {
 
   pub fn crel_to_c(&self,
                    crel: &CRel,
-                   spec: &KestrelSpec,
+                   precond: &KestrelCond,
+                   postcond: &KestrelCond,
                    global_decls: Vec<Declaration>,
                    filename: &Option<String>) -> String {
     let (_, fundefs) = crate::crel::fundef::extract_fundefs(crel);
@@ -171,10 +175,10 @@ impl OutputMode {
 
     let param_inits = self.build_param_inits(&main_fun.params);
     let preconds = self.assume_name().map(|name| {
-      BlockItem::Statement(spec.pre.to_crel(StatementKind{crel_name: name}))
+      BlockItem::Statement(precond.to_crel(StatementKind{crel_name: name}))
     });
     let postconds = self.assert_name().map(|name| {
-      BlockItem::Statement(spec.post.to_crel(StatementKind{crel_name: name}))
+      BlockItem::Statement(postcond.to_crel(StatementKind{crel_name: name}))
     });
 
     let mut body_items: Vec<BlockItem> = Vec::new();

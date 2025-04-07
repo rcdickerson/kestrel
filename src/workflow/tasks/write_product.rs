@@ -2,7 +2,7 @@
 //! user-provided [OutputMode].
 
 use crate::output_mode::*;
-use crate::workflow::kestrel_context::KestrelContext;
+use crate::workflow::context::*;
 use crate::workflow::task::*;
 use std::fs::File;
 use std::io::prelude::*;
@@ -18,24 +18,27 @@ impl WriteProduct {
   }
 }
 
-impl Task<KestrelContext> for WriteProduct {
+impl <Ctx: OutputsAlignment> Task<Ctx> for WriteProduct {
   fn name(&self) -> String { "write-product".to_string() }
-  fn run(&self, context: &mut KestrelContext) {
-    println!("Writing output to {}...", context.output_path());
-    let mut file = File::create(context.output_path())
-      .unwrap_or_else(|_| panic!("Error creating file: {}", context.output_path()));
-    match file.write_all(context.aligned_output().as_bytes()) {
+  fn run(&self, context: &mut Ctx) {
+    let output_path = context.output_path().as_ref().expect("Missing output path");
+    println!("Writing output to {}...", output_path);
+    let mut file = File::create(output_path)
+      .unwrap_or_else(|_| panic!("Error creating file: {}", output_path));
+    match file.write_all(context.aligned_output().as_ref()
+                         .expect("Missing aligned output")
+                         .as_bytes()) {
       Ok(_) => println!("Done"),
       Err(err) => panic!("Error writing output file: {}", err),
     }
     if self.output_mode == OutputMode::SvComp {
-      let mut yaml_pathbuf = PathBuf::from(context.output_path().clone());
+      let mut yaml_pathbuf = PathBuf::from(output_path.clone());
       yaml_pathbuf.set_extension("yml");
       let yaml_path = yaml_pathbuf.to_str().unwrap();
       println!("Writing yaml to {}...", yaml_path);
       let mut file = File::create(yaml_path)
         .unwrap_or_else(|_| panic!("Error creating file: {}", yaml_path));
-      let filename = context.filename().expect("Missing output filename");
+      let filename = context.output_filename().as_ref().expect("Missing output filename");
       match file.write_all(svcomp_yaml(&filename).as_bytes()) {
         Ok(_) => println!("Done"),
         Err(err) => panic!("Error writing output file: {}", err),

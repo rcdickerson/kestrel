@@ -7,7 +7,7 @@ use crate::crel::mapper::*;
 use crate::daikon::invariant_parser::*;
 use crate::output_mode::*;
 use crate::spec::to_crel::*;
-use crate::workflow::kestrel_context::KestrelContext;
+use crate::workflow::context::*;
 use crate::workflow::task::*;
 use std::collections::{HashMap, HashSet};
 use std::env;
@@ -34,17 +34,21 @@ impl InvarsDaikon {
   }
 }
 
-impl Task<KestrelContext> for InvarsDaikon {
+impl <Ctx: Context + AlignsCRel> Task<Ctx> for InvarsDaikon {
   fn name(&self) -> String { "invars-daikon".to_string() }
 
-  fn run(&self, context: &mut KestrelContext) {
+  fn run(&self, context: &mut Ctx) {
     // Write Daikon output to file.
     let daikon_path = "daikon_output.c".to_string();
     println!("Writing Daikon to {}...", daikon_path);
     let daikon_output = OutputMode::Daikon.crel_to_daikon(
-        &context.aligned_crel(),
-        context.unaligned_crel().global_decls.clone(),
-        context.unaligned_crel().fundefs.clone(),
+        &context.aligned_crel().as_ref().expect("Missing aligned CRel"),
+        context.unaligned_crel().as_ref()
+          .expect("Missing unaligned CRel")
+          .global_decls.clone(),
+        context.unaligned_crel().as_ref()
+          .expect("Missing unaligned CRel")
+          .fundefs.clone(),
         &Some(daikon_path.clone()));
     let mut file = File::create(&Path::new(daikon_path.clone().as_str()))
       .unwrap_or_else(|_| panic!("Error creating file: {}", daikon_path));
@@ -64,7 +68,7 @@ impl Task<KestrelContext> for InvarsDaikon {
       Some(_) => (),
       None => {
         println!("Daikon compilation via gcc timed out.");
-        context.timed_out = true;
+        context.mark_timed_out(true);
         gcc_child.kill().unwrap();
         gcc_child.wait().unwrap();
         return;
@@ -80,7 +84,7 @@ impl Task<KestrelContext> for InvarsDaikon {
       Some(_) => (),
       None => {
         println!("Kvasir timed out.");
-        context.timed_out = true;
+        context.mark_timed_out(true);
         kvasir_child.kill().unwrap();
         kvasir_child.wait().unwrap();
         return;
@@ -104,7 +108,7 @@ impl Task<KestrelContext> for InvarsDaikon {
       Some(status) => status,
       None => {
         println!("Daikon timed out.");
-        context.timed_out = true;
+        context.mark_timed_out(true);
         daikon_child.kill().unwrap();
         daikon_child.wait().unwrap();
         return;
@@ -129,9 +133,11 @@ impl Task<KestrelContext> for InvarsDaikon {
     };
     separate_eq(&mut invariants);
     let mut keep_loops = LoopKeeper::new(invariants.keys().collect());
-    let mut crel = context.aligned_crel().map(&mut keep_loops);
+    let mut crel = context.aligned_crel().as_ref()
+        .expect("Missing aligned CRel")
+        .map(&mut keep_loops);
     crel.decorate_invariants(&invariants);
-    context.aligned_crel.replace(crel);
+    context.accept_aligned_crel(crel);
   }
 }
 

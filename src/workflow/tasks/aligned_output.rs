@@ -2,7 +2,7 @@
 //! specified by the user-provided [OutputMode].
 
 use crate::output_mode::*;
-use crate::workflow::kestrel_context::KestrelContext;
+use crate::workflow::context::*;
 use crate::workflow::task::*;
 
 pub struct AlignedOutput {
@@ -15,14 +15,17 @@ impl AlignedOutput {
   }
 }
 
-impl Task<KestrelContext> for AlignedOutput {
+impl <Ctx: Context + AlignsCRel + OutputsAlignment> Task<Ctx> for AlignedOutput {
   fn name(&self) -> String { "aligned-output".to_string() }
-  fn run(&self, context: &mut KestrelContext) {
-    context.aligned_output.replace(self.output_mode.crel_to_output(
-      &context.aligned_crel(),
-      &context.spec(),
-      context.unaligned_crel().global_decls.clone(),
-      context.unaligned_crel().fundefs.clone(),
-      &context.filename()));
+  fn run(&self, context: &mut Ctx) {
+    let unaligned_crel = context.unaligned_crel().as_ref().expect("Missing unaligned CRel");
+
+    context.accept_aligned_output(self.output_mode.crel_to_output(
+      &context.aligned_crel().as_ref().expect("Missing aligned CRel"),
+      &context.precondition(),
+      &context.postcondition(),
+      unaligned_crel.global_decls.clone(),
+      unaligned_crel.fundefs.clone(),
+      &context.output_filename()));
   }
 }

@@ -2,7 +2,7 @@
 //! by the [Context]'s e-graph.
 
 use crate::eggroll::ast::*;
-use crate::workflow::Context;
+use crate::workflow::context::*;
 use crate::workflow::task::*;
 use egg::*;
 use std::collections::HashSet;
@@ -15,12 +15,14 @@ impl ComputeSpace {
   }
 }
 
-impl <Ctx: Context> Task<Ctx> for ComputeSpace {
+impl <Ctx: Context + AlignsEggroll> Task<Ctx> for ComputeSpace {
   fn name(&self) -> String { "compute-space".to_string() }
 
   fn run(&self, context: &mut Ctx) {
     let runner = Runner::default()
-      .with_expr(&context.unaligned_eggroll().parse().unwrap())
+      .with_expr(&context.unaligned_eggroll().as_ref()
+                 .expect("Missing unaligned eggroll")
+                 .parse().unwrap())
       .run(&crate::eggroll::rewrite::rewrites());
     let seen = &mut HashSet::new();
     println!("\nAlignment space size: {}", space_size(&runner.egraph, runner.roots[0], seen));

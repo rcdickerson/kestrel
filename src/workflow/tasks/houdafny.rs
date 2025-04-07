@@ -5,7 +5,7 @@
 use crate::crel::ast::*;
 use crate::crel::visitor::CRelVisitor;
 use crate::output_mode::*;
-use crate::workflow::kestrel_context::KestrelContext;
+use crate::workflow::context::*;
 use crate::workflow::task::*;
 use regex::Regex;
 use std::collections::HashMap;
@@ -38,17 +38,21 @@ impl Houdafny {
   }
 }
 
-impl Task<KestrelContext> for Houdafny {
+impl <Ctx: Context + AlignsCRel> Task<Ctx> for Houdafny {
   fn name(&self) -> String { "houdafny".to_string() }
 
-  fn run(&self, context: &mut KestrelContext) {
+  fn run(&self, context: &mut Ctx) {
     let dafny_path = "houdafny.dfy".to_string();
     loop {
       // Write current aligned program as Dafny file.
       let (dafny_prog, while_lines) = OutputMode::Dafny.crel_to_dafny(
-        &context.aligned_crel(),
-        context.spec(),
-        context.unaligned_crel().global_decls.clone(),
+        &context.aligned_crel().as_ref()
+            .expect("Missing aligned CRel"),
+        context.precondition(),
+        context.postcondition(),
+        context.unaligned_crel().as_ref()
+          .expect("Missing unaligned CRel")
+          .global_decls.clone(),
         &Some(dafny_path.clone()));
 
       // println!("Writing Dafny to {}...", dafny_path);
@@ -72,7 +76,7 @@ impl Task<KestrelContext> for Houdafny {
         Some(status) => status,
         None => {
           println!("Dafny timed out.");
-          context.timed_out = true;
+          context.mark_timed_out(true);
           child.kill().unwrap();
           child.wait().unwrap();
           return;
@@ -86,7 +90,7 @@ impl Task<KestrelContext> for Houdafny {
       // some failure without bad invariants.
       println!("{}", dafny_output);
       if status.success() {
-        context.verified = true;
+        context.mark_verified(true);
         break;
       }
       let bad_invar_lines = parse_bad_invariants(dafny_output.to_string());
@@ -102,8 +106,9 @@ impl Task<KestrelContext> for Houdafny {
         }
         by_loop_id.get_mut(&loop_id).unwrap().insert(offset - 1);
       }
-      context.aligned_crel.as_mut().expect("missing aligned CRel")
-        .walk(&mut InvarRemover::new(&by_loop_id));
+      let mut aligned_crel = context.aligned_crel().clone().expect("Missing aligned CRel");
+      aligned_crel.walk(&mut InvarRemover::new(&by_loop_id));
+      context.accept_aligned_crel(aligned_crel);
     }
   }
 }

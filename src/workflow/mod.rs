@@ -4,12 +4,10 @@
 //! functionality to accomodate new user options or verification
 //! pipelines.
 
-pub mod kestrel_context;
-pub mod stopwatch;
+pub mod context;
 pub mod task;
 pub mod tasks;
 pub mod workflow;
 
-pub use kestrel_context::*;
 pub use tasks::*;
 pub use workflow::*;

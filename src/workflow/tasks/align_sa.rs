@@ -9,8 +9,7 @@ use crate::anneal::*;
 use crate::crel::eval::*;
 use crate::eggroll::cost_functions::sa::*;
 use crate::eggroll::eggroll_jumper::EggrollJumper;
-use crate::workflow::Context;
-use crate::workflow::kestrel_context::*;
+use crate::workflow::context::*;
 use crate::workflow::task::*;
 use egg::*;
 
@@ -40,25 +39,35 @@ impl AlignSa {
   }
 }
 
-impl Task<KestrelContext> for AlignSa {
+impl <Ctx: Context + AlignsCRel + AlignsEggroll> Task<Ctx> for AlignSa {
   fn name(&self) -> String { "align-sa".to_string() }
 
-  fn run(&self, context: &mut KestrelContext) {
-    if context.verified {
+  fn run(&self, context: &mut Ctx) {
+    if context.is_verified() {
       println!("Verification complete; skipping simulated annealing alignment");
       return;
     }
 
     let num_trace_states = 10;
     let trace_fuel = 100000;
-    let init = if self.start_random { None } else { context.aligned_eggroll.clone() };
+    let init = if self.start_random {
+      None
+    } else {
+      context.aligned_eggroll().clone()
+    };
     let runner = Runner::default()
-      .with_expr(&context.unaligned_eggroll().parse().unwrap())
+      .with_expr(&context.unaligned_eggroll().as_ref()
+                 .expect("Missing unaligned Eggroll")
+                 .parse().unwrap())
       .run(&crate::eggroll::rewrite::rewrites());
-    let generator = context.unaligned_crel().fundefs.get(&"_test_gen".to_string());
-    let decls = context.unaligned_crel().global_decls_and_params();
+    let generator = context.unaligned_crel().as_ref()
+      .expect("Missing unaliged crel")
+      .fundefs.get(&"_test_gen".to_string());
+    let decls = context.unaligned_crel().as_ref()
+      .expect("missing unaligned crel")
+      .global_decls_and_params();
     let trace_states = rand_states_satisfying(
-      num_trace_states, &context.spec().pre, Some(&decls), generator, 100000);
+      num_trace_states, &context.precondition(), Some(&decls), generator, 100000);
     let mut jumper = EggrollJumper::new(&runner.egraph);
     let annealer = Annealer::new();
     let (best, meta) = annealer.find_best(self.max_iterations, init, &mut jumper,
@@ -66,7 +75,7 @@ impl Task<KestrelContext> for AlignSa {
                                 self.ablate_fusion,
                                 self.ablate_runoffs) },
     );
-    context.aligned_eggroll.replace(best);
-    context.aligned_eggroll_repetitions.replace(meta);
+    context.accept_aligned_eggroll(best);
+    context.accept_aligned_eggroll_repetitions(meta);
   }
 }

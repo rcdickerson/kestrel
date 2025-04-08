@@ -18,21 +18,31 @@ impl CRel {
   pub fn map(&self, mapper: &mut dyn CRelMapper) -> CRel {
     match &self {
       CRel::Declaration(decl) => {
-        CRel::Declaration(mapper.map_declaration(decl).map(mapper))
+        let mapped_decl = decl.map(mapper);
+        mapper.map_crel(&CRel::Declaration(mapped_decl))
       },
-      CRel::FunctionDefinition{specifiers, name, params, body} => CRel::FunctionDefinition {
-        specifiers: specifiers.iter()
+      CRel::FunctionDefinition{specifiers, name, params, body} => {
+        let mapped_specifiers = specifiers.iter()
           .map(|spec| mapper.map_declaration_specifier(spec))
-          .collect(),
-        name: mapper.map_name(name),
-        params: params.iter()
-          .map(|param| mapper.map_parameter_declaration(param).map(mapper))
-          .collect(),
-        body: Box::new(mapper.map_statement(body).map(mapper)),
+          .collect();
+        let mapped_name = mapper.map_name(name);
+        let mapped_params = params.iter()
+          .map(|param| param.map(mapper))
+          .collect();
+        let mapped_body = body.map(mapper);
+        mapper.map_crel(&CRel::FunctionDefinition {
+          specifiers: mapped_specifiers,
+          name: mapped_name,
+          params: mapped_params,
+          body: Box::new(mapped_body),
+        })
       },
-      CRel::Seq(stmts) => CRel::Seq(stmts.iter().map(|stmt| {
-        mapper.map_crel(stmt).map(mapper)
-      }).collect())
+      CRel::Seq(stmts) => {
+        let mapped_stmts = stmts.iter().map(|stmt| {
+          mapper.map_crel(stmt).map(mapper)
+        }).collect();
+        mapper.map_crel(&CRel::Seq(mapped_stmts))
+      },
     }
   }
 }
@@ -41,20 +51,30 @@ impl Declarator {
   pub fn map(&self, mapper: &mut dyn CRelMapper) -> Declarator {
     match &self {
       Declarator::Identifier{name} => {
-        Declarator::Identifier{name: mapper.map_name(name)}
+        let mapped_name = mapper.map_name(name);
+        mapper.map_declarator(&Declarator::Identifier{name: mapped_name})
       },
-      Declarator::Array{name, sizes} => Declarator::Array {
-        name: mapper.map_name(name),
-        sizes: sizes.iter().map(|expr| mapper.map_expression(expr).map(mapper)).collect(),
+      Declarator::Array{name, sizes} => {
+        let mapped_name = mapper.map_name(name);
+        let mapped_sizes = sizes.iter().map(|expr| expr.map(mapper)).collect();
+        mapper.map_declarator(&Declarator::Array {
+          name: mapped_name,
+          sizes: mapped_sizes,
+        })
       },
-      Declarator::Function{name, params} => Declarator::Function {
-        name: mapper.map_name(name),
-        params: params.iter().map(|param| {
-          mapper.map_parameter_declaration(param).map(mapper)
-        }).collect(),
+      Declarator::Function{name, params} => {
+        let mapped_name = mapper.map_name(name);
+        let mapped_params = params.iter().map(|param| {
+          param.map(mapper)
+        }).collect();
+        mapper.map_declarator(&Declarator::Function {
+          name: mapped_name,
+          params: mapped_params,
+        })
       },
       Declarator::Pointer(decl) => {
-        Declarator::Pointer(Box::new(mapper.map_declarator(decl).map(mapper)))
+        let mapped_decl = decl.map(mapper);
+        mapper.map_declarator(&Declarator::Pointer(Box::new(mapped_decl)))
       },
     }
   }
@@ -62,80 +82,111 @@ impl Declarator {
 
 impl Declaration {
   pub fn map(&self, mapper: &mut dyn CRelMapper) -> Declaration {
-    Declaration {
-      specifiers: self.specifiers.iter().map(|spec| {
-        mapper.map_declaration_specifier(spec)
-      }).collect(),
-      declarator: mapper.map_declarator(&self.declarator).map(mapper),
-      initializer: self.initializer.as_ref().map(|init| {
-        mapper.map_expression(&init).map(mapper)
-      }),
-    }
+    let mapped_specifiers = self.specifiers.iter().map(|spec| {
+      mapper.map_declaration_specifier(spec)
+    }).collect();
+    let mapped_declarator = self.declarator.map(mapper);
+    let mapped_initializer = self.initializer.as_ref().map(|init| {
+      init.map(mapper)
+    });
+    mapper.map_declaration(&Declaration {
+      specifiers: mapped_specifiers,
+      declarator: mapped_declarator,
+      initializer: mapped_initializer,
+    })
   }
 }
 
 impl ParameterDeclaration {
   pub fn map(&self, mapper: &mut dyn CRelMapper) -> ParameterDeclaration {
-    ParameterDeclaration {
-      specifiers: self.specifiers.iter().map(|spec| {
-        mapper.map_declaration_specifier(spec)
-      }).collect(),
-      declarator: self.declarator.as_ref().map(|decl| {
-        mapper.map_declarator(&decl).map(mapper)
-      }),
-    }
+    let mapped_specifiers = self.specifiers.iter().map(|spec| {
+      mapper.map_declaration_specifier(spec)
+    }).collect();
+    let mapped_declarator = self.declarator.as_ref().map(|decl| {
+      decl.map(mapper)
+    });
+    mapper.map_parameter_declaration(&ParameterDeclaration {
+      specifiers: mapped_specifiers,
+      declarator: mapped_declarator,
+    })
   }
 }
 
 impl Statement {
   pub fn map(&self, mapper: &mut dyn CRelMapper) -> Statement {
     match &self {
-      Statement::BasicBlock(items) => Statement::BasicBlock (
-        items.iter().map(|item| {
-          mapper.map_block_item(item).map(mapper)
-        }).collect()
-      ),
-      Statement::Break => Statement::Break,
-      Statement::Compound(items) => Statement::Compound (
-        items.iter().map(|item| {
-          mapper.map_block_item(item).map(mapper)
-        }).collect()
-      ),
-      Statement::Fail => Statement::Fail,
-      Statement::Expression(expr) => Statement::Expression (
-        Box::new(mapper.map_expression(expr).map(mapper))
-      ),
-      Statement::GuardedRepeat{id, repetitions, condition, body} => Statement::GuardedRepeat {
-        id: id.clone(),
-        repetitions: *repetitions,
-        condition: Box::new(mapper.map_expression(condition)),
-        body: Box::new(mapper.map_statement(body)),
+      Statement::Assert(expr) => {
+        let mapped_expr = expr.map(mapper);
+        mapper.map_statement(&Statement::Assert(Box::new(mapped_expr)))
       },
-      Statement::If{condition, then, els} => Statement::If {
-        condition: Box::new(mapper.map_expression(condition).map(mapper)),
-        then: Box::new(mapper.map_statement(then).map(mapper)),
-        els: els.as_ref().map(|stmt| {
-          Box::new(mapper.map_statement(&stmt).map(mapper))
-        }),
+      Statement::Assume(expr) => {
+        let mapped_expr = expr.map(mapper);
+        mapper.map_statement(&Statement::Assume(Box::new(mapped_expr)))
       },
-      Statement::None => Statement::None,
-      Statement::Relation{lhs, rhs} => Statement::Relation {
-        lhs: Box::new(mapper.map_statement(lhs).map(mapper)),
-        rhs: Box::new(mapper.map_statement(rhs).map(mapper)),
+      Statement::BasicBlock(items) => {
+        let mapped_items = items.iter().map(|item| {
+          item.map(mapper)
+        }).collect();
+        mapper.map_statement(&Statement::BasicBlock(mapped_items))
       },
-      Statement::Return(expr) => Statement::Return (
-        expr.as_ref().map(|expr| Box::new(mapper.map_expression(&expr).map(mapper)))
-      ),
-      Statement::While{id, runoff_link_id, invariants, condition, body, is_runoff, is_merged} => Statement::While {
-        id: id.clone(),
-        runoff_link_id: runoff_link_id.clone(),
-        invariants: invariants.clone(),
-        condition: Box::new(mapper.map_expression(condition).map(mapper)),
-        body: body.as_ref().map(|stmt| {
-          Box::new(mapper.map_statement(&stmt).map(mapper))
-        }),
-        is_runoff: *is_runoff,
-        is_merged: *is_merged,
+      Statement::Break => mapper.map_statement(self),
+      Statement::Compound(items) => {
+        let mapped_items = items.iter().map(|item| {
+          item.map(mapper)
+        }).collect();
+        mapper.map_statement(&Statement::Compound(mapped_items))
+      },
+      Statement::Expression(expr) => {
+        let mapped_expr = expr.map(mapper);
+        mapper.map_statement(&Statement::Expression(Box::new(mapped_expr)))
+      },
+      Statement::GuardedRepeat{id, repetitions, condition, body} => {
+        let mapped_condition = condition.map(mapper);
+        let mapped_body = body.map(mapper);
+        mapper.map_statement(&Statement::GuardedRepeat {
+          id: id.clone(),
+          repetitions: *repetitions,
+          condition: Box::new(mapped_condition),
+          body: Box::new(mapped_body),
+        })
+      },
+      Statement::If{condition, then, els} => {
+        let mapped_condition = condition.map(mapper);
+        let mapped_then = then.map(mapper);
+        let mapped_els = els.as_ref().map(|stmt| { Box::new(stmt.map(mapper)) });
+        mapper.map_statement(&Statement::If {
+          condition: Box::new(mapped_condition),
+          then: Box::new(mapped_then),
+          els: mapped_els,
+        })
+      },
+      Statement::None => mapper.map_statement(self),
+      Statement::Relation{lhs, rhs} => {
+        let mapped_lhs = lhs.map(mapper);
+        let mapped_rhs = rhs.map(mapper);
+        mapper.map_statement(&Statement::Relation {
+          lhs: Box::new(mapped_lhs),
+          rhs: Box::new(mapped_rhs),
+        })
+      },
+      Statement::Return(expr) => {
+        let mapped_expr = expr.as_ref().map(|expr| Box::new(expr.map(mapper)));
+        mapper.map_statement(&Statement::Return(mapped_expr))
+      },
+      Statement::While{id, runoff_link_id, invariants, condition, body, is_runoff, is_merged} => {
+        let mapped_condition = condition.map(mapper);
+        let mapped_body = body.as_ref().map(|stmt| {
+          Box::new(stmt.map(mapper))
+        });
+        mapper.map_statement(&Statement::While {
+          id: id.clone(),
+          runoff_link_id: runoff_link_id.clone(),
+          invariants: invariants.clone(),
+          condition: Box::new(mapped_condition),
+          body: mapped_body,
+          is_runoff: *is_runoff,
+          is_merged: *is_merged,
+        })
       },
     }
   }
@@ -144,46 +195,73 @@ impl Statement {
 impl Expression {
   pub fn map(&self, mapper: &mut dyn CRelMapper) -> Expression {
     match &self {
-      Expression::Identifier{name} => Expression::Identifier {
-        name: mapper.map_name(name)
+      Expression::Identifier{name} => {
+        let mapped_name = mapper.map_name(name);
+        mapper.map_expression(&Expression::Identifier {
+          name: mapped_name,
+        })
       },
-      Expression::ConstInt(_) => self.clone(),
-      Expression::ConstFloat(_) => self.clone(),
-      Expression::StringLiteral(_) => self.clone(),
-      Expression::Call{callee, args} => Expression::Call {
-        callee: Box::new(mapper.map_expression(callee).map(mapper)),
-        args: args.iter().map(|arg| {
-          mapper.map_expression(arg).map(mapper)
-        }).collect(),
+      Expression::ConstInt(_) => mapper.map_expression(self),
+      Expression::ConstFloat(_) => mapper.map_expression(self),
+      Expression::StringLiteral(_) => mapper.map_expression(self),
+      Expression::Call{callee, args} => {
+        let mapped_callee = callee.map(mapper);
+        let mapped_args = args.iter().map(|arg| {
+          arg.map(mapper)
+        }).collect();
+        mapper.map_expression(&Expression::Call {
+          callee: Box::new(mapped_callee),
+          args: mapped_args,
+        })
       },
-      Expression::ASpecCall{callee, args} => Expression::Call {
-        callee: Box::new(mapper.map_expression(callee).map(mapper)),
-        args: args.iter().map(|arg| {
-          mapper.map_expression(arg).map(mapper)
-        }).collect(),
+      Expression::ASpecCall{callee, args} => {
+        let mapped_callee = callee.map(mapper);
+        let mapped_args = args.iter().map(|arg| {
+          arg.map(mapper)
+        }).collect();
+        mapper.map_expression(&Expression::ASpecCall {
+          callee: Box::new(mapped_callee),
+          args: mapped_args,
+        })
       },
-      Expression::ESpecCall{callee, args} => Expression::Call {
-        callee: Box::new(mapper.map_expression(callee).map(mapper)),
-        args: args.iter().map(|arg| {
-          mapper.map_expression(arg).map(mapper)
-        }).collect(),
+      Expression::ESpecCall{callee, args} => {
+        let mapped_callee = callee.map(mapper);
+        let mapped_args = args.iter().map(|arg| {
+          arg.map(mapper)
+        }).collect();
+        mapper.map_expression(&Expression::ESpecCall {
+          callee: Box::new(mapped_callee),
+          args: mapped_args,
+        })
       },
-      Expression::Unop{expr, op} => Expression::Unop {
-        expr: Box::new(mapper.map_expression(expr).map(mapper)),
-        op: op.clone(),
+      Expression::Unop{expr, op} => {
+        let mapped_expr = expr.map(mapper);
+        mapper.map_expression(&Expression::Unop {
+          expr: Box::new(mapped_expr),
+          op: op.clone(),
+        })
       },
-      Expression::Binop{lhs, rhs, op} => Expression::Binop {
-        lhs: Box::new(mapper.map_expression(lhs).map(mapper)),
-        rhs: Box::new(mapper.map_expression(rhs).map(mapper)),
-        op: op.clone(),
+      Expression::Binop{lhs, rhs, op} => {
+        let mapped_lhs = lhs.map(mapper);
+        let mapped_rhs = rhs.map(mapper);
+        mapper.map_expression(&Expression::Binop {
+          lhs: Box::new(mapped_lhs),
+          rhs: Box::new(mapped_rhs),
+          op: op.clone(),
+        })
       },
-      Expression::Forall{bindings, condition} => Expression::Forall {
-        bindings: bindings.iter().map(|(v, t)| (mapper.map_name(v), t.clone())).collect(),
-        condition: Box::new(mapper.map_expression(condition).map(mapper)),
+      Expression::Forall{bindings, condition} => {
+        let mapped_bindings = bindings.iter().map(|(v, t)| (mapper.map_name(v), t.clone())).collect();
+        let mapped_condition = condition.map(mapper);
+        mapper.map_expression(&Expression::Forall {
+          bindings: mapped_bindings,
+          condition: Box::new(mapped_condition),
+        })
       },
-      Expression::Statement(stmt) => Expression::Statement(
-        Box::new(mapper.map_statement(stmt).map(mapper))
-      ),
+      Expression::Statement(stmt) => {
+        let mapped_stmt = stmt.map(mapper);
+        mapper.map_expression(&Expression::Statement(Box::new(mapped_stmt)))
+      },
     }
   }
 }
@@ -191,12 +269,14 @@ impl Expression {
 impl BlockItem {
   pub fn map(&self, mapper: &mut dyn CRelMapper) -> BlockItem {
     match &self {
-      BlockItem::Declaration(decl) => BlockItem::Declaration(
-        mapper.map_declaration(decl).map(mapper)
-      ),
-      BlockItem::Statement(stmt) => BlockItem::Statement(
-        mapper.map_statement(stmt).map(mapper)
-      ),
+      BlockItem::Declaration(decl) => {
+        let mapped_decl = decl.map(mapper);
+        mapper.map_block_item(&BlockItem::Declaration(mapped_decl))
+      },
+      BlockItem::Statement(stmt) => {
+        let mapped_stmt = stmt.map(mapper);
+        mapper.map_block_item(&BlockItem::Statement(mapped_stmt))
+      },
     }
   }
 }

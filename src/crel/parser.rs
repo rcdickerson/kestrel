@@ -132,6 +132,9 @@ fn trans_declarator(decl: &Node<c::Declarator>) -> Declarator {
           .collect();
         function_params = Some(params);
       },
+      c::DerivedDeclarator::KRFunction(_) => {
+        is_function = true;
+      },
       c::DerivedDeclarator::Pointer(_) => {
         is_pointer = true;
       },

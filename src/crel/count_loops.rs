@@ -77,6 +77,7 @@ impl CountLoops for Statement {
       Statement::Break => LoopCounts::zero(),
       Statement::Compound(items) => items.iter().map(|i| i.count_loops()).sum(),
       Statement::Expression(expr) => expr.count_loops(),
+      Statement::Fail => LoopCounts::zero(),
       Statement::GuardedRepeat{repetitions, body, ..} => {
         let counts = body.count_loops();
         LoopCounts {

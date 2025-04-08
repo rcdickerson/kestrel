@@ -102,6 +102,12 @@ fn aexp_qualified_var(i: &str) -> IResult<&str, CondAExpr> {
     name: name.to_string()}))
 }
 
+fn aexp_return_value(i: &str) -> IResult<&str, CondAExpr> {
+  let (i, _)  = multispace0(i)?;
+  let (i, _)  = tag("ret!")(i)?;
+  Ok((i, CondAExpr::ReturnValue))
+}
+
 fn aexp_index(i: &str) -> IResult<&str, CondAExpr> {
   let (i, _)       = multispace0(i)?;
   let (i, id)      = alt((aexp_qualified_var,
@@ -151,6 +157,7 @@ fn aexp_funcall(i: &str) -> IResult<&str, CondAExpr> {
 fn aexpr_lhs(i: &str) -> IResult<&str, CondAExpr> {
   let (i, _) = multispace0(i)?;
   alt((
+    aexp_return_value,
     aexp_int,
     aexp_float,
     aexp_funcall,
@@ -169,6 +176,7 @@ pub fn aexpr(i: &str) -> IResult<&str, CondAExpr> {
     aexpr_binop("*", CondABinop::Mul),
     aexpr_binop("/", CondABinop::Div),
     aexpr_binop("%", CondABinop::Mod),
+    aexp_return_value,
     aexp_int,
     aexp_float,
     aexp_funcall,

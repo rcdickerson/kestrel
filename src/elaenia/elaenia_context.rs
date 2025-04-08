@@ -6,6 +6,7 @@ use crate::spec::condition::KestrelCond;
 use crate::unaligned::*;
 use crate::workflow::context::*;
 use egg::RecExpr;
+use std::path::Path;
 use std::time::Duration;
 
 #[derive(Clone)]
@@ -17,6 +18,9 @@ pub struct ElaeniaContext {
   aligned_eggroll: Option<RecExpr<Eggroll>>,
   aligned_eggroll_repetitions: Option<GuardedRepetitions>,
   aligned_crel: Option<CRel>,
+  aligned_output: Option<String>,
+  output_path: Option<String>,
+  output_filename: Option<String>,
   stopwatch: WorkflowStopwatch,
   timed_out: bool,
   verified: bool,
@@ -32,6 +36,9 @@ impl ElaeniaContext {
       aligned_eggroll: None,
       aligned_eggroll_repetitions: None,
       aligned_crel: None,
+      aligned_output: None,
+      output_path: None,
+      output_filename: None,
       stopwatch: WorkflowStopwatch::new(),
       timed_out: false,
       verified: false,
@@ -110,6 +117,32 @@ impl AlignsEggroll for ElaeniaContext {
 
   fn accept_aligned_eggroll_repetitions(&mut self, reps: GuardedRepetitions) {
     self.aligned_eggroll_repetitions = Some(reps);
+  }
+}
+
+impl OutputsAlignment for ElaeniaContext {
+  fn aligned_output(&self) -> &Option<String> {
+    &self.aligned_output
+  }
+
+  fn accept_aligned_output(&mut self, output: String) {
+    self.aligned_output = Some(output);
+  }
+
+  fn accept_output_path(&mut self, path: String) {
+    self.output_path = Some(path.clone());
+    self.output_filename = Some(Path::new(&path)
+      .file_name().unwrap()
+      .to_str().unwrap()
+      .to_string());
+  }
+
+  fn output_path(&self) -> &Option<String> {
+    &self.output_path
+  }
+
+  fn output_filename(&self) -> &Option<String> {
+    &self.output_filename
   }
 }
 

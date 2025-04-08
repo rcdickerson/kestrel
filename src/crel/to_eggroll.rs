@@ -122,6 +122,7 @@ fn statement_to_eggroll(stmt: &Statement) -> String {
                      statement_to_eggroll(&Statement::Compound(items[1..].to_vec())))
       }
     },
+    Statement::Fail => "fail".to_string(),
     Statement::GuardedRepeat{id, condition, body, ..} => {
       format!("(guarded-repeat {} {} {})", id, expression_to_eggroll(condition), statement_to_eggroll(body))
     },

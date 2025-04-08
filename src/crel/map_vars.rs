@@ -74,6 +74,7 @@ impl MapVars for Statement {
       Statement::Compound(items) => {
         Statement::Compound(items.iter().map(|i| i.map_vars(f)).collect())
       },
+      Statement::Fail => Statement::Fail,
       Statement::GuardedRepeat{id, repetitions, condition, body} => Statement::GuardedRepeat {
         id: id.clone(),
         repetitions: *repetitions,

@@ -218,6 +218,7 @@ fn expect_expression(sexp: &Sexp, ctx: &Context) -> Expression {
 fn expect_statement(sexp: &Sexp, ctx: &Context) -> Statement {
   match &sexp {
     Sexp::Atom(Atom::S(s)) if s == "break" => Statement::Break,
+    Sexp::Atom(Atom::S(s)) if s == "fail" => Statement::Fail,
     Sexp::Atom(Atom::S(s)) if s == "skip" => Statement::Compound(vec![]),
     Sexp::Atom(Atom::S(s)) if s == "return-none" => Statement::Return(None),
     Sexp::List(sexps) => match &sexps[0] {

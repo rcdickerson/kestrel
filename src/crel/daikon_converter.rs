@@ -99,6 +99,7 @@ impl DaikonConverter {
         Statement::Expression(
           Box::new(self.convert_expression(*expr.clone())))
       },
+      Statement::Fail => stmt,
       Statement::GuardedRepeat{id, repetitions, condition, body} => {
         let checkpoint = self.push_scope();
         let condition = Box::new(self.convert_expression(*condition.clone()));

@@ -161,6 +161,9 @@ fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
     Statement::Expression(expr) => {
       Daf::Statement::Expression(Box::new(expression_to_daf(expr)))
     },
+    Statement::Fail => {
+      Daf::Statement::Assert(Box::new(Daf::Expression::ConstFalse))
+    },
     Statement::GuardedRepeat{repetitions, condition, body, ..} => {
       let mut ifs = Vec::new();
       for _ in 0..*repetitions {

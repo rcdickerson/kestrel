@@ -85,6 +85,9 @@ impl CondToCRel for CondAExpr {
       CondAExpr::Var(id) => {
         crel::Expression::Identifier{name: id.clone()}
       },
+      CondAExpr::ReturnValue => {
+        panic!("Cannot convert a condition return value into CRel.")
+      },
       CondAExpr::QualifiedVar{exec, name} => {
         crel::Expression::Identifier{name: qualified_state_var(exec, name)}
       },

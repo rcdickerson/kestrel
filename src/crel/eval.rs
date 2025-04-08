@@ -36,6 +36,9 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
         if exec.cf_break() { break };
       }
     },
+    Statement::Fail => {
+      panic!("Fail eval is unimplemented")
+    },
     Statement::GuardedRepeat{repetitions, condition, body, ..} => {
       for _ in 0..*repetitions {
         eval_expression(condition, exec);

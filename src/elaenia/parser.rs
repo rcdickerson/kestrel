@@ -181,13 +181,13 @@ mod test {
         * post: original.x == refinement.x;
         * aspecs: refinedRand() {
         *     pre:  true;
-        *     post: ret % 2 == 1;
+        *     post: ret! % 2 == 1;
         * }
         * especs:
         *   originalRand() {
         *     choiceVars: n;
         *     pre:  true;
-        *     post: ret == n;
+        *     post: ret! == n;
         * }
         */".to_string();
     let expected = ElaeniaSpec {
@@ -211,7 +211,7 @@ mod test {
         pre: KestrelCond::BExpr(CondBExpr::True),
         post: KestrelCond::BExpr(CondBExpr::BinopA {
           lhs: CondAExpr::Binop {
-            lhs: Box::new(CondAExpr::Var("ret".to_string())),
+            lhs: Box::new(CondAExpr::ReturnValue),
             rhs: Box::new(CondAExpr::Int(2)),
             op: CondABinop::Mod,
           },
@@ -225,7 +225,7 @@ mod test {
         choice_vars: vec!("n".to_string()),
         pre: KestrelCond::BExpr(CondBExpr::True),
         post: KestrelCond::BExpr(CondBExpr::BinopA {
-          lhs: CondAExpr::Var("ret".to_string()),
+          lhs: CondAExpr::ReturnValue,
           rhs: CondAExpr::Var("n".to_string()),
           op: CondBBinopA::Eq,
         }),

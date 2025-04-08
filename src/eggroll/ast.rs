@@ -33,6 +33,7 @@ define_language! {
     "index"         = Index([Id; 2]),
     "seq"           = Seq([Id; 2]),
     "assert"        = Assert(Id),
+    "fail"          = Fail,
     "break"         = Break,
     "skip"          = Skip,
 

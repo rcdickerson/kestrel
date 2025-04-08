@@ -243,6 +243,7 @@ pub enum Statement {
   Break,
   Compound(Vec<BlockItem>),
   Expression(Box<Expression>),
+  Fail,
   GuardedRepeat {
     id: String,
     repetitions: usize,

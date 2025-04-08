@@ -172,6 +172,12 @@ fn statement_to_c(stmt: &Statement) -> C::Statement {
     Statement::Expression(expr) => {
       C::Statement::Expression(Box::new(expression_to_c(expr)))
     },
+    Statement::Fail => {
+      C::Statement::Expression(Box::new(C::Expression::FnCall{
+        name: Box::new(C::Expression::Identifier{name: "assert".to_string()}),
+        args: vec!(C::Expression::ConstInt(0)),
+      }))
+    },
     Statement::GuardedRepeat{repetitions, condition, body, ..} => {
       let mut ifs = Vec::new();
       for _ in 0..*repetitions {

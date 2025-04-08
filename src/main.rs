@@ -251,7 +251,12 @@ fn elaenia_workflow(args: Args) {
     ExtractorArg::SA => panic!("Semantic alignment currently unsupported for Elaenia workflows."),
   }
   workflow.add_task(AlignedCRel::new());
-
+  workflow.add_task(CRelLoopUnroll::new(3));
+  workflow.add_task(AlignedOutput::new(args.output_mode));
+  workflow.add_task(PrintInfo::with_header("Aligned Product Program",
+        &|ctx: &ElaeniaContext| {
+          ctx.aligned_output().as_ref().expect("Missing aligned output").clone()
+        }));
   workflow.execute();
 
   println!("KestRel completed in {}ms", workflow.context().total_elapsed_time().as_millis());

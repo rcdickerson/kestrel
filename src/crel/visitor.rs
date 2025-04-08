@@ -105,6 +105,7 @@ impl Statement {
         visitor.visit_expression(expr);
         expr.walk(visitor);
       },
+      Statement::Fail => (),
       Statement::GuardedRepeat{body, ..} => {
         visitor.visit_statement(body);
         body.walk(visitor);

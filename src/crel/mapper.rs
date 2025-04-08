@@ -101,6 +101,7 @@ impl Statement {
           mapper.map_block_item(item).map(mapper)
         }).collect()
       ),
+      Statement::Fail => Statement::Fail,
       Statement::Expression(expr) => Statement::Expression (
         Box::new(mapper.map_expression(expr).map(mapper))
       ),

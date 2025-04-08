@@ -35,6 +35,7 @@ pub enum KestrelType {
 #[derive(Clone, Debug, PartialEq)]
 pub enum CondAExpr {
   Var(String),
+  ReturnValue,
   QualifiedVar{exec: String, name: String},
   Int(i32),
   Float(f32),
@@ -48,6 +49,7 @@ impl CondAExpr {
       CondAExpr::Var(name) => {
         crate::names::singleton(name.clone())
       },
+      CondAExpr::ReturnValue => HashSet::new(),
       CondAExpr::QualifiedVar{exec, name} => {
         let state_var = qualified_state_var(exec, name);
         crate::names::singleton(state_var)
@@ -72,6 +74,7 @@ impl CondAExpr {
   pub fn contains_binop_a(&self, binop: &CondABinop) -> bool {
     match self {
       CondAExpr::Var(..) => false,
+      CondAExpr::ReturnValue => false,
       CondAExpr::QualifiedVar{..} => false,
       CondAExpr::Int(_) => false,
       CondAExpr::Float(_) => false,
@@ -88,6 +91,8 @@ pub fn qualified_state_var(exec: &String, name: &String) -> String {
   match exec.as_ref() {
     "left" => format!("l_{}", name),
     "right" => format!("r_{}", name),
+    "forall" => format!("l_{}", name),
+    "exists" => format!("r_{}", name),
     _ => panic!("Unknown execution: {}", exec),
   }
 }

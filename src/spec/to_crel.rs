@@ -17,6 +17,12 @@ pub struct StatementKind {
   pub crel_name: String,
 }
 
+impl StatementKind {
+  pub fn new(crel_name: String) -> Self {
+    StatementKind{crel_name}
+  }
+}
+
 impl CondToCRel for StatementKind {
   fn to_crel(&self) -> crel::Expression {
     crel::Expression::Identifier{name: self.crel_name.clone()}

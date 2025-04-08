@@ -67,6 +67,8 @@ impl MapVars for Statement {
     where F: Fn(String) -> String
   {
     match self {
+      Statement::Assert(expr) => Statement::Assert(Box::new(expr.map_vars(f))),
+      Statement::Assume(expr) => Statement::Assume(Box::new(expr.map_vars(f))),
       Statement::BasicBlock(items) => {
         Statement::BasicBlock(items.iter().map(|i| i.map_vars(f)).collect())
       },
@@ -74,7 +76,6 @@ impl MapVars for Statement {
       Statement::Compound(items) => {
         Statement::Compound(items.iter().map(|i| i.map_vars(f)).collect())
       },
-      Statement::Fail => Statement::Fail,
       Statement::GuardedRepeat{id, repetitions, condition, body} => Statement::GuardedRepeat {
         id: id.clone(),
         repetitions: *repetitions,

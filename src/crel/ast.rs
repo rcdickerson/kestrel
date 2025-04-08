@@ -239,11 +239,12 @@ pub enum BinaryOp {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Statement {
+  Assert(Box<Expression>),
+  Assume(Box<Expression>),
   BasicBlock(Vec<BlockItem>),
   Break,
   Compound(Vec<BlockItem>),
   Expression(Box<Expression>),
-  Fail,
   GuardedRepeat {
     id: String,
     repetitions: usize,

@@ -73,11 +73,12 @@ impl CountLoops for Expression {
 impl CountLoops for Statement {
   fn count_loops(&self) -> LoopCounts {
     match self {
+      Statement::Assert(_) => LoopCounts::zero(),
+      Statement::Assume(_) => LoopCounts::zero(),
       Statement::BasicBlock(items) => items.iter().map(|i| i.count_loops()).sum(),
       Statement::Break => LoopCounts::zero(),
       Statement::Compound(items) => items.iter().map(|i| i.count_loops()).sum(),
       Statement::Expression(expr) => expr.count_loops(),
-      Statement::Fail => LoopCounts::zero(),
       Statement::GuardedRepeat{repetitions, body, ..} => {
         let counts = body.count_loops();
         LoopCounts {

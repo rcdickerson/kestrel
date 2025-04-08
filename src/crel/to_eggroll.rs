@@ -105,6 +105,8 @@ fn expression_to_eggroll(expr: &Expression) -> String {
 
 fn statement_to_eggroll(stmt: &Statement) -> String {
   match stmt {
+    Statement::Assert(expr) => format!("(assert {})", expression_to_eggroll(expr)),
+    Statement::Assume(expr) => format!("(assume {})", expression_to_eggroll(expr)),
     Statement::BasicBlock(items) => {
       let items_eggroll = items.iter()
         .map(block_item_to_eggroll)
@@ -122,7 +124,6 @@ fn statement_to_eggroll(stmt: &Statement) -> String {
                      statement_to_eggroll(&Statement::Compound(items[1..].to_vec())))
       }
     },
-    Statement::Fail => "fail".to_string(),
     Statement::GuardedRepeat{id, condition, body, ..} => {
       format!("(guarded-repeat {} {} {})", id, expression_to_eggroll(condition), statement_to_eggroll(body))
     },

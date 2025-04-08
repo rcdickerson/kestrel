@@ -92,6 +92,14 @@ impl ParameterDeclaration {
 impl Statement {
   pub fn walk(&mut self, visitor: &mut dyn CRelVisitor) {
     match self {
+      Statement::Assert(expr) => {
+        visitor.visit_expression(expr);
+        expr.walk(visitor);
+      },
+      Statement::Assume(expr) => {
+        visitor.visit_expression(expr);
+        expr.walk(visitor);
+      },
       Statement::BasicBlock(items) => for item in items {
         visitor.visit_block_item(item);
         item.walk(visitor);
@@ -105,7 +113,6 @@ impl Statement {
         visitor.visit_expression(expr);
         expr.walk(visitor);
       },
-      Statement::Fail => (),
       Statement::GuardedRepeat{body, ..} => {
         visitor.visit_statement(body);
         body.walk(visitor);

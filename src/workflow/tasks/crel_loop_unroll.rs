@@ -47,7 +47,7 @@ impl CRelMapper for LoopUnroller {
           condition: condition.clone(),
           then: Box::new(body.clone().unwrap_or(Box::new(Statement::None))
                          .map(&mut LoopUnroller::new(self.depth))),
-          els: Some(Box::new(Statement::Fail)),
+          els: Some(Box::new(Statement::Assert(Box::new(Expression::ConstInt(0))))),
         };
         for _ in 0..self.depth {
           unrolled = Statement::If {
@@ -59,15 +59,6 @@ impl CRelMapper for LoopUnroller {
         stmt.clone()
       },
       _ => stmt.clone(),
-    }
-  }
-
-  fn map_expression(&mut self, expr: &Expression) -> Expression {
-    match expr {
-      Expression::Statement(stmt) => {
-        Expression::Statement(Box::new(self.map_statement(stmt)))
-      }
-      _ => expr.clone(),
     }
   }
 }

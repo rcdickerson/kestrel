@@ -143,14 +143,31 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
         condition: Box::new(expression_to_daf(condition))
       }
     }
-    Expression::Statement(stmt) => {
-      Daf::Expression::Statement(Box::new(statement_to_daf(stmt)))
+    Expression::Statement(stmt) => match statement_to_daf(stmt) {
+      Daf::Statement::Expression(expr) => *expr,
+      daf_stmt => Daf::Expression::Statement(Box::new(daf_stmt))
     },
   }
 }
 
 fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
   match stmt {
+    Statement::Assert(expr) => {
+      let daf_expr = match expression_to_daf(expr) {
+        Daf::Expression::ConstInt(0) => Daf::Expression::ConstFalse,
+        Daf::Expression::ConstInt(_) => Daf::Expression::ConstTrue,
+        expr => expr,
+      };
+      Daf::Statement::Assert(Box::new(daf_expr))
+    },
+    Statement::Assume(expr) => {
+      let daf_expr = match expression_to_daf(expr) {
+        Daf::Expression::ConstInt(0) => Daf::Expression::ConstFalse,
+        Daf::Expression::ConstInt(_) => Daf::Expression::ConstTrue,
+        expr => expr,
+      };
+      Daf::Statement::Assume(Box::new(daf_expr))
+    },
     Statement::BasicBlock(items) => {
       Daf::Statement::Seq(items.iter().map(block_item_to_daf).collect())
     },
@@ -158,11 +175,9 @@ fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
     Statement::Compound(items) => {
       Daf::Statement::Seq(items.iter().map(block_item_to_daf).collect())
     },
-    Statement::Expression(expr) => {
-      Daf::Statement::Expression(Box::new(expression_to_daf(expr)))
-    },
-    Statement::Fail => {
-      Daf::Statement::Assert(Box::new(Daf::Expression::ConstFalse))
+    Statement::Expression(expr) => match expression_to_daf(expr) {
+      Daf::Expression::Statement(stmt) => *stmt,
+      daf_expr => Daf::Statement::Expression(Box::new(daf_expr))
     },
     Statement::GuardedRepeat{repetitions, condition, body, ..} => {
       let mut ifs = Vec::new();

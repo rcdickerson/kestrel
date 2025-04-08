@@ -218,10 +218,15 @@ fn expect_expression(sexp: &Sexp, ctx: &Context) -> Expression {
 fn expect_statement(sexp: &Sexp, ctx: &Context) -> Statement {
   match &sexp {
     Sexp::Atom(Atom::S(s)) if s == "break" => Statement::Break,
-    Sexp::Atom(Atom::S(s)) if s == "fail" => Statement::Fail,
     Sexp::Atom(Atom::S(s)) if s == "skip" => Statement::Compound(vec![]),
     Sexp::Atom(Atom::S(s)) if s == "return-none" => Statement::Return(None),
     Sexp::List(sexps) => match &sexps[0] {
+      Sexp::Atom(Atom::S(s)) if s == "assert" => {
+        Statement::Assert(Box::new(expect_expression(&sexps[1], ctx)))
+      },
+      Sexp::Atom(Atom::S(s)) if s == "assume" => {
+        Statement::Assume(Box::new(expect_expression(&sexps[1], ctx)))
+      },
       Sexp::Atom(Atom::S(s)) if s == "basic-block" => {
         let items = sexps[1..].iter()
           .map(|x| expect_block_item(x, ctx))

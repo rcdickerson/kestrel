@@ -44,6 +44,10 @@ impl ElaeniaContext {
       verified: false,
     }
   }
+
+  pub fn spec(&self) -> &ElaeniaSpec {
+    &self.spec
+  }
 }
 
 impl Context for ElaeniaContext {

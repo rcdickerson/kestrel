@@ -23,6 +23,12 @@ pub fn run<'a>(stmt: &Statement, state: State, max_trace: usize,
 
 fn eval_statement(stmt: &Statement, exec: &mut Execution) {
   match stmt {
+    Statement::Assert(_) => {
+      println!("Warning: asserts are ignored by CRel evaluator.")
+    },
+    Statement::Assume(_) => {
+      println!("Warning: assumes are ignored by CRel evaluator.")
+    },
     Statement::BasicBlock(items) => {
       for item in items {
         eval_block_item(item, exec);
@@ -35,9 +41,6 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
         eval_block_item(item, exec);
         if exec.cf_break() { break };
       }
-    },
-    Statement::Fail => {
-      panic!("Fail eval is unimplemented")
     },
     Statement::GuardedRepeat{repetitions, condition, body, ..} => {
       for _ in 0..*repetitions {

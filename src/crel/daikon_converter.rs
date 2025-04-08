@@ -83,6 +83,8 @@ impl DaikonConverter {
     //stmt.assign_loop_ids();
 
     match &stmt {
+      Statement::Assert(_) => stmt,
+      Statement::Assume(_) => stmt,
       Statement::BasicBlock(items) => {
         Statement::BasicBlock(items.iter()
                               .map(|item| self.convert_block_item(item.clone()))
@@ -99,7 +101,6 @@ impl DaikonConverter {
         Statement::Expression(
           Box::new(self.convert_expression(*expr.clone())))
       },
-      Statement::Fail => stmt,
       Statement::GuardedRepeat{id, repetitions, condition, body} => {
         let checkpoint = self.push_scope();
         let condition = Box::new(self.convert_expression(*condition.clone()));

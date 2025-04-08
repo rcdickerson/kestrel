@@ -5,6 +5,7 @@ use crate::syrtos::Writer;
 #[derive(Clone, Debug)]
 pub enum Statement {
   Assert(Box<Expression>),
+  Assume(Box<Expression>),
   Break,
   Expression(Box<Expression>),
   If {
@@ -29,6 +30,11 @@ impl Statement {
     match self {
       Statement::Assert(expr) => {
         writer.write("assert ");
+        expr.emit(writer, false);
+        writer.write(";").new_line();
+      },
+      Statement::Assume(expr) => {
+        writer.write("assume ");
         expr.emit(writer, false);
         writer.write(";").new_line();
       },

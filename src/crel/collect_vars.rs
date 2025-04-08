@@ -56,11 +56,12 @@ impl CollectVars for Expression {
 impl CollectVars for Statement {
   fn vars(&self) -> HashSet<String> {
     match self {
+      Statement::Assert(expr) => expr.vars(),
+      Statement::Assume(expr) => expr.vars(),
       Statement::BasicBlock(items) => all_vars(items.clone()),
       Statement::Break => HashSet::new(),
       Statement::Compound(items) => all_vars(items.clone()),
       Statement::Expression(expr) => expr.vars(),
-      Statement::Fail => HashSet::new(),
       Statement::GuardedRepeat{condition, body, ..} => {
         union_all(vec!(condition.vars(), body.vars()))
       }

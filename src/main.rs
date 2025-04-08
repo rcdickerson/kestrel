@@ -1,8 +1,9 @@
 //! The main entry point for KestRel executions.
 
 use clap::{Parser, ValueEnum};
-use kestrel::elaenia::parser::parse_elaenia_spec;
 use kestrel::elaenia::elaenia_context::ElaeniaContext;
+use kestrel::elaenia::parser::parse_elaenia_spec;
+use kestrel::elaenia::insert_specs::*;
 use kestrel::kestrel_context::KestrelContext;
 use kestrel::output_mode::*;
 use kestrel::spec::parser::parse_kestrel_spec;
@@ -251,6 +252,16 @@ fn elaenia_workflow(args: Args) {
     ExtractorArg::SA => panic!("Semantic alignment currently unsupported for Elaenia workflows."),
   }
   workflow.add_task(AlignedCRel::new());
+  workflow.add_task(PrintInfo::with_header("Aligned Product Program (Pre-Transform)",
+        &|ctx: &ElaeniaContext| {
+          ctx.aligned_crel().as_ref().expect("Missing aligned CRel").clone().to_dafny().0
+        }));
+  workflow.add_task(InsertSpecs::new());
+  workflow.add_task(PrintInfo::with_header("Aligned Product Program (After Insert Specs)",
+        &|ctx: &ElaeniaContext| {
+//          format!("{:?}", ctx.aligned_crel().as_ref().expect("Missing aligned CRel").clone())
+          ctx.aligned_crel().as_ref().expect("Missing aligned CRel").clone().to_c()
+        }));
   workflow.add_task(CRelLoopUnroll::new(3));
   workflow.add_task(AlignedOutput::new(args.output_mode));
   workflow.add_task(PrintInfo::with_header("Aligned Product Program",

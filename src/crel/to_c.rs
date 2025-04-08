@@ -154,14 +154,27 @@ fn expression_to_c(expr: &Expression) -> C::Expression {
       }
     },
     Expression::Forall{..} => panic!("Cannot convert forall expressions to C"),
-    Expression::Statement(stmt) => {
-      C::Expression::Statement(Box::new(statement_to_c(stmt)))
+    Expression::Statement(stmt) => match statement_to_c(stmt) {
+      C::Statement::Expression(expr) => *expr,
+      c_stmt => C::Expression::Statement(Box::new(c_stmt)),
     },
   }
 }
 
 fn statement_to_c(stmt: &Statement) -> C::Statement {
   match stmt {
+    Statement::Assert(expr) => {
+      C::Statement::Expression(Box::new(C::Expression::FnCall{
+        name: Box::new(C::Expression::Identifier{name: "assert".to_string()}),
+        args: vec!(expression_to_c(expr)),
+      }))
+    },
+    Statement::Assume(expr) => {
+      C::Statement::Expression(Box::new(C::Expression::FnCall{
+        name: Box::new(C::Expression::Identifier{name: "assume".to_string()}),
+        args: vec!(expression_to_c(expr)),
+      }))
+    },
     Statement::BasicBlock(items) => {
       C::Statement::Seq(items.iter().map(block_item_to_c).collect())
     },
@@ -169,14 +182,9 @@ fn statement_to_c(stmt: &Statement) -> C::Statement {
     Statement::Compound(items) => {
       C::Statement::Seq(items.iter().map(block_item_to_c).collect())
     },
-    Statement::Expression(expr) => {
-      C::Statement::Expression(Box::new(expression_to_c(expr)))
-    },
-    Statement::Fail => {
-      C::Statement::Expression(Box::new(C::Expression::FnCall{
-        name: Box::new(C::Expression::Identifier{name: "assert".to_string()}),
-        args: vec!(C::Expression::ConstInt(0)),
-      }))
+    Statement::Expression(expr) => match expression_to_c(expr) {
+      C::Expression::Statement(stmt) => *stmt,
+      c_expr => C::Statement::Expression(Box::new(c_expr)),
     },
     Statement::GuardedRepeat{repetitions, condition, body, ..} => {
       let mut ifs = Vec::new();

@@ -33,6 +33,8 @@ impl Blockify for Expression {
 impl Blockify for Statement {
   fn blockify(&self) -> Self {
     match self {
+      Statement::Assert(_) => self.clone(),
+      Statement::Assume(_) => self.clone(),
       Statement::BasicBlock(_) => self.clone(),
       Statement::Break => Statement::Break,
       Statement::Compound(items) => {
@@ -41,7 +43,6 @@ impl Blockify for Statement {
       Statement::Expression(expr) => {
         Statement::Expression(Box::new(expr.blockify()))
       },
-      Statement::Fail => Statement::Fail,
       Statement::GuardedRepeat{id, repetitions, condition, body} => Statement::GuardedRepeat {
         id: id.clone(),
         repetitions: *repetitions,
@@ -85,6 +86,8 @@ fn blockify_items(items: &Vec<BlockItem>) -> Vec<BlockItem> {
     match item {
       BlockItem::Declaration(_) => current_block.push(item.clone()),
       BlockItem::Statement(stmt) => match stmt.blockify() {
+        Statement::Assert(expr) => current_block.push(BlockItem::Statement(Statement::Assert(expr))),
+        Statement::Assume(expr) => current_block.push(BlockItem::Statement(Statement::Assume(expr))),
         Statement::BasicBlock(items) => current_block.append(&mut items.clone()),
         Statement::Break => current_block.push(BlockItem::Statement(Statement::Break)),
         Statement::Compound(items) => {
@@ -97,7 +100,6 @@ fn blockify_items(items: &Vec<BlockItem>) -> Vec<BlockItem> {
         Statement::Expression(expr) => {
           current_block.push(BlockItem::Statement(Statement::Expression(expr)))
         },
-        Statement::Fail => current_block.push(BlockItem::Statement(Statement::Fail)),
         Statement::GuardedRepeat{id, repetitions, condition, body} => {
           if !current_block.is_empty() {
             blocks.push(BlockItem::Statement(Statement::BasicBlock(current_block.clone())));

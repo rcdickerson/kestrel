@@ -10,6 +10,26 @@ pub struct ElaeniaSpec {
   pub especs: Vec<ExistentialSpec>,
 }
 
+impl ElaeniaSpec {
+  pub fn lookup_aspec(&self, name: &String) -> Option<&UniversalSpec> {
+    for aspec in &self.aspecs {
+      if aspec.name == *name {
+        return Some(aspec);
+      }
+    }
+    None
+  }
+
+  pub fn lookup_espec(&self, name: &String) -> Option<&ExistentialSpec> {
+    for aspec in &self.especs {
+      if aspec.name == *name {
+        return Some(aspec);
+      }
+    }
+    None
+  }
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct UniversalSpec {
   pub name: String,

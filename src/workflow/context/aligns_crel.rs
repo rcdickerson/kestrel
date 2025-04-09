@@ -1,5 +1,5 @@
 use crate::crel::ast::CRel;
-use crate::unaligned::UnalignedCRel;
+use crate::crel::unaligned::UnalignedCRel;
 
 pub trait AlignsCRel {
   fn unaligned_crel(&self) -> &Option<UnalignedCRel>;

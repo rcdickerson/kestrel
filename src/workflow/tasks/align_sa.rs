@@ -62,7 +62,7 @@ impl <Ctx: Context + AlignsCRel + AlignsEggroll> Task<Ctx> for AlignSa {
       .run(&crate::eggroll::rewrite::rewrites());
     let generator = context.unaligned_crel().as_ref()
       .expect("Missing unaliged crel")
-      .fundefs.get(&"_test_gen".to_string());
+      .global_fundefs.get(&"_test_gen".to_string());
     let decls = context.unaligned_crel().as_ref()
       .expect("missing unaligned crel")
       .global_decls_and_params();

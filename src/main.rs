@@ -1,13 +1,13 @@
 //! The main entry point for KestRel executions.
 
 use clap::{Parser, ValueEnum};
+use kestrel::crel::unaligned::*;
 use kestrel::elaenia::elaenia_context::ElaeniaContext;
 use kestrel::elaenia::parser::parse_elaenia_spec;
 use kestrel::elaenia::insert_specs::*;
 use kestrel::kestrel_context::KestrelContext;
 use kestrel::output_mode::*;
 use kestrel::spec::parser::parse_kestrel_spec;
-use kestrel::unaligned::*;
 use kestrel::workflow::*;
 use kestrel::workflow::context::*;
 
@@ -147,7 +147,7 @@ fn kestrel_workflow(args: Args) {
 
   let spec = parse_kestrel_spec(&args.input).unwrap();
   let unaligned_crel = UnalignedCRel::from_kestrel_spec(&raw_crel, &spec);
-  let unaligned_eggroll = unaligned_crel.main.to_eggroll();
+  let unaligned_eggroll = unaligned_crel.unaligned_main.to_eggroll();
 
   let mut context = KestrelContext::new(args.input.clone(), spec);
   context.accept_unaligned_crel(unaligned_crel);
@@ -162,7 +162,7 @@ fn kestrel_workflow(args: Args) {
         &|ctx: &KestrelContext| {
           ctx.unaligned_crel().as_ref()
             .expect("Missing unaligned CRel")
-            .main.to_c().to_string()
+            .unaligned_main.to_c().to_string()
         }));
   }
   if args.dot { workflow.add_task(WriteDot::new()) }
@@ -226,12 +226,13 @@ fn elaenia_workflow(args: Args) {
 
   let spec = parse_elaenia_spec(&args.input).unwrap();
   let unaligned_crel = UnalignedCRel::from_elaenia_spec(&raw_crel, &spec);
-  let unaligned_eggroll = unaligned_crel.main.to_eggroll();
+  let unaligned_eggroll = unaligned_crel.unaligned_main.to_eggroll();
+
+  println!("Unaligned CRel: {:?}", unaligned_crel.clone());
 
   let mut context = ElaeniaContext::new(args.input.clone(), spec);
   context.accept_unaligned_crel(unaligned_crel);
   context.accept_unaligned_eggroll(unaligned_eggroll);
-
   // args.output.as_ref().map(|output_path| {
   //   context.accept_output_path(output_path.clone());
   // });
@@ -242,7 +243,7 @@ fn elaenia_workflow(args: Args) {
         &|ctx: &ElaeniaContext| {
           ctx.unaligned_crel().as_ref()
             .expect("Missing unaligned CRel")
-            .main.to_c().to_string()
+            .unaligned_main.to_c().to_string()
         }));
   }
   if args.dot { workflow.add_task(WriteDot::new()) }
@@ -253,14 +254,10 @@ fn elaenia_workflow(args: Args) {
     ExtractorArg::SA => panic!("Semantic alignment currently unsupported for Elaenia workflows."),
   }
   workflow.add_task(AlignedCRel::new());
-  workflow.add_task(PrintInfo::with_header("Aligned Product Program (Pre-Transform)",
-        &|ctx: &ElaeniaContext| {
-          ctx.aligned_crel().as_ref().expect("Missing aligned CRel").clone().to_dafny().0
-        }));
   workflow.add_task(InsertSpecs::new());
   workflow.add_task(PrintInfo::with_header("Aligned Product Program (After Insert Specs)",
         &|ctx: &ElaeniaContext| {
-          ctx.aligned_crel().as_ref().expect("Missing aligned CRel").clone().to_c()
+          ctx.aligned_crel().as_ref().expect("Missing aligned CRel").clone().to_dafny().0
         }));
   workflow.add_task(CRelLoopUnroll::new(3));
   workflow.add_task(AlignedOutput::new(args.output_mode));
@@ -270,6 +267,6 @@ fn elaenia_workflow(args: Args) {
         }));
   workflow.execute();
 
-  println!("KestRel completed in {}ms", workflow.context().total_elapsed_time().as_millis());
+  println!("Elaenia completed in {}ms", workflow.context().total_elapsed_time().as_millis());
   println!("Verified: {}", workflow.context().is_verified());
 }

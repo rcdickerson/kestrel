@@ -48,7 +48,7 @@ impl <Ctx: Context + AlignsCRel> Task<Ctx> for InvarsDaikon {
           .global_decls.clone(),
         context.unaligned_crel().as_ref()
           .expect("Missing unaligned CRel")
-          .fundefs.clone(),
+          .global_fundefs.clone(),
         &Some(daikon_path.clone()));
     let mut file = File::create(&Path::new(daikon_path.clone().as_str()))
       .unwrap_or_else(|_| panic!("Error creating file: {}", daikon_path));

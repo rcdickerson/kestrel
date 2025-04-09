@@ -19,17 +19,27 @@ impl Task<ElaeniaContext> for InsertSpecs {
   fn name(&self) -> String { "insert-elaenia-specs".to_string() }
   fn run(&self, context: &mut ElaeniaContext) {
     let crel = context.aligned_crel().clone().expect("Missing aligned CRel");
-    context.accept_aligned_crel(crel.map(&mut SpecInserter::new(context.spec())));
+    let spec = context.spec().clone();
+    let mut spec_inserter = SpecInserter::new(&spec);
+    let mapped_crel = crel.map(&mut spec_inserter);
+    context.accept_aligned_crel(mapped_crel);
+    context.accept_choice_decls(spec_inserter.added_choice_decls);
   }
 }
 
 struct SpecInserter<'a> {
   spec: &'a ElaeniaSpec,
+  added_choice_decls: Vec<Declaration>,
+  choice_id: u32,
 }
 
 impl <'a> SpecInserter<'a> {
   fn new(spec: &'a ElaeniaSpec) -> SpecInserter<'a> {
-    SpecInserter { spec }
+    SpecInserter {
+      spec,
+      added_choice_decls: Vec::new(),
+      choice_id: 0
+    }
   }
 }
 
@@ -63,12 +73,18 @@ impl <'a> CRelMapper for SpecInserter<'a> {
                   Some(espec) => {
                     let mut choice_decls = espec.choice_vars.iter()
                       .map(|chvar| {
-                        BlockItem::Declaration(Declaration {
+                        self.choice_id += 1;
+                        let decl = Declaration {
                           specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
                           //declarator: Declarator::Identifier{name: format!("_choice_var_{}", chvar)},
                           declarator: Declarator::Identifier{name: chvar.clone()},
-                          initializer: None,
-                        })
+                          initializer: Some(Expression::Call {
+                            callee: Box::new(Expression::Identifier{ name: format!("_choice_{}_{}", chvar, self.choice_id) }),
+                            args: vec!(),
+                          })
+                        };
+                        self.added_choice_decls.push(decl.clone());
+                        BlockItem::Declaration(decl)
                       })
                       .collect::<Vec<_>>();
                     let pre_expr = Box::new(spec_cond_to_expression(&espec.pre, &lhs_name));

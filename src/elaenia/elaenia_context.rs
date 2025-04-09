@@ -1,9 +1,10 @@
 use crate::crel::ast::*;
+use crate::crel::fundef::*;
+use crate::crel::unaligned::*;
 use crate::eggroll::ast::*;
 use crate::eggroll::to_crel::*;
 use crate::elaenia::elaenia_spec::*;
 use crate::spec::condition::KestrelCond;
-use crate::unaligned::*;
 use crate::workflow::context::*;
 use egg::RecExpr;
 use std::path::Path;
@@ -19,6 +20,7 @@ pub struct ElaeniaContext {
   aligned_eggroll_repetitions: Option<GuardedRepetitions>,
   aligned_crel: Option<CRel>,
   aligned_output: Option<String>,
+  choice_decls: Option<Vec<Declaration>>,
   output_path: Option<String>,
   output_filename: Option<String>,
   stopwatch: WorkflowStopwatch,
@@ -37,6 +39,7 @@ impl ElaeniaContext {
       aligned_eggroll_repetitions: None,
       aligned_crel: None,
       aligned_output: None,
+      choice_decls: None,
       output_path: None,
       output_filename: None,
       stopwatch: WorkflowStopwatch::new(),
@@ -47,6 +50,29 @@ impl ElaeniaContext {
 
   pub fn spec(&self) -> &ElaeniaSpec {
     &self.spec
+  }
+
+  pub fn accept_choice_decls(&mut self, decls: Vec<Declaration>) {
+    self.choice_decls = Some(decls.clone());
+    self.unaligned_crel.as_mut().map(|unaligned| {
+      for decl in decls {
+        match decl.initializer {
+          Some(Expression::Call{ callee, args }) => {
+            match *callee {
+              Expression::Identifier { name } => {
+                unaligned.global_decls.push(Declaration {
+                  specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
+                  declarator: Declarator::Function{ name: name.clone(), params: Vec::new() },
+                  initializer: None,
+                });
+              },
+              _ => (),
+            }
+          },
+          _ => (),
+        }
+      }
+    });
   }
 }
 

@@ -2,18 +2,27 @@
 
 use crate::crel::ast::*;
 use crate::crel::blockify::*;
-use crate::crel::fundef::FunDef;
+use crate::crel::fundef::*;
 use crate::elaenia::elaenia_spec::ElaeniaSpec;
 use crate::names::*;
 use crate::spec::KestrelSpec;
 use std::collections::{HashMap, HashSet};
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct UnalignedCRel {
+  /// All top-level declarations.
   pub global_decls: Vec<Declaration>,
-  pub fundefs: HashMap<String, FunDef>,
-  pub params: Vec<ParameterDeclaration>,
-  pub main: CRel,
+
+  /// All top-level function definitions.
+  pub global_fundefs: HashMap<String, FunDef>,
+
+  /// The parameters to the product program construction. (The
+  /// parameters on the LHS function plus the parameters on the RHS
+  /// function.)
+  pub product_params: Vec<ParameterDeclaration>,
+
+  /// The main function of the unaligned product.
+  pub unaligned_main: CRel,
 }
 
 impl UnalignedCRel {
@@ -28,16 +37,16 @@ impl UnalignedCRel {
 
   pub fn from(crel: &CRel, left_fun_name: &String, right_fun_name: &String) -> Self {
 
-    let (global_decls, fundefs) = crate::crel::fundef::extract_fundefs(crel);
+    let (global_decls, global_fundefs) = extract_globals(crel);
 
     let mut globals = global_vars(&global_decls);
     for f_seahorn in ["assume", "assert", "sassert"] {
       globals.insert(f_seahorn.to_string());
     }
 
-    let left_fun = fundefs.get(left_fun_name)
+    let left_fun = global_fundefs.get(left_fun_name)
       .unwrap_or_else(|| panic!("Function not found: {}", left_fun_name));
-    let right_fun = fundefs.get(right_fun_name)
+    let right_fun = global_fundefs.get(right_fun_name)
       .unwrap_or_else(|| panic!("Function not found: {}", right_fun_name));
 
     let left_fun = left_fun.map_vars(&|s: String| {
@@ -62,20 +71,46 @@ impl UnalignedCRel {
 
     UnalignedCRel {
       global_decls,
-      fundefs: fundefs.clone(),
-      params,
-      main,
+      global_fundefs,
+      product_params: params,
+      unaligned_main: main,
     }
   }
 
   pub fn global_decls_and_params(&self) -> Vec<Declaration> {
-    let param_decls = self.params.iter()
+    let param_decls = self.product_params.iter()
       .filter_map(|p| p.as_declaration());
     let mut all_decls = self.global_decls.clone();
     all_decls.extend(param_decls);
     all_decls
   }
 }
+
+fn extract_globals(crel: &CRel) -> (Vec<Declaration>, HashMap<String, FunDef>) {
+  match crel {
+    CRel::Declaration(declaration) => (vec!(declaration.clone()), HashMap::new()),
+    CRel::FunctionDefinition{specifiers, name, params, body} => {
+      (Vec::new(), HashMap::from([(name.clone(), FunDef {
+        specifiers: specifiers.clone(),
+        name: name.clone(),
+        params: params.clone(),
+        body: *body.clone()
+      })]))
+    },
+    CRel::Seq(crels) => {
+      let (decls, defs): (Vec<_>, Vec<_>) = crels.iter()
+        .map(extract_globals)
+        .unzip();
+      let decls: Vec<_> = decls.iter().flatten().map(|c| (*c).clone()).collect();
+      let mut def_union = HashMap::new();
+      for def in defs {
+        def_union.extend(def);
+      }
+      (decls, def_union)
+    },
+  }
+}
+
 
 fn global_vars(decls: &Vec<Declaration>) -> HashSet<String> {
   let mut vars = HashSet::new();

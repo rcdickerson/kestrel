@@ -1,12 +1,12 @@
 //! Contains data needed in a KestRel verification [Workflow].
 
 use crate::crel::ast::*;
+use crate::crel::unaligned::*;
 use crate::eggroll::ast::*;
 use crate::eggroll::to_crel::*;
 use crate::spec::KestrelSpec;
 use crate::spec::condition::KestrelCond;
 use crate::workflow::context::*;
-use crate::unaligned::*;
 use egg::*;
 use std::path::Path;
 use std::time::Duration;

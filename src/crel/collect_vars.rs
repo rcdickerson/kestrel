@@ -22,6 +22,7 @@ impl CollectVars for Expression {
   fn vars(&self) -> HashSet<String> {
     match self {
       Expression::Identifier{name} => singleton(name.clone()),
+      Expression::ConstBool(_) => HashSet::new(),
       Expression::ConstInt(_) => HashSet::new(),
       Expression::ConstFloat(_) => HashSet::new(),
       Expression::StringLiteral(_) => HashSet::new(),

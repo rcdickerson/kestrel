@@ -77,7 +77,7 @@ impl <'a> CRelMapper for SpecInserter<'a> {
                     let mut statements = Vec::new();
                     statements.append(&mut choice_decls);
                     statements.push(BlockItem::Statement(Statement::Assert(pre_expr)));
-//                    statements.push(BlockItem::Statement(Statement::Expression(Box::new(expr.clone()))));
+                    statements.push(BlockItem::Statement(Statement::Expression(Box::new(expr.clone()))));
                     statements.push(BlockItem::Statement(Statement::Assume(post_expr)));
                     Expression::Statement(Box::new(Statement::Compound(statements)))
                   },

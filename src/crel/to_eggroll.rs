@@ -39,6 +39,7 @@ pub fn crel_to_eggroll(crel: &CRel) -> String {
 fn expression_to_eggroll(expr: &Expression) -> String {
   match expr {
     Expression::Identifier{name} => name.clone(),
+    Expression::ConstBool(b) => format!("(const-bool {})", b),
     Expression::ConstInt(i) => format!("(const-int {})", i),
     Expression::ConstFloat(f) => format!("(const-float {})", f),
     Expression::StringLiteral(s) => format!("(lit-string {})", s.clone()),

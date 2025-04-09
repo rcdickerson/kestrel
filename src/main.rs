@@ -231,6 +231,7 @@ fn elaenia_workflow(args: Args) {
   let mut context = ElaeniaContext::new(args.input.clone(), spec);
   context.accept_unaligned_crel(unaligned_crel);
   context.accept_unaligned_eggroll(unaligned_eggroll);
+
   // args.output.as_ref().map(|output_path| {
   //   context.accept_output_path(output_path.clone());
   // });
@@ -259,7 +260,6 @@ fn elaenia_workflow(args: Args) {
   workflow.add_task(InsertSpecs::new());
   workflow.add_task(PrintInfo::with_header("Aligned Product Program (After Insert Specs)",
         &|ctx: &ElaeniaContext| {
-//          format!("{:?}", ctx.aligned_crel().as_ref().expect("Missing aligned CRel").clone())
           ctx.aligned_crel().as_ref().expect("Missing aligned CRel").clone().to_c()
         }));
   workflow.add_task(CRelLoopUnroll::new(3));

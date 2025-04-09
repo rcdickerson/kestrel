@@ -56,6 +56,7 @@ impl CountLoops for Expression {
   fn count_loops(&self) -> LoopCounts {
     match self {
       Expression::Identifier{..}      => LoopCounts::zero(),
+      Expression::ConstBool(_)        => LoopCounts::zero(),
       Expression::ConstInt(_)         => LoopCounts::zero(),
       Expression::ConstFloat(_)       => LoopCounts::zero(),
       Expression::StringLiteral(_)    => LoopCounts::zero(),

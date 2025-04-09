@@ -148,6 +148,7 @@ impl Expression {
   pub fn walk(&mut self, visitor: &mut dyn CRelVisitor) {
     match self {
       Expression::Identifier{name} => visitor.visit_name(name),
+      Expression::ConstBool(_) => (),
       Expression::ConstInt(_) => (),
       Expression::ConstFloat(_) => (),
       Expression::StringLiteral(_) => (),

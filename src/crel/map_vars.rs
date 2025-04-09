@@ -27,6 +27,7 @@ impl MapVars for Expression {
   {
     match self {
       Expression::Identifier{name} => Expression::Identifier{name: f(name.clone())},
+      Expression::ConstBool(b) => Expression::ConstBool(*b),
       Expression::ConstInt(i) => Expression::ConstInt(*i),
       Expression::ConstFloat(f) => Expression::ConstFloat(*f),
       Expression::StringLiteral(s) => Expression::StringLiteral(s.clone()),

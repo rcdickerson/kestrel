@@ -201,6 +201,7 @@ impl Expression {
           name: mapped_name,
         })
       },
+      Expression::ConstBool(_) => mapper.map_expression(self),
       Expression::ConstInt(_) => mapper.map_expression(self),
       Expression::ConstFloat(_) => mapper.map_expression(self),
       Expression::StringLiteral(_) => mapper.map_expression(self),

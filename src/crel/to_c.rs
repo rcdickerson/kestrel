@@ -97,6 +97,7 @@ fn expression_to_c(expr: &Expression) -> C::Expression {
     Expression::Identifier{name} => C::Expression::Identifier {
       name: name.clone(),
     },
+    Expression::ConstBool(b) => C::Expression::ConstInt(if *b { 1 } else { 0 }),
     Expression::ConstInt(i) => C::Expression::ConstInt(*i),
     Expression::ConstFloat(f) => C::Expression::ConstFloat(*f),
     Expression::StringLiteral(s) => C::Expression::StringLiteral(s.clone()),

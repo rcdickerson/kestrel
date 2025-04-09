@@ -119,6 +119,10 @@ fn eval_expression(expr: &Expression, exec: &mut Execution) {
       exec.set_location_by_name(name);
       exec.set_value_by_name(name);
     },
+    Expression::ConstBool(b) => {
+      let i = if *b { 1 } else { 0 };
+      exec.set_value(HeapValue::Int(i));
+    },
     Expression::ConstInt(i) => {
       exec.set_value(HeapValue::Int(*i));
     },

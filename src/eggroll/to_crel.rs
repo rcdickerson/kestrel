@@ -94,6 +94,18 @@ fn expect_expression(sexp: &Sexp, ctx: &Context) -> Expression {
       Sexp::Atom(Atom::S(s)) if s == "lit-string" => {
         Expression::StringLiteral(expect_string(&sexps[1]))
       },
+      Sexp::Atom(Atom::S(s)) if s == "const-bool" => {
+        match &sexps[1] {
+          Sexp::Atom(Atom::S(s)) => if s == "true" {
+            Expression::ConstBool(true)
+          } else if s == "false" {
+            Expression::ConstBool(false)
+          } else {
+            panic!("Cannot convert to bool from {:?}", sexps[1])
+          },
+          _ => panic!("Cannot convert to bool from {:?}", sexps[1]),
+        }
+      },
       Sexp::Atom(Atom::S(s)) if s == "const-int" => {
         match &sexps[1] {
           Sexp::Atom(Atom::I(i)) => Expression::ConstInt(i32::try_from(*i).unwrap()),

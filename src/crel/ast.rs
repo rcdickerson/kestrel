@@ -170,6 +170,7 @@ pub enum Expression {
   Identifier{ name: String },
   ConstInt(i32),
   ConstFloat(f32),
+  ConstBool(bool),
   StringLiteral(String),
   Call {
     callee: Box<Expression>,

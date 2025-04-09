@@ -81,6 +81,8 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
     Expression::Identifier{name} => Daf::Expression::Identifier {
       name: name.clone(),
     },
+    Expression::ConstBool(true) => Daf::Expression::ConstTrue,
+    Expression::ConstBool(false) => Daf::Expression::ConstFalse,
     Expression::ConstInt(i) => Daf::Expression::ConstInt(*i),
     Expression::ConstFloat(f) => Daf::Expression::ConstFloat(*f),
     Expression::StringLiteral(s) => Daf::Expression::StringLiteral(s.clone()),

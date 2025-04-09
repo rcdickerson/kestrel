@@ -138,8 +138,8 @@ impl CondToCRel for CondAExpr {
 impl CondToCRel for CondBExpr {
   fn to_crel(&self) -> crel::Expression {
     match self {
-      CondBExpr::True => crel::Expression::ConstInt(1),
-      CondBExpr::False => crel::Expression::ConstInt(0),
+      CondBExpr::True => crel::Expression::ConstBool(true),
+      CondBExpr::False => crel::Expression::ConstBool(false),
       CondBExpr::Unop{bexp, op} => {
         crel::Expression::Unop {
           expr: Box::new(bexp.to_crel()),

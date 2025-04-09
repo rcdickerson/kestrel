@@ -91,7 +91,8 @@ define_language! {
     "basic-block" = BasicBlock(Box<[Id]>),
 
     // Literals
-    "const-int"  = ConstInt(Id),
+    "const-bool"  = ConstBool(Id),
+    "const-int"   = ConstInt(Id),
     "const-float" = ConstFloat(Id),
     Num(usize),
     Identifier(Symbol),

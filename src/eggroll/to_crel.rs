@@ -89,6 +89,7 @@ fn expect_crel(sexp: &Sexp, ctx: &Context) -> CRel {
 
 fn expect_expression(sexp: &Sexp, ctx: &Context) -> Expression {
   match &sexp {
+    Sexp::Atom(Atom::S(s)) if s.as_str() == "sketch_hole" => Expression::SketchHole,
     Sexp::Atom(Atom::S(s)) if !s.is_empty() => Expression::Identifier{name: s.clone()},
     Sexp::List(sexps) => match &sexps[0] {
       Sexp::Atom(Atom::S(s)) if s == "lit-string" => {

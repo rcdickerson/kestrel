@@ -175,6 +175,7 @@ fn eval_expression(expr: &Expression, exec: &mut Execution) {
     Expression::Forall{..} => {
       //panic!("Forall unimplemented")
     }
+    Expression::SketchHole => panic!("Cannot evaluate holes"),
     Expression::Statement(stmt) => eval_statement(stmt, exec),
   }
 }

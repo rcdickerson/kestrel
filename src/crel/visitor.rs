@@ -193,6 +193,7 @@ impl Expression {
         visitor.visit_expression(condition);
         condition.walk(visitor);
       },
+      Expression::SketchHole => (),
       Expression::Statement(stmt) => {
         visitor.visit_statement(stmt);
         stmt.walk(visitor);

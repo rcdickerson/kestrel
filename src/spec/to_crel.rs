@@ -13,30 +13,17 @@ pub trait CondToCRel {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct StatementKind {
-  pub crel_name: String,
-}
-
-impl StatementKind {
-  pub fn new(crel_name: String) -> Self {
-    StatementKind{crel_name}
-  }
-}
-
-impl CondToCRel for StatementKind {
-  fn to_crel(&self) -> crel::Expression {
-    crel::Expression::Identifier{name: self.crel_name.clone()}
-  }
+pub enum StatementKind {
+  Assume,
+  Assert,
 }
 
 impl KCondToCRel for KestrelCond {
   fn to_crel(&self, kind: StatementKind) -> crel::Statement {
     match self {
-      KestrelCond::BExpr(bexpr) => {
-        crel::Statement::Expression(Box::new(crel::Expression::Call {
-          callee: Box::new(kind.to_crel()),
-          args: vec!(bexpr.to_crel())
-        }))
+      KestrelCond::BExpr(bexpr) => match kind {
+        StatementKind::Assert => crel::Statement::Assert(Box::new(bexpr.to_crel())),
+        StatementKind::Assume => crel::Statement::Assume(Box::new(bexpr.to_crel())),
       },
       KestrelCond::ForLoop{index_var, start, end, body} => {
         let init_index = crel::Declaration {

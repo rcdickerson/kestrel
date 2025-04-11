@@ -10,6 +10,7 @@ pub struct Function {
   parameters: Vec<FunctionParameter>,
   body: Option<Statement>,
   is_harness: bool,
+  is_generator: bool,
 }
 
 impl Function {
@@ -21,6 +22,7 @@ impl Function {
       parameters: Vec::new(),
       body: None,
       is_harness: false,
+      is_generator: false,
     }
   }
 
@@ -34,12 +36,24 @@ impl Function {
     self
   }
 
+  pub fn set_generator(&mut self, is_generator: bool) -> &Self {
+    self.is_generator = is_generator;
+    self
+  }
+
   pub fn set_body(&mut self, body: &Statement) -> &Self {
     self.body = Some(body.clone());
     self
   }
 
   pub fn emit(&self, writer: &mut Writer) {
+    if self.is_harness && self.is_generator {
+      panic!("Function {} cannot be both a generator and a harness", self.name);
+    } else if self.is_harness {
+      writer.write("harness ");
+    } else if self.is_generator {
+      writer.write("generator ");
+    }
     self.ty.emit(writer);
     writer.write(" ").write(&self.name).write("(");
     let mut comma = false;

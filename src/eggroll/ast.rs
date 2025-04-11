@@ -36,6 +36,7 @@ define_language! {
     "assume"        = Assume(Id),
     "break"         = Break,
     "skip"          = Skip,
+    "sketch-hole"   = SketchHole,
 
     // An abbreviated form of :
     //   while c1 && c2 { b1; b2 };

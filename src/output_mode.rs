@@ -46,12 +46,8 @@ impl OutputMode {
     let (_, fundefs) = crate::crel::fundef::extract_fundefs(crel);
     let main_fun = fundefs.get("main").expect("No main function found");
 
-    let preconds = self.assume_name().map(|name| {
-      BlockItem::Statement(precond.to_crel(StatementKind{crel_name: name}))
-    });
-    let postconds = self.assert_name().map(|name| {
-      BlockItem::Statement(postcond.to_crel(StatementKind{crel_name: name}))
-    });
+    let preconds  = BlockItem::Statement(precond.to_crel(StatementKind::Assume));
+    let postconds = BlockItem::Statement(postcond.to_crel(StatementKind::Assert));
 
     let globals = global_decls.iter()
       .map(|decl| CRel::Declaration(decl.clone()).to_dafny().0)
@@ -59,9 +55,9 @@ impl OutputMode {
       .join("");
 
     let mut body_items: Vec<BlockItem> = Vec::new();
-    if let Some(preconds) = preconds { body_items.push(preconds) }
+    body_items.push(preconds);
     body_items.push(BlockItem::Statement(main_fun.body.clone()));
-    if let Some(postconds) = postconds { body_items.push(postconds) }
+    body_items.push(postconds);
     let new_body = Statement::Compound(body_items);
 
     let new_main = CRel::FunctionDefinition {
@@ -174,18 +170,14 @@ impl OutputMode {
     let main_fun = fundefs.get("main").expect("No main function found");
 
     let param_inits = self.build_param_inits(&main_fun.params);
-    let preconds = self.assume_name().map(|name| {
-      BlockItem::Statement(precond.to_crel(StatementKind{crel_name: name}))
-    });
-    let postconds = self.assert_name().map(|name| {
-      BlockItem::Statement(postcond.to_crel(StatementKind{crel_name: name}))
-    });
+    let preconds  = BlockItem::Statement(precond.to_crel(StatementKind::Assume));
+    let postconds = BlockItem::Statement(postcond.to_crel(StatementKind::Assert));
 
     let mut body_items: Vec<BlockItem> = Vec::new();
     if let Some(mut param_inits) = param_inits.clone() { body_items.append(&mut param_inits) }
-    if let Some(preconds) = preconds { body_items.push(preconds) }
+    body_items.push(preconds);
     body_items.push(BlockItem::Statement(main_fun.body.clone()));
-    if let Some(postconds) = postconds { body_items.push(postconds) }
+    body_items.push(postconds);
     let new_body = Statement::Compound(body_items);
 
     let new_main = CRel::FunctionDefinition {
@@ -247,29 +239,9 @@ impl OutputMode {
 
   pub fn crel_config(&self) -> to_crel::Config {
     to_crel::Config {
-      assert_name: self.assert_name(),
-      assume_name: self.assume_name(),
+      assert_name: Some("assert".to_string()),
+      assume_name: Some("assume".to_string()),
       nondet_name: self.nondet_name(),
-    }
-  }
-
-  pub fn assert_name(&self) -> Option<String> {
-    match self {
-      OutputMode::Daikon => None,
-      OutputMode::Dafny => Some("assert".to_string()),
-      OutputMode::Icra => Some("__VERIFIER_assert".to_string()),
-      OutputMode::Seahorn => Some("sassert".to_string()),
-      OutputMode::SvComp => Some("sassert".to_string()),
-    }
-  }
-
-  pub fn assume_name(&self) -> Option<String> {
-    match self {
-      OutputMode::Daikon => None,
-      OutputMode::Dafny => Some("assume".to_string()),
-      OutputMode::Icra => Some("__VERIFIER_assume".to_string()),
-      OutputMode::Seahorn => Some("assume".to_string()),
-      OutputMode::SvComp => Some("assume".to_string()),
     }
   }
 

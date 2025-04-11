@@ -144,7 +144,8 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
         bindings: bindings.iter().map(|(v, t)| (v.clone(), type_to_daf(t).unwrap())).collect(),
         condition: Box::new(expression_to_daf(condition))
       }
-    }
+    },
+    Expression::SketchHole => panic!("Cannot convert sketch holes to Dafny"),
     Expression::Statement(stmt) => match statement_to_daf(stmt) {
       Daf::Statement::Expression(expr) => *expr,
       daf_stmt => Daf::Expression::Statement(Box::new(daf_stmt))

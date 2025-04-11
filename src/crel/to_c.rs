@@ -155,6 +155,7 @@ fn expression_to_c(expr: &Expression) -> C::Expression {
       }
     },
     Expression::Forall{..} => panic!("Cannot convert forall expressions to C"),
+    Expression::SketchHole => panic!("Cannot convert sketch holes to C"),
     Expression::Statement(stmt) => match statement_to_c(stmt) {
       C::Statement::Expression(expr) => *expr,
       c_stmt => C::Expression::Statement(Box::new(c_stmt)),

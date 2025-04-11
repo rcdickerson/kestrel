@@ -197,6 +197,7 @@ pub enum Expression {
     bindings: Vec<(String, Type)>,
     condition: Box<Expression>,
   },
+  SketchHole,
   Statement(Box<Statement>),
 }
 

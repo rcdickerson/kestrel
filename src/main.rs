@@ -2,8 +2,8 @@
 
 use clap::{Parser, ValueEnum};
 use kestrel::crel::unaligned::*;
-use kestrel::elaenia::crel_to_sketch::*;
 use kestrel::elaenia::elaenia_context::ElaeniaContext;
+use kestrel::elaenia::write_sketch::*;
 use kestrel::elaenia::parser::parse_elaenia_spec;
 use kestrel::elaenia::insert_specs::*;
 use kestrel::kestrel_context::KestrelContext;
@@ -261,9 +261,10 @@ fn elaenia_workflow(args: Args) {
           ctx.aligned_crel().as_ref().expect("Missing aligned CRel").clone().to_dafny().0
         }));
   workflow.add_task(CRelLoopUnroll::new(3));
+  workflow.add_task(WriteSketch::new());
   workflow.add_task(PrintInfo::with_header("Aligned Product Program Sketch",
         &|ctx: &ElaeniaContext| {
-          ctx.aligned_crel().as_ref().expect("Missing aligned CRel").clone().to_sketch()
+          ctx.sketch_output().as_ref().expect("Missing aligned CRel").clone()
         }));
   workflow.add_task(AlignedOutput::new(args.output_mode));
   workflow.add_task(PrintInfo::with_header("Aligned Product Program",

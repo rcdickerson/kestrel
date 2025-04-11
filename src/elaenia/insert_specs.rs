@@ -1,4 +1,5 @@
 use crate::crel::ast::*;
+use crate::crel::fundef::*;
 use crate::crel::mapper::*;
 use crate::spec::condition::*;
 use crate::spec::to_crel::*;
@@ -23,13 +24,19 @@ impl Task<ElaeniaContext> for InsertSpecs {
     let mut spec_inserter = SpecInserter::new(&spec);
     let mapped_crel = crel.map(&mut spec_inserter);
     context.accept_aligned_crel(mapped_crel);
-    context.accept_choice_decls(spec_inserter.added_choice_decls);
+    for gen in spec_inserter.added_choice_gens {
+      context.accept_choice_gen(gen);
+    }
+    for fun in spec_inserter.added_choice_funs {
+      context.accept_choice_fun(fun);
+    }
   }
 }
 
 struct SpecInserter<'a> {
   spec: &'a ElaeniaSpec,
-  added_choice_decls: Vec<Declaration>,
+  added_choice_funs: Vec<FunDef>,
+  added_choice_gens: Vec<FunDef>,
   choice_id: u32,
 }
 
@@ -37,7 +44,8 @@ impl <'a> SpecInserter<'a> {
   fn new(spec: &'a ElaeniaSpec) -> SpecInserter<'a> {
     SpecInserter {
       spec,
-      added_choice_decls: Vec::new(),
+      added_choice_funs: Vec::new(),
+      added_choice_gens: Vec::new(),
       choice_id: 0
     }
   }
@@ -57,12 +65,12 @@ impl <'a> CRelMapper for SpecInserter<'a> {
                 let aspec = self.spec.lookup_aspec(&name);
                 match aspec {
                   Some(aspec) => {
-                    let pre_expr = Box::new(spec_cond_to_expression(&aspec.pre, &lhs_name));
-                    let post_expr = Box::new(spec_cond_to_expression(&aspec.post, &lhs_name));
+                    let assert_pre = spec_cond_to_expression(&aspec.pre, &lhs_name, StatementKind::Assert);
+                    let assume_post = spec_cond_to_expression(&aspec.post, &lhs_name, StatementKind::Assume);
                     Expression::Statement(Box::new(Statement::Compound(vec!(
-                      BlockItem::Statement(Statement::Assert(pre_expr)),
+                      BlockItem::Statement(assert_pre),
                       BlockItem::Statement(Statement::Expression(Box::new(expr.clone()))),
-                      BlockItem::Statement(Statement::Assume(post_expr)),
+                      BlockItem::Statement(assume_post),
                     ))))
                   },
                   None => expr.clone(),
@@ -74,27 +82,43 @@ impl <'a> CRelMapper for SpecInserter<'a> {
                     let mut choice_decls = espec.choice_vars.iter()
                       .map(|chvar| {
                         self.choice_id += 1;
+                        let choice_fun_name = format!("_choice_{}_{}", chvar, self.choice_id);
+                        let choice_gen_name = format!("_gen_choice_{}_{}", chvar, self.choice_id);
                         let decl = Declaration {
                           specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
                           //declarator: Declarator::Identifier{name: format!("_choice_var_{}", chvar)},
                           declarator: Declarator::Identifier{name: chvar.clone()},
                           initializer: Some(Expression::Call {
-                            callee: Box::new(Expression::Identifier{ name: format!("_choice_{}_{}", chvar, self.choice_id) }),
+                            callee: Box::new(Expression::Identifier{ name: choice_fun_name.clone() }),
                             args: vec!(),
                           })
                         };
-                        self.added_choice_decls.push(decl.clone());
+                        self.added_choice_funs.push(FunDef {
+                          specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
+                          name: choice_fun_name.clone(),
+                          params: Vec::new(),
+                          body: Statement::Return(Some(Box::new(Expression::Call {
+                            callee: Box::new(Expression::Identifier{ name: choice_gen_name.clone() }),
+                            args: Vec::new(),
+                          }))),
+                        });
+                        self.added_choice_gens.push(FunDef {
+                          specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
+                          name: choice_gen_name.clone(),
+                          params: Vec::new(),
+                          body: Statement::Return(Some(Box::new(Expression::SketchHole))),
+                        });
                         BlockItem::Declaration(decl)
                       })
                       .collect::<Vec<_>>();
-                    let pre_expr = Box::new(spec_cond_to_expression(&espec.pre, &lhs_name));
-                    let post_expr = Box::new(spec_cond_to_expression(&espec.post, &lhs_name));
+                    let assert_pre = spec_cond_to_expression(&espec.pre, &lhs_name, StatementKind::Assert);
+                    let assume_post = spec_cond_to_expression(&espec.post, &lhs_name, StatementKind::Assume);
 
                     let mut statements = Vec::new();
                     statements.append(&mut choice_decls);
-                    statements.push(BlockItem::Statement(Statement::Assert(pre_expr)));
+                    statements.push(BlockItem::Statement(assert_pre));
                     statements.push(BlockItem::Statement(Statement::Expression(Box::new(expr.clone()))));
-                    statements.push(BlockItem::Statement(Statement::Assume(post_expr)));
+                    statements.push(BlockItem::Statement(assume_post));
                     Expression::Statement(Box::new(Statement::Compound(statements)))
                   },
                   None => expr.clone(),
@@ -113,14 +137,10 @@ impl <'a> CRelMapper for SpecInserter<'a> {
   }
 }
 
-fn spec_cond_to_expression(cond: &KestrelCond, assignee_name: &String) -> Expression {
+fn spec_cond_to_expression(cond: &KestrelCond, assignee_name: &String, kind: StatementKind) -> Statement {
   let with_assignee = replace_ret_val_kcond(cond.clone(),
                                             &CondAExpr::Var(assignee_name.clone()));
-  let crel = with_assignee.to_crel(StatementKind::new("".to_string()));
-  match crel {
-    Statement::Expression(expr) => *expr,
-    _ => Expression::Statement(Box::new(crel)),
-  }
+  with_assignee.to_crel(kind)
 }
 
 fn replace_ret_val_kcond(cond: KestrelCond, replacement: &CondAExpr) -> KestrelCond {

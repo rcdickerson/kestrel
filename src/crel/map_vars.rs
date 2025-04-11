@@ -56,6 +56,7 @@ impl MapVars for Expression {
         bindings: bindings.iter().map(|(v, t)| (f(v.clone()), t.clone())).collect(),
         condition: Box::new(condition.clone().map_vars(f)),
       },
+      Expression::SketchHole => Expression::SketchHole,
       Expression::Statement(stmt) => {
         Expression::Statement(Box::new(stmt.map_vars(f)))
       }

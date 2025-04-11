@@ -66,6 +66,7 @@ impl CountLoops for Expression {
       Expression::Unop{expr, ..}      => expr.count_loops(),
       Expression::Binop{lhs, rhs, ..} => lhs.count_loops().plus(&rhs.count_loops()),
       Expression::Forall{..}          => LoopCounts::zero(),
+      Expression::SketchHole          => LoopCounts::zero(),
       Expression::Statement(stmt)     => stmt.count_loops(),
     }
   }

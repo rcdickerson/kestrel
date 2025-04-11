@@ -100,6 +100,7 @@ fn expression_to_eggroll(expr: &Expression) -> String {
         .join(" ");
       format!("(forall (bindings {}) {})", bindings, expression_to_eggroll(condition))
     },
+    Expression::SketchHole => "sketch-hole".to_string(),
     Expression::Statement(stmt) => statement_to_eggroll(stmt),
   }
 }

@@ -19,8 +19,10 @@ pub struct ElaeniaContext {
   aligned_eggroll: Option<RecExpr<Eggroll>>,
   aligned_eggroll_repetitions: Option<GuardedRepetitions>,
   aligned_crel: Option<CRel>,
+  sketch_output: Option<String>,
   aligned_output: Option<String>,
-  choice_decls: Option<Vec<Declaration>>,
+  choice_funs: Vec<FunDef>,
+  choice_gens: Vec<FunDef>,
   output_path: Option<String>,
   output_filename: Option<String>,
   stopwatch: WorkflowStopwatch,
@@ -38,8 +40,10 @@ impl ElaeniaContext {
       aligned_eggroll: None,
       aligned_eggroll_repetitions: None,
       aligned_crel: None,
+      sketch_output: None,
       aligned_output: None,
-      choice_decls: None,
+      choice_funs: Vec::new(),
+      choice_gens: Vec::new(),
       output_path: None,
       output_filename: None,
       stopwatch: WorkflowStopwatch::new(),
@@ -52,27 +56,28 @@ impl ElaeniaContext {
     &self.spec
   }
 
-  pub fn accept_choice_decls(&mut self, decls: Vec<Declaration>) {
-    self.choice_decls = Some(decls.clone());
-    self.unaligned_crel.as_mut().map(|unaligned| {
-      for decl in decls {
-        match decl.initializer {
-          Some(Expression::Call{ callee, args }) => {
-            match *callee {
-              Expression::Identifier { name } => {
-                unaligned.global_decls.push(Declaration {
-                  specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
-                  declarator: Declarator::Function{ name: name.clone(), params: Vec::new() },
-                  initializer: None,
-                });
-              },
-              _ => (),
-            }
-          },
-          _ => (),
-        }
-      }
-    });
+  pub fn accept_choice_fun(&mut self, fundef: FunDef) {
+    self.choice_funs.push(fundef);
+  }
+
+  pub fn choice_funs(&self) -> &Vec<FunDef> {
+    &self.choice_funs
+  }
+
+  pub fn accept_choice_gen(&mut self, gendef: FunDef) {
+    self.choice_gens.push(gendef);
+  }
+
+  pub fn choice_gens(&self) -> &Vec<FunDef> {
+    &self.choice_gens
+  }
+
+  pub fn accept_sketch_output(&mut self, sketch_output: String) {
+    self.sketch_output = Some(sketch_output);
+  }
+
+  pub fn sketch_output(&self) -> &Option<String> {
+    &self.sketch_output
   }
 }
 

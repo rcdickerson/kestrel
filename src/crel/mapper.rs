@@ -259,6 +259,7 @@ impl Expression {
           condition: Box::new(mapped_condition),
         })
       },
+      Expression::SketchHole => mapper.map_expression(self),
       Expression::Statement(stmt) => {
         let mapped_stmt = stmt.map(mapper);
         mapper.map_expression(&Expression::Statement(Box::new(mapped_stmt)))

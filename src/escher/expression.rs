@@ -6,6 +6,7 @@ pub enum Expression {
   ArrayIndex{expr: Box<Expression>, index: Box<Expression>},
   ConstInt(i32),
   ConstFloat(f32),
+  Hole,
   Identifier{name: String},
   FnCall{name: Box<Expression>, args: Vec<Expression>},
   StringLiteral(String),
@@ -29,6 +30,9 @@ impl Expression {
       },
       Expression::ConstFloat(f) => {
         writer.write(&f.to_string());
+      },
+      Expression::Hole => {
+        writer.write("??");
       },
       Expression::Identifier{name} => {
         writer.write(name);

@@ -29,16 +29,16 @@ fn crel_to_sketch(crel: &CRel, source: &mut Sk::Source) {
   }
 }
 
-fn declaration_to_sketch(decl: &Declaration) -> Sk::Variable {
+pub fn declaration_to_sketch(decl: &Declaration) -> Sk::Variable {
   let mut builder = DeclarationBuilder::new();
   builder.visit_init_declarator(decl);
   builder.build_variable()
 }
 
-fn fun_to_sketch(specifiers: &Vec<DeclarationSpecifier>,
-            name: &String,
-            params: &Vec<ParameterDeclaration>,
-            body: &Statement) -> Sk::Function {
+pub fn fun_to_sketch(specifiers: &Vec<DeclarationSpecifier>,
+                     name: &String,
+                     params: &Vec<ParameterDeclaration>,
+                     body: &Statement) -> Sk::Function {
   let mut fun_ty = Sk::Type::Void;
   for spec in specifiers {
     match spec {
@@ -155,6 +155,7 @@ fn expression_to_sketch(expr: &Expression) -> Sk::Expression {
       }
     },
     Expression::Forall{..} => panic!("Cannot convert forall expressions to C"),
+    Expression::SketchHole => Sk::Expression::Hole,
     Expression::Statement(stmt) => match statement_to_sketch(stmt) {
       Sk::Statement::Expression(expr) => *expr,
       c_stmt => Sk::Expression::Statement(Box::new(c_stmt)),

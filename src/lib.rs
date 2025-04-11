@@ -11,6 +11,7 @@ pub mod crel;
 pub mod daikon;
 pub mod eggroll;
 pub mod elaenia;
+pub mod escher;
 pub mod kestrel_context;
 pub mod names;
 pub mod output_mode;

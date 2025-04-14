@@ -40,11 +40,14 @@ impl Task<ElaeniaContext> for WriteSketch {
       sketch.declare_variable(&declaration_to_sketch(decl));
     }
     for choice_gen in context.choice_gens() {
-      sketch.push_function(&fun_to_sketch(
+      let mut fun = fun_to_sketch(
         &choice_gen.specifiers,
         &choice_gen.name,
         &choice_gen.params,
-        &choice_gen.body).set_generator(true));
+        &choice_gen.body);
+      fun.set_body(&build_grammar(&choice_gen.name, fun.get_params()));
+      fun.set_generator(true);
+      sketch.push_function(&fun);
     }
     for choice_fun in context.choice_funs() {
       sketch.push_function(&fun_to_sketch(
@@ -63,4 +66,40 @@ impl Task<ElaeniaContext> for WriteSketch {
 
     context.accept_sketch_output(sketch.to_string());
   }
+}
+
+fn build_grammar(generator_name: &String,
+                 params: &Vec<Sk::FunctionParameter>)
+                 -> Sk::Statement {
+  let mut options = vec!(
+    Sk::Expression::Hole,
+  );
+  for param in params {
+    options.push(Sk::Expression::Identifier {
+      name: param.name.clone().expect("Encountered nameless parameter")
+    });
+  }
+  let recurse = Sk::Expression::FnCall {
+    name: Box::new(Sk::Expression::Identifier{name: generator_name.clone()}),
+    args: params.into_iter()
+      .map(|p| Sk::Expression::Identifier{name: p.name.clone()
+                                          .expect("Encountered nameless parameter")})
+      .collect(),
+  };
+  options.push(Sk::Expression::BinOp {
+    lhs: Box::new(recurse.clone()),
+    rhs: Box::new(recurse.clone()),
+    op: "+".to_string(),
+  });
+  options.push(Sk::Expression::BinOp {
+    lhs: Box::new(recurse.clone()),
+    rhs: Box::new(recurse.clone()),
+    op: "-".to_string(),
+  });
+  options.push(Sk::Expression::BinOp {
+    lhs: Box::new(recurse.clone()),
+    rhs: Box::new(recurse.clone()),
+    op: "*".to_string(),
+  });
+  Sk::Statement::Return(Some(Box::new(Sk::Expression::GeneratorOptions(options))))
 }

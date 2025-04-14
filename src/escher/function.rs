@@ -31,6 +31,10 @@ impl Function {
     self
   }
 
+  pub fn get_params(&self) -> &Vec<FunctionParameter> {
+    &self.parameters
+  }
+
   pub fn set_harness(&mut self, is_harness: bool) -> &Self {
     self.is_harness = is_harness;
     self

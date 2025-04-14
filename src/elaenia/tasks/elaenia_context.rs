@@ -7,6 +7,7 @@ use crate::elaenia::elaenia_spec::*;
 use crate::spec::condition::KestrelCond;
 use crate::workflow::context::*;
 use egg::RecExpr;
+use std::collections::HashMap;
 use std::path::Path;
 use std::time::Duration;
 
@@ -20,12 +21,19 @@ pub struct ElaeniaContext {
   aligned_eggroll_repetitions: Option<GuardedRepetitions>,
   aligned_crel: Option<CRel>,
   sketch_output: Option<String>,
+  solved_choice_funs: HashMap<String, FunDef>,
+
   aligned_output: Option<String>,
+
   choice_funs: Vec<FunDef>,
   choice_gens: Vec<FunDef>,
+
   output_path: Option<String>,
   output_filename: Option<String>,
+
   stopwatch: WorkflowStopwatch,
+
+  sketch_failed: bool,
   timed_out: bool,
   verified: bool,
 }
@@ -41,12 +49,14 @@ impl ElaeniaContext {
       aligned_eggroll_repetitions: None,
       aligned_crel: None,
       sketch_output: None,
+      solved_choice_funs: HashMap::new(),
       aligned_output: None,
       choice_funs: Vec::new(),
       choice_gens: Vec::new(),
       output_path: None,
       output_filename: None,
       stopwatch: WorkflowStopwatch::new(),
+      sketch_failed: false,
       timed_out: false,
       verified: false,
     }
@@ -78,6 +88,18 @@ impl ElaeniaContext {
 
   pub fn sketch_output(&self) -> &Option<String> {
     &self.sketch_output
+  }
+
+  pub fn accept_choice_solution(&mut self, name: String, solution: FunDef) {
+    self.solved_choice_funs.insert(name, solution);
+  }
+
+  pub fn choice_solutions(&self) -> &HashMap<String, FunDef> {
+    &self.solved_choice_funs
+  }
+
+  pub fn set_sketch_failed(&mut self) {
+    self.sketch_failed = true
   }
 }
 

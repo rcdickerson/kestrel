@@ -66,7 +66,7 @@ impl <Ctx: Context + AlignsCRel> Task<Ctx> for Houdafny {
       // Run Dafny.
       // println!("Running Dafny verification...");
       let mut child = Command::new("dafny")
-        .args(["verify", "houdafny.dfy", "--error-limit", "0", "--allow-warnings"])
+        .args(["verify", dafny_path.as_str(), "--error-limit", "0", "--allow-warnings"])
         .stdout(Stdio::piped())
         .spawn()
         .unwrap();

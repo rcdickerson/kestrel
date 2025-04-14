@@ -22,7 +22,6 @@ pub fn parse_c_file(input_file: &String) -> CRel {
 }
 
 /// Read the given C string and parse it into the CRel IR.
-#[cfg(test)]
 pub fn parse_c_string(input_str: String) -> CRel {
   let config = Config::with_clang();
   let parse = lang_c::driver::parse_preprocessed(&config, input_str);

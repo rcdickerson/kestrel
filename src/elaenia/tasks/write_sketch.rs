@@ -2,7 +2,7 @@ use crate::crel::ast::*;
 use crate::escher as Sk;
 use crate::spec::to_crel::*;
 use crate::elaenia::crel_to_sketch::*;
-use crate::elaenia::elaenia_context::*;
+use crate::elaenia::tasks::elaenia_context::*;
 use crate::workflow::context::*;
 use crate::workflow::task::*;
 

@@ -2,10 +2,10 @@
 
 use clap::{Parser, ValueEnum};
 use kestrel::crel::unaligned::*;
-use kestrel::elaenia::elaenia_context::ElaeniaContext;
-use kestrel::elaenia::write_sketch::*;
 use kestrel::elaenia::parser::parse_elaenia_spec;
-use kestrel::elaenia::insert_specs::*;
+use kestrel::elaenia::tasks::elaenia_context::ElaeniaContext;
+use kestrel::elaenia::tasks::insert_specs::*;
+use kestrel::elaenia::tasks::write_sketch::*;
 use kestrel::kestrel_context::KestrelContext;
 use kestrel::output_mode::*;
 use kestrel::spec::parser::parse_kestrel_spec;

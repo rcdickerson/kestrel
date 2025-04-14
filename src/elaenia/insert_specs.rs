@@ -244,7 +244,7 @@ impl <'a> SpecInserter2<'a> {
         if assignee_name.starts_with("l_") {
           self.surround_aspec(assignee_name, &name, call_expr)
         } else if assignee_name.starts_with("r_") {
-          self.surround_espec(assignee_name, &name, call_expr)
+          self.surround_espec(assignee_name, &name, call_expr, 3)
         } else {
           call_expr.clone()
         }
@@ -276,7 +276,8 @@ impl <'a> SpecInserter2<'a> {
   fn surround_espec(&mut self,
                     assignee_name: &String,
                     fun_name: &String,
-                    expr: &Expression)
+                    expr: &Expression,
+                    depth: i32)
                     -> Expression {
     let espec = self.spec.lookup_espec(&fun_name);
     match espec {
@@ -286,50 +287,51 @@ impl <'a> SpecInserter2<'a> {
             self.current_choice_id += 1;
             let choice_fun_name = format!("_choice_{}_{}", chvar, self.current_choice_id);
             let choice_gen_name = format!("_gen_choice_{}_{}", chvar, self.current_choice_id);
+
+            let choice_fun_params = self.current_scope.clone().into_iter()
+              .filter(|(_,(_, initialized))| *initialized)
+              .map(|(name, (ty, _))| {
+                ParameterDeclaration {
+                  specifiers: vec!(DeclarationSpecifier::TypeSpecifier(ty)),
+                  declarator: Some(Declarator::Identifier{ name }),
+                }
+              }).collect::<Vec<_>>();
+
+            let choice_fun_args = self.current_scope.clone().into_iter()
+              .filter(|(_,(_, initialized))| *initialized)
+              .map(|(name, _)| Expression::Identifier{name})
+              .collect::<Vec<_>>();
+
+            let mut choice_gen_params = vec!(ParameterDeclaration {
+              specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
+              declarator: Some(Declarator::Identifier{ name: "depth".to_string() }),
+            });
+            choice_gen_params.append(&mut choice_fun_params.clone());
+
+            let mut choice_gen_args = vec!(Expression::ConstInt(depth));
+            choice_gen_args.append(&mut choice_fun_args.clone());
+
             let decl = Declaration {
               specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
-              //declarator: Declarator::Identifier{name: format!("_choice_var_{}", chvar)},
               declarator: Declarator::Identifier{name: chvar.clone()},
               initializer: Some(Expression::Call {
                 callee: Box::new(Expression::Identifier{ name: choice_fun_name.clone() }),
-                args: self.current_scope.clone().into_iter()
-                  .filter(|(_,(_, initialized))| *initialized)
-                  .map(|(name, _)| {
-                    Expression::Identifier{name}
-                  }).collect(),
+                args: choice_fun_args.clone(),
               })
             };
             self.added_choice_funs.push(FunDef {
               specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
               name: choice_fun_name.clone(),
-              params: self.current_scope.clone().into_iter()
-                .filter(|(_,(_, initialized))| *initialized)
-                .map(|(name, (ty, _))| {
-                  ParameterDeclaration {
-                    specifiers: vec!(DeclarationSpecifier::TypeSpecifier(ty)),
-                    declarator: Some(Declarator::Identifier{ name }),
-                  }
-                }).collect(),
+              params: choice_fun_params.clone(),
               body: Statement::Return(Some(Box::new(Expression::Call {
                 callee: Box::new(Expression::Identifier{ name: choice_gen_name.clone() }),
-                args: self.current_scope.clone().into_iter()
-                  .filter(|(_,(_, initialized))| *initialized)
-                  .map(|(name, _)| {
-                    Expression::Identifier{name}
-                  }).collect(),
+                args: choice_gen_args.clone(),
               }))),
             });
             self.added_choice_gens.push(FunDef {
               specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
               name: choice_gen_name.clone(),
-              params: self.current_scope.clone().into_iter()
-                .filter(|(_,(_, initialized))| *initialized)
-                .map(|(name, (ty, _))| {
-                  ParameterDeclaration {
-                    specifiers: vec!(DeclarationSpecifier::TypeSpecifier(ty)),
-                    declarator: Some(Declarator::Identifier{ name }),
-                  }
-                }).collect(),
+              params: choice_gen_params.clone(),
               body: Statement::Return(Some(Box::new(Expression::SketchHole))),
             });
             BlockItem::Declaration(decl)

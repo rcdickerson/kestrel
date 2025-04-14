@@ -45,7 +45,13 @@ impl Task<ElaeniaContext> for WriteSketch {
         &choice_gen.name,
         &choice_gen.params,
         &choice_gen.body);
-      fun.set_body(&build_grammar(&choice_gen.name, fun.get_params()));
+      fun.set_body(&Sk::Statement::Seq(vec!(
+        Sk::Statement::Assert(Box::new(Sk::Expression::BinOp {
+          lhs: Box::new(Sk::Expression::Identifier{name: "depth".to_string()}),
+          rhs: Box::new(Sk::Expression::ConstInt(0)),
+          op: ">".to_string(),
+        })),
+        build_grammar(&choice_gen.name, fun.get_params()))));
       fun.set_generator(true);
       sketch.push_function(&fun);
     }
@@ -75,15 +81,28 @@ fn build_grammar(generator_name: &String,
     Sk::Expression::Hole,
   );
   for param in params {
-    options.push(Sk::Expression::Identifier {
-      name: param.name.clone().expect("Encountered nameless parameter")
-    });
+    match &param.name {
+      Some(name) if name.as_str() == "depth" => (),
+      _ => {
+        options.push(Sk::Expression::Identifier {
+          name: param.name.clone().expect("Encountered nameless parameter")
+        });
+      }
+    }
   }
   let recurse = Sk::Expression::FnCall {
     name: Box::new(Sk::Expression::Identifier{name: generator_name.clone()}),
     args: params.into_iter()
-      .map(|p| Sk::Expression::Identifier{name: p.name.clone()
-                                          .expect("Encountered nameless parameter")})
+      .map(|p| match &p.name {
+        Some(name) if name.as_str() == "depth" => Sk::Expression::BinOp {
+          lhs: Box::new(Sk::Expression::Identifier{ name: name.clone() }),
+          rhs: Box::new(Sk::Expression::ConstInt(1)),
+          op: "-".to_string(),
+        },
+        _ => Sk::Expression::Identifier {
+          name: p.name.clone().expect("Encountered nameless parameter")
+        },
+      })
       .collect(),
   };
   options.push(Sk::Expression::BinOp {

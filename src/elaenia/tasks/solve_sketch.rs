@@ -90,7 +90,7 @@ impl Task<ElaeniaContext> for SolveSketch {
 fn cleanup(file_path: &str) -> Result<(), Error> {
   // Capture all of the choice functions; this is all we're interested
   // in, and all we're going to output.
-  let re = Regex::new(r"(?s)void _choice_.*?\n\}").unwrap();
+  let re = Regex::new(r"(?s)void choice_.*?\n\}").unwrap();
   let contents = std::fs::read_to_string(file_path)?;
   let mut file = std::fs::OpenOptions::new()
     .write(true).truncate(true).open(file_path)?;
@@ -99,7 +99,7 @@ fn cleanup(file_path: &str) -> Result<(), Error> {
                      // Instead of taking in a ref to an output object,
                      // return the output directly. Doing this with
                      // fragile string find / replaces, sorry!
-                     .replace("void _choice_", "int _choice_")
+                     .replace("void choice_", "int choice_")
                      .replace(", int& _out", "")
                      .replace("{", "{\n  int _out;")
                      .replace("return;", "return _out;"))

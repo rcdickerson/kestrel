@@ -1,11 +1,13 @@
 //! The main entry point for KestRel executions.
 
 use clap::{Parser, ValueEnum};
+use kestrel::crel::ast::*;
 use kestrel::crel::unaligned::*;
 use kestrel::elaenia::parser::parse_elaenia_spec;
 use kestrel::elaenia::tasks::elaenia_context::ElaeniaContext;
 use kestrel::elaenia::tasks::insert_specs::*;
 use kestrel::elaenia::tasks::solve_sketch::*;
+use kestrel::elaenia::tasks::write_dafny::*;
 use kestrel::elaenia::tasks::write_sketch::*;
 use kestrel::kestrel_context::KestrelContext;
 use kestrel::output_mode::*;
@@ -169,6 +171,7 @@ fn kestrel_workflow(args: Args) {
   }
   if args.dot { workflow.add_task(WriteDot::new()) }
   if args.space_size { workflow.add_task(ComputeSpace::new()) }
+
   match args.extractor {
     ExtractorArg::Unaligned => workflow.add_task(AlignNone::new()),
     ExtractorArg::CountLoops => workflow.add_task(AlignCountLoops::new()),
@@ -217,7 +220,6 @@ fn kestrel_workflow(args: Args) {
   println!("KestRel completed in {}ms", workflow.context().total_elapsed_time().as_millis());
   println!("Verified: {}", workflow.context().is_verified());
 }
-
 
 fn elaenia_workflow(args: Args) {
   let mut raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
@@ -268,7 +270,9 @@ fn elaenia_workflow(args: Args) {
           ctx.sketch_output().as_ref().expect("Missing aligned CRel").clone()
         }));
   workflow.add_task(SolveSketch::new(None));
-  workflow.add_task(AlignedOutput::new(args.output_mode));
+//  workflow.add_task(InvarsDaikon::new(None));
+  workflow.add_task(Houdafny::new(None));
+  workflow.add_task(WriteDafny::new());
   workflow.add_task(PrintInfo::with_header("Aligned Product Program",
         &|ctx: &ElaeniaContext| {
           ctx.aligned_output().as_ref().expect("Missing aligned output").clone()

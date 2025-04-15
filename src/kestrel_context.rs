@@ -4,10 +4,12 @@ use crate::crel::ast::*;
 use crate::crel::unaligned::*;
 use crate::eggroll::ast::*;
 use crate::eggroll::to_crel::*;
+use crate::output_mode::*;
 use crate::spec::KestrelSpec;
 use crate::spec::condition::KestrelCond;
 use crate::workflow::context::*;
 use egg::*;
+use std::collections::HashMap;
 use std::path::Path;
 use std::time::Duration;
 
@@ -120,6 +122,21 @@ impl AlignsEggroll for KestrelContext {
 
   fn accept_aligned_eggroll_repetitions(&mut self, reps: GuardedRepetitions) {
     self.aligned_eggroll_repetitions = Some(reps);
+  }
+}
+
+impl GeneratesDafny for KestrelContext {
+  fn generate_dafny(&self, output_path: &String)
+                    -> (String, HashMap<String, (usize, usize)>) {
+    OutputMode::Dafny.crel_to_dafny(
+        self.aligned_crel().as_ref()
+            .expect("Missing aligned CRel"),
+        self.precondition(),
+        self.postcondition(),
+        self.unaligned_crel().as_ref()
+          .expect("Missing unaligned CRel")
+          .global_decls.clone(),
+        &Some(output_path.clone()))
   }
 }
 

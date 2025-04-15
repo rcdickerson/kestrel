@@ -38,22 +38,14 @@ impl Houdafny {
   }
 }
 
-impl <Ctx: Context + AlignsCRel> Task<Ctx> for Houdafny {
+impl <Ctx: Context + AlignsCRel + GeneratesDafny> Task<Ctx> for Houdafny {
   fn name(&self) -> String { "houdafny".to_string() }
 
   fn run(&self, context: &mut Ctx) {
     let dafny_path = "houdafny.dfy".to_string();
     loop {
       // Write current aligned program as Dafny file.
-      let (dafny_prog, while_lines) = OutputMode::Dafny.crel_to_dafny(
-        &context.aligned_crel().as_ref()
-            .expect("Missing aligned CRel"),
-        context.precondition(),
-        context.postcondition(),
-        context.unaligned_crel().as_ref()
-          .expect("Missing unaligned CRel")
-          .global_decls.clone(),
-        &Some(dafny_path.clone()));
+      let (dafny_prog, while_lines) = context.generate_dafny(&dafny_path);
 
       // println!("Writing Dafny to {}...", dafny_path);
       let mut file = File::create(&Path::new(dafny_path.clone().as_str()))

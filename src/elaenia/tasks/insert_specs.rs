@@ -285,8 +285,8 @@ impl <'a> SpecInserter2<'a> {
         let mut choice_decls = espec.choice_vars.iter()
           .map(|chvar| {
             self.current_choice_id += 1;
-            let choice_fun_name = format!("_choice_{}_{}", chvar, self.current_choice_id);
-            let choice_gen_name = format!("_gen_choice_{}_{}", chvar, self.current_choice_id);
+            let choice_fun_name = format!("choice_{}_{}", chvar, self.current_choice_id);
+            let choice_gen_name = format!("gen_choice_{}_{}", chvar, self.current_choice_id);
 
             let choice_fun_params = self.current_scope.clone().into_iter()
               .filter(|(_,(_, initialized))| *initialized)

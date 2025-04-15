@@ -16,6 +16,18 @@ impl ParameterDeclaration {
   }
 }
 
+impl Statement {
+  pub fn to_dafny(&self) -> Daf::Statement {
+    statement_to_daf(self)
+  }
+}
+
+impl Expression {
+  pub fn to_dafny(&self) -> Daf::Expression {
+    expression_to_daf(self)
+  }
+}
+
 fn crel_to_daf(crel: &CRel, source: &mut Daf::Source) {
   match crel {
     CRel::Declaration(decl) => {

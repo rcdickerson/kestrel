@@ -3,8 +3,11 @@ use crate::crel::fundef::*;
 use crate::crel::unaligned::*;
 use crate::eggroll::ast::*;
 use crate::eggroll::to_crel::*;
+use crate::elaenia::crel_inliner::*;
 use crate::elaenia::elaenia_spec::*;
 use crate::spec::condition::KestrelCond;
+use crate::spec::to_crel::*;
+use crate::syrtos as Daf;
 use crate::workflow::context::*;
 use egg::RecExpr;
 use std::collections::HashMap;
@@ -174,6 +177,60 @@ impl AlignsEggroll for ElaeniaContext {
 
   fn accept_aligned_eggroll_repetitions(&mut self, reps: GuardedRepetitions) {
     self.aligned_eggroll_repetitions = Some(reps);
+  }
+}
+
+impl GeneratesDafny for ElaeniaContext {
+  fn generate_dafny(&self, _: &String)
+                    -> (String, HashMap<String, (usize, usize)>) {
+    let aligned_crel = self.aligned_crel().as_ref().expect("Missing aligned CRel");
+    let (_, fundefs) = crate::crel::fundef::extract_fundefs(&aligned_crel);
+    let main_fun = fundefs.get("main").expect("No main function found");
+
+    let preconds  = BlockItem::Statement(self.spec().pre.to_crel(StatementKind::Assume));
+    let postconds = BlockItem::Statement(self.spec().post.to_crel(StatementKind::Assert));
+
+    let unaligned_crel = self.unaligned_crel().as_ref().expect("Missing unaligned CRel");
+    let globals = unaligned_crel.global_decls.iter()
+      .map(|decl| CRel::Declaration(decl.clone()).to_dafny().0)
+      .collect::<Vec<String>>()
+      .join("");
+
+    let choice_funs = self.choice_solutions().iter()
+      .map(|(name, fundef)| {
+        let mut source = Daf::Source::new();
+        let mut fun = Daf::Function::new(name, Daf::Type::Int);
+        for param in &fundef.params {
+          fun.push_param(&param.to_dafny());
+        }
+        let mut inliner = CRelInliner::new();
+        let inlined_body = inliner.inline_statement(&fundef.body);
+        fun.set_body(&inlined_body.to_dafny());
+        source.push_function(&fun);
+        source.to_string().replace(";", "")
+      })
+      .collect::<Vec<String>>()
+      .join("");
+
+    let mut body_items: Vec<BlockItem> = Vec::new();
+    body_items.push(preconds);
+    body_items.push(BlockItem::Statement(main_fun.body.clone()));
+    body_items.push(postconds);
+    let new_body = Statement::Compound(body_items);
+
+    let new_main = CRel::FunctionDefinition {
+      specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
+      name: "Product".to_string(),
+      params: main_fun.params.clone(),
+      body: Box::new(new_body),
+    };
+    let (dafny_output, while_lines) = new_main.to_dafny();
+    let topmatter = format!("{}{}", globals, choice_funs);
+    let while_lines = while_lines.iter()
+      .map(|(id, (start, end))| (id.clone(), (start + topmatter.lines().count() + 1,
+                                              end   + topmatter.lines().count() + 1)))
+      .collect::<HashMap<_, _>>();
+    (format!("{}{}", topmatter, dafny_output), while_lines)
   }
 }
 

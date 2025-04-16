@@ -164,18 +164,20 @@ fn eval_expression(expr: &Expression, exec: &mut Execution) {
         }
       }
     },
-    Expression::ASpecCall{callee, args} => {
-      // TODO
-    },
-    Expression::ESpecCall{callee, args} => {
-      // TODO
-    },
     Expression::Unop{expr, op} => eval_unop(expr, op, exec),
     Expression::Binop{lhs, rhs, op} => eval_binop(lhs, rhs, op, exec),
     Expression::Forall{..} => {
       //panic!("Forall unimplemented")
-    }
+    },
     Expression::SketchHole => panic!("Cannot evaluate holes"),
+    Expression::Ternary { condition, then, els } => {
+      eval_expression(condition, exec);
+      if exec.value_is_true() {
+        eval_expression(then, exec)
+      } else if exec.value_is_false() {
+        eval_expression(els, exec)
+      }
+    },
     Expression::Statement(stmt) => eval_statement(stmt, exec),
   }
 }

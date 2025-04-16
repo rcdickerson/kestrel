@@ -12,6 +12,7 @@ pub enum Expression {
   Identifier{name: String},
   FnCall{name: Box<Expression>, args: Vec<Expression>},
   StringLiteral(String),
+  Ternary{condition: Box<Expression>, then: Box<Expression>, els: Box<Expression>},
   UnOp{expr: Box<Expression>, op: String},
   BinOp{lhs: Box<Expression>, rhs: Box<Expression>, op: String},
   Forall{bindings: Vec<(String, Type)>, condition: Box<Expression>},
@@ -56,6 +57,16 @@ impl Expression {
       },
       Expression::StringLiteral(s) => {
         writer.write(s);
+      },
+      Expression::Ternary { condition, then, els } => {
+        if subexp { writer.write("("); }
+        writer.write("if ");
+        condition.emit(writer, true);
+        writer.write(" then ");
+        then.emit(writer, true);
+        writer.write(" else ");
+        els.emit(writer, true);
+        if subexp { writer.write(")"); }
       },
       Expression::UnOp{expr, op} => {
         if subexp { writer.write("("); }

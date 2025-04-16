@@ -1,7 +1,6 @@
 //! The main entry point for KestRel executions.
 
 use clap::{Parser, ValueEnum};
-use kestrel::crel::ast::*;
 use kestrel::crel::unaligned::*;
 use kestrel::elaenia::parser::parse_elaenia_spec;
 use kestrel::elaenia::tasks::elaenia_context::ElaeniaContext;

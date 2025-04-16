@@ -32,16 +32,11 @@ impl CollectVars for Expression {
           all_vars(args.clone()),
         ))
       },
-      Expression::ASpecCall{callee, args} => {
+      Expression::Ternary { condition, then, els } => {
         union_all(vec!(
-          callee.vars(),
-          all_vars(args.clone()),
-        ))
-      },
-      Expression::ESpecCall{callee, args} => {
-        union_all(vec!(
-          callee.vars(),
-          all_vars(args.clone()),
+          condition.vars(),
+          then.vars(),
+          els.vars(),
         ))
       },
       Expression::Unop{expr, op: _} => expr.vars(),

@@ -215,26 +215,6 @@ impl Expression {
           args: mapped_args,
         })
       },
-      Expression::ASpecCall{callee, args} => {
-        let mapped_callee = callee.map(mapper);
-        let mapped_args = args.iter().map(|arg| {
-          arg.map(mapper)
-        }).collect();
-        mapper.map_expression(&Expression::ASpecCall {
-          callee: Box::new(mapped_callee),
-          args: mapped_args,
-        })
-      },
-      Expression::ESpecCall{callee, args} => {
-        let mapped_callee = callee.map(mapper);
-        let mapped_args = args.iter().map(|arg| {
-          arg.map(mapper)
-        }).collect();
-        mapper.map_expression(&Expression::ESpecCall {
-          callee: Box::new(mapped_callee),
-          args: mapped_args,
-        })
-      },
       Expression::Unop{expr, op} => {
         let mapped_expr = expr.map(mapper);
         mapper.map_expression(&Expression::Unop {
@@ -260,6 +240,16 @@ impl Expression {
         })
       },
       Expression::SketchHole => mapper.map_expression(self),
+      Expression::Ternary { condition, then, els } => {
+        let mapped_condition = condition.map(mapper);
+        let mapped_then = then.map(mapper);
+        let mapped_els = els.map(mapper);
+        Expression::Ternary {
+          condition: Box::new(mapped_condition),
+          then: Box::new(mapped_then),
+          els: Box::new(mapped_els),
+        }
+      },
       Expression::Statement(stmt) => {
         let mapped_stmt = stmt.map(mapper);
         mapper.map_expression(&Expression::Statement(Box::new(mapped_stmt)))

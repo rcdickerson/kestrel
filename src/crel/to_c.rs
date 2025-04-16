@@ -109,22 +109,6 @@ fn expression_to_c(expr: &Expression) -> C::Expression {
           .collect::<Vec<C::Expression>>(),
       }
     },
-    Expression::ASpecCall{ callee, args } => {
-      C::Expression::FnCall {
-        name: Box::new(expression_to_c(callee)),
-        args: args.iter()
-          .map(expression_to_c)
-          .collect::<Vec<C::Expression>>(),
-      }
-    },
-    Expression::ESpecCall{ callee, args } => {
-      C::Expression::FnCall {
-        name: Box::new(expression_to_c(callee)),
-        args: args.iter()
-          .map(expression_to_c)
-          .collect::<Vec<C::Expression>>(),
-      }
-    },
     Expression::Unop{ expr, op } => {
       let expr = Box::new(expression_to_c(expr));
       let op = match op {
@@ -153,6 +137,13 @@ fn expression_to_c(expr: &Expression) -> C::Expression {
         BinaryOp::NotEquals => C::Expression::BinOp{lhs, rhs, op: "!=".to_string()},
         BinaryOp::Or        => C::Expression::BinOp{lhs, rhs, op: "||".to_string()},
       }
+    },
+    Expression::Ternary { condition, then, els } => {
+      C::Expression::Statement(Box::new(C::Statement::If {
+        condition: Box::new(expression_to_c(condition)),
+        then: Box::new(C::Statement::Expression(Box::new(expression_to_c(then)))),
+        els: Some(Box::new(C::Statement::Expression(Box::new(expression_to_c(els))))),
+      }))
     },
     Expression::Forall{..} => panic!("Cannot convert forall expressions to C"),
     Expression::SketchHole => panic!("Cannot convert sketch holes to C"),

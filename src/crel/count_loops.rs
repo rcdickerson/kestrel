@@ -61,13 +61,14 @@ impl CountLoops for Expression {
       Expression::ConstFloat(_)       => LoopCounts::zero(),
       Expression::StringLiteral(_)    => LoopCounts::zero(),
       Expression::Call{..}            => LoopCounts::zero(),
-      Expression::ASpecCall{..}       => LoopCounts::zero(),
-      Expression::ESpecCall{..}       => LoopCounts::zero(),
       Expression::Unop{expr, ..}      => expr.count_loops(),
       Expression::Binop{lhs, rhs, ..} => lhs.count_loops().plus(&rhs.count_loops()),
       Expression::Forall{..}          => LoopCounts::zero(),
       Expression::SketchHole          => LoopCounts::zero(),
       Expression::Statement(stmt)     => stmt.count_loops(),
+      Expression::Ternary{ then, els, .. }  => {
+        then.count_loops().plus(&els.count_loops())
+      }
     }
   }
 }

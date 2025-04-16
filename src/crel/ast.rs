@@ -176,14 +176,6 @@ pub enum Expression {
     callee: Box<Expression>,
     args: Vec<Expression>,
   },
-  ASpecCall {
-    callee: Box<Expression>,
-    args: Vec<Expression>,
-  },
-  ESpecCall {
-    callee: Box<Expression>,
-    args: Vec<Expression>,
-  },
   Unop {
     expr: Box<Expression>,
     op: UnaryOp,
@@ -198,6 +190,11 @@ pub enum Expression {
     condition: Box<Expression>,
   },
   SketchHole,
+  Ternary {
+    condition: Box<Expression>,
+    then: Box<Expression>,
+    els:  Box<Expression>,
+  },
   Statement(Box<Statement>),
 }
 

@@ -4,7 +4,6 @@
 
 use crate::crel::ast::*;
 use crate::crel::visitor::CRelVisitor;
-use crate::output_mode::*;
 use crate::workflow::context::*;
 use crate::workflow::task::*;
 use regex::Regex;

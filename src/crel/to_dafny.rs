@@ -106,22 +106,6 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
           .collect::<Vec<Daf::Expression>>(),
       }
     },
-    Expression::ASpecCall{ callee, args } => {
-      Daf::Expression::FnCall {
-        name: Box::new(expression_to_daf(callee)),
-        args: args.iter()
-          .map(expression_to_daf)
-          .collect::<Vec<Daf::Expression>>(),
-      }
-    },
-    Expression::ESpecCall{ callee, args } => {
-      Daf::Expression::FnCall {
-        name: Box::new(expression_to_daf(callee)),
-        args: args.iter()
-          .map(expression_to_daf)
-          .collect::<Vec<Daf::Expression>>(),
-      }
-    },
     Expression::Unop{ expr, op } => {
       let expr = Box::new(expression_to_daf(expr));
       let op = match op {
@@ -158,6 +142,11 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
       }
     },
     Expression::SketchHole => panic!("Cannot convert sketch holes to Dafny"),
+    Expression::Ternary{condition, then, els} => Daf::Expression::Ternary {
+      condition: Box::new(expression_to_daf(condition)),
+      then: Box::new(expression_to_daf(then)),
+      els: Box::new(expression_to_daf(els)),
+    },
     Expression::Statement(stmt) => match statement_to_daf(stmt) {
       Daf::Statement::Expression(expr) => *expr,
       daf_stmt => Daf::Expression::Statement(Box::new(daf_stmt))

@@ -160,22 +160,6 @@ impl Expression {
           arg.walk(visitor);
         }
       },
-      Expression::ASpecCall{callee, args} => {
-        visitor.visit_expression(callee);
-        callee.walk(visitor);
-        for arg in args.iter_mut() {
-          visitor.visit_expression(arg);
-          arg.walk(visitor);
-        }
-      },
-      Expression::ESpecCall{callee, args} => {
-        visitor.visit_expression(callee);
-        callee.walk(visitor);
-        for arg in args.iter_mut() {
-          visitor.visit_expression(arg);
-          arg.walk(visitor);
-        }
-      },
       Expression::Unop{expr, ..} => {
         visitor.visit_expression(expr);
         expr.walk(visitor);
@@ -194,6 +178,14 @@ impl Expression {
         condition.walk(visitor);
       },
       Expression::SketchHole => (),
+      Expression::Ternary { condition, then, els } => {
+        visitor.visit_expression(condition);
+        condition.walk(visitor);
+        visitor.visit_expression(then);
+        then.walk(visitor);
+        visitor.visit_expression(els);
+        els.walk(visitor);
+      },
       Expression::Statement(stmt) => {
         visitor.visit_statement(stmt);
         stmt.walk(visitor);

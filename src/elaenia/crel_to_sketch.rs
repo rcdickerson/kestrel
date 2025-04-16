@@ -109,22 +109,6 @@ fn expression_to_sketch(expr: &Expression) -> Sk::Expression {
           .collect::<Vec<Sk::Expression>>(),
       }
     },
-    Expression::ASpecCall{ callee, args } => {
-      Sk::Expression::FnCall {
-        name: Box::new(expression_to_sketch(callee)),
-        args: args.iter()
-          .map(expression_to_sketch)
-          .collect::<Vec<Sk::Expression>>(),
-      }
-    },
-    Expression::ESpecCall{ callee, args } => {
-      Sk::Expression::FnCall {
-        name: Box::new(expression_to_sketch(callee)),
-        args: args.iter()
-          .map(expression_to_sketch)
-          .collect::<Vec<Sk::Expression>>(),
-      }
-    },
     Expression::Unop{ expr, op } => {
       let expr = Box::new(expression_to_sketch(expr));
       let op = match op {
@@ -156,6 +140,11 @@ fn expression_to_sketch(expr: &Expression) -> Sk::Expression {
     },
     Expression::Forall{..} => panic!("Cannot convert forall expressions to C"),
     Expression::SketchHole => Sk::Expression::Hole,
+    Expression::Ternary{ condition, then, els } => Sk::Expression::Ternary {
+      condition: Box::new(expression_to_sketch(condition)),
+      then: Box::new(expression_to_sketch(then)),
+      els: Box::new(expression_to_sketch(els)),
+    },
     Expression::Statement(stmt) => match statement_to_sketch(stmt) {
       Sk::Statement::Expression(expr) => *expr,
       c_stmt => Sk::Expression::Statement(Box::new(c_stmt)),

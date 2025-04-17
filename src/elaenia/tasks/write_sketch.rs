@@ -120,10 +120,14 @@ fn build_grammar(generator_name: &String,
     rhs: Box::new(recurse.clone()),
     op: "*".to_string(),
   });
-  options.push(Sk::Expression::BinOp {
-    lhs: Box::new(recurse.clone()),
-    rhs: Box::new(recurse.clone()),
-    op: "<=".to_string(),
+  options.push(Sk::Expression::Ternary {
+    condition: Box::new(Sk::Expression::BinOp {
+      lhs: Box::new(recurse.clone()),
+      rhs: Box::new(recurse.clone()),
+      op: "<".to_string(),
+    }),
+    then: Box::new(recurse.clone()),
+    els: Box::new(recurse.clone()),
   });
   Sk::Statement::Return(Some(Box::new(Sk::Expression::GeneratorOptions(options))))
 }

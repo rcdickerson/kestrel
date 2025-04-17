@@ -4,6 +4,7 @@ use clap::{Parser, ValueEnum};
 use kestrel::crel::unaligned::*;
 use kestrel::elaenia::parser::parse_elaenia_spec;
 use kestrel::elaenia::tasks::elaenia_context::ElaeniaContext;
+use kestrel::elaenia::tasks::elaenia_invars::*;
 use kestrel::elaenia::tasks::insert_specs::*;
 use kestrel::elaenia::tasks::solve_sketch::*;
 use kestrel::elaenia::tasks::write_dafny::*;
@@ -165,7 +166,7 @@ fn kestrel_workflow(args: Args) {
         &|ctx: &KestrelContext| {
           ctx.unaligned_crel().as_ref()
             .expect("Missing unaligned CRel")
-            .unaligned_main.to_c().to_string()
+            .unaligned_main.to_c(false, false).to_string()
         }));
   }
   if args.dot { workflow.add_task(WriteDot::new()) }
@@ -246,7 +247,7 @@ fn elaenia_workflow(args: Args) {
         &|ctx: &ElaeniaContext| {
           ctx.unaligned_crel().as_ref()
             .expect("Missing unaligned CRel")
-            .unaligned_main.to_c().to_string()
+            .unaligned_main.to_c(false, false).to_string()
         }));
   }
   if args.dot { workflow.add_task(WriteDot::new()) }
@@ -269,7 +270,7 @@ fn elaenia_workflow(args: Args) {
           ctx.sketch_output().as_ref().expect("Missing aligned CRel").clone()
         }));
   workflow.add_task(SolveSketch::new(None));
-//  workflow.add_task(InvarsDaikon::new(None));
+  workflow.add_task(ElaeniaInvars::new());
   workflow.add_task(Houdafny::new(None));
   workflow.add_task(WriteDafny::new());
   workflow.add_task(PrintInfo::with_header("Aligned Product Program",

@@ -289,7 +289,7 @@ impl <'a> SpecInserter2<'a> {
             let choice_gen_name = format!("gen_choice_{}_{}", chvar, self.current_choice_id);
 
             let choice_fun_params = self.current_scope.clone().into_iter()
-              .filter(|(_,(_, initialized))| *initialized)
+              .filter(|(name,(_, initialized))| !name.ends_with("_in") && *initialized)
               .map(|(name, (ty, _))| {
                 ParameterDeclaration {
                   specifiers: vec!(DeclarationSpecifier::TypeSpecifier(ty)),
@@ -298,7 +298,7 @@ impl <'a> SpecInserter2<'a> {
               }).collect::<Vec<_>>();
 
             let choice_fun_args = self.current_scope.clone().into_iter()
-              .filter(|(_,(_, initialized))| *initialized)
+              .filter(|(name,(_, initialized))| !name.ends_with("_in") && *initialized)
               .map(|(name, _)| Expression::Identifier{name})
               .collect::<Vec<_>>();
 

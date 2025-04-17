@@ -2,9 +2,9 @@ use crate::crel::ast::*;
 use crate::shanty as C;
 
 impl CRel {
-  pub fn to_c(&self) -> String {
+  pub fn to_c(&self, output_asserts: bool, output_assumes: bool) -> String {
     let mut source = C::Source::new();
-    crel_to_c(self, &mut source);
+    crel_to_c(self, &mut source, output_asserts, output_assumes);
     source.to_string()
   }
 }
@@ -15,16 +15,17 @@ impl ParameterDeclaration {
   }
 }
 
-fn crel_to_c(crel: &CRel, source: &mut C::Source) {
+fn crel_to_c(crel: &CRel, source: &mut C::Source, output_asserts: bool, output_assumes: bool) {
   match crel {
     CRel::Declaration(decl) => {
       source.declare_variable(&declaration_to_c(decl));
     },
     CRel::FunctionDefinition{specifiers, name, params, body} => {
-      source.push_function(&fun_to_c(specifiers, name, params, body));
+      source.push_function(&fun_to_c(specifiers, name, params, body,
+                                     output_asserts, output_assumes));
     },
     CRel::Seq(seq) => {
-      for crel in seq { crel_to_c(crel, source) }
+      for crel in seq { crel_to_c(crel, source, output_asserts, output_assumes) }
     }
   }
 }
@@ -38,7 +39,9 @@ fn declaration_to_c(decl: &Declaration) -> C::Variable {
 fn fun_to_c(specifiers: &Vec<DeclarationSpecifier>,
             name: &String,
             params: &Vec<ParameterDeclaration>,
-            body: &Statement) -> C::Function {
+            body: &Statement,
+            output_asserts: bool,
+            output_assumes: bool) -> C::Function {
   let mut fun_ty = C::Type::Void;
   let mut fun_extern = false;
   let mut fun_const = false;
@@ -68,7 +71,7 @@ fn fun_to_c(specifiers: &Vec<DeclarationSpecifier>,
     }
   fun.set_extern(fun_extern);
   fun.set_const(fun_const);
-  fun.set_body(&statement_to_c(body));
+  fun.set_body(&statement_to_c(body, output_asserts, output_assumes));
   fun
 }
 
@@ -92,7 +95,8 @@ fn param_decl_to_param(decl: &ParameterDeclaration) -> C::FunctionParameter {
   builder.build_param()
 }
 
-fn expression_to_c(expr: &Expression) -> C::Expression {
+fn expression_to_c(expr: &Expression, output_asserts: bool, output_assumes: bool)
+                   -> C::Expression {
   match expr {
     Expression::Identifier{name} => C::Expression::Identifier {
       name: name.clone(),
@@ -103,14 +107,14 @@ fn expression_to_c(expr: &Expression) -> C::Expression {
     Expression::StringLiteral(s) => C::Expression::StringLiteral(s.clone()),
     Expression::Call{ callee, args } => {
       C::Expression::FnCall {
-        name: Box::new(expression_to_c(callee)),
+        name: Box::new(expression_to_c(callee, output_asserts, output_assumes)),
         args: args.iter()
-          .map(expression_to_c)
+          .map(|a| expression_to_c(a, output_asserts, output_assumes))
           .collect::<Vec<C::Expression>>(),
       }
     },
     Expression::Unop{ expr, op } => {
-      let expr = Box::new(expression_to_c(expr));
+      let expr = Box::new(expression_to_c(expr, output_asserts, output_assumes));
       let op = match op {
         UnaryOp::Minus => "-".to_string(),
         UnaryOp::Not   => "!".to_string(),
@@ -118,8 +122,8 @@ fn expression_to_c(expr: &Expression) -> C::Expression {
       C::Expression::UnOp{expr, op}
     },
     Expression::Binop{ lhs, rhs, op } => {
-      let lhs = Box::new(expression_to_c(lhs));
-      let rhs = Box::new(expression_to_c(rhs));
+      let lhs = Box::new(expression_to_c(lhs, output_asserts, output_assumes));
+      let rhs = Box::new(expression_to_c(rhs, output_asserts, output_assumes));
       match op {
         BinaryOp::Add       => C::Expression::BinOp{lhs, rhs, op: "+".to_string()},
         BinaryOp::And       => C::Expression::BinOp{lhs, rhs, op: "&&".to_string()},
@@ -140,42 +144,49 @@ fn expression_to_c(expr: &Expression) -> C::Expression {
     },
     Expression::Ternary { condition, then, els } => {
       C::Expression::Statement(Box::new(C::Statement::If {
-        condition: Box::new(expression_to_c(condition)),
-        then: Box::new(C::Statement::Expression(Box::new(expression_to_c(then)))),
-        els: Some(Box::new(C::Statement::Expression(Box::new(expression_to_c(els))))),
+        condition: Box::new(expression_to_c(condition, output_asserts, output_assumes)),
+        then: Box::new(C::Statement::Expression(Box::new(expression_to_c(then, output_asserts, output_assumes)))),
+        els: Some(Box::new(C::Statement::Expression(Box::new(expression_to_c(els, output_asserts, output_assumes))))),
       }))
     },
     Expression::Forall{..} => panic!("Cannot convert forall expressions to C"),
     Expression::SketchHole => panic!("Cannot convert sketch holes to C"),
-    Expression::Statement(stmt) => match statement_to_c(stmt) {
+    Expression::Statement(stmt) => match statement_to_c(stmt, output_asserts, output_assumes) {
       C::Statement::Expression(expr) => *expr,
       c_stmt => C::Expression::Statement(Box::new(c_stmt)),
     },
   }
 }
 
-fn statement_to_c(stmt: &Statement) -> C::Statement {
+fn statement_to_c(stmt: &Statement, output_asserts: bool, output_assumes: bool)
+                  -> C::Statement {
   match stmt {
-    Statement::Assert(expr) => {
+    Statement::Assert(expr) if output_asserts => {
       C::Statement::Expression(Box::new(C::Expression::FnCall{
         name: Box::new(C::Expression::Identifier{name: "assert".to_string()}),
-        args: vec!(expression_to_c(expr)),
+        args: vec!(expression_to_c(expr, output_asserts, output_assumes)),
       }))
     },
-    Statement::Assume(expr) => {
+    Statement::Assert(_) => C::Statement::Seq(Vec::new()),
+    Statement::Assume(expr) if output_assumes => {
       C::Statement::Expression(Box::new(C::Expression::FnCall{
         name: Box::new(C::Expression::Identifier{name: "assume".to_string()}),
-        args: vec!(expression_to_c(expr)),
+        args: vec!(expression_to_c(expr, output_asserts, output_assumes)),
       }))
     },
+    Statement::Assume(_) => C::Statement::Seq(Vec::new()),
     Statement::BasicBlock(items) => {
-      C::Statement::Seq(items.iter().map(block_item_to_c).collect())
+      C::Statement::Seq(items.iter()
+                        .map(|i| block_item_to_c(i, output_asserts, output_assumes))
+                        .collect())
     },
     Statement::Break => C::Statement::Break,
     Statement::Compound(items) => {
-      C::Statement::Seq(items.iter().map(block_item_to_c).collect())
+      C::Statement::Seq(items.iter()
+                        .map(|i| block_item_to_c(i, output_asserts, output_assumes))
+                        .collect())
     },
-    Statement::Expression(expr) => match expression_to_c(expr) {
+    Statement::Expression(expr) => match expression_to_c(expr, output_asserts, output_assumes) {
       C::Expression::Statement(stmt) => *stmt,
       c_expr => C::Statement::Expression(Box::new(c_expr)),
     },
@@ -183,8 +194,8 @@ fn statement_to_c(stmt: &Statement) -> C::Statement {
       let mut ifs = Vec::new();
       for _ in 0..*repetitions {
         ifs.push(C::Statement::If {
-          condition: Box::new(expression_to_c(condition)),
-          then: Box::new(statement_to_c(body)),
+          condition: Box::new(expression_to_c(condition, output_asserts, output_assumes)),
+          then: Box::new(statement_to_c(body, output_asserts, output_assumes)),
           els: None,
         });
       }
@@ -192,33 +203,39 @@ fn statement_to_c(stmt: &Statement) -> C::Statement {
     },
     Statement::If{condition, then, els} => {
       C::Statement::If {
-        condition: Box::new(expression_to_c(condition)),
-        then: Box::new(statement_to_c(then)),
-        els: els.as_ref().map(|stmt| Box::new(statement_to_c(stmt)))
+        condition: Box::new(expression_to_c(condition, output_asserts, output_assumes)),
+        then: Box::new(statement_to_c(then, output_asserts, output_assumes)),
+        els: els.as_ref().map(|stmt| Box::new(statement_to_c(stmt, output_asserts, output_assumes)))
       }
     },
     Statement::None => C::Statement::Seq(Vec::new()),
     Statement::Relation{ lhs, rhs } => {
-      C::Statement::Seq(vec!(statement_to_c(lhs), statement_to_c(rhs)))
+      C::Statement::Seq(vec!(statement_to_c(lhs, output_asserts, output_assumes),
+                             statement_to_c(rhs, output_asserts, output_assumes)))
     }
     Statement::Return(expr) => match expr {
       None => { C::Statement::Return(None) },
-      Some(ret) => { C::Statement::Return(Some(Box::new(expression_to_c(ret)))) },
+      Some(ret) => { C::Statement::Return(
+        Some(Box::new(expression_to_c(ret, output_asserts, output_assumes))))
+      },
     },
     Statement::While{condition, body, ..} => {
-      let condition = Box::new(expression_to_c(condition));
-      let body = body.as_ref().map(|stmt| Box::new(statement_to_c(stmt)));
+      let condition = Box::new(expression_to_c(condition, output_asserts, output_assumes));
+      let body = body.as_ref().map(|stmt| {
+        Box::new(statement_to_c(stmt, output_asserts, output_assumes))
+      });
       C::Statement::While{condition, body}
     },
   }
 }
 
-fn block_item_to_c(item: &BlockItem) -> C::Statement {
+fn block_item_to_c(item: &BlockItem, output_asserts: bool, output_assumes: bool)
+                   -> C::Statement {
   match item {
     BlockItem::Declaration(decl) => {
       C::Statement::Variable(declaration_to_c(decl))
     },
-    BlockItem::Statement(stmt) => statement_to_c(stmt),
+    BlockItem::Statement(stmt) => statement_to_c(stmt, output_asserts, output_assumes),
   }
 }
 
@@ -288,7 +305,7 @@ impl DeclarationBuilder {
     match &decl.initializer {
       None => (),
       Some(expr) => {
-        self.val = Some(expression_to_c(expr));
+        self.val = Some(expression_to_c(expr, false, false));
       }
     }
   }
@@ -301,7 +318,9 @@ impl DeclarationBuilder {
       Declarator::Array{name, sizes} => {
         self.name = Some(name.clone());
         self.is_array = true;
-        self.array_sizes = sizes.iter().map(expression_to_c).collect();
+        self.array_sizes = sizes.iter()
+          .map(|s| expression_to_c(s, false, false))
+          .collect();
       },
       Declarator::Function{name, params} => {
         self.name = Some(name.clone());

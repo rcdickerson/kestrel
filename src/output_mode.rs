@@ -32,7 +32,7 @@ impl OutputMode {
     match self {
       // TODO: Refactor these crel_to_* methods to exploit commonalities.
       OutputMode::Dafny => self.crel_to_dafny(&crel, precond, postcond, global_decls, filename).0,
-      OutputMode::Daikon => self.crel_to_daikon(&crel, global_decls, fundefs, filename),
+      OutputMode::Daikon => self.crel_to_daikon(&crel, global_decls, fundefs, filename, None),
       _ => self.crel_to_c(&crel, precond, postcond, global_decls, filename),
     }
   }
@@ -79,7 +79,8 @@ impl OutputMode {
                         crel: &CRel,
                         global_decls: Vec<Declaration>,
                         fundefs: HashMap<String, FunDef>,
-                        filename: &Option<String>) -> String {
+                        filename: &Option<String>,
+                        extra_fundefs: Option<&Vec<FunDef>>) -> String {
     const TEST_GEN_FUN_NAME: &str = "_test_gen";
 
     let (_, crel_fundefs) = crate::crel::fundef::extract_fundefs(crel);
@@ -145,6 +146,16 @@ impl OutputMode {
         _ => CRel::Declaration(decl.clone()),
       })
       .collect();
+
+    for fundef in extra_fundefs.unwrap_or(&vec!()) {
+      new_seq.push(CRel::FunctionDefinition {
+        specifiers: fundef.specifiers.clone(),
+        name: fundef.name.clone(),
+        params: fundef.params.clone(),
+        body: Box::new(fundef.body.clone()),
+      });
+    }
+
     new_seq.push(CRel::Seq(loop_head_funs));
     new_seq.push(new_main);
     fundefs.get(TEST_GEN_FUN_NAME).map(|f| {
@@ -157,7 +168,7 @@ impl OutputMode {
       new_seq.push(gen_fun)
     });
     new_seq.push(driver);
-    format!("{}\n{}", self.top(filename), CRel::Seq(new_seq).to_c())
+    format!("{}\n{}", self.top(filename), CRel::Seq(new_seq).to_c(false, false))
   }
 
   pub fn crel_to_c(&self,
@@ -194,7 +205,7 @@ impl OutputMode {
       .map(|decl| CRel::Declaration(decl.clone()))
       .collect();
     new_seq.push(new_main);
-    format!("{}\n{}", self.top(filename), CRel::Seq(new_seq).to_c())
+    format!("{}\n{}", self.top(filename), CRel::Seq(new_seq).to_c(false, false))
   }
 
   fn top(&self, filename: &Option<String>) -> String {

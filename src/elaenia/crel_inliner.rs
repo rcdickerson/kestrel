@@ -13,6 +13,32 @@ impl CRelInliner {
     }
   }
 
+  pub fn inline_crel(&mut self, crel: &CRel) -> CRel {
+    match crel {
+      CRel::Declaration(decl) => {
+        self.add_declaration(decl);
+        CRel::Seq(Vec::new())
+      },
+      CRel::FunctionDefinition{ specifiers, name, params, body } => {
+        CRel::FunctionDefinition {
+          specifiers: specifiers.clone(),
+          name: name.clone(),
+          params: params.clone(),
+          body: Box::new(self.inline_statement(body)),
+        }
+      },
+      CRel::Seq(crels) => {
+        CRel::Seq(crels.into_iter()
+                  .map(|crel| self.inline_crel(crel))
+                  .filter(|crel| match crel {
+                    CRel::Seq(vec) if vec.is_empty() => false,
+                    _ => true,
+                  })
+                  .collect())
+      }
+    }
+  }
+
   pub fn inline_statement(&mut self, stmt: &Statement) -> Statement {
     match stmt {
       Statement::Assert(expr) => {
@@ -24,13 +50,19 @@ impl CRelInliner {
       Statement::BasicBlock(items) => {
         Statement::BasicBlock(items.into_iter()
                               .map(|item| self.inline_block_item(item))
-                              .collect())
+                              .filter(|item| match item {
+                                BlockItem::Statement(stmt) if stmt.is_none() => false,
+                                _ => true,
+                              }).collect())
       },
       Statement::Break => Statement::Break,
       Statement::Compound(items) => {
         Statement::Compound(items.into_iter()
                             .map(|item| self.inline_block_item(item))
-                            .collect())
+                            .filter(|item| match item {
+                              BlockItem::Statement(stmt) if stmt.is_none() => false,
+                              _ => true,
+                            }).collect())
 
       },
       Statement::Expression(expr) => {
@@ -49,12 +81,12 @@ impl CRelInliner {
       },
       Statement::If{ condition, then, els } => {
         let orig_replacements = self.replacements.clone();
-        let new_then = self.inline_statement(then);
+        let _new_then = self.inline_statement(then);
         let mut added_in_then = self.replacements.clone();
         added_in_then.retain(|k,v| orig_replacements.get(k) != Some(v));
         self.replacements = orig_replacements.clone();
 
-        let new_els = els.as_ref().map(|els| Box::new(self.inline_statement(&els)));
+        let _new_els = els.as_ref().map(|els| Box::new(self.inline_statement(&els)));
         let mut added_in_els = self.replacements.clone();
         added_in_els.retain(|k,v| orig_replacements.get(k) != Some(v));
         self.replacements = orig_replacements.clone();
@@ -78,13 +110,8 @@ impl CRelInliner {
             then: Box::new(then_val.clone()),
             els: Box::new(els_val.clone()),
           });
-        }
-
-        Statement::If {
-          condition: Box::new(self.inline_expression(condition)),
-          then: Box::new(new_then),
-          els: new_els,
-        }
+        };
+        Statement::None
       },
       Statement::None => Statement::None,
       Statement::Relation{ lhs, rhs } => Statement::Relation {
@@ -93,22 +120,19 @@ impl CRelInliner {
       },
       Statement::Return(expr) => match expr {
         None => Statement::None,
-        Some(expr) => Statement::Expression(Box::new(self.inline_expression(&expr)))
-      },
-      Statement::While{ id, runoff_link_id, invariants, condition, body, is_runoff, is_merged } => {
-        let orig_replacements = self.replacements.clone();
-        let new_body = body.as_ref().map(|body| Box::new(self.inline_statement(&body)));
-        self.replacements = orig_replacements;
-        Statement::While {
-          id: id.clone(),
-          runoff_link_id: runoff_link_id.clone(),
-          invariants: invariants.into_iter().map(|inv| self.inline_expression(inv)).collect(),
-          condition: Box::new(self.inline_expression(condition)),
-          body: new_body,
-          is_runoff: is_runoff.clone(),
-          is_merged: is_merged.clone(),
+        Some(expr) => {
+          let mut curr = self.inline_expression(&expr);
+          let mut next = self.inline_expression(&curr);
+          let mut fuel = 20;
+          while fuel > 0 && curr != next {
+            curr = next;
+            next = self.inline_expression(&curr);
+            fuel -= 1;
+          }
+          Statement::Expression(Box::new(curr))
         }
       },
+      Statement::While{..} => panic!("Can't inline over while"),
     }
   }
 
@@ -184,5 +208,78 @@ impl CRelInliner {
         _ => BlockItem::Declaration(decl.clone()),
       }
     }
+  }
+}
+
+#[cfg(test)]
+mod test {
+  use super::*;
+  use crate::crel::parser::parse_c_string;
+
+  #[test]
+  fn test_inline_expression() {
+    let input_string =
+      "void gen() {
+         int _out;
+         int  _pac_sc_s30=0;
+         if ((16) < (r_handValue_in)) {
+         int _out;
+           _pac_sc_s30 = 1;
+         } else {
+         int _out;
+           _pac_sc_s30 = 5;
+         }
+         int  _pac_sc_s30_0=0;
+         if ((r_handValue_in) < (r_handValue)) {
+         int _out;
+           _pac_sc_s30_0 = 2;
+         } else {
+         int _out;
+           _pac_sc_s30_0 = 1;
+         }
+         _out = _pac_sc_s30 * _pac_sc_s30_0;
+         return _out;
+       }".to_string();
+    let crel = parse_c_string(input_string);
+
+    let expected_s30 = Box::new(Expression::Ternary {
+        condition: Box::new(Expression::Binop {
+          lhs: Box::new(Expression::ConstInt(16)),
+          rhs: Box::new(Expression::Identifier{ name: "r_handValue_in".to_string() }),
+          op: BinaryOp::Lt,
+        }),
+        then: Box::new(Expression::ConstInt(1)),
+        els: Box::new(Expression::ConstInt(5)),
+      });
+
+    let expected_s30_0 = Box::new(Expression::Ternary {
+        condition: Box::new(Expression::Binop {
+          lhs: Box::new(Expression::Identifier{ name: "r_handValue_in".to_string() }),
+          rhs: Box::new(Expression::Identifier{ name: "r_handValue".to_string() }),
+          op: BinaryOp::Lt,
+        }),
+        then: Box::new(Expression::ConstInt(2)),
+        els: Box::new(Expression::ConstInt(1)),
+      });
+
+    let expected_body = Statement::Compound(vec!(
+      BlockItem::Statement(Statement::Expression(
+        Box::new(Expression::Binop {
+          lhs: expected_s30.clone(),
+          rhs: expected_s30_0.clone(),
+          op: BinaryOp::Mul,
+        })
+      ))
+    ));
+
+    let expected = CRel::Seq(vec!(CRel::FunctionDefinition {
+      specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
+      name: "gen".to_string(),
+      params: Vec::new(),
+      body: Box::new(expected_body),
+    }));
+
+    let actual = CRelInliner::new().inline_crel(&crel);
+    assert_eq!(actual, expected);
   }
 }

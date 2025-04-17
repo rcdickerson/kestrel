@@ -3,6 +3,7 @@
 //! of candidates can be further refined with, e.g., [Houdafny].)
 
 use crate::crel::ast::*;
+use crate::crel::fundef::FunDef;
 use crate::crel::mapper::*;
 use crate::daikon::invariant_parser::*;
 use crate::output_mode::*;
@@ -20,17 +21,24 @@ use std::time::Duration;
 use wait_timeout::ChildExt;
 
 pub struct InvarsDaikon {
+  extra_fundefs: Vec<FunDef>,
   timeout_secs: u64,
 }
 
 impl InvarsDaikon {
+
   pub fn new(timeout_secs: Option<u64>) -> Self {
     InvarsDaikon {
+      extra_fundefs: Vec::new(),
       timeout_secs: match timeout_secs {
         Some(to) => to,
         None => 3600,
       }
     }
+  }
+
+  pub fn add_fundef(&mut self, fundef: FunDef) {
+    self.extra_fundefs.push(fundef);
   }
 }
 
@@ -49,7 +57,8 @@ impl <Ctx: Context + AlignsCRel> Task<Ctx> for InvarsDaikon {
         context.unaligned_crel().as_ref()
           .expect("Missing unaligned CRel")
           .global_fundefs.clone(),
-        &Some(daikon_path.clone()));
+        &Some(daikon_path.clone()),
+        Some(&self.extra_fundefs));
     let mut file = File::create(&Path::new(daikon_path.clone().as_str()))
       .unwrap_or_else(|_| panic!("Error creating file: {}", daikon_path));
     match file.write_all(daikon_output.as_bytes()) {

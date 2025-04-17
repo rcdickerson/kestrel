@@ -1,0 +1,16 @@
+// A program with a straightforward leak of high-security state.
+
+expected: invalid;
+
+forall: leak[1];
+exists: leak[2];
+
+pre:  (= leak!1!low  leak!2!low);
+post: (and
+        (= leak!1!low leak!2!low)
+        (= leak!1!ret leak!2!ret));
+
+fun leak(high, low) {
+  ret := high + low;
+  return ret;
+}

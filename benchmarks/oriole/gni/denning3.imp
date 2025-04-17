@@ -1,0 +1,44 @@
+// Example adapted from secure information flow lecture notes:
+// https://people.cs.vt.edu/~ryder/6304/lectures/10-Denning&Denning-InfoFlow-CACM7-97-KrishnanMurali.pdf
+
+expected: invalid;
+
+forall: denning[A];
+exists: denning[E];
+
+pre: (and
+        (= denning!A!i_L  denning!E!i_L)
+        (= denning!A!e_L  denning!E!e_L));
+
+post: (and
+        (= denning!A!i_L  denning!E!i_L)
+        (= denning!A!e_L  denning!E!e_L));
+
+fun denning(i_L, e_L, f_L, x_H, sum_H) {
+  max_sum := 100;
+  oob_error := 0;
+
+  sum_H := 0;
+  i_L := 0;
+  e_L := 1;
+  while ((e == 1) && (oob_error == 0)) do
+    @inv { (and
+             (= denning!A!f1_L  denning!E!f1_L)
+             (= denning!A!f2_L  denning!E!f2_L)
+             (= denning!A!i denning!E!i))}
+    @var { (- 300 (+ denning!A!sum_H denning!E!sum_H)) }
+    sum_H := sum_H + x_H;
+    i_L := i_L + 1;
+    f := i;
+    if sum_H > max_sum then
+      oob_error := 1;
+    endif
+  end
+
+  if (oob_error == 1) then
+    ret := 0;
+  else
+    ret := 1;
+  endif
+  return ret;
+}

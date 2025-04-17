@@ -1,0 +1,18 @@
+// Example taken from Principles of Secure Information Flow Analysis, Geoffrey Smith, 2006.
+// https://users.cis.fiu.edu/~smithg/papers/sif06.pdf
+
+expected: invalid;
+
+forall: smith[1];
+exists: smith[2];
+
+post: (= smith!1!ret smith!2!ret);
+
+fun smith(secret) {
+  if (secret % 2 == 0) then
+    ret := 0;
+  else
+    ret := 1;
+  endif
+  return ret;
+}

@@ -1,0 +1,63 @@
+// Dropping a sort guarantee from an API is OK when
+// the caller performs some operation that doesn't
+// care about list order.
+
+expected: valid;
+
+forall: refinement;
+exists: original;
+
+pre: (or
+       (and (= original!list_0 refinement!list_0)
+            (= original!list_1 refinement!list_1)
+            (= original!list_2 refinement!list_2))
+       (and (= original!list_0 refinement!list_0)
+            (= original!list_1 refinement!list_2)
+            (= original!list_2 refinement!list_1))
+       (and (= original!list_0 refinement!list_1)
+            (= original!list_1 refinement!list_0)
+            (= original!list_2 refinement!list_2))
+       (and (= original!list_0 refinement!list_1)
+            (= original!list_1 refinement!list_2)
+            (= original!list_2 refinement!list_0))
+       (and (= original!list_0 refinement!list_2)
+            (= original!list_1 refinement!list_0)
+            (= original!list_2 refinement!list_1))
+       (and (= original!list_0 refinement!list_2)
+            (= original!list_1 refinement!list_1)
+            (= original!list_2 refinement!list_0)));
+post: (= original!sum refinement!sum);
+
+// The original API call guarantees an ordered list.
+// The refinement makes no guarantees. This is OK
+// because the sum of the list is the same regardless
+// of ordering.
+
+aspecs:
+  refinedGetValues() {
+    pre: true;
+    post: (and (= ret!0 ret!0)
+               (= ret!1 ret!1)
+               (= ret!2 ret!2));
+               // TODO: Annotation for specifying return
+               // values when post is trivial.
+  }
+
+especs:
+  originalGetValues() {
+    choiceVars: n0, n1, n2;
+    pre: (and (<= n0 n1) (<= n1 n2));
+    post: (and (= ret!0 n0) (= ret!1 n1) (= ret!2 n2));
+  }
+
+fun original() {
+   list[3] := originalGetValues();
+   sum := list_0 + list_1 + list_2;
+   return sum;
+}
+
+fun refinement() {
+   list[3] := refinedGetValues();
+   sum := list_0 + list_1 + list_2;
+   return sum;
+}

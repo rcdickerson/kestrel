@@ -16,6 +16,12 @@
  *   }
  */
 
+void _test_gen(int handValue) {
+  if (handValue < 0) { handValue = handValue * -1; }
+  handValue = (handValue % 19) + 2;
+  _main(handValue);
+}
+
 int draw();
 
 void noop() {
@@ -25,6 +31,7 @@ void noop() {
 void play(int handValue_in) {
   int handValue = handValue_in;
   while (handValue < 21) {
+    _invariant("exists.handValue <= 21");
     int card;
     card = draw();
     handValue = handValue + card;

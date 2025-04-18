@@ -101,8 +101,12 @@ impl ElaeniaContext {
     &self.solved_choice_funs
   }
 
-  pub fn set_sketch_failed(&mut self) {
-    self.sketch_failed = true
+  pub fn mark_sketch_failed(&mut self, failed: bool) {
+    self.sketch_failed = failed
+  }
+
+  pub fn sketch_failed(&self) -> bool {
+    self.sketch_failed
   }
 }
 

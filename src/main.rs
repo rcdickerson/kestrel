@@ -13,6 +13,7 @@ use kestrel::kestrel_context::KestrelContext;
 use kestrel::output_mode::*;
 use kestrel::spec::parser::parse_kestrel_spec;
 use kestrel::workflow::*;
+use kestrel::workflow::task::*;
 use kestrel::workflow::context::*;
 
 #[derive(Parser)]
@@ -276,15 +277,20 @@ fn elaenia_workflow(args: Args) {
           ctx.sketch_output().as_ref().expect("Missing aligned CRel").clone()
         }));
   workflow.add_task(SolveSketch::new(None));
-  workflow.add_task(ElaeniaInvars::new());
-  workflow.add_task(Houdafny::new(None));
-  workflow.add_task(WriteDafny::new());
-  workflow.add_task(PrintInfo::with_header("Aligned Product Program",
+  workflow.add_task(if_sketch_success(ElaeniaInvars::new()));
+  workflow.add_task(if_sketch_success(Houdafny::new(None)));
+  workflow.add_task(if_sketch_success(WriteDafny::new()));
+  workflow.add_task(if_sketch_success(PrintInfo::with_header("Aligned Product Program",
         &|ctx: &ElaeniaContext| {
           ctx.aligned_output().as_ref().expect("Missing aligned output").clone()
-        }));
+        })));
   workflow.execute();
 
   println!("Elaenia completed in {}ms", workflow.context().total_elapsed_time().as_millis());
   println!("Verified: {}", workflow.context().is_verified());
+}
+
+fn if_sketch_success<'a, T: Task<ElaeniaContext> + 'static>(task: T)
+      -> PredicateTask<'a, ElaeniaContext> {
+  PredicateTask::new(&|context: &ElaeniaContext| { !context.sketch_failed() }, Box::new(task))
 }

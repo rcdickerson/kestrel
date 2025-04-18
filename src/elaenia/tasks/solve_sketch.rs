@@ -58,6 +58,7 @@ impl Task<ElaeniaContext> for SolveSketch {
       Some(status) => status,
       None => {
         println!("Sketch timed out.");
+        context.mark_sketch_failed(true);
         context.mark_timed_out(true);
         child.kill().unwrap();
         child.wait().unwrap();
@@ -66,7 +67,8 @@ impl Task<ElaeniaContext> for SolveSketch {
     };
 
     if !status.success() {
-      context.set_sketch_failed();
+      println!("Failed to solve sketch.");
+      context.mark_sketch_failed(true);
       return;
     }
 

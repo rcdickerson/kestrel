@@ -358,11 +358,29 @@ fn trans_call_expression(expr: &Node<c::CallExpression>) -> ExprWithInvars {
         .collect();
       (Expression::Statement(Box::new(Statement::None)), invars)
     },
+    Expression::Identifier{name} if name == "assert" && expr.node.arguments.len() == 1 => {
+      (Expression::Statement(Box::new(Statement::Assert(
+        Box::new(trans_bexp(&expr.node.arguments[0]))
+      ))), invars)
+    },
+    Expression::Identifier{name} if name == "assume" && expr.node.arguments.len() == 1 => {
+      (Expression::Statement(Box::new(Statement::Assume(
+        Box::new(trans_bexp(&expr.node.arguments[0]))
+      ))), invars)
+    },
     _ => {
       let args = expr.node.arguments.iter()
         .map(|arg| trans_expression(arg).0)
         .collect();
       (Expression::Call{callee: Box::new(callee), args}, invars)
     },
+  }
+}
+
+fn trans_bexp(c_expr: &Node<c::Expression>) -> Expression {
+  match trans_expression(c_expr).0 {
+    Expression::ConstInt(0) => Expression::ConstBool(false),
+    Expression::ConstInt(_) => Expression::ConstBool(true),
+    crel_expr => crel_expr,
   }
 }

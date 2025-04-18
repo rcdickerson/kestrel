@@ -258,6 +258,12 @@ fn elaenia_workflow(args: Args) {
     ExtractorArg::SA => panic!("Semantic alignment currently unsupported for Elaenia workflows."),
   }
   workflow.add_task(AlignedCRel::new());
+  workflow.add_task(PrintInfo::with_header("Aligned Product Program",
+      &|ctx: &ElaeniaContext| {
+        format!("{:?}", ctx.aligned_crel().as_ref()
+          .expect("Missing aligned CRel"))
+      }));
+
   workflow.add_task(InsertSpecs::new());
   workflow.add_task(PrintInfo::with_header("Aligned Product Program (After Insert Specs)",
         &|ctx: &ElaeniaContext| {

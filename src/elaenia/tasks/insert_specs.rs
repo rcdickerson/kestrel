@@ -21,7 +21,7 @@ impl Task<ElaeniaContext> for InsertSpecs {
   fn run(&self, context: &mut ElaeniaContext) {
     let crel = context.aligned_crel().clone().expect("Missing aligned CRel");
     let spec = context.spec().clone();
-    let mut spec_inserter = SpecInserter2::new(&spec);
+    let mut spec_inserter = SpecInserter::new(&spec);
     let mapped_crel = spec_inserter.insert_specs_crel(&crel);
     context.accept_aligned_crel(mapped_crel);
     for gen in spec_inserter.added_choice_gens {
@@ -33,7 +33,7 @@ impl Task<ElaeniaContext> for InsertSpecs {
   }
 }
 
-struct SpecInserter2<'a> {
+struct SpecInserter<'a> {
   spec: &'a ElaeniaSpec,
   added_choice_funs: Vec<FunDef>,
   added_choice_gens: Vec<FunDef>,
@@ -41,9 +41,9 @@ struct SpecInserter2<'a> {
   current_scope: HashMap<String, (Type, bool)>,
 }
 
-impl <'a> SpecInserter2<'a> {
-  fn new(spec: &'a ElaeniaSpec) -> SpecInserter2<'a> {
-    SpecInserter2 {
+impl <'a> SpecInserter<'a> {
+  fn new(spec: &'a ElaeniaSpec) -> SpecInserter<'a> {
+    SpecInserter {
       spec,
       added_choice_funs: Vec::new(),
       added_choice_gens: Vec::new(),
@@ -164,11 +164,8 @@ impl <'a> SpecInserter2<'a> {
         Statement::None
       },
       Statement::Relation{ lhs, rhs } => {
-        let outer_scope = self.current_scope.clone();
         let new_lhs = self.insert_specs_statement(lhs);
-        // Keep LHS scope in RHS.
         let new_rhs = self.insert_specs_statement(rhs);
-        self.current_scope = outer_scope;
         Statement::Relation {
           lhs: Box::new(new_lhs),
           rhs: Box::new(new_rhs),

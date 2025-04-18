@@ -288,7 +288,7 @@ fn expect_statement(sexp: &Sexp, ctx: &Context) -> Statement {
         });
         let cond_neither = Box::new(Expression::Binop {
           lhs: Box::new(Expression::Unop {op: UnaryOp::Not, expr: cond1.clone()}),
-          rhs: cond2.clone(),
+          rhs: Box::new(Expression::Unop {op: UnaryOp::Not, expr: cond2.clone()}),
           op: BinaryOp::And
         });
 

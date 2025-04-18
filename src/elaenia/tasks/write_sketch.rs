@@ -31,7 +31,8 @@ impl Task<ElaeniaContext> for WriteSketch {
 
     let mut body_items: Vec<BlockItem> = Vec::new();
     body_items.push(BlockItem::Statement(assume_precond));
-    body_items.push(BlockItem::Statement(main_fun.body.clone()));
+    body_items.push(BlockItem::Statement(main_fun.body
+                                         .map(&mut AssertInvars::new())));
     body_items.push(BlockItem::Statement(assert_postcond));
     let new_body = Statement::Compound(body_items);
 
@@ -71,6 +72,46 @@ impl Task<ElaeniaContext> for WriteSketch {
     sketch.push_function(&main_harness);
 
     context.accept_sketch_output(sketch.to_string());
+  }
+}
+
+struct AssertInvars {}
+impl AssertInvars {
+  fn new() -> Self {
+    AssertInvars {}
+  }
+}
+impl crate::crel::mapper::CRelMapper for AssertInvars {
+  fn map_statement(&mut self, stmt: &Statement) -> Statement {
+    match stmt {
+      Statement::While { id,
+                         runoff_link_id,
+                         invariants,
+                         condition,
+                         body,
+                         is_runoff,
+                         is_merged } => {
+        let body_with_invars = body.as_ref().map(|some_body| {
+          let mut new_body = invariants.into_iter()
+            .map(|invar| {
+              BlockItem::Statement(Statement::Assert(Box::new(invar.clone())))
+            })
+            .collect::<Vec<_>>();
+          new_body.push(BlockItem::Statement(*some_body.clone()));
+          Box::new(Statement::Compound(new_body))
+        });
+        Statement::While {
+          id: id.clone(),
+          runoff_link_id: runoff_link_id.clone(),
+          invariants: invariants.clone(),
+          condition: condition.clone(),
+          body: body_with_invars,
+          is_runoff: is_runoff.clone(),
+          is_merged: is_merged.clone(),
+        }
+      },
+      _ => stmt.clone()
+    }
   }
 }
 

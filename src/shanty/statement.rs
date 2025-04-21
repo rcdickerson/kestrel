@@ -21,7 +21,6 @@ pub enum Statement {
 }
 
 impl Statement {
-
   pub fn emit(&self, writer: &mut Writer) {
     match self {
       Statement::Break => {

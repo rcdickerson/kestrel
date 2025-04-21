@@ -6,6 +6,7 @@ use nom::{
   bytes::complete::tag,
   character::complete::alpha1,
   character::complete::alphanumeric1,
+  character::complete::u32,
   character::complete::multispace0,
   combinator::recognize,
   multi::many0,
@@ -33,6 +34,19 @@ fn c_id(i: &str) -> IResult<&str, &str> {
     alt((alpha1, tag("_"))),
     many0(alt((alphanumeric1, tag("_"))))
   ))(i)
+}
+
+fn parameter(i: &str) -> IResult<&str, Parameter> {
+  let (i, _) = multispace0(i)?;
+  let (i, name ) = c_id(i)?;
+  let (i, sizes) = many0(delimited(tag("["), u32, tag("]")))(i)?;
+  Ok((i, {
+    let mut param = Parameter::Variable(name.to_string());
+    for size in sizes {
+      param = Parameter::Array{ lhs: Box::new(param), size }
+    }
+    param
+  }))
 }
 
 fn semi(i: &str) -> IResult<&str, ()> {
@@ -76,7 +90,9 @@ fn post(i: &str) -> IResult<&str, KestrelCond> {
 fn universal_spec(i: &str) -> IResult<&str, UniversalSpec> {
   let (i, name)   = c_id(i)?;
   let (i, _)      = multispace0(i)?;
-  let (i, params) = delimited(tag("("), many0(c_id), tag(")"))(i)?;
+  let (i, params) = delimited(tag("("),
+                              separated_list0(tag(","), parameter),
+                              tag(")"))(i)?;
   let (i, _)      = multispace0(i)?;
   let (i, _)      = tag("{")(i)?;
   let (i, _)      = multispace0(i)?;
@@ -87,7 +103,7 @@ fn universal_spec(i: &str) -> IResult<&str, UniversalSpec> {
   let (i, _)      = tag("}")(i)?;
   Ok((i, UniversalSpec {
     name: name.to_string(),
-    params: params.iter().map(|p| p.to_string()).collect(),
+    params,
     pre,
     post,
   }))
@@ -108,7 +124,9 @@ fn choice_vars(i: &str) -> IResult<&str, Vec<String>> {
 fn existential_spec(i: &str) -> IResult<&str, ExistentialSpec> {
   let (i, name)   = c_id(i)?;
   let (i, _)      = multispace0(i)?;
-  let (i, params) = delimited(tag("("), many0(c_id), tag(")"))(i)?;
+  let (i, params) = delimited(tag("("),
+                              separated_list0(tag(","), parameter),
+                              tag(")"))(i)?;
   let (i, _)      = multispace0(i)?;
   let (i, _)      = tag("{")(i)?;
   let (i, _)      = multispace0(i)?;
@@ -121,7 +139,7 @@ fn existential_spec(i: &str) -> IResult<&str, ExistentialSpec> {
   let (i, _)      = tag("}")(i)?;
   Ok((i, ExistentialSpec {
     name: name.to_string(),
-    params: params.iter().map(|p| p.to_string()).collect(),
+    params,
     choice_vars: cvars,
     pre,
     post,

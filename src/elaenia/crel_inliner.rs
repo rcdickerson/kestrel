@@ -200,13 +200,14 @@ impl CRelInliner {
   fn add_declaration(&mut self, decl: &Declaration) -> BlockItem {
     match &decl.initializer {
       None => BlockItem::Statement(Statement::None),
-      Some(expr) => match &decl.declarator {
+      Some(Initializer::Expression(expr)) => match &decl.declarator {
         Declarator::Identifier{ name } => {
           self.replacements.insert(name.clone(), expr.clone());
           BlockItem::Statement(Statement::None)
         },
         _ => BlockItem::Declaration(decl.clone()),
-      }
+      },
+      Some(Initializer::List(_)) => BlockItem::Declaration(decl.clone()),
     }
   }
 }

@@ -723,13 +723,19 @@ fn expect_declaration(sexp: &Sexp, ctx: &Context) -> Declaration {
   }
 }
 
-fn expect_initializer(sexp: &Sexp, ctx: &Context) -> Option<Expression> {
+fn expect_initializer(sexp: &Sexp, ctx: &Context) -> Option<Initializer> {
   match &sexp {
     Sexp::Atom(Atom::S(s)) if s == "no-initializer" => None,
     Sexp::List(sexps) => match &sexps[0] {
-      Sexp::Atom(Atom::S(s)) if s == "initializer" => {
+      Sexp::Atom(Atom::S(s)) if s == "initializer-expr" => {
         let expr = expect_expression(&sexps[1], ctx);
-        Some(expr)
+        Some(Initializer::Expression(expr))
+      },
+      Sexp::Atom(Atom::S(s)) if s == "initializer-list" => {
+        let inits = &sexps[1..].into_iter()
+          .map(|init| expect_initializer(init, ctx).unwrap())
+          .collect::<Vec<_>>();
+        Some(Initializer::List(inits.clone()))
       },
       _ => panic!("Expected initializer, got: {}", sexp),
     },

@@ -166,17 +166,25 @@ fn trans_parameter_declaration(decl: &Node<c::ParameterDeclaration>) -> Paramete
   ParameterDeclaration{specifiers, declarator}
 }
 
-fn trans_init_declarator(decl: &Node<c::InitDeclarator>) -> (Declarator, Option<Expression>) {
+fn trans_init_declarator(decl: &Node<c::InitDeclarator>) -> (Declarator, Option<Initializer>) {
   let dec = trans_declarator(&decl.node.declarator);
-  let init = trans_initializer(&decl.node.initializer);
+  let init = decl.node.initializer.as_ref().map(|init| {
+    trans_initializer(init)
+  });
   (dec, init)
 }
 
-fn trans_initializer(initializer: &Option<Node<c::Initializer>>) -> Option<Expression> {
-  initializer.as_ref().map(|init| match &init.node {
-      c::Initializer::Expression(expr) => trans_expression(expr).0,
-      _ => panic!("Unsupported initalizer: {:?}", init),
-    })
+fn trans_initializer(initializer: &Node<c::Initializer>) -> Initializer {
+  match &initializer.node {
+    c::Initializer::Expression(expr) => {
+      Initializer::Expression(trans_expression(expr).0)
+    },
+    c::Initializer::List(exprs) => {
+      Initializer::List(exprs.into_iter()
+                        .map(|item| trans_initializer(&item.node.initializer))
+                        .collect())
+    }
+  }
 }
 
 fn trans_type_specifier(type_spec: c::TypeSpecifier) -> Type {

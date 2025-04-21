@@ -68,7 +68,8 @@ define_language! {
     // Declarations
     "declaration" = Declaration([Id; 3]),
     "param-declaration" = ParamDeclaration([Id; 2]),
-    "initializer" = Initializer(Id),
+    "initializer-expr" = ExpressionInitializer(Id),
+    "initializer-list" = ListInitializer(Id),
     "fun-declarator" = FunDeclarator([Id; 2]),
     "sized-array" = SizedArray([Id; 2]),
     "array-sizes" = ArraySizes(Box<[Id]>),

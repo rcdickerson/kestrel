@@ -311,10 +311,10 @@ impl <'a> SpecInserter<'a> {
             let decl = Declaration {
               specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
               declarator: Declarator::Identifier{name: chvar.clone()},
-              initializer: Some(Expression::Call {
+              initializer: Some(Initializer::Expression(Expression::Call {
                 callee: Box::new(Expression::Identifier{ name: choice_fun_name.clone() }),
                 args: choice_fun_args.clone(),
-              })
+              }))
             };
             self.added_choice_funs.push(FunDef {
               specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),

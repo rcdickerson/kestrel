@@ -245,7 +245,7 @@ impl State {
     state
   }
 
-  fn alloc_from_decl(&self, declarator: &Declarator, initializer: &Option<Expression>, fuel: usize) -> Self {
+  fn alloc_from_decl(&self, declarator: &Declarator, initializer: &Option<Initializer>, fuel: usize) -> Self {
     let mut state = self.clone();
     match &declarator {
       Declarator::Identifier{name} => { state.alloc(name, 1, HeapValue::Int(0)); },
@@ -267,17 +267,22 @@ impl State {
       Declarator::Pointer(_) => panic!("Unsupported: pointer initialization"),
     };
     if lhs.is_none() { return self.clone(); }
-    let initialization = Statement::Expression(Box::new(Expression::Binop {
-      lhs: Box::new(lhs.unwrap()),
-      rhs: Box::new(initializer.clone().unwrap()),
-      op: BinaryOp::Assign,
-    }));
-    run(&initialization, state.clone(), fuel, None).current_state
+    match initializer.as_ref().unwrap() {
+      Initializer::Expression(init_expr) => {
+        let initialization = Statement::Expression(Box::new(Expression::Binop {
+          lhs: Box::new(lhs.unwrap()),
+          rhs: Box::new(init_expr.clone()),
+          op: BinaryOp::Assign,
+        }));
+        run(&initialization, state.clone(), fuel, None).current_state
+      }
+      Initializer::List(_) => panic!("Unsupported: array initialization"),
+    }
   }
 
   fn randomize_declaration(&self,
                            declarator: &Declarator,
-                           initializer: &Option<Expression>,
+                           initializer: &Option<Initializer>,
                            ty: Type,
                            fuel: usize) -> State {
     match initializer {

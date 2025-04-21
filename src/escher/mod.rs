@@ -17,6 +17,7 @@
 mod expression;
 mod function;
 mod function_parameter;
+mod initializer;
 mod source;
 mod statement;
 mod r#type;
@@ -26,6 +27,7 @@ mod writer;
 pub use expression::Expression;
 pub use function::Function;
 pub use function_parameter::FunctionParameter;
+pub use initializer::Initializer;
 pub use source::Source;
 pub use statement::Statement;
 pub use r#type::Type;

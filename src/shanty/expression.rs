@@ -15,7 +15,6 @@ pub enum Expression {
 }
 
 impl Expression {
-
   pub fn emit(&self, writer: &mut Writer, subexp: bool) {
     match self {
       Expression::ArrayIndex{expr, index} => {

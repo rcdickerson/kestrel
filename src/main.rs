@@ -233,8 +233,6 @@ fn elaenia_workflow(args: Args) {
   let unaligned_crel = UnalignedCRel::from_elaenia_spec(&raw_crel, &spec);
   let unaligned_eggroll = unaligned_crel.unaligned_main.to_eggroll();
 
-  println!("Unaligned CRel: {:?}", unaligned_crel.clone());
-
   let mut context = ElaeniaContext::new(args.input.clone(), spec);
   context.accept_unaligned_crel(unaligned_crel);
   context.accept_unaligned_eggroll(unaligned_eggroll);

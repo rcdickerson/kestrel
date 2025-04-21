@@ -135,6 +135,21 @@ impl CountLoops for Declarator {
   fn count_loops(&self) -> LoopCounts { LoopCounts::zero() }
 }
 
+impl CountLoops for Initializer {
+  fn count_loops(&self) -> LoopCounts {
+    match self {
+      Initializer::Expression(expr) => expr.count_loops(),
+      Initializer::List(exprs) => {
+        let mut count = LoopCounts::zero();
+        for expr in exprs {
+          count = count.plus(&expr.count_loops());
+        }
+        count
+      }
+    }
+  }
+}
+
 impl CountLoops for BlockItem {
   fn count_loops(&self) -> LoopCounts {
     match self {

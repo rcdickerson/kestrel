@@ -29,7 +29,7 @@ impl KCondToCRel for KestrelCond {
         let init_index = crel::Declaration {
           specifiers: vec!(crel::DeclarationSpecifier::TypeSpecifier(crel::Type::Int)),
           declarator: crel::Declarator::Identifier{name: index_var.clone()},
-          initializer: Some(start.to_crel()),
+          initializer: Some(crel::Initializer::Expression(start.to_crel())),
         };
         let wloop = crel::Statement::While {
           id: Uuid::new_v4(),
@@ -76,7 +76,7 @@ impl CondToCRel for CondAExpr {
   fn to_crel(&self) -> crel::Expression {
     match self {
       CondAExpr::Var(id) => {
-        crel::Expression::Identifier{name: id.clone()}
+        crel::Expression::Identifier{ name: id.clone() }
       },
       CondAExpr::ReturnValue => {
         panic!("Cannot convert a condition return value into CRel.")

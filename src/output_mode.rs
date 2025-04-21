@@ -280,7 +280,7 @@ impl OutputMode {
         let is_array = c_param.is_array;
         let is_ptr = c_param.is_pointer;
         let initializer = if is_int && !is_array && !is_ptr {
-          Some(call_nondet_int.clone())
+          Some(Initializer::Expression(call_nondet_int.clone()))
         } else {
           None
         };
@@ -288,7 +288,7 @@ impl OutputMode {
           Declaration {
             specifiers: param.specifiers.clone(),
             declarator: param.declarator.as_ref().unwrap().clone(),
-            initializer
+            initializer,
           }
         )
       })

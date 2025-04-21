@@ -311,13 +311,18 @@ fn eval_declaration(decl: &Declaration, exec: &mut Execution) {
       Declarator::Function{name:_, params:_} => (),
       Declarator::Pointer(_) => (),
     },
-    Some(expr) => match &decl.declarator {
+    Some(init) => match &decl.declarator {
       Declarator::Array{name:_, sizes:_} => {
         panic!("Unsupported: initializer for array.");
       }
       Declarator::Identifier{name} => {
-        eval_expression(expr, exec);
-        exec.push_update_by_name(name, exec.current_value());
+        match init {
+          Initializer::Expression(expr) => {
+            eval_expression(expr, exec);
+            exec.push_update_by_name(name, exec.current_value());
+          },
+          Initializer::List(_) => panic!("Non-array initialized with a list."),
+        }
       }
       Declarator::Function{name:_, params:_} => {
         panic!("Unsupported: initializer for function declaration.");

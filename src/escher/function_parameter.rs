@@ -61,10 +61,6 @@ impl FunctionParameter {
       writer.write("const ");
     }
     self.ty.emit(writer);
-    if self.is_pointer {
-      writer.write("*");
-    }
-    self.name.as_ref().map(|name| writer.write(" ").write(name));
     if self.is_array {
       writer.write("[");
       let mut delimit = "";
@@ -75,5 +71,9 @@ impl FunctionParameter {
       }
       writer.write("]");
     }
+    if self.is_pointer {
+      writer.write("*");
+    }
+    self.name.as_ref().map(|name| writer.write(" ").write(name));
   }
 }

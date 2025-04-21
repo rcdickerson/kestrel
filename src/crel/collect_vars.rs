@@ -128,6 +128,17 @@ impl CollectVars for Declarator {
   }
 }
 
+impl CollectVars for Initializer {
+  fn vars(&self) -> HashSet<String> {
+    match self {
+      Initializer::Expression(expr) => expr.vars(),
+      Initializer::List(exprs) => union_all(exprs.into_iter()
+          .map(|expr| expr.vars())
+          .collect::<Vec<_>>()),
+    }
+  }
+}
+
 impl CollectVars for ParameterDeclaration {
   fn vars(&self) -> HashSet<String> {
     match &self.declarator {

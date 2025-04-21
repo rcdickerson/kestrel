@@ -218,6 +218,23 @@ fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
   }
 }
 
+fn initializer_to_dafny(ty: &Option<Type>, initializer: &Initializer) -> Daf::Initializer {
+  match initializer {
+    Initializer::Expression(expr) => {
+      Daf::Initializer::Expression(expression_to_daf(expr))
+    },
+    Initializer::List(inits) => {
+      Daf::Initializer::Array {
+        ty: type_to_daf(ty.as_ref().expect("array initializer is missing a type"))
+            .expect("ill-typed array initializer"),
+        values: inits.into_iter()
+          .map(|init| initializer_to_dafny(ty, init))
+          .collect(),
+      }
+    },
+  }
+}
+
 fn block_item_to_daf(item: &BlockItem) -> Daf::Statement {
   match item {
     BlockItem::Declaration(decl) => {
@@ -243,7 +260,7 @@ fn type_to_daf(ty: &Type) -> Option<Daf::Type> {
 struct DeclarationBuilder {
   name: Option<String>,
   ty: Option<Daf::Type>,
-  val: Option<Daf::Expression>,
+  initializer: Option<Daf::Initializer>,
   is_array: bool,
   array_sizes: Vec<Daf::Expression>,
   is_function: bool,
@@ -257,7 +274,7 @@ impl DeclarationBuilder {
     DeclarationBuilder {
       name: None,
       ty: None,
-      val: None,
+      initializer: None,
       is_array: false,
       array_sizes: Vec::new(),
       is_function: false,
@@ -287,12 +304,9 @@ impl DeclarationBuilder {
   fn visit_init_declarator(&mut self, decl: &Declaration) {
     for spec in &decl.specifiers { self.visit_specifier(spec); }
     self.visit_declarator(&decl.declarator);
-    match &decl.initializer {
-      None => (),
-      Some(expr) => {
-        self.val = Some(expression_to_daf(expr));
-      }
-    }
+    self.initializer = decl.initializer.as_ref().map(|init| {
+      initializer_to_dafny(&decl.get_type(), init)
+    });
   }
 
   fn visit_declarator(&mut self, decl: &Declarator) {
@@ -340,14 +354,14 @@ impl DeclarationBuilder {
       self.ty.clone().expect("Variable declaration has no type"),
       self.name.clone().expect("Variable declaration has no name")
     );
-    self.val.as_ref().map(|expr| var.set_value(expr));
+    self.initializer.as_ref().map(|init| var.set_initializer(init.clone()));
     var.set_const(self.is_const);
     var
   }
 
   fn build_param(&self) -> Daf::Parameter {
     if self.is_function { panic!("Unsupported: function declarator as function parameter"); }
-    if self.val.is_some() { panic!("Unsupported: function parameter initialized to value"); }
+    if self.initializer.is_some() { panic!("Unsupported: function parameter initialized to value"); }
 
     let ty = self.ty.as_ref().expect("Parameter has no type").clone();
     let mut param = match self.name.as_ref() {

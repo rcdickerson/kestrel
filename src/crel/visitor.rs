@@ -10,6 +10,7 @@ pub trait CRelVisitor {
   fn visit_declaration_specifier(&mut self, _: &mut DeclarationSpecifier) { }
   fn visit_statement(&mut self, _: &mut Statement) { }
   fn visit_expression(&mut self, _: &mut Expression) { }
+  fn visit_initializer(&mut self, _: &mut Initializer) { }
   fn visit_block_item(&mut self, _: &mut BlockItem) { }
   fn visit_name(&mut self, _: &mut String) { }
 }
@@ -71,8 +72,25 @@ impl Declaration {
     visitor.visit_declarator(self.declarator.borrow_mut());
     self.declarator.borrow_mut().walk(visitor);
     for init in self.initializer.iter_mut() {
-      visitor.visit_expression(init);
+      visitor.visit_initializer(init);
       init.walk(visitor);
+    }
+  }
+}
+
+impl Initializer {
+  pub fn walk(&mut self, visitor: &mut dyn CRelVisitor) {
+    match self {
+      Initializer::Expression(expr) => {
+        visitor.visit_expression(expr);
+        expr.walk(visitor);
+      },
+      Initializer::List(inits) => {
+        for init in inits {
+          visitor.visit_initializer(init);
+          init.walk(visitor);
+        }
+      }
     }
   }
 }

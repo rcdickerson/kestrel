@@ -4,6 +4,7 @@ pub trait CRelMapper {
   fn map_crel(&mut self, crel: &CRel) -> CRel { crel.clone() }
   fn map_declarator(&mut self, decl: &Declarator) -> Declarator { decl.clone() }
   fn map_declaration(&mut self, decl: &Declaration) -> Declaration { decl.clone() }
+  fn map_initializer(&mut self, init: &Initializer) -> Initializer { init.clone() }
   fn map_parameter_declaration(&mut self, pdecl: &ParameterDeclaration)
                                -> ParameterDeclaration { pdecl.clone() }
   fn map_declaration_specifier(&mut self, spec: &DeclarationSpecifier)
@@ -86,14 +87,27 @@ impl Declaration {
       mapper.map_declaration_specifier(spec)
     }).collect();
     let mapped_declarator = self.declarator.map(mapper);
-    let mapped_initializer = self.initializer.as_ref().map(|init| {
-      init.map(mapper)
-    });
+    let mapped_initializer = self.initializer.as_ref().map(|init| init.map(mapper));
     mapper.map_declaration(&Declaration {
       specifiers: mapped_specifiers,
       declarator: mapped_declarator,
       initializer: mapped_initializer,
     })
+  }
+}
+
+impl Initializer {
+  pub fn map(&self, mapper: &mut dyn CRelMapper) -> Initializer {
+    match self {
+      Initializer::Expression(expr) => {
+        let mapped_expr = expr.map(mapper);
+        mapper.map_initializer(&Initializer::Expression(mapped_expr))
+      },
+      Initializer::List(exprs) => {
+        let mapped_exprs = exprs.into_iter().map(|expr| expr.map(mapper)).collect();
+        mapper.map_initializer(&Initializer::List(mapped_exprs))
+      },
+    }
   }
 }
 

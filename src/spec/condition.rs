@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+
 use crate::names::union_all;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -46,9 +47,7 @@ pub enum CondAExpr {
 impl CondAExpr {
   pub fn state_vars(&self) -> HashSet<String> {
     match self {
-      CondAExpr::Var(name) => {
-        crate::names::singleton(name.clone())
-      },
+      CondAExpr::Var(id) => crate::names::singleton(id.to_string()),
       CondAExpr::ReturnValue => HashSet::new(),
       CondAExpr::QualifiedVar{exec, name} => {
         let state_var = qualified_state_var(exec, name);

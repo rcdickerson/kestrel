@@ -1,4 +1,4 @@
-use crate::syrtos::Expression;
+use crate::syrtos::Initializer;
 use crate::syrtos::Type;
 use crate::syrtos::Writer;
 
@@ -6,7 +6,7 @@ use crate::syrtos::Writer;
 pub struct Variable {
   name: String,
   ty: Type,
-  value: Option<Expression>,
+  initializer: Option<Initializer>,
   is_const: bool,
   is_ghost: bool,
   is_nullable: bool,
@@ -17,7 +17,7 @@ impl Variable {
     Variable {
       name,
       ty,
-      value: None,
+      initializer: None,
       is_const: false,
       is_ghost: false,
       is_nullable: false,
@@ -29,8 +29,8 @@ impl Variable {
     self
   }
 
-  pub fn set_value(&mut self, value: &Expression) -> &Self {
-    self.value = Some(value.clone());
+  pub fn set_initializer(&mut self, init: Initializer) -> &Self {
+    self.initializer = Some(init);
     self
   }
 
@@ -64,10 +64,10 @@ impl Variable {
     if self.is_nullable {
       writer.write("?");
     }
-    match &self.value {
-      Some(value) => {
+    match &self.initializer {
+      Some(init) => {
         writer.write(" := ");
-        value.emit(writer, false);
+        init.emit(writer);
       }
       _ => ()
     }

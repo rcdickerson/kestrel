@@ -152,6 +152,19 @@ fn expression_to_sketch(expr: &Expression) -> Sk::Expression {
   }
 }
 
+fn initializer_to_sketch(initializer: &Initializer) -> Sk::Initializer {
+  match initializer {
+    Initializer::Expression(expr) => {
+      Sk::Initializer::Expression(expression_to_sketch(expr))
+    },
+    Initializer::List(inits) => {
+      Sk::Initializer::List(inits.into_iter()
+          .map(initializer_to_sketch)
+          .collect())
+    },
+  }
+}
+
 fn statement_to_sketch(stmt: &Statement) -> Sk::Statement {
   match stmt {
     Statement::Assert(expr) => {
@@ -229,7 +242,7 @@ fn type_to_sketch(ty: &Type) -> Sk::Type {
 struct DeclarationBuilder {
   name: Option<String>,
   ty: Option<Sk::Type>,
-  val: Option<Sk::Expression>,
+  init: Option<Sk::Initializer>,
   is_array: bool,
   array_sizes: Vec<Sk::Expression>,
   is_extern: bool,
@@ -245,7 +258,7 @@ impl DeclarationBuilder {
     DeclarationBuilder {
       name: None,
       ty: None,
-      val: None,
+      init: None,
       is_array: false,
       array_sizes: Vec::new(),
       is_extern: false,
@@ -277,12 +290,7 @@ impl DeclarationBuilder {
   fn visit_init_declarator(&mut self, decl: &Declaration) {
     for spec in &decl.specifiers { self.visit_specifier(spec); }
     self.visit_declarator(&decl.declarator);
-    match &decl.initializer {
-      None => (),
-      Some(expr) => {
-        self.val = Some(expression_to_sketch(expr));
-      }
-    }
+    self.init = decl.initializer.as_ref().map(initializer_to_sketch);
   }
 
   fn visit_declarator(&mut self, decl: &Declarator) {
@@ -316,7 +324,7 @@ impl DeclarationBuilder {
     var.set_array_sizes(&self.array_sizes);
     var.set_function(self.is_function);
     self.function_params.as_ref().map(|params| var.set_function_params(params.clone()));
-    self.val.as_ref().map(|expr| var.set_value(expr));
+    self.init.as_ref().map(|init| var.set_initializer(init.clone()));
     var.set_pointer(self.is_pointer);
     var
   }
@@ -324,7 +332,7 @@ impl DeclarationBuilder {
   fn build_param(&self) -> Sk::FunctionParameter {
     if self.is_function { panic!("Unsupported: function declarator as function parameter"); }
     if self.is_extern { panic!("Unsupported: extern function parameter"); }
-    if self.val.is_some() { panic!("Unsupported: function parameter initialized to value"); }
+    if self.init.is_some() { panic!("Unsupported: function parameter initialized to value"); }
 
     let ty = self.ty.as_ref().expect("Parameter has no type").clone();
     let mut param = match self.name.as_ref() {

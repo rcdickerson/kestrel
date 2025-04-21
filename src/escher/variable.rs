@@ -1,5 +1,6 @@
 use crate::escher::Expression;
 use crate::escher::FunctionParameter;
+use crate::escher::Initializer;
 use crate::escher::Type;
 use crate::escher::Writer;
 
@@ -7,7 +8,7 @@ use crate::escher::Writer;
 pub struct Variable {
   name: Option<String>,
   ty: Type,
-  value: Option<Expression>,
+  init: Option<Initializer>,
   is_array: bool,
   array_sizes: Vec<Expression>,
   is_function: bool,
@@ -21,7 +22,7 @@ impl Variable {
     Variable {
       name: None,
       ty: typ,
-      value: None,
+      init: None,
       is_array: false,
       array_sizes: Vec::new(),
       is_function: false,
@@ -36,8 +37,8 @@ impl Variable {
     self
   }
 
-  pub fn set_value(&mut self, value: &Expression) -> &Self {
-    self.value = Some(value.clone());
+  pub fn set_initializer(&mut self, init: Initializer) -> &Self {
+    self.init = Some(init);
     self
   }
 
@@ -97,11 +98,11 @@ impl Variable {
       self.emit_params(writer);
       writer.write(")");
     }
-    match &self.value {
+    match &self.init {
       None => (),
-      Some(val) => {
+      Some(init) => {
         writer.write(" = ");
-        val.emit(writer, false);
+        init.emit(writer);
       }
     }
   }

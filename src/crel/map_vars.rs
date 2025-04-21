@@ -160,6 +160,17 @@ impl MapVars for Declaration {
   }
 }
 
+impl MapVars for Initializer {
+  fn map_vars<F>(&self, f: &F) -> Self where F: Fn(String) -> String {
+    match self {
+      Initializer::Expression(expr) => Initializer::Expression(expr.map_vars(f)),
+      Initializer::List(exprs) => Initializer::List(exprs.into_iter()
+        .map(|expr| expr.map_vars(f))
+        .collect())
+    }
+  }
+}
+
 impl MapVars for BlockItem {
   fn map_vars<F>(&self, f: &F) -> Self
     where F: Fn(String) -> String

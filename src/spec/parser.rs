@@ -111,6 +111,7 @@ fn aexp_return_value(i: &str) -> IResult<&str, CondAExpr> {
 fn aexp_index(i: &str) -> IResult<&str, CondAExpr> {
   let (i, _)       = multispace0(i)?;
   let (i, id)      = alt((aexp_qualified_var,
+                          aexp_return_value,
                           aexp_var))(i)?;
   let (i, _)       = multispace0(i)?;
   let (i, indices) = many1(delimited(tag("["), aexpr_no_float, tag("]")))(i)?;
@@ -176,11 +177,11 @@ pub fn aexpr(i: &str) -> IResult<&str, CondAExpr> {
     aexpr_binop("*", CondABinop::Mul),
     aexpr_binop("/", CondABinop::Div),
     aexpr_binop("%", CondABinop::Mod),
-    aexp_return_value,
     aexp_int,
     aexp_float,
     aexp_funcall,
     aexp_index,
+    aexp_return_value,
     aexp_qualified_var,
     aexp_var,
     delimited(tag("("), aexpr, tag(")")),

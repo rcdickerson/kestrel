@@ -1,5 +1,6 @@
 use crate::shanty::Expression;
 use crate::shanty::FunctionParameter;
+use crate::shanty::Initializer;
 use crate::shanty::Type;
 use crate::shanty::Writer;
 
@@ -7,7 +8,7 @@ use crate::shanty::Writer;
 pub struct Variable {
   name: Option<String>,
   ty: Type,
-  value: Option<Expression>,
+  initializer: Option<Initializer>,
   is_array: bool,
   array_sizes: Vec<Expression>,
   is_extern: bool,
@@ -22,7 +23,7 @@ impl Variable {
     Variable {
       name: None,
       ty: typ,
-      value: None,
+      initializer: None,
       is_array: false,
       array_sizes: Vec::new(),
       is_extern: false,
@@ -38,8 +39,8 @@ impl Variable {
     self
   }
 
-  pub fn set_value(&mut self, value: &Expression) -> &Self {
-    self.value = Some(value.clone());
+  pub fn set_initializer(&mut self, value: Initializer) -> &Self {
+    self.initializer = Some(value);
     self
   }
 
@@ -107,11 +108,11 @@ impl Variable {
       self.emit_params(writer);
       writer.write(")");
     }
-    match &self.value {
+    match &self.initializer {
       None => (),
-      Some(val) => {
+      Some(init) => {
         writer.write(" = ");
-        val.emit(writer, false);
+        init.emit(writer);
       }
     }
   }

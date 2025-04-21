@@ -229,6 +229,15 @@ fn statement_to_c(stmt: &Statement, output_asserts: bool, output_assumes: bool)
   }
 }
 
+fn initializer_to_c(init: &Initializer) -> C::Initializer {
+  match init {
+    Initializer::Expression(expr) => C::Initializer::Expression(expression_to_c(expr, false, false)),
+    Initializer::List(inits) => C::Initializer::List(inits.into_iter().map(|init| {
+        initializer_to_c(init)
+      }).collect()),
+  }
+}
+
 fn block_item_to_c(item: &BlockItem, output_asserts: bool, output_assumes: bool)
                    -> C::Statement {
   match item {
@@ -254,7 +263,7 @@ fn type_to_c(ty: &Type) -> C::Type {
 struct DeclarationBuilder {
   name: Option<String>,
   ty: Option<C::Type>,
-  val: Option<C::Expression>,
+  initializer: Option<C::Initializer>,
   is_array: bool,
   array_sizes: Vec<C::Expression>,
   is_extern: bool,
@@ -265,12 +274,11 @@ struct DeclarationBuilder {
 }
 
 impl DeclarationBuilder {
-
   fn new() -> Self {
     DeclarationBuilder {
       name: None,
       ty: None,
-      val: None,
+      initializer: None,
       is_array: false,
       array_sizes: Vec::new(),
       is_extern: false,
@@ -304,8 +312,8 @@ impl DeclarationBuilder {
     self.visit_declarator(&decl.declarator);
     match &decl.initializer {
       None => (),
-      Some(expr) => {
-        self.val = Some(expression_to_c(expr, false, false));
+      Some(init) => {
+        self.initializer = Some(initializer_to_c(init));
       }
     }
   }
@@ -344,7 +352,7 @@ impl DeclarationBuilder {
     var.set_array_sizes(&self.array_sizes);
     var.set_function(self.is_function);
     self.function_params.as_ref().map(|params| var.set_function_params(params.clone()));
-    self.val.as_ref().map(|expr| var.set_value(expr));
+    self.initializer.as_ref().map(|expr| var.set_initializer(expr.clone()));
     var.set_pointer(self.is_pointer);
     var
   }
@@ -352,7 +360,7 @@ impl DeclarationBuilder {
   fn build_param(&self) -> C::FunctionParameter {
     if self.is_function { panic!("Unsupported: function declarator as function parameter"); }
     if self.is_extern { panic!("Unsupported: extern function parameter"); }
-    if self.val.is_some() { panic!("Unsupported: function parameter initialized to value"); }
+    if self.initializer.is_some() { panic!("Unsupported: function parameter initialized to value"); }
 
     let ty = self.ty.as_ref().expect("Parameter has no type").clone();
     let mut param = match self.name.as_ref() {

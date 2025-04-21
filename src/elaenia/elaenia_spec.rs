@@ -31,9 +31,15 @@ impl ElaeniaSpec {
 }
 
 #[derive(Clone, Debug, PartialEq)]
+pub enum Parameter {
+  Variable(String),
+  Array{ lhs: Box<Parameter>, size: u32 },
+}
+
+#[derive(Clone, Debug, PartialEq)]
 pub struct UniversalSpec {
   pub name: String,
-  pub params: Vec<String>,
+  pub params: Vec<Parameter>,
   pub pre: KestrelCond,
   pub post: KestrelCond,
 }
@@ -41,7 +47,7 @@ pub struct UniversalSpec {
 #[derive(Clone, Debug, PartialEq)]
 pub struct ExistentialSpec {
   pub name: String,
-  pub params: Vec<String>,
+  pub params: Vec<Parameter>,
   pub choice_vars: Vec<String>,
   pub pre: KestrelCond,
   pub post: KestrelCond,

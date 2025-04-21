@@ -208,11 +208,25 @@ fn declaration_to_eggroll(decl: &Declaration) -> String {
   match decl.initializer.as_ref() {
     None => format!("(declaration (specifiers {}) {} no-initializer)", specs_egg, decl_egg),
     Some(init) => {
-      let init_egg = expression_to_eggroll(init);
-      format!("(declaration (specifiers {}) {} (initializer {}))",
+      let init_egg = initializer_to_eggroll(init);
+      format!("(declaration (specifiers {}) {} {})",
               specs_egg, decl_egg, init_egg)
 
     }
+  }
+}
+
+fn initializer_to_eggroll(init: &Initializer) -> String {
+  match init {
+    Initializer::Expression(expr) => {
+      format!("(initializer-expr {})", expression_to_eggroll(expr))
+    },
+    Initializer::List(inits) => {
+      format!("(initializer-list {})", inits.into_iter()
+          .map(|init| initializer_to_eggroll(init))
+          .collect::<Vec<_>>()
+          .join(" "))
+    },
   }
 }
 

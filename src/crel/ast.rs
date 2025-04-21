@@ -45,7 +45,7 @@ impl Declarator {
 pub struct Declaration {
   pub specifiers: Vec<DeclarationSpecifier>,
   pub declarator: Declarator,
-  pub initializer: Option<Expression>
+  pub initializer: Option<Initializer>
 }
 impl Declaration {
   pub fn get_type(&self) -> Option<Type> {
@@ -59,6 +59,12 @@ impl Declaration {
     }
     None
   }
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum Initializer {
+  Expression(Expression),
+  List(Vec<Initializer>),
 }
 
 #[derive(Clone, Debug)]

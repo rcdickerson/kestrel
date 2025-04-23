@@ -21,7 +21,6 @@ int randOdd();
 void original() {
   int sum = 0;
   while (sum <= 100) {
-    _invariant("forall.sum == exists.sum");
     int r;
     r = rand();
     sum = sum + r;

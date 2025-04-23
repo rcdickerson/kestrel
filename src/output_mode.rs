@@ -211,18 +211,21 @@ impl OutputMode {
   fn top(&self, filename: &Option<String>) -> String {
     match self {
       OutputMode::Daikon => {
-        "#include \"assert.h\"".to_string()
-      }
+        [
+          "#include <stdlib.h>",
+          "#include \"assert.h\"",
+        ].join("\n")
+      },
       OutputMode::Dafny => {
         "".to_string()
-      }
+      },
       OutputMode::Icra => {
         "#include \"assert.h\"".to_string()
-      }
+      },
       OutputMode::Seahorn => {
         [
           "#include \"seahorn/seahorn.h\"",
-          "extern int arb_int();"
+          "extern int arb_int();",
         ].join("\n")
       },
       OutputMode::SvComp => {
@@ -242,7 +245,7 @@ impl OutputMode {
           "  if(!cond) {{abort();}}",
           "}}",
           "",
-          "int arb_int();"
+          "int arb_int();",
         ].join("\n")
       },
     }

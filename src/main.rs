@@ -259,26 +259,26 @@ fn elaenia_workflow(args: Args) {
   workflow.add_task(AlignedCRel::new());
   workflow.add_task(PrintInfo::with_header("Aligned Product Program",
       &|ctx: &ElaeniaContext| {
-        format!("{:?}", ctx.aligned_crel().as_ref()
-          .expect("Missing aligned CRel"))
+         ctx.aligned_crel().as_ref()
+          .expect("Missing aligned CRel")
+          .to_c(false, false).to_string()
       }));
 
-  workflow.add_task(InsertSpecs::new());
-  workflow.add_task(PrintInfo::with_header("Aligned Product Program (After Insert Specs)",
-        &|ctx: &ElaeniaContext| {
-          ctx.aligned_crel().as_ref().expect("Missing aligned CRel").clone().to_dafny().0
-        }));
-  workflow.add_task(CRelLoopUnroll::new(3));
-  workflow.add_task(WriteSketch::new());
-  workflow.add_task(PrintInfo::with_header("Aligned Product Program Sketch",
-        &|ctx: &ElaeniaContext| {
-          ctx.sketch_output().as_ref().expect("Missing aligned CRel").clone()
-        }));
-  workflow.add_task(SolveSketch::new(None));
-  workflow.add_task(if_sketch_success(ElaeniaInvars::new()));
-  workflow.add_task(if_sketch_success(Houdafny::new(None)));
-  workflow.add_task(if_sketch_success(WriteDafny::new()));
-  workflow.add_task(if_sketch_success(PrintInfo::with_header("Aligned Product Program",
+  // Try solving the sketch starting at expression depth of 1 and iteratively
+  // moving up until either the sketch is solved or the max depth is reached.
+  workflow.add_task(RepeatRanged::new(1..4, &|depth| {
+    Box::new(CompoundTask::from(vec!(
+      Box::new(InsertSpecs::new(depth)),
+      Box::new(WriteSketch::new()),
+      Box::new(SolveSketch::new(None)),
+      Box::new(if_sketch_success(ElaeniaInvars::new())),
+      Box::new(if_sketch_success(Houdafny::new(None))),
+    )))
+  }, &|ctx: &ElaeniaContext| { ctx.is_verified() }));
+
+  // If verification was successful, write the final product.
+  workflow.add_task(if_verified(WriteDafny::new()));
+  workflow.add_task(if_verified(PrintInfo::with_header("Aligned Product Program",
         &|ctx: &ElaeniaContext| {
           ctx.aligned_output().as_ref().expect("Missing aligned output").clone()
         })));
@@ -290,5 +290,10 @@ fn elaenia_workflow(args: Args) {
 
 fn if_sketch_success<'a, T: Task<ElaeniaContext> + 'static>(task: T)
       -> PredicateTask<'a, ElaeniaContext> {
-  PredicateTask::new(&|context: &ElaeniaContext| { !context.sketch_failed() }, Box::new(task))
+  PredicateTask::new(&|context: &ElaeniaContext| { context.sketch_succeeded() }, Box::new(task))
+}
+
+fn if_verified<'a, T: Task<ElaeniaContext> + 'static>(task: T)
+      -> PredicateTask<'a, ElaeniaContext> {
+  PredicateTask::new(&|context: &ElaeniaContext| { context.is_verified() }, Box::new(task))
 }

@@ -37,16 +37,12 @@ impl LoopCost {
 
 impl PartialOrd for LoopCost {
   fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-    let loop_cmp = self.num_loops.cmp(&other.num_loops);
-    match loop_cmp {
-      Ordering::Equal => {
-        let path_cmp = self.cond_paths.cmp(&other.cond_paths);
-        match path_cmp {
-          Ordering::Equal => Some(self.ast_size.cmp(&other.ast_size)),
-          _ => Some(path_cmp),
-        }
+    match self.num_loops.cmp(&other.num_loops) {
+      Ordering::Equal => match self.cond_paths.cmp(&other.cond_paths) {
+        Ordering::Equal => Some(self.ast_size.cmp(&other.ast_size)),
+        path_cmp => Some(path_cmp),
       },
-      _ => Some(loop_cmp),
+      loop_cmp => Some(loop_cmp),
     }
   }
 }
@@ -70,6 +66,11 @@ impl CostFunction<Eggroll> for MinLoops {
         },
         Eggroll::GuardedRepeatWhile(children) => {
           1 + costs(children[5]).num_loops + costs(children[6]).num_loops
+        },
+        Eggroll::IfElse(children) => {
+          let then_loops = costs(children[1]).num_loops;
+          let else_loops = costs(children[2]).num_loops;
+          std::cmp::max(then_loops, else_loops)
         },
         _ => {
           enode.fold(0, |sum, id| sum + costs(id).num_loops)

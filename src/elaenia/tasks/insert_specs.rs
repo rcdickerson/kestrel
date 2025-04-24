@@ -9,11 +9,19 @@ use crate::workflow::context::*;
 use crate::workflow::task::*;
 use std::collections::HashMap;
 
-pub struct InsertSpecs { }
+pub struct InsertSpecs {
+  grammar_depth: u32,
+}
 
 impl InsertSpecs {
-  pub fn new() -> Self {
-    InsertSpecs {}
+  pub fn new(grammar_depth: u32) -> Self {
+    InsertSpecs {
+      grammar_depth,
+    }
+  }
+
+  pub fn set_grammar_depth(&mut self, depth: u32) {
+    self.grammar_depth = depth;
   }
 }
 
@@ -22,7 +30,7 @@ impl Task<ElaeniaContext> for InsertSpecs {
   fn run(&self, context: &mut ElaeniaContext) {
     let crel = context.aligned_crel().clone().expect("Missing aligned CRel");
     let spec = context.spec().clone();
-    let mut spec_inserter = SpecInserter::new(&spec);
+    let mut spec_inserter = SpecInserter::new(&spec, self.grammar_depth);
     let mapped_crel = spec_inserter.insert_specs_crel(&crel);
     context.accept_aligned_crel(mapped_crel);
     for gen in spec_inserter.added_choice_gens {
@@ -40,16 +48,18 @@ struct SpecInserter<'a> {
   added_choice_gens: Vec<FunDef>,
   current_choice_id: u32,
   current_scope: HashMap<String, (Type, bool)>,
+  grammar_depth: u32,
 }
 
 impl <'a> SpecInserter<'a> {
-  fn new(spec: &'a ElaeniaSpec) -> SpecInserter<'a> {
+  fn new(spec: &'a ElaeniaSpec, grammar_depth: u32) -> SpecInserter<'a> {
     SpecInserter {
       spec,
       added_choice_funs: Vec::new(),
       added_choice_gens: Vec::new(),
       current_choice_id: 0,
       current_scope: HashMap::new(),
+      grammar_depth,
     }
   }
 
@@ -236,13 +246,14 @@ impl <'a> SpecInserter<'a> {
   fn handle_fun_call(&mut self,
                      call_expr: &Expression,
                      assignee_name: &String,
-                     callee: &Expression) -> Expression {
+                     callee: &Expression)
+                     -> Expression {
     match callee {
       Expression::Identifier{name} => {
         if assignee_name.starts_with("l_") {
           self.surround_aspec(assignee_name, &name, call_expr)
         } else if assignee_name.starts_with("r_") {
-          self.surround_espec(assignee_name, &name, call_expr, 3)
+          self.surround_espec(assignee_name, &name, call_expr)
         } else {
           call_expr.clone()
         }
@@ -274,8 +285,7 @@ impl <'a> SpecInserter<'a> {
   fn surround_espec(&mut self,
                     assignee_name: &String,
                     fun_name: &String,
-                    expr: &Expression,
-                    depth: i32)
+                    expr: &Expression)
                     -> Expression {
     let espec_lookup = self.spec.lookup_espec(&fun_name);
     if espec_lookup.is_none() { return expr.clone(); }
@@ -311,7 +321,7 @@ impl <'a> SpecInserter<'a> {
       });
       choice_gen_params.append(&mut choice_fun_params.clone());
 
-      let mut choice_gen_args = vec!(Expression::ConstInt(depth));
+      let mut choice_gen_args = vec!(Expression::ConstInt(self.grammar_depth as i32));
       choice_gen_args.append(&mut choice_fun_args.clone());
 
       choice_decls.push(BlockItem::Declaration(Declaration {

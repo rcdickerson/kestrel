@@ -37,6 +37,7 @@ pub struct ElaeniaContext {
   stopwatch: WorkflowStopwatch,
 
   sketch_failed: bool,
+  sketch_succeeded: bool,
   timed_out: bool,
   verified: bool,
 }
@@ -60,6 +61,7 @@ impl ElaeniaContext {
       output_filename: None,
       stopwatch: WorkflowStopwatch::new(),
       sketch_failed: false,
+      sketch_succeeded: false,
       timed_out: false,
       verified: false,
     }
@@ -101,12 +103,22 @@ impl ElaeniaContext {
     &self.solved_choice_funs
   }
 
-  pub fn mark_sketch_failed(&mut self, failed: bool) {
-    self.sketch_failed = failed
+  pub fn mark_sketch_success(&mut self, succeeded: bool) {
+    self.sketch_failed = !succeeded;
+    self.sketch_succeeded = succeeded;
+  }
+
+  pub fn clear_sketch_success(&mut self) {
+    self.sketch_failed = false;
+    self.sketch_succeeded = false;
   }
 
   pub fn sketch_failed(&self) -> bool {
     self.sketch_failed
+  }
+
+  pub fn sketch_succeeded(&self) -> bool {
+    self.sketch_succeeded
   }
 }
 

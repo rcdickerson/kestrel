@@ -8,6 +8,7 @@ use nom::{
   character::complete::alphanumeric1,
   character::complete::u32,
   character::complete::multispace0,
+  combinator::opt,
   combinator::recognize,
   multi::many0,
   multi::separated_list0,
@@ -162,11 +163,13 @@ fn elaenia_spec(i: &str) -> IResult<&str, ElaeniaSpec> {
   let (i, _)      = multispace0(i)?;
   let (i, post)   = post(i)?;
   let (i, _)      = multispace0(i)?;
-  let (i, aspecs) = universal_specs(i)?;
+  let (i, aspecs) = opt(universal_specs)(i)?;
   let (i, _)      = multispace0(i)?;
-  let (i, especs) = existential_specs(i)?;
+  let (i, especs) = opt(existential_specs)(i)?;
   let (i, _)      = multispace0(i)?;
-  Ok((i, ElaeniaSpec{pre, afun, efun, post, aspecs, especs}))
+  Ok((i, ElaeniaSpec{pre, afun, efun, post,
+                     aspecs: aspecs.unwrap_or(Vec::new()),
+                     especs: especs.unwrap_or(Vec::new())}))
 }
 
 fn parse_elaenia_comment(input: &String) -> Result<ElaeniaSpec, String> {

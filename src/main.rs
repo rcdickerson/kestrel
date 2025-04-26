@@ -266,7 +266,7 @@ fn elaenia_workflow(args: Args) {
 
   // Try solving the sketch starting at expression depth of 1 and iteratively
   // moving up until either the sketch is solved or the max depth is reached.
-  workflow.add_task(RepeatRanged::new(1..4, &|depth| {
+  workflow.add_task(RepeatRanged::new(1..5, &|depth| {
     Box::new(CompoundTask::from(vec!(
       Box::new(InsertSpecs::new(depth)),
       Box::new(WriteSketch::new()),

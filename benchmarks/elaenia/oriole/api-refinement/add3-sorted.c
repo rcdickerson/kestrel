@@ -1,59 +1,60 @@
 /* @ELAENIA
- * pre: forall.list[0] == exists.list[0]
-     && forall.list[1] == exists.list[1]
-     && forall.list[2] == exists.list[2];
+ * pre: (forall.list_in == exists.list_in)
+     && (forall.length == exists.length)
+     && (forall.length >= 0)
+     && (forall.length <= 3)
+     && (forall i: int, j: int, a: int, x: int :: (i == j) ==> read(store(a, i, x), j) == x)
+     && (forall i: int, j: int, a: int, x: int :: (i != j) ==> read(store(a, i, x), j) == read(a, j));
  * forall: refinement;
  * exists: original;
- * post: forall.list[0] == exists.list[0]
-      && forall.list[1] == exists.list[1]
-      && forall.list[2] == exists.list[2];
+ * post: forall.list == exists.list;
  * aspecs:
- *   sort(list[3]) {
+ *   sort(list) {
  *     pre:  true;
- *     post: ret![0] <= ret![1] && ret![1] <= ret![2]
-         && ( (ret![0] == list[0] && ret![1] == list[1] && ret![2] == list[2])
-           || (ret![0] == list[0] && ret![1] == list[2] && ret![2] == list[1])
-           || (ret![0] == list[1] && ret![1] == list[0] && ret![2] == list[2])
-           || (ret![0] == list[1] && ret![1] == list[2] && ret![2] == list[0])
-           || (ret![0] == list[2] && ret![1] == list[0] && ret![2] == list[1])
-           || (ret![0] == list[2] && ret![1] == list[1] && ret![2] == list[0]));
+ *     post: (forall val: int :: contains(list, val) == contains(ret!, val))
+          && (forall i: int, j: int :: i < j ==> read(ret!, i) <= read(ret!, j));
  *   }
  * especs:
- *   shuffle(int list[3]) {
- *     choiceVars: n0, n1, n2;
- *     pre: (n0 == list[0] && n1 == list[1] && n2 == list[2])
-         || (n0 == list[0] && n1 == list[2] && n2 == list[1])
-         || (n0 == list[1] && n1 == list[0] && n2 == list[2])
-         || (n0 == list[1] && n1 == list[2] && n2 == list[0])
-         || (n0 == list[2] && n1 == list[0] && n2 == list[1])
-         || (n0 == list[2] && n1 == list[1] && n2 == list[0]);
- *     post: ret![0] == n0 && ret![1] == n1 && ret![2] == n2;
+ *   shuffle(list) {
+ *     choiceVars: n;
+ *     pre: forall val: int :: contains(list, val) == contains(n, val);
+ *     post: ret! == n;
  *   }
  */
 
-void _test_gen(int a1, int a2, int a3) {
-  int list1[3] = {a1, a2, a3};
-  int list2[3] = {a1, a2, a3};
-  _main(list1, list2);
+void _test_gen(int list, int length) {
+  if (length < 0) { length = length * -1; }
+  length = length % 5;
+  _main(list, length, list, length);
 }
 
-int[3] shuffle(int list[3]);
-int[3] sort(int list[3]);
+int contains(int list, int value);
+int read(int list, int index);
+int store(int list, int index, int value);
 
-void original(int list[3]) {
-  shuffle(list);
+int shuffle(int list);
+int sort(int list);
+
+void original(int list_in, int length) {
+  int list;
+  list = shuffle(list_in);
   int i = 0;
-  while (i < 3) {
-    list[i] = list[i] + 3;
+  while (i < length) {
+    int val_i = read(list, i);
+    int updated = store(list, i, val_i + 3);
+    list = updated;
     i = i + 1;
   }
 }
 
-void refinement(int list[3]) {
-  sort(list);
+void refinement(int list_in, int length) {
+  int list;
+  list = sort(list_in);
   int i = 0;
-  while (i < 3) {
-    list[i] = list[i] + 3;
+  while (i < length) {
+    int val_i = read(list, i);
+    int updated = store(list, i, val_i + 3);
+    list = updated;
     i = i + 1;
   }
 }

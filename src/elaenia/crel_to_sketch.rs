@@ -1,5 +1,6 @@
 use crate::crel::ast::*;
 use crate::escher as Sk;
+use crate::names::MapVars;
 
 impl CRel {
   pub fn to_sketch(&self) -> String {
@@ -42,23 +43,23 @@ pub fn fun_to_sketch(specifiers: &Vec<DeclarationSpecifier>,
   let mut fun_ty = Sk::Type::Void;
   for spec in specifiers {
     match spec {
+      DeclarationSpecifier::TypeSpecifier(ts) => {
+        fun_ty = type_to_sketch(ts);
+      },
       DeclarationSpecifier::StorageClass(sc_spec) => {
         match sc_spec {
           StorageClassSpecifier::Extern => {
             println!("Warning, extern unsupported in Sketch, dropping. For function: {}", name);
           },
         }
-      }
-      DeclarationSpecifier::TypeSpecifier(ts) => {
-        fun_ty = type_to_sketch(ts);
-      }
+      },
       DeclarationSpecifier::TypeQualifier(tq) => {
         match tq {
           TypeQualifier::Const => {
-            println!("Warning, const unsupported in Sketch functions, dropping the 'const'. For function: {}", name);
+            println!("Warning, const unsupported in Sketch functions, dropping. For function: {}", name);
           }
         }
-      }
+      },
     }
   }
 
@@ -138,7 +139,10 @@ fn expression_to_sketch(expr: &Expression) -> Sk::Expression {
         BinaryOp::Or        => Sk::Expression::BinOp{lhs, rhs, op: "||".to_string()},
       }
     },
-    Expression::Forall{..} => panic!("Cannot convert forall expressions to C"),
+    Expression::Forall{..} => {
+      println!("WARNING: Foralls are unsupported! Treating as true.");
+      Sk::Expression::ConstInt(1)
+    },
     Expression::SketchHole => Sk::Expression::Hole,
     Expression::Ternary{ condition, then, els } => Sk::Expression::Ternary {
       condition: Box::new(expression_to_sketch(condition)),
@@ -164,6 +168,36 @@ fn initializer_to_sketch(initializer: &Initializer) -> Sk::Initializer {
     },
   }
 }
+/*
+fn handle_forall(condition: &Expression,
+                 bindings: &Vec<(String, Type)>)
+                 -> Sk::Statement {
+  let mut bound_cond = condition.clone();
+  let mut forall_functions = Vec::new();
+  let mut forall_vars = Vec::new();
+  let mut var_id = 0;
+  for (name, ty) in bindings {
+    let sketch_type = type_to_sketch(ty);
+    let var_name = format!("_{}_{}", name, var_id);
+    let fun_name = format!("_forall_{}", var_name);
+    let mut var = Sk::Variable::new(sketch_type.clone());
+    var.set_name(var_name.clone());
+    var.set_initializer(Sk::Initializer::Expression(
+      Sk::Expression::FnCall {
+        name: Box::new(Sk::Expression::Identifier{name: fun_name.clone()}),
+        args: Vec::new(),
+      }
+    ));
+    forall_functions.push(Sk::Function::new(&fun_name, sketch_type));
+    forall_vars.push(Sk::Statement::Variable(var));
+    bound_cond = bound_cond.map_vars(&|v| {
+      if v == *name { var_name.clone() } else { v }
+    });
+    var_id += 1;
+  }
+  Sk::Statement::Seq(vec!())
+}
+*/
 
 fn statement_to_sketch(stmt: &Statement) -> Sk::Statement {
   match stmt {

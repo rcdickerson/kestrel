@@ -1,5 +1,8 @@
+use lang_c::ast::FunctionDefinition;
+
 use crate::crel::ast::*;
 use crate::crel::fundef::*;
+use crate::crel::mapper::*;
 use crate::names::MapVars;
 use crate::spec::condition::*;
 use crate::spec::to_crel::*;
@@ -46,7 +49,7 @@ struct SpecInserter<'a> {
   spec: &'a ElaeniaSpec,
   added_choice_funs: Vec<FunDef>,
   added_choice_gens: Vec<FunDef>,
-  current_choice_id: u32,
+  current_id: u32,
   current_scope: HashMap<String, (Type, bool)>,
   grammar_depth: u32,
 }
@@ -57,10 +60,15 @@ impl <'a> SpecInserter<'a> {
       spec,
       added_choice_funs: Vec::new(),
       added_choice_gens: Vec::new(),
-      current_choice_id: 0,
+      current_id: 0,
       current_scope: HashMap::new(),
       grammar_depth,
     }
+  }
+
+  fn next_id(&mut self) -> u32 {
+    self.current_id += 1;
+    self.current_id
   }
 
   fn add_to_scope(&mut self,
@@ -216,8 +224,8 @@ impl <'a> SpecInserter<'a> {
         match *lhs.clone() {
           Expression::Identifier{ name } => {
             let new_expr = match *rhs.clone() {
-              Expression::Call{callee, ..} => {
-                self.handle_fun_call(expr, &name, &*callee)
+              Expression::Call{callee, args} => {
+                self.handle_fun_call(expr, &name, &args, &*callee)
               },
               _ => expr.clone(),
             };
@@ -233,9 +241,28 @@ impl <'a> SpecInserter<'a> {
 
   pub fn insert_specs_block_item(&mut self, item: &BlockItem) -> BlockItem {
     match item {
-      BlockItem::Declaration(decl) => {
-        self.add_to_scope(&decl.specifiers, &decl.declarator, decl.initializer.is_some());
-        BlockItem::Declaration(decl.clone())
+      BlockItem::Declaration(decl) => match &decl.initializer {
+        Some(Initializer::Expression(init_expr)) => {
+          self.add_to_scope(&decl.specifiers, &decl.declarator, true);
+          let initialize_expr = Expression::Binop {
+            lhs: Box::new(Expression::Identifier{name: decl.declarator.name()}),
+            rhs: Box::new(init_expr.clone()),
+            op: BinaryOp::Assign,
+          };
+          BlockItem::Statement(Statement::Compound(vec!(
+            BlockItem::Declaration(Declaration {
+              specifiers: decl.specifiers.clone(),
+              declarator: decl.declarator.clone(),
+              initializer: None,
+            }),
+            BlockItem::Statement(Statement::Expression(
+              Box::new(self.insert_specs_expression(&initialize_expr)))),
+          )))
+        },
+        _ => {
+          self.add_to_scope(&decl.specifiers, &decl.declarator, decl.initializer.is_some());
+          BlockItem::Declaration(decl.clone())
+        },
       },
       BlockItem::Statement(stmt) => {
         BlockItem::Statement(self.insert_specs_statement(stmt))
@@ -246,14 +273,15 @@ impl <'a> SpecInserter<'a> {
   fn handle_fun_call(&mut self,
                      call_expr: &Expression,
                      assignee_name: &String,
+                     args: &Vec<Expression>,
                      callee: &Expression)
                      -> Expression {
     match callee {
       Expression::Identifier{name} => {
         if assignee_name.starts_with("l_") {
-          self.surround_aspec(assignee_name, &name, call_expr)
+          self.surround_aspec(assignee_name, &name, args, call_expr)
         } else if assignee_name.starts_with("r_") {
-          self.surround_espec(assignee_name, &name, call_expr)
+          self.surround_espec(assignee_name, &name, args, call_expr)
         } else {
           call_expr.clone()
         }
@@ -265,13 +293,22 @@ impl <'a> SpecInserter<'a> {
   fn surround_aspec(&mut self,
                     assignee_name: &String,
                     fun_name: &String,
+                    args: &Vec<Expression>,
                     expr: &Expression)
                     -> Expression {
     let aspec = self.spec.lookup_aspec(&fun_name);
     match aspec {
       Some(aspec) => {
-        let assert_pre = spec_cond_to_expression(&aspec.pre, &assignee_name, StatementKind::Assert);
-        let assume_post = spec_cond_to_expression(&aspec.post, &assignee_name, StatementKind::Assume);
+        let mut param_replacements = HashMap::new();
+        for (param, arg) in aspec.params.iter().zip(args) {
+          param_replacements.insert(param.name().clone(), arg.clone());
+        }
+        let assert_pre = spec_cond_to_expression(
+          &aspec.pre, &assignee_name, StatementKind::Assert)
+          .map(&mut ReplaceIdentifiers::new(param_replacements.clone()));
+        let assume_post = spec_cond_to_expression(
+          &aspec.post, &assignee_name, StatementKind::Assume)
+          .map(&mut ReplaceIdentifiers::new(param_replacements));
         Expression::Statement(Box::new(Statement::Compound(vec!(
           BlockItem::Statement(assert_pre),
           BlockItem::Statement(Statement::Expression(Box::new(expr.clone()))),
@@ -285,80 +322,141 @@ impl <'a> SpecInserter<'a> {
   fn surround_espec(&mut self,
                     assignee_name: &String,
                     fun_name: &String,
+                    args: &Vec<Expression>,
                     expr: &Expression)
                     -> Expression {
+    // Only conintue if there is an existential spec for this function.
     let espec_lookup = self.spec.lookup_espec(&fun_name);
     if espec_lookup.is_none() { return expr.clone(); }
     let espec = espec_lookup.unwrap();
 
-    let mut choice_decls = Vec::new();
-    let mut choice_var_mapping = HashMap::new();
-
-    for orig_choice_var in &espec.choice_vars {
-      self.current_choice_id += 1;
-      let choice_var = format!("{}_{}", orig_choice_var, self.current_choice_id);
-      let choice_fun_name = format!("choice_{}", choice_var);
-      let choice_gen_name = format!("gen_choice_{}", choice_var);
-      choice_var_mapping.insert(orig_choice_var, choice_var.clone());
-
-      let choice_fun_params = self.current_scope.clone().into_iter()
-        .filter(|(name,(_, initialized))| !name.ends_with("_in") && *initialized)
-        .map(|(name, (ty, _))| {
-          ParameterDeclaration {
-            specifiers: vec!(DeclarationSpecifier::TypeSpecifier(ty)),
-            declarator: Some(Declarator::Identifier{ name }),
-          }
-        }).collect::<Vec<_>>();
-
-      let choice_fun_args = self.current_scope.clone().into_iter()
-        .filter(|(name,(_, initialized))| !name.ends_with("_in") && *initialized)
-        .map(|(name, _)| Expression::Identifier{name})
-        .collect::<Vec<_>>();
-
-      let mut choice_gen_params = vec!(ParameterDeclaration {
+    // Generators will take in a parameter for maximum AST depth.
+    let prepend_depth_param = |params: &Vec<ParameterDeclaration>| {
+      let mut with_depth = vec!(ParameterDeclaration {
         specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
         declarator: Some(Declarator::Identifier{ name: "depth".to_string() }),
       });
-      choice_gen_params.append(&mut choice_fun_params.clone());
+      with_depth.append(&mut params.clone());
+      with_depth
+    };
+    let max_depth = self.grammar_depth as i32;
+    let prepend_depth_arg = |args: &Vec<Expression>| {
+      let mut with_depth = vec!(Expression::ConstInt(max_depth));
+      with_depth.append(&mut args.clone());
+      with_depth
+    };
 
-      let mut choice_gen_args = vec!(Expression::ConstInt(self.grammar_depth as i32));
-      choice_gen_args.append(&mut choice_fun_args.clone());
+    // Parameters corresponding to in-scope variables.
+    let scope_params = self.current_scope.clone().into_iter()
+      .filter(|(name,(_, initialized))| !name.ends_with("_in") && *initialized)
+      .map(|(name, (ty, _))| {
+        ParameterDeclaration {
+          specifiers: vec!(DeclarationSpecifier::TypeSpecifier(ty)),
+          declarator: Some(Declarator::Identifier{ name }),
+        }
+      }).collect::<Vec<_>>();
+
+    // Arguments to in-scope parameters.
+    let scope_args = self.current_scope.clone().into_iter()
+      .filter(|(name,(_, initialized))| !name.ends_with("_in") && *initialized)
+      .map(|(name, _)| Expression::Identifier{name})
+      .collect::<Vec<_>>();
+
+    // Choice functions, choice variables, and generators.
+    let mut choice_vars = Vec::new();
+    let mut choice_decls = Vec::new();
+    let mut choice_var_mapping = HashMap::new();
+    for orig_choice_var in &espec.choice_vars {
+      let choice_var = format!("{}_{}", orig_choice_var, self.next_id());
+      let choice_fun_name = format!("choice_{}", choice_var);
+      let choice_gen_name = format!("gen_choice_{}", choice_var);
+      choice_vars.push(choice_var.clone());
+      choice_var_mapping.insert(orig_choice_var, choice_var.clone());
 
       choice_decls.push(BlockItem::Declaration(Declaration {
         specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
         declarator: Declarator::Identifier{name: choice_var.clone()},
         initializer: Some(Initializer::Expression(Expression::Call {
           callee: Box::new(Expression::Identifier{ name: choice_fun_name.clone() }),
-          args: choice_fun_args.clone(),
+          args: scope_args.clone(),
         }))
       }));
       self.added_choice_funs.push(FunDef {
         specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
         name: choice_fun_name.clone(),
-        params: choice_fun_params.clone(),
+        params: scope_params.clone(),
         body: Statement::Return(Some(Box::new(Expression::Call {
           callee: Box::new(Expression::Identifier{ name: choice_gen_name.clone() }),
-          args: choice_gen_args.clone(),
+          args: prepend_depth_arg(&scope_args),
         }))),
       });
       self.added_choice_gens.push(FunDef {
         specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
         name: choice_gen_name.clone(),
-        params: choice_gen_params.clone(),
+        params: prepend_depth_param(&scope_params),
         body: Statement::Return(Some(Box::new(Expression::SketchHole))),
       });
     }
 
-    let assert_pre = spec_cond_to_expression(&espec.pre, &assignee_name, StatementKind::Assert)
-      .map_vars(&|name| choice_var_mapping.get(&name).unwrap_or(&name).clone());
-    let assume_post = spec_cond_to_expression(&espec.post, &assignee_name, StatementKind::Assume)
-      .map_vars(&|name| choice_var_mapping.get(&name).unwrap_or(&name).clone());
+    // Also need a choice function and generator for return values.
+    let ret_id = self.next_id();
+    let return_fun_name = format!("ret_{}", ret_id);
+    let return_gen_name = format!("ret_choice_{}", ret_id);
 
+    let mut ret_params = choice_vars.clone().into_iter()
+        .map(|v| ParameterDeclaration {
+          specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
+          declarator: Some(Declarator::Identifier{name: v}),
+        }).collect::<Vec<_>>();
+    ret_params.append(&mut scope_params.clone());
+
+    let mut ret_args = choice_vars.clone().into_iter()
+        .map(|v| Expression::Identifier{name: v})
+        .collect::<Vec<_>>();
+    ret_args.append(&mut scope_args.clone());
+
+    self.added_choice_funs.push(FunDef {
+      specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
+      name: return_fun_name.clone(),
+      params: ret_params.clone(),
+      body: Statement::Return(Some(Box::new(Expression::Call {
+        callee: Box::new(Expression::Identifier{ name: return_gen_name.clone() }),
+        args: prepend_depth_arg(&ret_args),
+      }))),
+    });
+    self.added_choice_gens.push(FunDef {
+      specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
+      name: return_gen_name.clone(),
+      params: prepend_depth_param(&ret_params),
+      body: Statement::Return(Some(Box::new(Expression::SketchHole))),
+    });
+    let ret_assign = Expression::Binop {
+      lhs: Box::new(Expression::Identifier{name: assignee_name.clone()}),
+      rhs: Box::new(Expression::Call {
+        callee: Box::new(Expression::Identifier{ name: return_fun_name.clone() }),
+        args: ret_args.clone(),
+      }),
+      op: BinaryOp::Assign,
+    };
+
+    // Pre and post conditions.
+    let mut cond_var_mapping = HashMap::new();
+    for (param, arg) in espec.params.iter().zip(args) {
+      cond_var_mapping.insert(param.name().clone(), arg.clone());
+    }
+    let assert_pre = spec_cond_to_expression(&espec.pre, &assignee_name, StatementKind::Assert)
+      .map_vars(&|name| choice_var_mapping.get(&name).unwrap_or(&name).clone())
+      .map(&mut ReplaceIdentifiers::new(cond_var_mapping.clone()));
+    let assert_post = spec_cond_to_expression(&espec.post, &assignee_name, StatementKind::Assert)
+      .map_vars(&|name| choice_var_mapping.get(&name).unwrap_or(&name).clone())
+      .map(&mut ReplaceIdentifiers::new(cond_var_mapping));
+
+    // Putting it all together.
     let mut statements = Vec::new();
     statements.append(&mut choice_decls);
     statements.push(BlockItem::Statement(assert_pre));
-    statements.push(BlockItem::Statement(Statement::Expression(Box::new(expr.clone()))));
-    statements.push(BlockItem::Statement(assume_post));
+    statements.push(BlockItem::Statement(Statement::Expression(Box::new(ret_assign))));
+    statements.push(BlockItem::Statement(assert_post));
     Expression::Statement(Box::new(Statement::Compound(statements)))
   }
 }
@@ -437,6 +535,30 @@ fn replace_ret_val_aexpr(aexpr: CondAExpr, replacement: &CondAExpr) -> CondAExpr
       args: args.iter()
         .map(|arg| replace_ret_val_aexpr(arg.clone(), replacement))
         .collect(),
+    }
+  }
+}
+
+struct ReplaceIdentifiers {
+  replacements: HashMap<String, Expression>,
+}
+
+impl ReplaceIdentifiers {
+  pub fn new(replacements: HashMap<String, Expression>) -> Self {
+    ReplaceIdentifiers {
+      replacements
+    }
+  }
+}
+
+impl CRelMapper for ReplaceIdentifiers {
+  fn map_expression(&mut self, expr: &Expression) -> Expression {
+    match expr {
+      Expression::Identifier{ name } => match self.replacements.get(name) {
+        Some(replacement) => replacement.clone(),
+        _ => expr.clone(),
+      }
+      _ => expr.clone(),
     }
   }
 }

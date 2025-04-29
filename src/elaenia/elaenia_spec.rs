@@ -36,6 +36,15 @@ pub enum Parameter {
   Array{ lhs: Box<Parameter>, size: u32 },
 }
 
+impl Parameter {
+  pub fn name(&self) -> &String {
+    match self {
+      Parameter::Variable(name) => name,
+      Parameter::Array {lhs, ..} => lhs.name(),
+    }
+  }
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct UniversalSpec {
   pub name: String,

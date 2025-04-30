@@ -15,6 +15,9 @@ impl Task<ElaeniaContext> for ElaeniaInvars {
 
   fn run(&self, context: &mut ElaeniaContext) {
     let mut daikon_task = InvarsDaikon::new(None);
+    for havoc_decl in context.havoc_funs_as_decls() {
+      daikon_task.add_global_decl(havoc_decl);
+    }
     for (_, choice_fun) in context.choice_solutions() {
       daikon_task.add_fundef(choice_fun.clone());
     }

@@ -1,6 +1,5 @@
 use crate::crel::ast::*;
 use crate::escher as Sk;
-use crate::names::MapVars;
 
 impl CRel {
   pub fn to_sketch(&self) -> String {

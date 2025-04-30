@@ -21,6 +21,7 @@ use std::time::Duration;
 use wait_timeout::ChildExt;
 
 pub struct InvarsDaikon {
+  extra_global_decls: Vec<Declaration>,
   extra_fundefs: Vec<FunDef>,
   timeout_secs: u64,
 }
@@ -29,12 +30,17 @@ impl InvarsDaikon {
 
   pub fn new(timeout_secs: Option<u64>) -> Self {
     InvarsDaikon {
+      extra_global_decls: Vec::new(),
       extra_fundefs: Vec::new(),
       timeout_secs: match timeout_secs {
         Some(to) => to,
         None => 3600,
       }
     }
+  }
+
+  pub fn add_global_decl(&mut self, declaration: Declaration) {
+    self.extra_global_decls.push(declaration);
   }
 
   pub fn add_fundef(&mut self, fundef: FunDef) {
@@ -49,11 +55,13 @@ impl <Ctx: Context + AlignsCRel> Task<Ctx> for InvarsDaikon {
     // Write Daikon output to file.
     let daikon_path = "daikon_output.c".to_string();
     println!("Writing Daikon to {}...", daikon_path);
+    let mut global_decls = context.unaligned_crel().as_ref()
+      .expect("Missing unaligned CRel")
+      .global_decls.clone();
+    global_decls.append(&mut self.extra_global_decls.clone());
     let daikon_output = OutputMode::Daikon.crel_to_daikon(
         &context.aligned_crel().as_ref().expect("Missing aligned CRel"),
-        context.unaligned_crel().as_ref()
-          .expect("Missing unaligned CRel")
-          .global_decls.clone(),
+        global_decls,
         context.unaligned_crel().as_ref()
           .expect("Missing unaligned CRel")
           .global_fundefs.clone(),
@@ -99,7 +107,6 @@ impl <Ctx: Context + AlignsCRel> Task<Ctx> for InvarsDaikon {
         return;
       }
     };
-
 
     println!("Running Daikon...");
     let mut daikon_child = Command::new("java")

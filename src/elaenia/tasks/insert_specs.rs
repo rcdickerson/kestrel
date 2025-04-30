@@ -1,5 +1,3 @@
-use lang_c::ast::FunctionDefinition;
-
 use crate::crel::ast::*;
 use crate::crel::fundef::*;
 use crate::crel::mapper::*;
@@ -42,6 +40,9 @@ impl Task<ElaeniaContext> for InsertSpecs {
     for fun in spec_inserter.added_choice_funs {
       context.accept_choice_fun(fun);
     }
+    for havoc in spec_inserter.added_havoc_funs {
+      context.accept_havoc_fun(havoc);
+    }
   }
 }
 
@@ -49,6 +50,7 @@ struct SpecInserter<'a> {
   spec: &'a ElaeniaSpec,
   added_choice_funs: Vec<FunDef>,
   added_choice_gens: Vec<FunDef>,
+  added_havoc_funs: Vec<FunDef>,
   current_id: u32,
   current_scope: HashMap<String, (Type, bool)>,
   grammar_depth: u32,
@@ -60,6 +62,7 @@ impl <'a> SpecInserter<'a> {
       spec,
       added_choice_funs: Vec::new(),
       added_choice_gens: Vec::new(),
+      added_havoc_funs: Vec::new(),
       current_id: 0,
       current_scope: HashMap::new(),
       grammar_depth,
@@ -69,6 +72,36 @@ impl <'a> SpecInserter<'a> {
   fn next_id(&mut self) -> u32 {
     self.current_id += 1;
     self.current_id
+  }
+
+  fn make_havoc(&mut self) -> &FunDef {
+    let id = self.next_id();
+    let def = FunDef {
+      specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
+      name: format!("havoc_{}", id),
+      params: self.in_scope_params(),
+      body: Statement::None,
+    };
+    self.added_havoc_funs.push(def);
+    self.added_havoc_funs.last().unwrap()
+  }
+
+  fn in_scope_params(&self) -> Vec<ParameterDeclaration> {
+    self.current_scope.clone().into_iter()
+      .filter(|(name,(_, initialized))| !name.ends_with("_in") && *initialized)
+      .map(|(name, (ty, _))| {
+        ParameterDeclaration {
+          specifiers: vec!(DeclarationSpecifier::TypeSpecifier(ty)),
+          declarator: Some(Declarator::Identifier{ name }),
+        }
+      }).collect()
+  }
+
+  fn in_scope_args(&self) -> Vec<Expression> {
+    self.current_scope.clone().into_iter()
+      .filter(|(name,(_, initialized))| !name.ends_with("_in") && *initialized)
+      .map(|(name, _)| Expression::Identifier{name})
+      .collect()
   }
 
   fn add_to_scope(&mut self,
@@ -309,9 +342,18 @@ impl <'a> SpecInserter<'a> {
         let assume_post = spec_cond_to_expression(
           &aspec.post, &assignee_name, StatementKind::Assume)
           .map(&mut ReplaceIdentifiers::new(param_replacements));
+        let havoc = self.make_havoc();
+        let call_havoc = Expression::Binop {
+          lhs: Box::new(Expression::Identifier{name: assignee_name.clone()}),
+          rhs: Box::new(Expression::Call {
+            callee: Box::new(Expression::Identifier{name: havoc.name.clone()}),
+            args: self.in_scope_args(),
+          }),
+          op: BinaryOp::Assign,
+        };
         Expression::Statement(Box::new(Statement::Compound(vec!(
           BlockItem::Statement(assert_pre),
-          BlockItem::Statement(Statement::Expression(Box::new(expr.clone()))),
+          BlockItem::Statement(Statement::Expression(Box::new(call_havoc))),
           BlockItem::Statement(assume_post),
         ))))
       },
@@ -347,20 +389,10 @@ impl <'a> SpecInserter<'a> {
     };
 
     // Parameters corresponding to in-scope variables.
-    let scope_params = self.current_scope.clone().into_iter()
-      .filter(|(name,(_, initialized))| !name.ends_with("_in") && *initialized)
-      .map(|(name, (ty, _))| {
-        ParameterDeclaration {
-          specifiers: vec!(DeclarationSpecifier::TypeSpecifier(ty)),
-          declarator: Some(Declarator::Identifier{ name }),
-        }
-      }).collect::<Vec<_>>();
+    let scope_params = self.in_scope_params();
 
     // Arguments to in-scope parameters.
-    let scope_args = self.current_scope.clone().into_iter()
-      .filter(|(name,(_, initialized))| !name.ends_with("_in") && *initialized)
-      .map(|(name, _)| Expression::Identifier{name})
-      .collect::<Vec<_>>();
+    let scope_args = self.in_scope_args();
 
     // Choice functions, choice variables, and generators.
     let mut choice_vars = Vec::new();
@@ -398,43 +430,13 @@ impl <'a> SpecInserter<'a> {
       });
     }
 
-    // Also need a choice function and generator for return values.
-    let ret_id = self.next_id();
-    let return_fun_name = format!("ret_{}", ret_id);
-    let return_gen_name = format!("ret_choice_{}", ret_id);
-
-    let mut ret_params = choice_vars.clone().into_iter()
-        .map(|v| ParameterDeclaration {
-          specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
-          declarator: Some(Declarator::Identifier{name: v}),
-        }).collect::<Vec<_>>();
-    ret_params.append(&mut scope_params.clone());
-
-    let mut ret_args = choice_vars.clone().into_iter()
-        .map(|v| Expression::Identifier{name: v})
-        .collect::<Vec<_>>();
-    ret_args.append(&mut scope_args.clone());
-
-    self.added_choice_funs.push(FunDef {
-      specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
-      name: return_fun_name.clone(),
-      params: ret_params.clone(),
-      body: Statement::Return(Some(Box::new(Expression::Call {
-        callee: Box::new(Expression::Identifier{ name: return_gen_name.clone() }),
-        args: prepend_depth_arg(&ret_args),
-      }))),
-    });
-    self.added_choice_gens.push(FunDef {
-      specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
-      name: return_gen_name.clone(),
-      params: prepend_depth_param(&ret_params),
-      body: Statement::Return(Some(Box::new(Expression::SketchHole))),
-    });
-    let ret_assign = Expression::Binop {
+    // Havoc function for the return value.
+    let havoc = self.make_havoc();
+    let call_havoc = Expression::Binop {
       lhs: Box::new(Expression::Identifier{name: assignee_name.clone()}),
       rhs: Box::new(Expression::Call {
-        callee: Box::new(Expression::Identifier{ name: return_fun_name.clone() }),
-        args: ret_args.clone(),
+        callee: Box::new(Expression::Identifier{name: havoc.name.clone()}),
+        args: self.in_scope_args(),
       }),
       op: BinaryOp::Assign,
     };
@@ -447,7 +449,7 @@ impl <'a> SpecInserter<'a> {
     let assert_pre = spec_cond_to_expression(&espec.pre, &assignee_name, StatementKind::Assert)
       .map_vars(&|name| choice_var_mapping.get(&name).unwrap_or(&name).clone())
       .map(&mut ReplaceIdentifiers::new(cond_var_mapping.clone()));
-    let assert_post = spec_cond_to_expression(&espec.post, &assignee_name, StatementKind::Assert)
+    let assume_post = spec_cond_to_expression(&espec.post, &assignee_name, StatementKind::Assume)
       .map_vars(&|name| choice_var_mapping.get(&name).unwrap_or(&name).clone())
       .map(&mut ReplaceIdentifiers::new(cond_var_mapping));
 
@@ -455,8 +457,8 @@ impl <'a> SpecInserter<'a> {
     let mut statements = Vec::new();
     statements.append(&mut choice_decls);
     statements.push(BlockItem::Statement(assert_pre));
-    statements.push(BlockItem::Statement(Statement::Expression(Box::new(ret_assign))));
-    statements.push(BlockItem::Statement(assert_post));
+    statements.push(BlockItem::Statement(Statement::Expression(Box::new(call_havoc))));
+    statements.push(BlockItem::Statement(assume_post));
     Expression::Statement(Box::new(Statement::Compound(statements)))
   }
 }

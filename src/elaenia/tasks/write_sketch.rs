@@ -40,6 +40,9 @@ impl Task<ElaeniaContext> for WriteSketch {
     for decl in global_decls {
       sketch.declare_variable(&declaration_to_sketch(decl));
     }
+    for havoc_decl in context.havoc_funs_as_decls() {
+      sketch.declare_variable(&declaration_to_sketch(&havoc_decl));
+    }
     for choice_gen in context.choice_gens() {
       let mut fun = fun_to_sketch(
         &choice_gen.specifiers,

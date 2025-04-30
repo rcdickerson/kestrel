@@ -30,6 +30,7 @@ pub struct ElaeniaContext {
 
   choice_funs: Vec<FunDef>,
   choice_gens: Vec<FunDef>,
+  havoc_funs: Vec<FunDef>,
 
   output_path: Option<String>,
   output_filename: Option<String>,
@@ -57,6 +58,7 @@ impl ElaeniaContext {
       aligned_output: None,
       choice_funs: Vec::new(),
       choice_gens: Vec::new(),
+      havoc_funs: Vec::new(),
       output_path: None,
       output_filename: None,
       stopwatch: WorkflowStopwatch::new(),
@@ -85,6 +87,26 @@ impl ElaeniaContext {
 
   pub fn choice_gens(&self) -> &Vec<FunDef> {
     &self.choice_gens
+  }
+
+  pub fn accept_havoc_fun(&mut self, havocdef: FunDef) {
+    self.havoc_funs.push(havocdef);
+  }
+
+  pub fn havoc_funs(&self) -> &Vec<FunDef> {
+    &self.havoc_funs
+  }
+
+  pub fn havoc_funs_as_decls(&self) -> Vec<Declaration> {
+    self.havoc_funs.clone().into_iter().map(|havoc_fun| Declaration{
+      specifiers: havoc_fun.specifiers.clone(),
+      declarator: Declarator::Function {
+        name: havoc_fun.name.clone(),
+        params: havoc_fun.params.clone(),
+      },
+      initializer: None,
+    })
+    .collect()
   }
 
   pub fn accept_sketch_output(&mut self, sketch_output: String) {
@@ -207,7 +229,10 @@ impl GeneratesDafny for ElaeniaContext {
     let postconds = BlockItem::Statement(self.spec().post.to_crel(StatementKind::Assert));
 
     let unaligned_crel = self.unaligned_crel().as_ref().expect("Missing unaligned CRel");
-    let globals = unaligned_crel.global_decls.iter()
+
+    let mut global_decls = unaligned_crel.global_decls.clone();
+    global_decls.append(&mut self.havoc_funs_as_decls());
+    let globals = global_decls.iter()
       .map(|decl| CRel::Declaration(decl.clone()).to_dafny().0)
       .collect::<Vec<String>>()
       .join("");

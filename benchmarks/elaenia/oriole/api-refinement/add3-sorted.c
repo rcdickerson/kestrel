@@ -40,6 +40,7 @@ void original(int list_in, int length) {
   list = shuffle(list_in);
   int i = 0;
   while (i < length) {
+    _invariant("l_list == r_list");
     int val_i = read(list, i);
     int updated = store(list, i, val_i + 3);
     list = updated;

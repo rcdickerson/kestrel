@@ -1,11 +1,10 @@
 /* @ELAENIA
  * pre: (forall.list_in == exists.list_in)
-     && (forall.length == exists.length)
      && (forall i: int, j: int, a: int, x: int :: (i == j) ==> read(store(a, i, x), j) == x)
      && (forall i: int, j: int, a: int, x: int :: (i != j) ==> read(store(a, i, x), j) == read(a, j));
  * forall: refinement;
  * exists: original;
- * post: forall.list == exists.list;
+ * post: forall.sum == exists.sum;
  * aspecs:
  *   sort(list) {
  *     pre:  true;
@@ -36,12 +35,12 @@ int sort(int list);
 void original(int list_in, int length) {
   int list;
   list = shuffle(list_in);
+  int sum = 0;
   int i = 0;
   while (i < length) {
-    _invariant("l_list == r_list");
-    int val_i = read(list, i);
-    int updated = store(list, i, val_i + 3);
-    list = updated;
+    _invariant("l_sum == r_sum");
+    int val = read(list, i);
+    sum = sum + val;
     i = i + 1;
   }
 }
@@ -49,11 +48,11 @@ void original(int list_in, int length) {
 void refinement(int list_in, int length) {
   int list;
   list = sort(list_in);
+  int sum = 0;
   int i = 0;
   while (i < length) {
-    int val_i = read(list, i);
-    int updated = store(list, i, val_i + 3);
-    list = updated;
+    int val = read(list, i);
+    sum = sum + val;
     i = i + 1;
   }
 }

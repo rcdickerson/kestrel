@@ -11,8 +11,7 @@
  *     pre:  true;
  *     post: ret! == 0 || ret! == 1;
  * }
- * especs:
- *   randInt() {
+ * especs: flip() {
  *     choiceVars: n;
  *     pre:  n == 0 || n == 1;
  *     post: ret! == n;

@@ -7,7 +7,6 @@ use regex::Regex;
 use std::fs::File;
 use std::io::Error;
 use std::io::prelude::*;
-use std::path::Path;
 use std::process::Command;
 use std::process::Stdio;
 use std::time::Duration;
@@ -34,13 +33,21 @@ impl Task<ElaeniaContext> for SolveSketch {
   fn name(&self) -> String { "solve-sketch".to_string() }
 
   fn run(&self, context: &mut ElaeniaContext) {
-    let sketch_path = "sketch.sk".to_string();
+    let working_dir = std::fs::canonicalize(context.working_dir())
+      .expect("unable to canonicalize working dir");
+    let sketch_file = "sketch.sk";
+    let sketch_path = working_dir.join(sketch_file);
+    let sketch_path_str = sketch_path.to_str()
+      .expect("Unable to create path for sketch output.");
+    let solution_file = "sketch.cpp";
+    let solution_path = working_dir.join(solution_file);
+    let solution_path_str = solution_path.to_str()
+      .expect("Unable to create path for sketch solution.");
 
     // Write current aligned program as Sketch file.
     let sketch_prog = context.sketch_output().clone().expect("Missing Sketch output.");
-
-    let mut file = File::create(&Path::new(sketch_path.clone().as_str()))
-      .unwrap_or_else(|_| panic!("Error creating file: {}", sketch_path));
+    let mut file = File::create(sketch_path.clone())
+      .unwrap_or_else(|_| panic!("Error creating file: {}", sketch_path_str));
     match file.write_all(sketch_prog.as_bytes()) {
       Ok(_) => (), // println!("Done"),
       Err(err) => panic!("Error writing output file: {}", err),
@@ -48,7 +55,8 @@ impl Task<ElaeniaContext> for SolveSketch {
 
     // Run Sketch.
     let mut child = Command::new("sketch")
-      .args(["--fe-output-code", sketch_path.as_str()])
+      .current_dir(working_dir.clone())
+      .args(["--fe-output-code", sketch_file])
       .stdout(Stdio::piped())
       .spawn()
       .unwrap();
@@ -72,11 +80,11 @@ impl Task<ElaeniaContext> for SolveSketch {
       return;
     }
 
-    match cleanup(&"sketch.cpp") {
-      Err(err) => panic!("Unable to manipulate sketch.cpp: {}", err),
+    match cleanup(&solution_path_str) {
+      Err(err) => panic!("Unable to manipulate {}: {}", solution_path_str, err),
       _ => (),
     }
-    let solution_crel = parse_c_file(&"sketch.cpp".to_string());
+    let solution_crel = parse_c_file(&solution_path_str.to_string());
     let (_, solution_funs) = extract_fundefs(&solution_crel);
     for choice_fun in context.choice_funs().clone() {
       let solution = solution_funs
@@ -88,7 +96,7 @@ impl Task<ElaeniaContext> for SolveSketch {
   }
 }
 
-/// Dirty hacks to convert Sketch's C++ into something C parser
+/// Dirty hacks to convert Sketch's C++ into something our C parser
 /// library can handle.
 fn cleanup(file_path: &str) -> Result<(), Error> {
   // Capture all of the choice functions; this is all we're interested

@@ -16,6 +16,8 @@ use kestrel::workflow::*;
 use kestrel::workflow::task::*;
 use kestrel::workflow::context::*;
 
+const WORKING_DIR: &str = "./.kestrel-work";
+
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Args {
@@ -121,11 +123,19 @@ impl ExtractorArg {
 }
 
 fn main() {
+  setup_working_dir().expect("Unable to create working directory.");
   let args = Args::parse();
   match args.spec_format {
     SpecFormat::Kestrel => kestrel_workflow(args),
     SpecFormat::Elaenia => elaenia_workflow(args),
   };
+}
+
+fn setup_working_dir() -> Result<(), std::io::Error> {
+  let dir = std::fs::canonicalize(WORKING_DIR.to_string())?;
+  std::fs::remove_dir_all(&dir)?;
+  std::fs::create_dir_all(&dir)?;
+  Ok(())
 }
 
 /// The high-level KestRel workflow is:
@@ -155,6 +165,7 @@ fn kestrel_workflow(args: Args) {
   let unaligned_eggroll = unaligned_crel.unaligned_main.to_eggroll();
 
   let mut context = KestrelContext::new(args.input.clone(), spec);
+  context.set_working_dir(WORKING_DIR.to_string());
   context.accept_unaligned_crel(unaligned_crel);
   context.accept_unaligned_eggroll(unaligned_eggroll);
   args.output.as_ref().map(|output_path| {
@@ -234,6 +245,7 @@ fn elaenia_workflow(args: Args) {
   let unaligned_eggroll = unaligned_crel.unaligned_main.to_eggroll();
 
   let mut context = ElaeniaContext::new(args.input.clone(), spec);
+  context.set_working_dir(WORKING_DIR.to_string());
   context.accept_unaligned_crel(unaligned_crel);
   context.accept_unaligned_eggroll(unaligned_eggroll);
   // args.output.as_ref().map(|output_path| {

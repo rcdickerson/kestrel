@@ -17,6 +17,7 @@ use std::time::Duration;
 #[derive(Clone)]
 pub struct KestrelContext {
   workflow_name: String,
+  working_dir: String,
   spec: KestrelSpec,
   unaligned_crel: Option<UnalignedCRel>,
   unaligned_eggroll: Option<String>,
@@ -35,6 +36,7 @@ impl KestrelContext {
   pub fn new(workflow_name: String, spec: KestrelSpec) -> Self {
     KestrelContext {
       workflow_name,
+      working_dir: ".".to_string(),
       spec,
       unaligned_crel: None,
       unaligned_eggroll: None,
@@ -49,11 +51,19 @@ impl KestrelContext {
       verified: false,
     }
   }
+
+  pub fn set_working_dir(&mut self, path: String) {
+    self.working_dir = path
+  }
 }
 
 impl Context for KestrelContext {
   fn workflow_name(&self) -> &String {
     &self.workflow_name
+  }
+
+  fn working_dir(&self) -> &String {
+    &self.working_dir
   }
 
   fn precondition(&self) -> &KestrelCond {

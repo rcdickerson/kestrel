@@ -14,7 +14,6 @@ use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
-use std::path::Path;
 use std::process::Command;
 use std::process::Stdio;
 use std::time::Duration;
@@ -52,9 +51,21 @@ impl <Ctx: Context + AlignsCRel> Task<Ctx> for InvarsDaikon {
   fn name(&self) -> String { "invars-daikon".to_string() }
 
   fn run(&self, context: &mut Ctx) {
+    let working_dir = std::fs::canonicalize(context.working_dir())
+      .expect("unable to canonicalize working dir");
+
+    let daikon_c_name = "daikon_output.c";
+    let daikon_path = working_dir.join(daikon_c_name);
+    let daikon_path_str = daikon_path.to_str()
+      .expect("Unable to create path for daikon output.");
+
+    let exec_name = "daikon_output";
+    let exec_path = working_dir.join(exec_name);
+    let exec_path_str = exec_path.to_str()
+      .expect("Unable to create path for instrumented executable.");
+
     // Write Daikon output to file.
-    let daikon_path = "daikon_output.c".to_string();
-    println!("Writing Daikon to {}...", daikon_path);
+    println!("Writing Daikon to {}...", daikon_path_str);
     let mut global_decls = context.unaligned_crel().as_ref()
       .expect("Missing unaligned CRel")
       .global_decls.clone();
@@ -65,10 +76,10 @@ impl <Ctx: Context + AlignsCRel> Task<Ctx> for InvarsDaikon {
         context.unaligned_crel().as_ref()
           .expect("Missing unaligned CRel")
           .global_fundefs.clone(),
-        &Some(daikon_path.clone()),
+        &Some(daikon_path_str.to_string()),
         Some(&self.extra_fundefs));
-    let mut file = File::create(&Path::new(daikon_path.clone().as_str()))
-      .unwrap_or_else(|_| panic!("Error creating file: {}", daikon_path));
+    let mut file = File::create(&daikon_path)
+      .unwrap_or_else(|_| panic!("Error creating file: {}", daikon_path_str));
     match file.write_all(daikon_output.as_bytes()) {
       Ok(_) => println!("Done"),
       Err(err) => panic!("Error writing output file: {}", err),
@@ -77,7 +88,8 @@ impl <Ctx: Context + AlignsCRel> Task<Ctx> for InvarsDaikon {
     // Compile and run Daikon.
     println!("Compiling Daikon output...");
     let mut gcc_child = Command::new("gcc")
-      .args(["-gdwarf-2", "-O0", "-no-pie", "-o", "daikon_output", "daikon_output.c"])
+      .current_dir(working_dir.clone())
+      .args(["-gdwarf-2", "-O0", "-no-pie", "-o", exec_name, daikon_c_name])
       .spawn()
       .unwrap();
     let timeout = Duration::from_secs(self.timeout_secs);
@@ -94,7 +106,8 @@ impl <Ctx: Context + AlignsCRel> Task<Ctx> for InvarsDaikon {
 
     println!("Running Kvasir...");
     let mut kvasir_child = Command::new("kvasir-dtrace")
-      .args(["./daikon_output"])
+      .current_dir(working_dir.clone())
+      .args([exec_path_str])
       .spawn()
       .unwrap();
     match kvasir_child.wait_timeout(timeout).unwrap() {
@@ -110,6 +123,7 @@ impl <Ctx: Context + AlignsCRel> Task<Ctx> for InvarsDaikon {
 
     println!("Running Daikon...");
     let mut daikon_child = Command::new("java")
+      .current_dir(working_dir.clone())
       .args(["-cp",
              format!("{}/daikon.jar", env::var("DAIKONDIR").expect("$DAIKONDIR not set")).as_str(),
              "daikon.Daikon",

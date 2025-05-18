@@ -17,6 +17,7 @@ use std::time::Duration;
 #[derive(Clone)]
 pub struct ElaeniaContext {
   workflow_name: String,
+  working_dir: String,
   spec: ElaeniaSpec,
   unaligned_crel: Option<UnalignedCRel>,
   unaligned_eggroll: Option<String>,
@@ -47,6 +48,7 @@ impl ElaeniaContext {
   pub fn new(workflow_name: String, spec: ElaeniaSpec) -> Self {
     ElaeniaContext {
       workflow_name,
+      working_dir: ".".to_string(),
       spec,
       unaligned_crel: None,
       unaligned_eggroll: None,
@@ -67,6 +69,10 @@ impl ElaeniaContext {
       timed_out: false,
       verified: false,
     }
+  }
+
+  pub fn set_working_dir(&mut self, path: String) {
+    self.working_dir = path;
   }
 
   pub fn spec(&self) -> &ElaeniaSpec {
@@ -147,6 +153,10 @@ impl ElaeniaContext {
 impl Context for ElaeniaContext {
   fn workflow_name(&self) -> &String {
     &self.workflow_name
+  }
+
+  fn working_dir(&self) -> &String {
+    &self.working_dir
   }
 
   fn precondition(&self) -> &KestrelCond {

@@ -2,6 +2,7 @@ use crate::spec::condition::KestrelCond;
 
 pub trait Context {
   fn workflow_name(&self) -> &String;
+  fn working_dir(&self) -> &String;
 
   fn precondition(&self) -> &KestrelCond;
   fn postcondition(&self) -> &KestrelCond;

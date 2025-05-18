@@ -41,14 +41,19 @@ impl <Ctx: Context + AlignsCRel + GeneratesDafny> Task<Ctx> for Houdafny {
   fn name(&self) -> String { "houdafny".to_string() }
 
   fn run(&self, context: &mut Ctx) {
-    let dafny_path = "houdafny.dfy".to_string();
+    let working_dir = std::fs::canonicalize(context.working_dir())
+      .expect("unable to canonicalize working dir");
+    let houdafny_name = "houdafny.dfy";
+    let dafny_path = working_dir.join(houdafny_name);
+    let dafny_path_str = dafny_path.to_str()
+      .expect("Unable to create path for dafny output.");
     loop {
       // Write current aligned program as Dafny file.
-      let (dafny_prog, while_lines) = context.generate_dafny(&dafny_path);
+      let (dafny_prog, while_lines) = context.generate_dafny(&dafny_path_str.to_string());
 
       // println!("Writing Dafny to {}...", dafny_path);
-      let mut file = File::create(&Path::new(dafny_path.clone().as_str()))
-        .unwrap_or_else(|_| panic!("Error creating file: {}", dafny_path));
+      let mut file = File::create(&dafny_path)
+        .unwrap_or_else(|_| panic!("Error creating file: {}", dafny_path_str));
       match file.write_all(dafny_prog.as_bytes()) {
         Ok(_) => (), // println!("Done"),
         Err(err) => panic!("Error writing output file: {}", err),
@@ -57,7 +62,8 @@ impl <Ctx: Context + AlignsCRel + GeneratesDafny> Task<Ctx> for Houdafny {
       // Run Dafny.
       // println!("Running Dafny verification...");
       let mut child = Command::new("dafny")
-        .args(["verify", dafny_path.as_str(), "--error-limit", "0", "--allow-warnings"])
+        .current_dir(working_dir.clone())
+        .args(["verify", houdafny_name, "--error-limit", "0", "--allow-warnings"])
         .stdout(Stdio::piped())
         .spawn()
         .unwrap();

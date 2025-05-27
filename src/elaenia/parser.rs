@@ -63,6 +63,13 @@ fn pre(i: &str) -> IResult<&str, KestrelCond> {
   Ok((i, cond))
 }
 
+fn pre_sketch(i: &str) -> IResult<&str, KestrelCond> {
+  let (i, _)    = label("pre_sketch")(i)?;
+  let (i, cond) = kestrel_cond(i)?;
+  let (i, _)    = semi(i)?;
+  Ok((i, cond))
+}
+
 fn forall(i: &str) -> IResult<&str, String> {
   let (i, _)    = label("forall")(i)?;
   let (i, _)    = multispace0(i)?;
@@ -157,6 +164,8 @@ fn elaenia_spec(i: &str) -> IResult<&str, ElaeniaSpec> {
   let (i, _)      = tag("@ELAENIA")(i)?;
   let (i, pre)    = pre(i)?;
   let (i, _)      = multispace0(i)?;
+  let (i, pre_sketch) = opt(pre_sketch)(i)?;
+  let (i, _)      = multispace0(i)?;
   let (i, afun)   = forall(i)?;
   let (i, _)      = multispace0(i)?;
   let (i, efun)   = exists(i)?;
@@ -167,7 +176,7 @@ fn elaenia_spec(i: &str) -> IResult<&str, ElaeniaSpec> {
   let (i, _)      = multispace0(i)?;
   let (i, especs) = opt(existential_specs)(i)?;
   let (i, _)      = multispace0(i)?;
-  Ok((i, ElaeniaSpec{pre, afun, efun, post,
+  Ok((i, ElaeniaSpec{pre, pre_sketch, afun, efun, post,
                      aspecs: aspecs.unwrap_or(Vec::new()),
                      especs: especs.unwrap_or(Vec::new())}))
 }

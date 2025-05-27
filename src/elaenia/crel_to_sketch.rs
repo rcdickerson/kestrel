@@ -155,15 +155,28 @@ fn expression_to_sketch(expr: &Expression) -> Sk::Expression {
   }
 }
 
-fn initializer_to_sketch(initializer: &Initializer) -> Sk::Initializer {
+fn initializer_to_sketch(initializer: &Initializer) -> Option<Sk::Initializer> {
+  fn is_singleton_zero(inits: &Vec<Initializer>) -> bool {
+    if inits.len() != 1 { return false }
+    match inits.get(0).unwrap() {
+      &Initializer::Expression(Expression::ConstInt(0)) => true,
+      _ => false,
+    }
+  }
+
   match initializer {
     Initializer::Expression(expr) => {
-      Sk::Initializer::Expression(expression_to_sketch(expr))
+      Some(Sk::Initializer::Expression(expression_to_sketch(expr)))
+    },
+    Initializer::List(inits) if is_singleton_zero(inits) => {
+      None
     },
     Initializer::List(inits) => {
-      Sk::Initializer::List(inits.into_iter()
+      Some(Sk::Initializer::List(inits.into_iter()
           .map(initializer_to_sketch)
-          .collect())
+          .map(|init| init.unwrap_or(
+            Sk::Initializer::Expression(Sk::Expression::ConstInt(0))))
+          .collect()))
     },
   }
 }
@@ -198,13 +211,38 @@ fn handle_forall(condition: &Expression,
 }
 */
 
+fn break_ands(expr: &Expression) -> Vec<Expression> {
+  match expr {
+    Expression::Binop{lhs, rhs, op} if *op == BinaryOp::And => {
+      let mut exprs = vec!(*lhs.clone());
+      exprs.append(&mut break_ands(rhs));
+      exprs
+    },
+    _ => vec!(expr.clone()),
+  }
+}
+
 fn statement_to_sketch(stmt: &Statement) -> Sk::Statement {
   match stmt {
     Statement::Assert(expr) => {
-      Sk::Statement::Assert(Box::new(expression_to_sketch(expr)))
+      let asserts = break_ands(expr).into_iter()
+        .map(|expr| Sk::Statement::Assert(Box::new(expression_to_sketch(&expr))))
+        .collect::<Vec<_>>();
+      if asserts.len() == 1 {
+        asserts.get(0).unwrap().clone()
+      } else {
+        Sk::Statement::Seq(asserts)
+      }
     },
     Statement::Assume(expr) => {
-      Sk::Statement::Assume(Box::new(expression_to_sketch(expr)))
+      let assumes = break_ands(expr).into_iter()
+        .map(|expr| Sk::Statement::Assume(Box::new(expression_to_sketch(&expr))))
+        .collect::<Vec<_>>();
+      if assumes.len() == 1 {
+        assumes.get(0).unwrap().clone()
+      } else {
+        Sk::Statement::Seq(assumes)
+      }
     },
     Statement::BasicBlock(items) => {
       Sk::Statement::Seq(items.iter().map(block_item_to_sketch).collect())
@@ -323,7 +361,10 @@ impl DeclarationBuilder {
   fn visit_init_declarator(&mut self, decl: &Declaration) {
     for spec in &decl.specifiers { self.visit_specifier(spec); }
     self.visit_declarator(&decl.declarator);
-    self.init = decl.initializer.as_ref().map(initializer_to_sketch);
+    self.init = match decl.initializer.as_ref() {
+      None => None,
+      Some(init) => initializer_to_sketch(&init),
+    };
   }
 
   fn visit_declarator(&mut self, decl: &Declarator) {

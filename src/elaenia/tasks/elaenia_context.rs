@@ -79,6 +79,16 @@ impl ElaeniaContext {
     &self.spec
   }
 
+  pub fn precondition_sketch(&self) -> KestrelCond {
+    match &self.spec.pre_sketch {
+      None => self.spec.pre.clone(),
+      Some(pre_sk) => KestrelCond::And {
+        lhs: Box::new(pre_sk.clone()),
+        rhs: Box::new(self.spec.pre.clone()),
+      },
+    }
+  }
+
   pub fn accept_choice_fun(&mut self, fundef: FunDef) {
     self.choice_funs.push(fundef);
   }

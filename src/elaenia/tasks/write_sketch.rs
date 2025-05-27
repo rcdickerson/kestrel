@@ -26,8 +26,8 @@ impl Task<ElaeniaContext> for WriteSketch {
       .expect("Missing unaligned CRel")
       .global_decls;
 
-    let assume_precond = context.spec().pre.to_crel(StatementKind::Assume);
-    let assert_postcond = context.spec().post.to_crel(StatementKind::Assert);
+    let assume_precond = context.precondition_sketch().to_crel(StatementKind::Assume);
+    let assert_postcond = context.postcondition().to_crel(StatementKind::Assert);
 
     let mut body_items: Vec<BlockItem> = Vec::new();
     body_items.push(BlockItem::Statement(assume_precond));

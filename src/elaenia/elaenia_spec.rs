@@ -3,6 +3,7 @@ use crate::spec::condition::*;
 #[derive(Clone, Debug, PartialEq)]
 pub struct ElaeniaSpec {
   pub pre: KestrelCond,
+  pub pre_sketch: Option<KestrelCond>,
   pub afun: String,
   pub efun: String,
   pub post: KestrelCond,

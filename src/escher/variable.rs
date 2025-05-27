@@ -78,11 +78,8 @@ impl Variable {
     }
     self.ty.emit(writer);
     if self.is_pointer {
-      writer.write("* ");
-    } else {
-      writer.write(" ");
+      writer.write("*");
     }
-    writer.write(self.name.as_ref().unwrap_or(&"".to_string()));
     if self.is_array {
       writer.write("[");
       let mut delimit = "";
@@ -93,6 +90,8 @@ impl Variable {
       }
       writer.write("]");
     }
+    writer.write(" ");
+    writer.write(self.name.as_ref().unwrap_or(&"".to_string()));
     if self.is_function {
       writer.write("(");
       self.emit_params(writer);

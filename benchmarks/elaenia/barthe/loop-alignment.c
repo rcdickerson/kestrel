@@ -23,9 +23,9 @@ void _test_gen(int size,
 
   int b[size+1] = {0};
   if (size > 0) { b[0] = b0; }
-  if (size > 1) { b[1] = b0; }
-  if (size > 2) { b[2] = b0; }
-  if (size > 3) { b[3] = b0; }
+  if (size > 1) { b[1] = b1; }
+  if (size > 2) { b[2] = b2; }
+  if (size > 3) { b[3] = b3; }
 
   _main(size, a, b, size, a, b);
 }

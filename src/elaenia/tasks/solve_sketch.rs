@@ -86,6 +86,9 @@ impl Task<ElaeniaContext> for SolveSketch {
     }
     let solution_crel = parse_c_file(&solution_path_str.to_string());
     let (_, solution_funs) = extract_fundefs(&solution_crel);
+    if context.choice_funs().is_empty() {
+      context.mark_sketch_success(true);
+    }
     for choice_fun in context.choice_funs().clone() {
       let solution = solution_funs
         .get(&choice_fun.name)

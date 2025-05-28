@@ -3,6 +3,7 @@
      && (forall.length == exists.length)
      && (forall i: int, j: int, a: int, x: int :: (i == j) ==> read(store(a, i, x), j) == x)
      && (forall i: int, j: int, a: int, x: int :: (i != j) ==> read(store(a, i, x), j) == read(a, j));
+ * pre_sketch: left.length <= 4;
  * forall: refinement;
  * exists: original;
  * post: forall.list == exists.list;

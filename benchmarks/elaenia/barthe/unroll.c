@@ -16,6 +16,7 @@ void left(int N) {
   int x = 0;
   int i = 0;
   while (i <= N ) {
+    _invariant("l_x == r_x");
     x = x + i;
     i = i + 1;
   }

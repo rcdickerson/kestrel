@@ -8,9 +8,6 @@
  * post: left.a == right.a;
  */
 
-int read(int list_id, int index);
-int store(int list_id, int index, int value);
-
 void _test_gen(int size,
                int a0, int a1, int a2, int a3) {
   if (size < 0) { size = size * -1; }

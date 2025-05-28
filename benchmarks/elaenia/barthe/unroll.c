@@ -1,5 +1,6 @@
 /* @ELAENIA
  * pre: forall.N == exists.N && forall.N > 0;
+ * pre_sketch: forall.N <= 4;
  * forall: left;
  * exists: right;
  * post: forall.x == exists.x;

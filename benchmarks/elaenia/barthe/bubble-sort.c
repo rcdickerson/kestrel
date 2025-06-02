@@ -10,7 +10,7 @@
      (left.list[j] >= right.list[j] ==> left.list[j] - right.list[j] < epsilon);
  */
 
-float epsilon = 0.01;
+int epsilon = 3;
 
 void _test_gen(int size,
                int a0, int a1, int a2, int a3) {
@@ -26,16 +26,16 @@ void _test_gen(int size,
   _main(size, list, size, list);
 }
 
-void sort(int size, float list[size]) {
+void sort(int size, int list[size]) {
   int i = 0;
   while (i < size) {
     int j = size - 1;
     while (j > i) {
-      float prev = list[j - 1];
-      float cur  = list[j];
+      int prev = list[j - 1];
+      int cur  = list[j];
       if (prev > cur) {
-        float val = list[j];
-        float prev_val = list[j-1];
+        int val = list[j];
+        int prev_val = list[j-1];
         list[j] = prev_val;
         list[j - 1] = val;
       }

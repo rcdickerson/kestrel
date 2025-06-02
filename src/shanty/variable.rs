@@ -110,6 +110,10 @@ impl Variable {
     }
     match &self.initializer {
       None => (),
+      Some(init@Initializer::Memset{..}) => {
+        writer.write("; ");
+        init.emit(writer);
+      },
       Some(init) => {
         writer.write(" = ");
         init.emit(writer);

@@ -229,12 +229,26 @@ fn statement_to_c(stmt: &Statement, output_asserts: bool, output_assumes: bool)
   }
 }
 
-fn initializer_to_c(init: &Initializer) -> C::Initializer {
+fn initializer_to_c(decl: &Declarator, init: &Initializer) -> C::Initializer {
   match init {
     Initializer::Expression(expr) => C::Initializer::Expression(expression_to_c(expr, false, false)),
-    Initializer::List(inits) => C::Initializer::List(inits.into_iter().map(|init| {
-        initializer_to_c(init)
-      }).collect()),
+    Initializer::List(inits) => {
+      let name = match decl {
+        Declarator::Array{name, ..} => name,
+        _ => panic!("List initializer assigned to non-array declarator."),
+      };
+      if inits.len() != 1 {
+        panic!("Currently only support arrays of dimension one.");
+      }
+      let size = match inits.get(0) {
+        Some(Initializer::Expression(expr)) => expr,
+        _ => panic!("Nested array initializers currently not supported."),
+      };
+      C::Initializer::Memset {
+        name: name.clone(),
+        size: expression_to_c(size, false, false),
+      }
+    },
   }
 }
 
@@ -313,7 +327,7 @@ impl DeclarationBuilder {
     match &decl.initializer {
       None => (),
       Some(init) => {
-        self.initializer = Some(initializer_to_c(init));
+        self.initializer = Some(initializer_to_c(&decl.declarator, init));
       }
     }
   }

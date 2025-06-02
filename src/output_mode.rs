@@ -213,6 +213,7 @@ impl OutputMode {
       OutputMode::Daikon => {
         [
           "#include <stdlib.h>",
+          "#include <string.h>",
           "#include \"assert.h\"",
         ].join("\n")
       },

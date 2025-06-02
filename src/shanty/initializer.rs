@@ -5,6 +5,7 @@ use crate::shanty::Writer;
 pub enum Initializer {
   Expression(Expression),
   List(Vec<Initializer>),
+  Memset{name: String, size: Expression},
 }
 
 impl Initializer {
@@ -20,6 +21,15 @@ impl Initializer {
           comma = ", ";
         }
         writer.write("}");
+      },
+      Initializer::Memset{name, size} => {
+        writer.write("memset(")
+          .write(name)
+          .write(", ");
+        size.emit(writer, false);
+        writer.write(", sizeof ");
+        writer.write(name);
+        writer.write(")");
       },
     }
   }

@@ -1,18 +1,19 @@
 /* @ELAENIA
  * pre: forall.low == exists.low;
+ * pre_sketch: forall.low <= 4;
  * forall: inf_branch_ts;
  * exists: inf_branch_ts;
  * post: forall.x == exists.x;
  * aspecs:
  *  random() {
  *    pre:  true;
- *    post: true;
+ *    post: ret! >= 0;
  *  }
  * especs:
  *  random() {
  *    choiceVars: n;
- *    pre:  true;
- *    post: (ret! == n);
+ *    pre:  n >= 0;
+ *    post: ret! == n;
  *  }
  */
 

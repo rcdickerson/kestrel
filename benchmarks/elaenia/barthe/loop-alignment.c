@@ -34,8 +34,6 @@ void left(int size, int a[size+1], int b[size+1]) {
   int i = 1;
   int d[size+1] = {0};
   while (i <= size) {
-//    _invariant("l_i == r_j + 1");
-//    _invariant("l_d == r_d");
     b[i] = a[i];
     d[i] = b[i-1];
     i = i + 1;

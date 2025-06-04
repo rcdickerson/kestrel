@@ -54,6 +54,12 @@ impl Parameter {
     }
     writer.write(&self.name);
     writer.write(": ");
-    self.ty.emit(writer);
+    if self.is_array {
+      writer.write("array<");
+      self.ty.emit(writer);
+      writer.write(">");
+    } else {
+      self.ty.emit(writer);
+    }
   }
 }

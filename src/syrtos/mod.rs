@@ -2,6 +2,7 @@
 
 mod expression;
 mod function;
+mod identifier;
 mod initializer;
 mod method;
 mod parameter;
@@ -13,6 +14,7 @@ mod writer;
 
 pub use expression::Expression;
 pub use function::Function;
+pub use identifier::Identifier;
 pub use initializer::Initializer;
 pub use method::Method;
 pub use parameter::Parameter;

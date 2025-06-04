@@ -8,6 +8,7 @@ pub struct Method {
   name: String,
   parameters: Vec<Parameter>,
   ret_type: Option<Type>,
+  modifies: Vec<Parameter>,
   body: Option<Statement>,
 }
 
@@ -18,12 +19,18 @@ impl Method {
       name: name.to_string(),
       parameters: Vec::new(),
       ret_type: ty,
+      modifies: Vec::new(),
       body: None,
     }
   }
 
   pub fn push_param(&mut self, param: &Parameter) -> &Self {
     self.parameters.push(param.clone());
+    self
+  }
+
+  pub fn push_modifies(&mut self, param: &Parameter) -> &Self {
+    self.modifies.push(param.clone());
     self
   }
 
@@ -50,18 +57,23 @@ impl Method {
     match &self.body {
       None => { writer.write(";").new_line(); },
       Some(stmt) => {
+        writer.indent();
         if !writer.check_termination() {
           writer.new_line()
-                .indent()
                 .write("decreases *")
-                .dedent()
                 .new_line();
         }
-        writer.write(" {").new_line();
+        for param in &self.modifies {
+          writer.write("modifies ");
+          writer.write(&param.name);
+          writer.new_line();
+        }
+        writer.dedent();
+        writer.write("{").new_line();
         writer.indent();
         stmt.emit(writer);
         writer.dedent();
-        writer.write(" }").new_line();
+        writer.write("}").new_line();
       },
     }
   }

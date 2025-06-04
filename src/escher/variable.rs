@@ -73,9 +73,9 @@ impl Variable {
   }
 
   pub fn emit(&self, writer: &mut Writer) {
-    if self.is_const {
-      writer.write("const ");
-    }
+//    if self.is_const {
+//      writer.write("const ");
+//    }
     self.ty.emit(writer);
     if self.is_pointer {
       writer.write("*");

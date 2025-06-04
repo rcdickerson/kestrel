@@ -1,16 +1,19 @@
 /* @ELAENIA
  * pre: left.size == right.size
      && left.size >= 1
-     && left.list == right.list;
+     && left.list == right.list
+     && forall i: int :: (i >= 0 && i < left.size) ==>
+          (left.list[i] < right.list[i] ==> right.list[i] - left.list[i] < epsilon) &&
+          (left.list[i] >= right.list[i] ==> left.list[i] - right.list[i] < epsilon);
  * pre_sketch: left.size <= 4;
  * forall: sort;
  * exists: sort;
- * post: forall j: int ::
+ * post: forall j: int :: (j >= 0 && j < left.size) ==>
      (left.list[j] < right.list[j] ==> right.list[j] - left.list[j] < epsilon) &&
      (left.list[j] >= right.list[j] ==> left.list[j] - right.list[j] < epsilon);
  */
 
-int epsilon = 3;
+const int epsilon = 3;
 
 void _test_gen(int size,
                int a0, int a1, int a2, int a3) {
@@ -28,9 +31,11 @@ void _test_gen(int size,
 
 void sort(int size, int list[size]) {
   int i = 0;
+  int j;
   while (i < size) {
-    int j = size - 1;
+    j = size - 1;
     while (j > i) {
+      _invariant("l_j < l_size");
       int prev = list[j - 1];
       int cur  = list[j];
       if (prev > cur) {

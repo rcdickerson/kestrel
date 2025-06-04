@@ -1,3 +1,4 @@
+use crate::syrtos::Identifier;
 use crate::syrtos::Statement;
 use crate::syrtos::Type;
 use crate::syrtos::Writer;
@@ -9,7 +10,7 @@ pub enum Expression {
   ConstFloat(f32),
   ConstTrue,
   ConstFalse,
-  Identifier{name: String},
+  Identifier{id: Identifier},
   FnCall{name: Box<Expression>, args: Vec<Expression>},
   StringLiteral(String),
   Ternary{condition: Box<Expression>, then: Box<Expression>, els: Box<Expression>},
@@ -20,7 +21,6 @@ pub enum Expression {
 }
 
 impl Expression {
-
   pub fn emit(&self, writer: &mut Writer, subexp: bool) {
     match self {
       Expression::ArrayIndex{expr, index} => {
@@ -41,8 +41,8 @@ impl Expression {
       Expression::ConstFalse => {
         writer.write("false");
       },
-      Expression::Identifier{name} => {
-        writer.write(name);
+      Expression::Identifier{id} => {
+        id.emit(writer);
       },
       Expression::FnCall{name, args} => {
         name.emit(writer, false);

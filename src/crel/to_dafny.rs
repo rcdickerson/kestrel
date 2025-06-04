@@ -59,12 +59,33 @@ fn fun_to_daf(specifiers: &Vec<DeclarationSpecifier>,
   }
 
   let mut method = Daf::Method::new(name, ret_type);
+  let mut new_body = Vec::new();
   for param in params.iter()
     .filter(|param| param.declarator.is_some())
     .map(decl_to_param) {
       method.push_param(&param);
+      if param.is_array {
+        method.push_modifies(&param);
+        param.array_sizes.get(0).map(|size| {
+          let size_eq = Daf::Expression::BinOp {
+            lhs: Box::new(size.clone()),
+            rhs: Box::new(Daf::Expression::Identifier {
+              id: Daf::Identifier::compound2(param.name, "Length".to_string()),
+            }),
+            op: "==".to_string(),
+          };
+          new_body.push(Daf::Statement::Assume(Box::new(size_eq)));
+        });
+      }
     }
-  method.set_body(&statement_to_daf(body));
+
+  let orig_body = statement_to_daf(body);
+  if new_body.is_empty() {
+    method.set_body(&orig_body);
+  } else {
+    new_body.push(orig_body);
+    method.set_body(&Daf::Statement::Seq(new_body));
+  }
   method
 }
 
@@ -91,7 +112,7 @@ fn param_decl_to_param(decl: &ParameterDeclaration) -> Daf::Parameter {
 fn expression_to_daf(expr: &Expression) -> Daf::Expression {
   match expr {
     Expression::Identifier{name} => Daf::Expression::Identifier {
-      name: name.clone(),
+      id: Daf::Identifier::simple(name.clone()),
     },
     Expression::ConstBool(true) => Daf::Expression::ConstTrue,
     Expression::ConstBool(false) => Daf::Expression::ConstFalse,

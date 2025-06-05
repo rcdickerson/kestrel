@@ -90,10 +90,13 @@ impl Task<ElaeniaContext> for SolveSketch {
       context.mark_sketch_success(true);
     }
     for choice_fun in context.choice_funs().clone() {
-      let solution = solution_funs
-        .get(&choice_fun.name)
-        .expect(format!("No solution found for {}", choice_fun.name).as_str());
-      context.accept_choice_solution(choice_fun.name.clone(), solution.clone());
+      let solution = solution_funs.get(&choice_fun.name);
+      if solution.is_none() { continue; }
+      let mut solution_fun = solution.unwrap().clone();
+      // Arrays come back from Sketch as pointers with commented lengths,
+      // just pull the params from the original choice function.
+      solution_fun.params = choice_fun.params.clone();
+      context.accept_choice_solution(choice_fun.name.clone(), solution_fun.clone());
       context.mark_sketch_success(true);
     }
   }

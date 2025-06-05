@@ -252,6 +252,16 @@ impl GeneratesDafny for ElaeniaContext {
 
     let mut global_decls = unaligned_crel.global_decls.clone();
     global_decls.append(&mut self.havoc_funs_as_decls());
+    global_decls.append(&mut self.choice_funs().iter()
+        .filter(|fun| self.choice_solutions().get(&fun.name).is_none())
+        .map(|fun| Declaration {
+            specifiers: fun.specifiers.clone(),
+            declarator: Declarator::Function {
+                name: fun.name.clone(),
+                params: fun.params.clone(),
+            },
+            initializer: None,
+        }).collect());
     let globals = global_decls.iter()
       .map(|decl| CRel::Declaration(decl.clone()).to_dafny().0)
       .collect::<Vec<String>>()

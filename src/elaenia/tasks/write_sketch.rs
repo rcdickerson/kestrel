@@ -121,19 +121,6 @@ impl crate::crel::mapper::CRelMapper for AssertInvars {
 fn build_grammar(generator_name: &String,
                  params: &Vec<Sk::FunctionParameter>)
                  -> Sk::Statement {
-  let mut options = vec!(
-    Sk::Expression::Hole,
-  );
-  for param in params {
-    match &param.name {
-      Some(name) if name.as_str() == "depth" => (),
-      _ => {
-        options.push(Sk::Expression::Identifier {
-          name: param.name.clone().expect("Encountered nameless parameter")
-        });
-      }
-    }
-  }
   let recurse = Sk::Expression::FnCall {
     name: Box::new(Sk::Expression::Identifier{name: generator_name.clone()}),
     args: params.into_iter()
@@ -149,6 +136,27 @@ fn build_grammar(generator_name: &String,
       })
       .collect(),
   };
+
+  let mut options = vec!(
+    Sk::Expression::Hole,
+  );
+  for param in params {
+    match &param.name {
+      Some(name) if name.as_str() == "depth" => (),
+      _ => if param.is_array {
+          options.push(Sk::Expression::ArrayIndex {
+            expr: Box::new(Sk::Expression::Identifier {
+              name: param.name.clone().expect("Encountered nameless parameter")
+            }),
+            index: Box::new(recurse.clone()),
+          });
+        } else {
+          options.push(Sk::Expression::Identifier {
+            name: param.name.clone().expect("Encountered nameless parameter")
+          });
+        }
+    }
+  }
   options.push(Sk::Expression::BinOp {
     lhs: Box::new(recurse.clone()),
     rhs: Box::new(recurse.clone()),

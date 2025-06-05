@@ -52,7 +52,8 @@ struct SpecInserter<'a> {
   added_choice_gens: Vec<FunDef>,
   added_havoc_funs: Vec<FunDef>,
   current_id: u32,
-  current_scope: HashMap<String, (Type, bool)>,
+  scope_identifiers: HashMap<String, (Type, bool)>,
+  scope_arrays: HashMap<String, (Type, Vec<Expression>, bool)>,
   grammar_depth: u32,
 }
 
@@ -64,7 +65,8 @@ impl <'a> SpecInserter<'a> {
       added_choice_gens: Vec::new(),
       added_havoc_funs: Vec::new(),
       current_id: 0,
-      current_scope: HashMap::new(),
+      scope_identifiers: HashMap::new(),
+      scope_arrays: HashMap::new(),
       grammar_depth,
     }
   }
@@ -87,21 +89,37 @@ impl <'a> SpecInserter<'a> {
   }
 
   fn in_scope_params(&self) -> Vec<ParameterDeclaration> {
-    self.current_scope.clone().into_iter()
+    let mut params = self.scope_identifiers.clone().into_iter()
       .filter(|(name,(_, initialized))| !name.ends_with("_in") && *initialized)
       .map(|(name, (ty, _))| {
         ParameterDeclaration {
           specifiers: vec!(DeclarationSpecifier::TypeSpecifier(ty)),
           declarator: Some(Declarator::Identifier{ name }),
         }
-      }).collect()
+      }).collect::<Vec<_>>();
+    let mut array_params = self.scope_arrays.clone().into_iter()
+      .filter(|(name,(_, _, initialized))| !name.ends_with("_in") && *initialized)
+      .map(|(name, (ty, sizes, _))| {
+        ParameterDeclaration {
+          specifiers: vec!(DeclarationSpecifier::TypeSpecifier(ty)),
+          declarator: Some(Declarator::Array{ name, sizes }),
+        }
+      }).collect();
+    params.append(&mut array_params);
+    params
   }
 
   fn in_scope_args(&self) -> Vec<Expression> {
-    self.current_scope.clone().into_iter()
+    let mut args = self.scope_identifiers.clone().into_iter()
       .filter(|(name,(_, initialized))| !name.ends_with("_in") && *initialized)
       .map(|(name, _)| Expression::Identifier{name})
-      .collect()
+      .collect::<Vec<_>>();
+    let mut array_args = self.scope_arrays.clone().into_iter()
+      .filter(|(name,(_, _, initialized))| !name.ends_with("_in") && *initialized)
+      .map(|(name, _)| Expression::Identifier{name})
+      .collect();
+    args.append(&mut array_args);
+    args
   }
 
   fn add_to_scope(&mut self,
@@ -113,10 +131,10 @@ impl <'a> SpecInserter<'a> {
         DeclarationSpecifier::TypeSpecifier(ty) => {
           match declarator {
             Declarator::Identifier{name} => {
-              self.current_scope.insert(name.clone(), (ty.clone(), initialized));
+              self.scope_identifiers.insert(name.clone(), (ty.clone(), initialized));
             },
-            Declarator::Array{name, ..} => {
-              self.current_scope.insert(name.clone(), (ty.clone(), initialized));
+            Declarator::Array{name, sizes} => {
+              self.scope_arrays.insert(name.clone(), (ty.clone(), sizes.clone(), initialized));
             },
             _ => (),
           }
@@ -127,11 +145,16 @@ impl <'a> SpecInserter<'a> {
   }
 
   fn mark_initialized(&mut self, name: &String) {
-    match self.current_scope.get(name) {
+    match self.scope_identifiers.get(name) {
       Some((ty, false)) => {
-        self.current_scope.insert(name.clone(), (ty.clone(), true));
+        self.scope_identifiers.insert(name.clone(), (ty.clone(), true));
       },
-      _ => (),
+      _ => match self.scope_arrays.get(name) {
+        Some((ty, sizes, false)) => {
+          self.scope_arrays.insert(name.clone(), (ty.clone(), sizes.clone(), true));
+        },
+        _ => (),
+      }
     }
   }
 
@@ -142,12 +165,14 @@ impl <'a> SpecInserter<'a> {
         CRel::Declaration(decl.clone())
       },
       CRel::FunctionDefinition{ specifiers, name, params, body } => {
-        let outer_scope = self.current_scope.clone();
+        let outer_scope_identifiers = self.scope_identifiers.clone();
+        let outer_scope_arrays = self.scope_arrays.clone();
         for ParameterDeclaration{specifiers, declarator} in params {
           declarator.as_ref().map(|decl| self.add_to_scope(specifiers, decl, true));
         }
         let new_body = self.insert_specs_statement(body);
-        self.current_scope = outer_scope;
+        self.scope_identifiers = outer_scope_identifiers;
+        self.scope_arrays = outer_scope_arrays;
         CRel::FunctionDefinition {
           specifiers: specifiers.clone(),
           name: name.clone(),
@@ -188,9 +213,9 @@ impl <'a> SpecInserter<'a> {
         Statement::Expression(Box::new(self.insert_specs_expression(expr)))
       },
       Statement::GuardedRepeat{ id, repetitions, condition, body } => {
-        let outer_scope = self.current_scope.clone();
+        let outer_scope = self.scope_identifiers.clone();
         let new_body = self.insert_specs_statement(body);
-        self.current_scope = outer_scope;
+        self.scope_identifiers = outer_scope;
         Statement::GuardedRepeat {
           id: id.clone(),
           repetitions: repetitions.clone(),
@@ -199,13 +224,13 @@ impl <'a> SpecInserter<'a> {
         }
       },
       Statement::If{ condition, then, els } => {
-        let outer_scope = self.current_scope.clone();
+        let outer_scope = self.scope_identifiers.clone();
         let new_then = self.insert_specs_statement(then);
-        self.current_scope = outer_scope.clone();
+        self.scope_identifiers = outer_scope.clone();
         let new_els = els.as_ref().map(|els| {
           Box::new(self.insert_specs_statement(els))
         });
-        self.current_scope = outer_scope;
+        self.scope_identifiers = outer_scope;
         Statement::If {
           condition: condition.clone(),
           then: Box::new(new_then),
@@ -230,11 +255,11 @@ impl <'a> SpecInserter<'a> {
       },
       Statement::While{ id, runoff_link_id, invariants,
                         condition, body, is_runoff, is_merged } => {
-        let outer_scope = self.current_scope.clone();
+        let outer_scope = self.scope_identifiers.clone();
         let new_body = body.as_ref().map(|body| {
           Box::new(self.insert_specs_statement(body))
         });
-        self.current_scope = outer_scope;
+        self.scope_identifiers = outer_scope;
         Statement::While {
           id: id.clone(),
           runoff_link_id: runoff_link_id.clone(),

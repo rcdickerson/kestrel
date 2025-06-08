@@ -9,14 +9,14 @@
  * aspecs:
  *   compare(i, j) {
  *     pre: true;
- *     post: (i <  j ==> ret! == -1)
- *        && (i == j ==> ret! == 0)
- *        && (i >  j ==> ret! == 1);
+ *     post: (i <  j ==> ret! < 10)
+ *        && (i == j ==> ret! == 10)
+ *        && (i >  j ==> ret! > 10);
  *   }
  * especs:
  *   compare(i, j) {
  *     choiceVars: n;
- *     pre: n == -1 || n == 0 || n == 1;
+ *     pre: n == 9 || n == 10 || n == 11;
  *     post: ret! == n;
  *   }
  */
@@ -46,7 +46,7 @@ void sort(int size, int list[size]) {
       _invariant("l_j < l_size");
       int cmp;
       cmp = compare(list[j - 1], list[j]);
-      if (cmp > 0) {
+      if (cmp > 10) {
         int val = list[j];
         int prev_val = list[j-1];
         list[j] = prev_val;

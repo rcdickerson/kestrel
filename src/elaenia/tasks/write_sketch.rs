@@ -144,12 +144,16 @@ fn build_grammar(generator_name: &String,
     match &param.name {
       Some(name) if name.as_str() == "depth" => (),
       _ => if param.is_array {
-          options.push(Sk::Expression::ArrayIndex {
-            expr: Box::new(Sk::Expression::Identifier {
-              name: param.name.clone().expect("Encountered nameless parameter")
-            }),
-            index: Box::new(recurse.clone()),
-          });
+          let mut expr = Sk::Expression::Identifier {
+            name: param.name.clone().expect("Encountered nameless parameter")
+          };
+          for _ in 0..param.array_sizes.len() {
+            expr = Sk::Expression::ArrayIndex {
+              expr: Box::new(expr),
+              index: Box::new(recurse.clone()),
+            };
+          }
+          // options.push(expr);
         } else {
           options.push(Sk::Expression::Identifier {
             name: param.name.clone().expect("Encountered nameless parameter")

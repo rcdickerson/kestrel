@@ -1,24 +1,32 @@
 /* @ELAENIA
  * pre: left.size == right.size
      && left.size >= 1
-     && left.list == right.list
-     && forall i: int :: (i >= 0 && i < left.size) ==>
-          (left.list[i] < right.list[i] ==> right.list[i] - left.list[i] < epsilon) &&
-          (left.list[i] >= right.list[i] ==> left.list[i] - right.list[i] < epsilon);
- * pre_sketch: left.size <= 4;
+     && left.list == right.list;
+ * pre_sketch: left.size <= 3;
  * forall: sort;
  * exists: sort;
- * post: forall j: int :: (j >= 0 && j < left.size) ==>
-     (left.list[j] < right.list[j] ==> right.list[j] - left.list[j] < epsilon) &&
-     (left.list[j] >= right.list[j] ==> left.list[j] - right.list[j] < epsilon);
+ * post: left.list == right.list;
+ * aspecs:
+ *   compare(i, j) {
+ *     pre: true;
+ *     post: (i <  j ==> ret! < 10)
+ *        && (i == j ==> ret! == 10)
+ *        && (i >  j ==> ret! > 10);
+ *   }
+ * especs:
+ *   compare(i, j) {
+ *     choiceVars: n;
+ *     pre: n == 9 || n == 10 || n == 11;
+ *     post: ret! == n;
+ *   }
  */
 
-const int epsilon = 3;
+int compare(int i, int j);
 
 void _test_gen(int size,
                int a0, int a1, int a2, int a3) {
   if (size < 0) { size = size * -1; }
-  size = size % 100;
+  size = size % 10;
 
   int list[size] = {0};
   if (size > 0) { list[0] = a0; }
@@ -36,9 +44,9 @@ void sort(int size, int list[size]) {
     j = size - 1;
     while (j > i) {
       _invariant("l_j < l_size");
-      int prev = list[j - 1];
-      int cur  = list[j];
-      if (prev > cur) {
+      int cmp;
+      cmp = compare(list[j - 1], list[j]);
+      if (cmp > 10) {
         int val = list[j];
         int prev_val = list[j-1];
         list[j] = prev_val;

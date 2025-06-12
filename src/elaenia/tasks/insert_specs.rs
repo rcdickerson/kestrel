@@ -194,7 +194,7 @@ impl <'a> SpecInserter<'a> {
         Statement::Assert(Box::new(self.insert_specs_expression(expr)))
       },
       Statement::Assume(expr) => {
-        Statement::Assert(Box::new(self.insert_specs_expression(expr)))
+        Statement::Assume(Box::new(self.insert_specs_expression(expr)))
       },
       Statement::BasicBlock(items) => {
         Statement::BasicBlock(items.into_iter()

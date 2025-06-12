@@ -237,16 +237,21 @@ fn initializer_to_c(decl: &Declarator, init: &Initializer) -> C::Initializer {
         Declarator::Array{name, ..} => name,
         _ => panic!("List initializer assigned to non-array declarator."),
       };
-      if inits.len() != 1 {
-        panic!("Currently only support arrays of dimension one.");
-      }
-      let size = match inits.get(0) {
-        Some(Initializer::Expression(expr)) => expr,
-        _ => panic!("Nested array initializers currently not supported."),
-      };
-      C::Initializer::Memset {
-        name: name.clone(),
-        size: expression_to_c(size, false, false),
+      if inits.len() == 0 {
+        panic!("Empty list initializer");
+      } else if inits.len() == 1 {
+        let size = match inits.get(0) {
+          Some(Initializer::Expression(expr)) => expr,
+          _ => panic!("Nested array initializers currently not supported."),
+        };
+        C::Initializer::Memset {
+          name: name.clone(),
+          size: expression_to_c(size, false, false),
+        }
+      } else {
+        C::Initializer::List(inits.into_iter()
+            .map(|init| initializer_to_c(decl, init))
+            .collect())
       }
     },
   }

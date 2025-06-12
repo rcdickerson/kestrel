@@ -36,8 +36,10 @@ int _arb_int() {
 }
 
 void _test_gen(int low) {
-  if (low < 0) { low = low * -1; }
-  low = low % 10;
+  if (low < 0) {
+    low = (low * (-1));
+  }
+  low = (low % 10);
   _main(low, 0, low, 1);
 }
 

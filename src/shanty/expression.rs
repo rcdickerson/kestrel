@@ -44,7 +44,9 @@ impl Expression {
         writer.write(")");
       },
       Expression::StringLiteral(s) => {
+        writer.write("\"");
         writer.write(s);
+        writer.write("\"");
       },
       Expression::UnOp{expr, op} => {
         if subexp { writer.write("("); }

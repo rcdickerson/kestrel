@@ -15,7 +15,7 @@ SUMMARY_LATEX_NAME = 'summary.tex'
 EXTRACTION_TECHNIQUES = ['count-loops']
 KESTREL_BIN = './target/release/kestrel'
 SA_MAX_ITERATIONS = 30000
-TIMEOUT_SEC = 60 * 5
+TIMEOUT_SEC = 20 # 60 * 5
 
 def latex_cell(data):
   (time, success) = data

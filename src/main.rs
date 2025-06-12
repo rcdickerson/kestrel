@@ -258,7 +258,13 @@ fn elaenia_workflow(args: Args) {
         &|ctx: &ElaeniaContext| {
           ctx.unaligned_crel().as_ref()
             .expect("Missing unaligned CRel")
-            .unaligned_main.to_c(false, false).to_string()
+            .unaligned_main.to_c(true, true).to_string()
+        }));
+    workflow.add_task(PrintInfo::with_header("Unaligned Eggroll",
+        &|ctx: &ElaeniaContext| {
+          ctx.unaligned_eggroll().as_ref()
+            .expect("Missing unaligned Eggroll")
+            .to_string()
         }));
   }
   if args.dot { workflow.add_task(WriteDot::new()) }
@@ -273,7 +279,7 @@ fn elaenia_workflow(args: Args) {
       &|ctx: &ElaeniaContext| {
          ctx.aligned_crel().as_ref()
           .expect("Missing aligned CRel")
-          .to_c(false, false).to_string()
+          .to_c(true, true).to_string()
       }));
 
   // Try solving the sketch starting at expression depth of 1 and iteratively
@@ -294,6 +300,19 @@ fn elaenia_workflow(args: Args) {
         &|ctx: &ElaeniaContext| {
           ctx.aligned_output().as_ref().expect("Missing aligned output").clone()
         })));
+
+  workflow.add_task(PrintInfo::with_header("Per-Task Times (ms)",
+      &|ctx: &ElaeniaContext| {
+        let mut lines = Vec::new();
+        for (task_name, duration) in &ctx.task_timings() {
+          lines.push(format!("{}: {}", task_name, duration.as_millis()));
+        }
+        lines.join("\n") + "\n"
+      }));
+  args.output_summary.map(|location| {
+    workflow.add_task(WriteSummary::new(location, vec!(args.extractor.tag())));
+  });
+
   workflow.execute();
 
   println!("Elaenia completed in {}ms", workflow.context().total_elapsed_time().as_millis());

@@ -281,9 +281,14 @@ fn statement_to_sketch(stmt: &Statement) -> Sk::Statement {
       None => { Sk::Statement::Return(None) },
       Some(ret) => { Sk::Statement::Return(Some(Box::new(expression_to_sketch(ret)))) },
     },
-    Statement::While{is_runoff, ..} if *is_runoff => {
-      Sk::Statement::Seq(Vec::new())
+/*
+    Statement::While{is_runoff, condition, ..} if *is_runoff => {
+      Sk::Statement::Assert(Box::new(Sk::Expression::UnOp {
+        expr: Box::new(expression_to_sketch(condition)),
+        op: "!".to_string(),
+      }))
     },
+*/
     Statement::While{condition, body, ..} => {
       let condition = Box::new(expression_to_sketch(condition));
       let body = body.as_ref().map(|stmt| Box::new(statement_to_sketch(stmt)));

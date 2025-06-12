@@ -8,14 +8,28 @@
  * forall: left;
  * exists: right;
  * post: left.a == right.a && left.b == right.b && left.c == right.c;
+ * aspecs:
+ *   randEven(max) {
+ *     pre: true;
+ *     post: 0 <= ret! && ret! < max && ret! % 2 == 0;
+ *   }
+ * especs:
+ *   randB(max) {
+ *     choiceVars: n;
+ *     pre: 0 <= n && n < max;
+ *     post: ret! == n;
+ *   }
  */
+
+int randEven(int max);
+int randB(int max);
 
 void _test_gen(int size,
                int a0, int a1, int a2, int a3,
                int b0, int b1, int b2, int b3,
                int c0, int c1, int c2, int c3) {
   if (size < 0) { size = size * -1; }
-  size = size % 100;
+  size = size % 10;
 
   int a[size] = {0};
   if (size > 0) { a[0] = a0; }
@@ -41,7 +55,9 @@ void _test_gen(int size,
 void left(int size, int a[size], int b[size], int c[size]) {
   int i = 0;
   while (i < size) {
-    a[i] = a[i] + 1;
+    int x;
+    x = randEven(100);
+    a[i] = a[i] + x;
     b[i] = b[i] + a[i];
     c[i] = c[i] + b[i];
     i = i + 1;
@@ -50,11 +66,15 @@ void left(int size, int a[size], int b[size], int c[size]) {
 
 void right(int size, int a[size], int b[size], int c[size]) {
   int j = 0;
-  a[0] = a[0] + 1;
+  int x;
+  x = randB(100);
+  a[0] = a[0] + x;
   b[0] = b[0] + a[0];
-  a[1] = a[1] + 1;
+  x = randB(100);
+  a[1] = a[1] + x;
   while (j < size - 2) {
-    a[j+2] = a[j+2] + 1;
+    x = randB(100);
+    a[j+2] = a[j+2] + x;
     b[j+1] = b[j+1] + a[j+1];
     c[j] = c[j] + b[j];
     j = j + 1;

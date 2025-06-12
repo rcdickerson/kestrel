@@ -6,12 +6,27 @@
  * forall: left;
  * exists: right;
  * post: left.a == right.a;
+ * aspecs:
+ *   compare(i, j) {
+ *     pre: true;
+ *     post: (i <  j ==> ret! < 10)
+ *        && (i == j ==> ret! == 10)
+ *        && (i >  j ==> ret! > 10);
+ *   }
+ * especs:
+ *   compare(i, j) {
+ *     choiceVars: n;
+ *     pre: n == 9 || n == 10 || n == 11;
+ *     post: ret! == n;
+ *   }
  */
+
+int compare(int i, int j);
 
 void _test_gen(int size,
                int a0, int a1, int a2, int a3) {
   if (size < 0) { size = size * -1; }
-  size = (size % 100) + 1;
+  size = (size % 10) + 1;
 
   int list[size+1] = {0};
   if (size > 0) { list[0] = a0; }
@@ -27,7 +42,9 @@ void left(int size, int a[size+1]) {
   int maxi = 0;
   int i = 0;
   while (i <= size) {
-    if (max < a[i]) {
+    int cmp;
+    cmp = compare(max, a[i]);
+    if (cmp < 10) {
       max = a[i];
       maxi = i;
     }
@@ -47,7 +64,9 @@ void right(int size, int a[size+1]) {
       max = a[0];
       maxi = 0;
     }
-    if (max < a[j]) {
+    int cmp;
+    cmp = compare(max, a[j]);
+    if (cmp < 10) {
       max = a[j];
       maxi = j;
     }

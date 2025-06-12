@@ -13,7 +13,21 @@
  * forall: left;
  * exists: right;
  * post: left.s == right.t;
+ * aspecs:
+ *   randEven(max) {
+ *     pre: true;
+ *     post: 0 <= ret! && ret! < max && ret! % 2 == 0;
+ *   }
+ * especs:
+ *   randB(max) {
+ *     choiceVars: n;
+ *     pre: 0 <= n && n < max;
+ *     post: ret! == n;
+ *   }
  */
+
+int randEven(int max);
+int randB(int max);
 
 void _test_gen(int M, int N, int L) {
   if (M < 0) { M = M * -1; } M = M % 10;
@@ -34,6 +48,7 @@ void _test_gen(int M, int N, int L) {
 void left(int M, int N, int L, int a[N][L]) {
   int s[(N-M)+1] = {0};
   int i = 0;
+  int x;
 
   while (i <= N - M) {
     s[i] = 0;
@@ -41,7 +56,8 @@ void left(int M, int N, int L, int a[N][L]) {
     while (k <= M - 1) {
       int l = 0;
       while (l <= L - 1) {
-        s[i] = s[i] + a[i+k][l];
+        x = randEven(100);
+        s[i] = s[i] + a[i+k][l] + x;
         l = l + 1;
       }
       k = k + 1;
@@ -53,6 +69,7 @@ void left(int M, int N, int L, int a[N][L]) {
 void right(int M, int N, int L, int a[N][L]) {
   int t[(N-M)+1] = {0};
   int b[N] = {0};
+  int x;
 
   t[0] = 0;
   int k = 0;
@@ -60,7 +77,8 @@ void right(int M, int N, int L, int a[N][L]) {
     b[k] = 0;
     int l = 0;
     while (l <= L - 1) {
-      b[k] = b[k] + a[k][l];
+      x = randB(100);
+      b[k] = b[k] + a[k][l] + x;
       l = l + 1;
     }
     t[0] = t[0] + b[k];
@@ -71,10 +89,12 @@ void right(int M, int N, int L, int a[N][L]) {
     b[i+M-1] = 0;
     int l = 0;
     while (l <= L - 1) {
-      b[i+M-1] = b[i+M-1] + a[i+M-1][l];
+      x = randB(100);
+      b[i+M-1] = b[i+M-1] + a[i+M-1][l] + x;
       l = l + 1;
     }
-    int z = b[i+M-1] - b[i-1];
+    x = randB(100);
+    int z = b[i+M-1] - b[i-1] + x;
     t[i] = t[i-1] + z;
     i = i + 1;
   }

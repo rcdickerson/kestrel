@@ -234,7 +234,7 @@ impl OutputMode {
               }),
               then: Box::new(Statement::Expression(Box::new(Expression::Call {
                 callee: Box::new(Expression::Identifier{ name: "printf".to_string() }),
-                args: vec!(Expression::StringLiteral("Test Case Failed\\n".to_string())),
+                args: vec!(Expression::StringLiteral("Test case failed or timed out\\n".to_string())),
               }))),
               els: None,
             }),

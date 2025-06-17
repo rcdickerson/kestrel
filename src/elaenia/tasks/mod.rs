@@ -4,5 +4,6 @@ pub mod elaenia_context;
 pub mod elaenia_invars;
 pub mod insert_specs;
 pub mod solve_sketch;
+pub mod syntactic_alignment;
 pub mod write_dafny;
 pub mod write_sketch;

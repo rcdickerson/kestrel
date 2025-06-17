@@ -7,6 +7,7 @@ use kestrel::elaenia::tasks::elaenia_context::ElaeniaContext;
 use kestrel::elaenia::tasks::elaenia_invars::*;
 use kestrel::elaenia::tasks::insert_specs::*;
 use kestrel::elaenia::tasks::solve_sketch::*;
+use kestrel::elaenia::tasks::syntactic_alignment::*;
 use kestrel::elaenia::tasks::write_dafny::*;
 use kestrel::elaenia::tasks::write_sketch::*;
 use kestrel::kestrel_context::KestrelContext;
@@ -271,7 +272,7 @@ fn elaenia_workflow(args: Args) {
   if args.space_size { workflow.add_task(ComputeSpace::new()) }
   match args.extractor {
     ExtractorArg::Unaligned => workflow.add_task(AlignNone::new()),
-    ExtractorArg::CountLoops => workflow.add_task(AlignCountLoops::new()),
+    ExtractorArg::CountLoops => workflow.add_task(ElaeniaSyntacticAlignmentTask::new()),
     ExtractorArg::SA => panic!("Semantic alignment currently unsupported for Elaenia workflows."),
   }
   workflow.add_task(AlignedCRel::new());

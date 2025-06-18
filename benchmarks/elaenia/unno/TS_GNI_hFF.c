@@ -35,25 +35,18 @@ int _arb_int() {
   return rand() % 10;
 }
 
-void _test_gen(int low, int high1, int high2) {
+void _test_gen(int low) {
   if (low < 0) {
     low = (low * (-1));
   }
   low = (low % 10);
-  if (high1 < 0) {
-    high1 = (high1 * (-1));
-  }
-  high1 = (high1 % 10);
-  if (high2 < 0) {
-    high2 = (high2 * (-1));
-  }
-  high2 = (high2 % 10);
-  _main(low, high1, low, high2);
+  _main(low, 0, low, 0);
 }
 
 void ti_gni(int low, int high) {
   int ret;
   int x;
+  int r = 0;
   if (high != 0) {
     x = arb_int();
     if (x >= low) {
@@ -63,11 +56,14 @@ void ti_gni(int low, int high) {
     }
   } else {
     x = low;
-    int r;
     r = arb_bool();
+    int i = 0;
     while ( r != 0 ) {
+      _invariant("l_r == r_r");
       x = x + 1;
       r = arb_bool();
+      if (i > 5) { assume(r == 0); }
+      i = i + 1;
     }
     ret = x;
   }

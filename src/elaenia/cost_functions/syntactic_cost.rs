@@ -34,7 +34,7 @@ impl PartialOrd for ElaeniaSyntacticCost {
   fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
     match self.num_loops.cmp(&other.num_loops) {
       Ordering::Equal => match self.cond_paths.cmp(&other.cond_paths) {
-        Ordering::Equal => match self.num_relations.cmp(&other.cond_paths) {
+        Ordering::Equal => match self.num_relations.cmp(&other.num_relations) {
           Ordering::Equal => Some(self.ast_size.cmp(&other.ast_size)),
           num_rels => Some(num_rels),
         },

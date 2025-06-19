@@ -35,20 +35,12 @@ int _arb_int() {
   return rand() % 10;
 }
 
-void _test_gen(int low, int high1, int high2) {
+void _test_gen(int low) {
   if (low < 0) {
     low = (low * (-1));
   }
   low = (low % 10);
-  if (high1 < 0) {
-    high1 = (high1 * (-1));
-  }
-  high1 = (high1 % 10);
-  if (high2 < 0) {
-    high2 = (high2 * (-1));
-  }
-  high2 = (high2 % 10);
-  _main(low, high1, low, high2);
+  _main(low, 1, low, 1);
 }
 
 void ti_gni(int low, int high) {
@@ -59,7 +51,7 @@ void ti_gni(int low, int high) {
     if (x >= low) {
       ret = x;
     } else {
-      while (1 == 1) {x = x;}
+      while (1 == 1) { x = x; }
     }
   } else {
     x = low;

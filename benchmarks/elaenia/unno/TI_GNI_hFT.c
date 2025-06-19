@@ -53,13 +53,10 @@ void ti_gni(int low, int high) {
   } else {
     x = low;
     r = arb_bool();
-    int i = 0;
     while ( r != 0 ) {
       _invariant("l_x >= l_low");
       x = x + 1;
       r = arb_bool();
-      if (i > 5) { assume(r == 0); }
-      i = i + 1;
     }
     ret = x;
   }

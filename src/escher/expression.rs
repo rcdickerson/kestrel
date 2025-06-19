@@ -6,6 +6,7 @@ pub enum Expression {
   ArrayIndex{expr: Box<Expression>, index: Box<Expression>},
   ConstInt(i32),
   ConstFloat(f32),
+  ConstBool(bool),
   GeneratorOptions(Vec<Expression>),
   Hole,
   Identifier{name: String},
@@ -32,6 +33,10 @@ impl Expression {
       },
       Expression::ConstFloat(f) => {
         writer.write(&f.to_string());
+      },
+      Expression::ConstBool(b) => match b {
+        true  => { writer.write("true"); },
+        false => { writer.write("false"); },
       },
       Expression::GeneratorOptions(options) => {
         writer.write("{| ");

@@ -287,10 +287,49 @@ fn statement_to_sketch(stmt: &Statement) -> Sk::Statement {
         op: "!".to_string(),
       }))
     },
-    Statement::While{condition, body, ..} => {
+    Statement::While{id, condition, body, ..} => {
+      let counter_name = format!("_{}", id).replace("-", "");
+      let counter_ident = Sk::Expression::Identifier{name: counter_name.clone()};
+      let mut counter_var = Sk::Variable::new(Sk::Type::Int);
+      counter_var.set_name(counter_name.clone());
+      counter_var.set_initializer(Sk::Initializer::Expression(Sk::Expression::ConstInt(0)));
+      let counter_decl = Sk::Statement::Variable(counter_var);
+
+      let counter_check = Sk::Statement::Seq(vec!(
+        Sk::Statement::If {
+          condition: Box::new(Sk::Expression::BinOp {
+            lhs: Box::new(counter_ident.clone()),
+            rhs: Box::new(Sk::Expression::ConstInt(5)),
+            op: ">".to_string(),
+          }),
+          then: Box::new(Sk::Statement::Assume(
+            Box::new(Sk::Expression::ConstBool(false)))),
+          els: None,
+        },
+      ));
+      let counter_inc = Sk::Statement::Expression(Box::new(
+        Sk::Expression::BinOp {
+          lhs: Box::new(counter_ident.clone()),
+          rhs: Box::new(Sk::Expression::BinOp {
+            lhs: Box::new(counter_ident.clone()),
+            rhs: Box::new(Sk::Expression::ConstInt(1)),
+            op: "+".to_string(),
+          }),
+          op: "=".to_string(),
+        }
+      ));
+
       let condition = Box::new(expression_to_sketch(condition));
-      let body = body.as_ref().map(|stmt| Box::new(statement_to_sketch(stmt)));
-      Sk::Statement::While{condition, body}
+      let body = match &body {
+        None => Sk::Statement::Seq(vec!(counter_check, counter_inc)),
+        Some(stmt) => Sk::Statement::Seq(vec!(
+          statement_to_sketch(stmt),
+          counter_check,
+          counter_inc)),
+      };
+      Sk::Statement::Seq(vec!(
+        counter_decl,
+        Sk::Statement::While{condition, body: Some(Box::new(body))}))
     },
   }
 }

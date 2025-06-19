@@ -100,8 +100,10 @@ impl CostFunction<Eggroll> for ElaeniaSyntacticCostFunction {
       _ => enode.fold(0, |sum, id| sum + costs(id).cond_paths)
     };
     let num_relations = match enode {
-      Eggroll::Rel(_) => enode.fold(1, |sum, id| sum + costs(id).ast_size),
-      _ => enode.fold(0, |sum, id| sum + costs(id).ast_size),
+      Eggroll::Rel(_) => enode.fold(1, |sum, id| sum + costs(id).num_relations),
+      Eggroll::RelLeft(_)  => enode.fold(1, |sum, id| sum + costs(id).num_relations),
+      Eggroll::RelRight(_) => enode.fold(1, |sum, id| sum + costs(id).num_relations),
+      _ => enode.fold(0, |sum, id| sum + costs(id).num_relations),
     };
     let ast_size = match enode {
       Eggroll::Rel(children) if children.iter().min() == children.iter().max() => 0,

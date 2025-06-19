@@ -56,7 +56,10 @@ impl Task<ElaeniaContext> for SolveSketch {
     // Run Sketch.
     let mut child = Command::new("sketch")
       .current_dir(working_dir.clone())
-      .args(["--fe-output-code", sketch_file])
+      .args([
+        "--fe-output-code", sketch_file,
+//        "--bnd-inbits", "8",
+      ])
       .stdout(Stdio::piped())
       .spawn()
       .unwrap();

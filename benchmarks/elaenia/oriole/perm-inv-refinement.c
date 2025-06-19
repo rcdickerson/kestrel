@@ -3,7 +3,6 @@
      && (forall.length == exists.length)
      && (forall i: int, j: int, a: int, x: int :: (i == j) ==> lst_read(lst_store(a, i, x), j) == x)
      && (forall i: int, j: int, a: int, x: int :: (i != j) ==> lst_read(lst_store(a, i, x), j) == lst_read(a, j));
- * pre_sketch: left.length <= 4;
  * forall: refinement;
  * exists: original;
  * post: forall.sum == exists.sum;

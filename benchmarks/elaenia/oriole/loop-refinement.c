@@ -20,18 +20,25 @@ int randOdd();
 
 void original() {
   int sum = 0;
+  int i = 0;
   while (sum <= 100) {
+    _invariant("l_sum == r_sum");
     int r;
     r = rand();
-    sum = sum + r;
+    sum = sum + r + 1;
+    if (i > 5) { assume(sum > 100); }
+    i = i + 1;
   }
 }
 
 void refinement() {
   int sum = 0;
+  int i = 0;
   while (sum <= 100) {
     int r;
     r = randOdd();
-    sum = sum + r;
+    sum = sum + r + 1;
+    if (i > 5) { assume(sum > 100); }
+    i = i + 1;
   }
 }

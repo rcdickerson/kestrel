@@ -276,6 +276,14 @@ fn elaenia_workflow(args: Args) {
     ExtractorArg::SA => panic!("Semantic alignment currently unsupported for Elaenia workflows."),
   }
   workflow.add_task(AlignedCRel::new());
+  if args.verbose {
+    workflow.add_task(PrintInfo::with_header("Aligned Eggroll",
+        &|ctx: &ElaeniaContext| {
+          ctx.aligned_eggroll().as_ref()
+            .expect("Missing unaligned CRel")
+            .to_string()
+        }));
+  }
   workflow.add_task(PrintInfo::with_header("Aligned Product Program",
       &|ctx: &ElaeniaContext| {
          ctx.aligned_crel().as_ref()

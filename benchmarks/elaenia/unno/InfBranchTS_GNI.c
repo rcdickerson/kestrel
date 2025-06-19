@@ -41,7 +41,11 @@ void inf_branch_ts(int low, int high) {
       } else {
         max = r;
       }
-      x = x - max;
+      if (max >= x) {
+        x = 0;
+      } else {
+        x = x - max;
+      }
     }
   } else {
     while (x > 0) {

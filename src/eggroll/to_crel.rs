@@ -451,80 +451,24 @@ fn expect_binding(sexp: &Sexp) -> (String, Type) {
 }
 
 fn expect_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
-  let cond1 = expect_expression(&sexps[1], ctx);
-  let cond2 = expect_expression(&sexps[2], ctx);
-  let conj = Expression::Binop {
-    lhs: Box::new(cond1.clone()),
-    rhs: Box::new(cond2.clone()),
-    op: BinaryOp::And,
-  };
-  let invars1 = expect_invariants(&sexps[3], ctx);
-  let invars2 = expect_invariants(&sexps[4], ctx);
-  let mut combined_invars: Vec<_> = invars1.values().map(|v| v.clone()).collect();
-  for (sexp, expr) in &invars2 {
-    if !invars1.contains_key(sexp) {
-      combined_invars.push(expr.clone());
-    }
+  Statement::WhileRel {
+    id: uuid::Uuid::new_v4(),
+    unroll_left: 0,
+    unroll_right: 0,
+    stutter_left: 0,
+    stutter_right: 0,
+    condition_left: Box::new(expect_expression(&sexps[1], ctx)),
+    condition_right: Box::new(expect_expression(&sexps[2], ctx)),
+    invariants_left: expect_invariants(&sexps[3], ctx).values()
+      .map(|v| v.clone())
+      .collect(),
+    invariants_right: expect_invariants(&sexps[4], ctx).values()
+      .map(|v| v.clone())
+      .collect(),
+    body_left: Some(Box::new(expect_statement(&sexps[5], ctx))),
+    body_right: Some(Box::new(expect_statement(&sexps[6], ctx))),
+    body_merged: Some(Box::new(expect_statement(&sexps[7], ctx))),
   }
-
-  let body1 = expect_statement(&sexps[5], ctx);
-  let runoff_body_1 = match ctx.config.assume_name.clone() {
-    None => body1.clone(),
-    Some(assume_name) => Statement::Compound(vec!(
-      BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
-        callee: Box::new(Expression::Identifier{name: assume_name}),
-        args: vec!(Expression::Unop{
-          expr: Box::new(cond2.clone()),
-          op: UnaryOp::Not}),
-      }))),
-      BlockItem::Statement(body1.clone()),
-    )),
-  };
-
-  let body2 = expect_statement(&sexps[6], ctx);
-  let runoff_body_2 = match ctx.config.assume_name.clone() {
-    None => body2.clone(),
-    Some(assume_name) => Statement::Compound(vec!(
-      BlockItem::Statement(Statement::Expression(Box::new(Expression::Call {
-        callee: Box::new(Expression::Identifier{name: assume_name}),
-        args: vec!(Expression::Unop{
-          expr: Box::new(cond1.clone()),
-          op: UnaryOp::Not}),
-      }))),
-      BlockItem::Statement(body2.clone()),
-    )),
-  };
-  let body = expect_statement(&sexps[7], ctx);
-
-  let runoff_link_id = Some(uuid::Uuid::new_v4());
-
-  let stmts = vec! [
-    BlockItem::Statement(Statement::While {
-      id: Uuid::new_v4(),
-      runoff_link_id: runoff_link_id.clone(),
-      is_runoff: false,
-      is_merged: true,
-      invariants: combined_invars,
-      condition: Box::new(conj),
-      body: Some(Box::new(body))}),
-    BlockItem::Statement(Statement::While {
-      id: Uuid::new_v4(),
-      runoff_link_id: runoff_link_id.clone(),
-      is_runoff: true,
-      is_merged: false,
-      invariants: invars1.values().map(|v| v.clone()).collect(),
-      condition: Box::new(cond1),
-      body: Some(Box::new(runoff_body_1))}),
-    BlockItem::Statement(Statement::While {
-      id: Uuid::new_v4(),
-      runoff_link_id: runoff_link_id.clone(),
-      is_runoff: true,
-      is_merged: false,
-      invariants: invars2.values().map(|v| v.clone()).collect(),
-      condition: Box::new(cond2),
-      body: Some(Box::new(runoff_body_2))}),
-  ];
-  Statement::Compound(stmts)
 }
 
 fn expect_guarded_repeat(sexps: &[Sexp], ctx: &Context) -> Statement {

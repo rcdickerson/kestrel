@@ -110,6 +110,9 @@ fn eval_statement(stmt: &Statement, exec: &mut Execution) {
       exec.clear_break_flag();
       exec.push_tag(end_tag);
     },
+    wr@Statement::WhileRel{..} => {
+      eval_statement(&wr.denote_while_rel(), exec);
+    }
   }
 }
 

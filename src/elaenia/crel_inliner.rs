@@ -133,6 +133,7 @@ impl CRelInliner {
         }
       },
       Statement::While{..} => panic!("Can't inline over while"),
+      Statement::WhileRel{..} => panic!("Can't inline over while-rel"),
     }
   }
 

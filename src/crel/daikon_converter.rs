@@ -156,6 +156,9 @@ impl DaikonConverter {
           is_merged: *is_merged,
         }
       },
+      wr@Statement::WhileRel{..} => {
+        self.convert_statement(wr.denote_while_rel())
+      },
     }
   }
 

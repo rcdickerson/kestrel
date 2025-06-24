@@ -158,6 +158,20 @@ impl Statement {
         visitor.visit_statement(b);
         b.walk(visitor);
       },
+      Statement::WhileRel{body_left, body_right, body_merged, ..} => {
+        for b in body_left.iter_mut() {
+          visitor.visit_statement(b);
+          b.walk(visitor);
+        }
+        for b in body_right.iter_mut() {
+          visitor.visit_statement(b);
+          b.walk(visitor);
+        }
+        for b in body_merged.iter_mut() {
+          visitor.visit_statement(b);
+          b.walk(visitor);
+        }
+      },
     }
   }
 }

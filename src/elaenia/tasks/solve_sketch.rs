@@ -1,5 +1,7 @@
+use crate::crel::ast::*;
 use crate::crel::parser::*;
 use crate::crel::fundef::*;
+use crate::crel::visitor::*;
 use crate::elaenia::tasks::elaenia_context::*;
 use crate::workflow::context::*;
 use crate::workflow::task::*;
@@ -10,6 +12,7 @@ use std::io::prelude::*;
 use std::process::Command;
 use std::process::Stdio;
 use std::time::Duration;
+use uuid::Uuid;
 use wait_timeout::ChildExt;
 
 pub struct SolveSketch {
@@ -58,7 +61,7 @@ impl Task<ElaeniaContext> for SolveSketch {
       .current_dir(working_dir.clone())
       .args([
         "--fe-output-code", sketch_file,
-//        "--bnd-inbits", "8",
+        // "--bnd-inbits", "8",
       ])
       .stdout(Stdio::piped())
       .spawn()
@@ -102,29 +105,89 @@ impl Task<ElaeniaContext> for SolveSketch {
       context.accept_choice_solution(choice_fun.name.clone(), solution_fun.clone());
       context.mark_sketch_success(true);
     }
+    for unroll_fun in context.unroll_funs().clone() {
+      let solution = solution_funs.get(&unroll_fun.name);
+      if solution.is_none() { continue; }
+      let mut solution_fun = solution.unwrap().clone();
+      let mut extractor = UnrollExtractor::new();
+      solution_fun.body.walk(&mut extractor);
+      let unroll_count = extractor.unroll_val.expect(
+        format!("Unable to extract return value from {}", solution_fun.name).as_str());
+
+      let re = Regex::new(r"unroll_(.*)_(l|r)").unwrap();
+      let (_, [id_str, side]) = re.captures(&unroll_fun.name).map(|caps| caps.extract()).expect(
+        format!("Unexpected unroll fun name {}", solution_fun.name).as_str());
+      let loop_id = Uuid::parse_str(id_str).expect(
+        format!("Invalid UUID {}", id_str).as_str());
+      match side {
+        "l" => context.accept_unroll_solution_left(loop_id, unroll_count),
+        "r" => context.accept_unroll_solution_right(loop_id, unroll_count),
+        _ => panic!("Unexpected unroll fun name {}", solution_fun.name),
+      }
+    }
+    context.annotate_unrolls();
+  }
+}
+
+struct UnrollExtractor {
+  unroll_val: Option<i32>,
+}
+
+impl UnrollExtractor {
+  fn new() -> Self {
+    UnrollExtractor {
+      unroll_val: None,
+    }
+  }
+}
+
+impl CRelVisitor for UnrollExtractor {
+  fn visit_statement(&mut self, stmt: &mut Statement) {
+    match &stmt {
+      Statement::Expression(expr) => match *expr.clone() {
+        Expression::Binop { lhs, rhs, op } if op == BinaryOp::Assign => {
+          match (*lhs, *rhs) {
+            (Expression::Identifier{name}, Expression::ConstInt(v)) if name == "_out".to_string() => {
+              self.unroll_val = Some(v)
+            },
+            _ => (),
+          }
+        },
+        _ => (),
+      },
+      Statement::Return(expr) => {
+        expr.as_ref().map(|expr| match **expr {
+          Expression::ConstInt(v) => self.unroll_val = Some(v),
+          _ => (),
+        });
+      },
+      _ => (),
+    }
   }
 }
 
 /// Dirty hacks to convert Sketch's C++ into something our C parser
 /// library can handle.
 fn cleanup(file_path: &str) -> Result<(), Error> {
-  // Capture all of the choice functions; this is all we're interested
+  // Capture all of the choice and unroll functions; these are all we're interested
   // in, and all we're going to output.
-  let re = Regex::new(r"(?s)void choice_.*?\n\}").unwrap();
+  let re = Regex::new(r"(?s)void (choice|unroll)_.*?\n\}").unwrap();
   let contents = std::fs::read_to_string(file_path)?;
   let mut file = std::fs::OpenOptions::new()
     .write(true).truncate(true).open(file_path)?;
   file.write(re.captures_iter(&contents)
-                .map(|c| c[0].to_string()
-                     // Instead of taking in a ref to an output object,
-                     // return the output directly. Doing this with
-                     // fragile string find / replaces, sorry!
-                     .replace("void choice_", "int choice_")
-                     .replace(", int& _out", "")
-                     .replace("{", "{\n  int _out;")
-                     .replace("return;", "return _out;"))
-                .collect::<Vec<_>>()
-                .join("\n")
+             .map(|c| c[0].to_string()
+                  // Instead of taking in a ref to an output object,
+                  // return the output directly. Doing this with
+                  // fragile string find / replaces, sorry!
+                  .replace("void choice_", "int choice_")
+                  .replace("void unroll_", "int unroll_")
+                  .replace(", int& _out", "")
+                  .replace("int& _out", "")
+                  .replace("{", "{\n  int _out;")
+                  .replace("return;", "return _out;"))
+             .collect::<Vec<_>>()
+             .join("\n")
              .as_bytes())?;
   Ok(())
 }

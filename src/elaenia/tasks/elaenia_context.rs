@@ -13,6 +13,7 @@ use egg::RecExpr;
 use std::collections::HashMap;
 use std::path::Path;
 use std::time::Duration;
+use uuid::Uuid;
 
 #[derive(Clone)]
 pub struct ElaeniaContext {
@@ -26,12 +27,15 @@ pub struct ElaeniaContext {
   aligned_crel: Option<CRel>,
   sketch_output: Option<String>,
   solved_choice_funs: HashMap<String, FunDef>,
+  solved_unrolls_left: HashMap<Uuid, i32>,
+  solved_unrolls_right: HashMap<Uuid, i32>,
 
   aligned_output: Option<String>,
 
   choice_funs: Vec<FunDef>,
   choice_gens: Vec<FunDef>,
   havoc_funs: Vec<FunDef>,
+  unroll_funs: Vec<FunDef>,
 
   output_path: Option<String>,
   output_filename: Option<String>,
@@ -57,10 +61,13 @@ impl ElaeniaContext {
       aligned_crel: None,
       sketch_output: None,
       solved_choice_funs: HashMap::new(),
+      solved_unrolls_left: HashMap::new(),
+      solved_unrolls_right: HashMap::new(),
       aligned_output: None,
       choice_funs: Vec::new(),
       choice_gens: Vec::new(),
       havoc_funs: Vec::new(),
+      unroll_funs: Vec::new(),
       output_path: None,
       output_filename: None,
       stopwatch: WorkflowStopwatch::new(),
@@ -125,6 +132,14 @@ impl ElaeniaContext {
     .collect()
   }
 
+  pub fn accept_unroll_fun(&mut self, unrolldef: FunDef) {
+    self.unroll_funs.push(unrolldef);
+  }
+
+  pub fn unroll_funs(&self) -> &Vec<FunDef> {
+    &self.unroll_funs
+  }
+
   pub fn accept_sketch_output(&mut self, sketch_output: String) {
     self.sketch_output = Some(sketch_output);
   }
@@ -139,6 +154,30 @@ impl ElaeniaContext {
 
   pub fn choice_solutions(&self) -> &HashMap<String, FunDef> {
     &self.solved_choice_funs
+  }
+
+  pub fn accept_unroll_solution_left(&mut self, loop_id: Uuid, unrolls: i32) {
+    self.solved_unrolls_left.insert(loop_id, unrolls);
+  }
+
+  pub fn unroll_solutions_left(&self) -> &HashMap<Uuid, i32> {
+    &self.solved_unrolls_left
+  }
+
+  pub fn accept_unroll_solution_right(&mut self, loop_id: Uuid, unrolls: i32) {
+    self.solved_unrolls_right.insert(loop_id, unrolls);
+  }
+
+  pub fn unroll_solutions_right(&self) -> &HashMap<Uuid, i32> {
+    &self.solved_unrolls_right
+  }
+
+  pub fn annotate_unrolls(&mut self) {
+    let crel = self.aligned_crel.as_ref().expect("No aligned CRel");
+    self.aligned_crel = Some(crel.map(&mut UnrollAnnotator::new(
+      self.unroll_solutions_left().clone(),
+      self.unroll_solutions_right().clone(),
+    )));
   }
 
   pub fn mark_sketch_success(&mut self, succeeded: bool) {
@@ -157,6 +196,50 @@ impl ElaeniaContext {
 
   pub fn sketch_succeeded(&self) -> bool {
     self.sketch_succeeded
+  }
+}
+
+struct UnrollAnnotator {
+  left_unrolls: HashMap<Uuid, i32>,
+  right_unrolls: HashMap<Uuid, i32>,
+}
+impl UnrollAnnotator {
+  fn new(left_unrolls: HashMap<Uuid, i32>,
+         right_unrolls: HashMap<Uuid, i32>) -> Self {
+    UnrollAnnotator { left_unrolls, right_unrolls }
+  }
+}
+impl crate::crel::mapper::CRelMapper for UnrollAnnotator {
+  fn map_statement(&mut self, stmt: &Statement) -> Statement {
+    match stmt {
+      Statement::WhileRel {
+        id,
+        stutter_left,
+        stutter_right,
+        invariants_left,
+        invariants_right,
+        condition_left,
+        condition_right,
+        body_left,
+        body_right,
+        body_merged,
+        ..
+      } => Statement::WhileRel {
+        id: id.clone(),
+        unroll_left: *self.left_unrolls.get(&id).unwrap_or(&0) as usize,
+        unroll_right: *self.right_unrolls.get(&id).unwrap_or(&0) as usize,
+        stutter_left: *stutter_left,
+        stutter_right: *stutter_right,
+        invariants_left: invariants_left.clone(),
+        invariants_right: invariants_right.clone(),
+        condition_left: condition_left.clone(),
+        condition_right: condition_right.clone(),
+        body_left: body_left.clone(),
+        body_right: body_right.clone(),
+        body_merged: body_merged.clone(),
+      },
+      _ => stmt.clone(),
+    }
   }
 }
 

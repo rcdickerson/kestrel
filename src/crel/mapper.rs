@@ -202,6 +202,28 @@ impl Statement {
           is_merged: *is_merged,
         })
       },
+      Statement::WhileRel{id, unroll_left, unroll_right, stutter_left, stutter_right, invariants_left, invariants_right, condition_left, condition_right, body_left, body_right, body_merged} => {
+        let mapped_condition_left = Box::new(condition_left.map(mapper));
+        let mapped_condition_right = Box::new(condition_right.map(mapper));
+        let mapped_body_left = body_left.as_ref().map(|body| Box::new(body.map(mapper)));
+        let mapped_body_right = body_right.as_ref().map(|body| Box::new(body.map(mapper)));
+        let mapped_body_merged = body_merged.as_ref().map(|body| Box::new(body.map(mapper)));
+
+        mapper.map_statement(&Statement::WhileRel {
+          id: id.clone(),
+          unroll_left: *unroll_left,
+          unroll_right: *unroll_right,
+          stutter_left: *stutter_left,
+          stutter_right: *stutter_right,
+          invariants_left: invariants_left.clone(),
+          invariants_right: invariants_right.clone(),
+          condition_left: mapped_condition_left,
+          condition_right: mapped_condition_right,
+          body_left: mapped_body_left,
+          body_right: mapped_body_right,
+          body_merged: mapped_body_merged,
+        })
+      },
     }
   }
 }

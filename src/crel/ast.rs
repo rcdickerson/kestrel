@@ -276,6 +276,20 @@ pub enum Statement {
     is_runoff: bool,
     is_merged: bool,
   },
+  WhileRel {
+    id: Uuid,
+    unroll_left: usize,
+    unroll_right: usize,
+    stutter_left: usize,
+    stutter_right: usize,
+    invariants_left: Vec<Expression>,
+    invariants_right: Vec<Expression>,
+    condition_left: Box<Expression>,
+    condition_right: Box<Expression>,
+    body_left: Option<Box<Statement>>,
+    body_right: Option<Box<Statement>>,
+    body_merged: Option<Box<Statement>>,
+  },
 }
 
 impl Statement {
@@ -284,6 +298,141 @@ impl Statement {
       Statement::None => true,
       Statement::Expression(expr) => expr.is_none(),
       _ => false,
+    }
+  }
+
+  pub fn denote_while_rel(&self) -> Statement {
+    match self {
+      Statement::WhileRel {
+        id,
+        unroll_left,
+        unroll_right,
+        stutter_left,
+        stutter_right,
+        invariants_left,
+        invariants_right,
+        condition_left,
+        condition_right,
+        body_left,
+        body_right,
+        body_merged,
+      } => {
+        let condition_conj = Expression::Binop {
+          lhs: condition_left.clone(),
+          rhs: condition_right.clone(),
+          op: BinaryOp::And,
+        };
+        let mut combined_invars: Vec<_> = invariants_left.clone();
+        for expr in invariants_right {
+          if !invariants_left.contains(expr) {
+            combined_invars.push(expr.clone());
+          }
+        }
+        let runoff_body_left = body_left.as_ref().map(|body_left| {
+          Box::new(Statement::Compound(vec!(
+            BlockItem::Statement(Statement::Assume(Box::new(
+              Expression::Unop {
+                expr: condition_right.clone(),
+                op: UnaryOp::Not
+              }))),
+            BlockItem::Statement(*body_left.clone()))))
+        });
+        let runoff_body_right = body_right.as_ref().map(|body_right| {
+          Box::new(Statement::Compound(vec!(
+            BlockItem::Statement(Statement::Assume(Box::new(
+              Expression::Unop {
+                expr: condition_left.clone(),
+                op: UnaryOp::Not
+              }))),
+            BlockItem::Statement(*body_right.clone()))))
+        });
+        let runoff_link_id = Some(uuid::Uuid::new_v4());
+
+        let mut stutters = Vec::new();
+        body_left.as_ref().map(|body_left| {
+          for _ in 0..*stutter_left {
+            stutters.push(BlockItem::Statement(Statement::If {
+              condition: condition_left.clone(),
+              then: body_left.clone(),
+              els: None,
+            }));
+          }
+        });
+        body_right.as_ref().map(|body_right| {
+          for _ in 0..*stutter_right {
+            stutters.push(BlockItem::Statement(Statement::If {
+              condition: condition_right.clone(),
+              then: body_right.clone(),
+              els: None,
+            }));
+          }
+        });
+        let body_with_stutters = if stutters.is_empty() {
+          body_merged.clone()
+        } else {
+          body_merged.as_ref().map(|merged| {
+            stutters.push(BlockItem::Statement(*merged.clone()))
+          });
+          Some(Box::new(Statement::Compound(stutters)))
+        };
+
+        let mut stmts = Vec::new();
+        body_left.as_ref().map(|body_left| {
+          for _ in 0..*unroll_left {
+            stmts.push(BlockItem::Statement(Statement::If {
+              condition: condition_left.clone(),
+              then: body_left.clone(),
+              els: None,
+            }));
+          }
+        });
+        body_right.as_ref().map(|body_right| {
+          for _ in 0..*unroll_right {
+            stmts.push(BlockItem::Statement(Statement::If {
+              condition: condition_right.clone(),
+              then: body_right.clone(),
+              els: None,
+            }));
+          }
+        });
+        stmts.push(BlockItem::Statement(Statement::While {
+          id: id.clone(),
+          runoff_link_id: runoff_link_id.clone(),
+          is_runoff: false,
+          is_merged: true,
+          invariants: combined_invars,
+          condition: Box::new(condition_conj),
+          body: body_with_stutters,
+        }));
+        stmts.push(BlockItem::Statement(Statement::If {
+          condition: condition_left.clone(),
+          then: Box::new(Statement::While {
+            id: Uuid::new_v4(),
+            runoff_link_id: runoff_link_id.clone(),
+            is_runoff: true,
+            is_merged: false,
+            invariants: invariants_left.clone(),
+            condition: condition_left.clone(),
+            body: runoff_body_left,
+          }),
+          els: None,
+        }));
+        stmts.push(BlockItem::Statement(Statement::If {
+          condition: condition_right.clone(),
+          then: Box::new(Statement::While {
+            id: Uuid::new_v4(),
+            runoff_link_id: runoff_link_id.clone(),
+            is_runoff: true,
+            is_merged: false,
+            invariants: invariants_right.clone(),
+            condition: condition_right.clone(),
+            body: runoff_body_right,
+          }),
+          els: None,
+        }));
+        Statement::Compound(stmts)
+      },
+      _ => panic!("Not a WhileRel: {:?}", self)
     }
   }
 }

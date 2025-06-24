@@ -110,8 +110,43 @@ impl CountLoops for Statement {
         };
         LoopCounts {
           num_loops: cond_loops.num_loops + body_loops.num_loops + 1,
-          num_merged: cond_loops.num_loops + body_loops.num_loops + (if *is_merged {1} else {0}),
+          num_merged: cond_loops.num_merged + body_loops.num_merged + (if *is_merged {1} else {0}),
           num_runoffs: cond_loops.num_runoffs + body_loops.num_runoffs + (if *is_runoff {1} else {0}),
+        }
+      },
+      Statement::WhileRel{condition_left, condition_right, body_merged, body_left, body_right, ..} => {
+        let cond_loops = condition_left.count_loops().plus(&condition_right.count_loops());
+        let merged_loops = match body_merged {
+          None => LoopCounts::zero(),
+          Some(body) => body.count_loops(),
+        };
+        let left_loops = match body_left {
+          None => LoopCounts::zero(),
+          Some(body) => body.count_loops(),
+        };
+        let right_loops = match body_right {
+          None => LoopCounts::zero(),
+          Some(body) => body.count_loops(),
+        };
+        LoopCounts {
+          num_loops: cond_loops.num_loops
+            + merged_loops.num_loops
+            + left_loops.num_loops
+            + right_loops.num_loops
+            + (if body_left.is_some() { 1 } else { 0 })
+            + (if body_right.is_some() { 1 } else { 0 })
+            + 1,
+          num_merged: cond_loops.num_merged
+            + merged_loops.num_merged
+            + left_loops.num_merged
+            + right_loops.num_merged
+            + 1,
+          num_runoffs: cond_loops.num_runoffs
+            + merged_loops.num_runoffs
+            + left_loops.num_runoffs
+            + right_loops.num_runoffs
+            + (if body_left.is_some() { 1 } else { 0 })
+            + (if body_right.is_some() { 1 } else { 0 }),
         }
       },
     }

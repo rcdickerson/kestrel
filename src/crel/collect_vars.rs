@@ -88,6 +88,13 @@ impl CollectVars for Statement {
           Some(body) => union_all(vec!(condition.vars(), body.vars()))
         }
       },
+      Statement::WhileRel{condition_left, condition_right, body_left, body_right, body_merged, ..} => {
+        let mut vars = vec! [condition_left.vars(), condition_right.vars()];
+        body_left.as_ref().map(|body| vars.push(body.vars()));
+        body_right.as_ref().map(|body| vars.push(body.vars()));
+        body_merged.as_ref().map(|body| vars.push(body.vars()));
+        union_all(vars)
+      },
     }
   }
 }

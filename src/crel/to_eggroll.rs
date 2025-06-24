@@ -148,6 +148,22 @@ fn statement_to_eggroll(stmt: &Statement) -> String {
                               statement_to_eggroll(stmt)),
       }
     },
+    Statement::WhileRel{condition_left,
+                        condition_right,
+                        invariants_left,
+                        invariants_right,
+                        body_left,
+                        body_right,
+                        body_merged, ..} => {
+      format!("(while-rel {} {} {} {} {} {} {})",
+              expression_to_eggroll(condition_left),
+              expression_to_eggroll(condition_right),
+              invariants_to_eggroll(invariants_left),
+              invariants_to_eggroll(invariants_right),
+              body_left.as_ref().map_or("()".to_string(), |body| statement_to_eggroll(body)),
+              body_right.as_ref().map_or("()".to_string(), |body| statement_to_eggroll(body)),
+              body_merged.as_ref().map_or("()".to_string(), |body| statement_to_eggroll(body)))
+    }
   }
 }
 

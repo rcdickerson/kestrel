@@ -106,6 +106,22 @@ impl MapVars for Statement {
         is_runoff: *is_runoff,
         is_merged: *is_merged,
       },
+      Statement::WhileRel{id, unroll_left, unroll_right, stutter_left, stutter_right, invariants_left, invariants_right, condition_left, condition_right, body_left, body_right, body_merged} => {
+        Statement::WhileRel {
+          id: id.clone(),
+          unroll_left: *unroll_left,
+          unroll_right: *unroll_right,
+          stutter_left: *stutter_left,
+          stutter_right: *stutter_right,
+          invariants_left: invariants_left.clone(),
+          invariants_right: invariants_right.clone(),
+          condition_left: Box::new(condition_left.map_vars(f)),
+          condition_right: Box::new(condition_right.map_vars(f)),
+          body_left: body_left.as_ref().map(|body| Box::new(body.map_vars(f))),
+          body_right: body_right.as_ref().map(|body| Box::new(body.map_vars(f))),
+          body_merged: body_merged.as_ref().map(|body| Box::new(body.map_vars(f))),
+        }
+      }
     }
   }
 }

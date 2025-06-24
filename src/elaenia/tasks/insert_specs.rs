@@ -269,7 +269,48 @@ impl <'a> SpecInserter<'a> {
           is_runoff: is_runoff.clone(),
           is_merged: is_merged.clone(),
         }
-      }
+      },
+      Statement::WhileRel {
+        id,
+        unroll_left,
+        unroll_right,
+        stutter_left,
+        stutter_right,
+        invariants_left,
+        invariants_right,
+        condition_left,
+        condition_right,
+        body_left,
+        body_right,
+        body_merged,
+      } => {
+        let outer_scope = self.scope_identifiers.clone();
+        let new_body_left = body_left.as_ref().map(|body| {
+          Box::new(self.insert_specs_statement(body))
+        });
+        let new_body_right = body_right.as_ref().map(|body| {
+          Box::new(self.insert_specs_statement(body))
+        });
+        let new_body_merged = body_merged.as_ref().map(|body| {
+          Box::new(self.insert_specs_statement(body))
+        });
+        self.scope_identifiers = outer_scope;
+
+        Statement::WhileRel {
+          id: id.clone(),
+          unroll_left: *unroll_left,
+          unroll_right: *unroll_right,
+          stutter_left: *stutter_left,
+          stutter_right: *stutter_right,
+          invariants_left: invariants_left.clone(),
+          invariants_right: invariants_right.clone(),
+          condition_left: condition_left.clone(),
+          condition_right: condition_right.clone(),
+          body_left: new_body_left,
+          body_right: new_body_right,
+          body_merged: new_body_merged,
+        }
+      },
     }
   }
 

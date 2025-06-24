@@ -226,6 +226,9 @@ fn statement_to_c(stmt: &Statement, output_asserts: bool, output_assumes: bool)
       });
       C::Statement::While{condition, body}
     },
+    wr@Statement::WhileRel{..} => {
+      statement_to_c(&wr.denote_while_rel(), output_asserts, output_assumes)
+    }
   }
 }
 

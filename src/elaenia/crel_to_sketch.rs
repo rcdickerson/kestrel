@@ -288,18 +288,26 @@ fn statement_to_sketch(stmt: &Statement) -> Sk::Statement {
       }))
     },
     Statement::While{id, condition, body, ..} => {
+      fn declare_var(name: &String, typ: Sk::Type, init_val: Sk::Expression)
+                     -> (Sk::Expression, Sk::Statement) {
+        let ident = Sk::Expression::Identifier{name: name.clone()};
+        let mut var = Sk::Variable::new(typ);
+        var.set_name(name.clone());
+        var.set_initializer(Sk::Initializer::Expression(init_val));
+        let decl = Sk::Statement::Variable(var.clone());
+        (ident, decl)
+      }
+
+      // Termination counter.
       let counter_name = format!("_{}", id).replace("-", "");
-      let counter_ident = Sk::Expression::Identifier{name: counter_name.clone()};
-      let mut counter_var = Sk::Variable::new(Sk::Type::Int);
-      counter_var.set_name(counter_name.clone());
-      counter_var.set_initializer(Sk::Initializer::Expression(Sk::Expression::ConstInt(0)));
-      let counter_decl = Sk::Statement::Variable(counter_var);
+      let (counter_ident, counter_decl)
+        = declare_var(&counter_name, Sk::Type::Int, Sk::Expression::ConstInt(0));
 
       let counter_check = Sk::Statement::Seq(vec!(
         Sk::Statement::If {
           condition: Box::new(Sk::Expression::BinOp {
             lhs: Box::new(counter_ident.clone()),
-            rhs: Box::new(Sk::Expression::ConstInt(5)),
+            rhs: Box::new(Sk::Expression::ConstInt(6)),
             op: ">".to_string(),
           }),
           then: Box::new(Sk::Statement::Assume(
@@ -331,6 +339,9 @@ fn statement_to_sketch(stmt: &Statement) -> Sk::Statement {
         counter_decl,
         Sk::Statement::While{condition, body: Some(Box::new(body))}))
     },
+    wr@Statement::WhileRel{..} => {
+      statement_to_sketch(&wr.denote_while_rel())
+    }
   }
 }
 

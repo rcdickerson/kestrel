@@ -236,6 +236,9 @@ fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
       let body = body.as_ref().map(|stmt| Box::new(statement_to_daf(stmt)));
       Daf::Statement::While{loop_id: Some(loop_head_name(id)), invariants, condition, body}
     },
+    wr@Statement::WhileRel{..} => {
+      statement_to_daf(&wr.denote_while_rel())
+    }
   }
 }
 

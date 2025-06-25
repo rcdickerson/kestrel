@@ -288,9 +288,11 @@ impl <'a> SpecInserter<'a> {
         let new_body_left = body_left.as_ref().map(|body| {
           Box::new(self.insert_specs_statement(body))
         });
+        self.scope_identifiers = outer_scope.clone();
         let new_body_right = body_right.as_ref().map(|body| {
           Box::new(self.insert_specs_statement(body))
         });
+        self.scope_identifiers = outer_scope.clone();
         let new_body_merged = body_merged.as_ref().map(|body| {
           Box::new(self.insert_specs_statement(body))
         });

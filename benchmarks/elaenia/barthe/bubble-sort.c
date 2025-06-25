@@ -39,7 +39,7 @@ void _test_gen(int size,
 
 void sort(int size, int list[size]) {
   int i = 0;
-  int j;
+  int j = 0;
   while (i < size) {
     j = size - 1;
     while (j > i) {

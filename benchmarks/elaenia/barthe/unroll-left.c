@@ -17,7 +17,6 @@
  *   }
  */
 
-int randEven(int max);
 int randB(int max);
 
 void _test_gen(int b, int c, int n, int x) {
@@ -27,13 +26,11 @@ void _test_gen(int b, int c, int n, int x) {
 }
 
 void left(int N) {
-  int x;
-  x = randB(50);
-  int i = i;
-  int r;
+  int x = 0;
+  int i = 0;
+  int r = 0;
   while (i <= N ) {
-    _invariant("l_x == r_x");
-    r = randB(100);
+    r = randB(50);
     x = x + r;
     i = i + 1;
   }
@@ -41,9 +38,12 @@ void left(int N) {
 
 void right(int N) {
   int x = 0;
-  int i = 0;
-  int r;
+  int i = 1;
+  x = randB(100);
+  int r = 0;
   while (i <= N ) {
+    _invariant("l_x == r_x");
+    _invariant("l_i == r_i");
     r = randB(100);
     x = x + r;
     i = i + 1;

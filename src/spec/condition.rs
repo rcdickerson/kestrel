@@ -188,6 +188,7 @@ pub enum CondBUnop {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum CondBBinopA {
+  ArrayEq,
   Eq,
   Neq,
   Lt,

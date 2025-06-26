@@ -140,6 +140,7 @@ impl CondToCRel for CondBExpr {
           lhs: Box::new(lhs.to_crel()),
           rhs: Box::new(rhs.to_crel()),
           op: match op {
+            CondBBinopA::ArrayEq => crel::BinaryOp::ArrayEq,
             CondBBinopA::Eq => crel::BinaryOp::Equals,
             CondBBinopA::Neq => crel::BinaryOp::NotEquals,
             CondBBinopA::Lt => crel::BinaryOp::Lt,

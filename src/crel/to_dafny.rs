@@ -154,6 +154,61 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
         BinaryOp::Mul       => Daf::Expression::BinOp{lhs, rhs, op: "*".to_string()},
         BinaryOp::NotEquals => Daf::Expression::BinOp{lhs, rhs, op: "!=".to_string()},
         BinaryOp::Or        => Daf::Expression::BinOp{lhs, rhs, op: "||".to_string()},
+        BinaryOp::ArrayEq   => {
+          let index_var = "arr_eq_n".to_string();
+          let lt_left_len = Daf::Expression::BinOp {
+            lhs: Box::new(Daf::Expression::Identifier {
+              id: Daf::Identifier::Simple(index_var.clone())
+            }),
+            rhs: Box::new(Daf::Expression::Identifier {
+              id: Daf::Identifier::Compound {
+                lhs: Box::new(Daf::Identifier::Expression(lhs.clone())),
+                rhs: Box::new(Daf::Identifier::Simple("Length".to_string())),
+              }
+            }),
+            op: "<".to_string(),
+          };
+          let lt_right_len = Daf::Expression::BinOp {
+            lhs: Box::new(Daf::Expression::Identifier {
+              id: Daf::Identifier::Simple(index_var.clone())
+            }),
+            rhs: Box::new(Daf::Expression::Identifier {
+              id: Daf::Identifier::Compound {
+                lhs: Box::new(Daf::Identifier::Expression(rhs.clone())),
+                rhs: Box::new(Daf::Identifier::Simple("Length".to_string())),
+              }
+            }),
+            op: "<".to_string(),
+          };
+          let lt_lengths = Daf::Expression::BinOp {
+            lhs: Box::new(lt_left_len),
+            rhs: Box::new(lt_right_len),
+            op: "&&".to_string(),
+          };
+          let eq_at_index = Daf::Expression::BinOp {
+            lhs: Box::new(Daf::Expression::ArrayIndex {
+              expr: lhs,
+              index: Box::new(Daf::Expression::Identifier {
+                id: Daf::Identifier::Simple(index_var.clone())
+              }),
+            }),
+            rhs: Box::new(Daf::Expression::ArrayIndex {
+              expr: rhs,
+              index: Box::new(Daf::Expression::Identifier {
+                id: Daf::Identifier::Simple(index_var.clone())
+              }),
+            }),
+            op: "==".to_string(),
+          };
+          Daf::Expression::Forall {
+            bindings: vec! [(index_var.clone(), Daf::Type::Nat)],
+            condition: Box::new(Daf::Expression::BinOp {
+              lhs: Box::new(lt_lengths),
+              rhs: Box::new(eq_at_index),
+              op: "==>".to_string(),
+            })
+          }
+        }
       }
     },
     Expression::Forall { bindings, condition } => {

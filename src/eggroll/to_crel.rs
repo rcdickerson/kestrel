@@ -172,6 +172,11 @@ fn expect_expression(sexp: &Sexp, ctx: &Context) -> Expression {
         let rhs = Box::new(expect_expression(&sexps[2], ctx));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Div }
       },
+      Sexp::Atom(Atom::S(s)) if s == "=a=" => {
+        let lhs = Box::new(expect_expression(&sexps[1], ctx));
+        let rhs = Box::new(expect_expression(&sexps[2], ctx));
+        Expression::Binop{ lhs, rhs, op: BinaryOp::ArrayEq }
+      },
       Sexp::Atom(Atom::S(s)) if s == "==" => {
         let lhs = Box::new(expect_expression(&sexps[1], ctx));
         let rhs = Box::new(expect_expression(&sexps[2], ctx));

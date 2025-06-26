@@ -123,6 +123,7 @@ fn expression_to_sketch(expr: &Expression) -> Sk::Expression {
       match op {
         BinaryOp::Add       => Sk::Expression::BinOp{lhs, rhs, op: "+".to_string()},
         BinaryOp::And       => Sk::Expression::BinOp{lhs, rhs, op: "&&".to_string()},
+        BinaryOp::ArrayEq   => Sk::Expression::BinOp{lhs, rhs, op: "==".to_string()},
         BinaryOp::Assign    => Sk::Expression::BinOp{lhs, rhs, op: "=".to_string()},
         BinaryOp::Sub       => Sk::Expression::BinOp{lhs, rhs, op: "-".to_string()},
         BinaryOp::Div       => Sk::Expression::BinOp{lhs, rhs, op: "/".to_string()},

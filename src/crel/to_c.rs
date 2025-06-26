@@ -127,6 +127,7 @@ fn expression_to_c(expr: &Expression, output_asserts: bool, output_assumes: bool
       match op {
         BinaryOp::Add       => C::Expression::BinOp{lhs, rhs, op: "+".to_string()},
         BinaryOp::And       => C::Expression::BinOp{lhs, rhs, op: "&&".to_string()},
+        BinaryOp::ArrayEq   => C::Expression::BinOp{lhs, rhs, op: "==".to_string()},
         BinaryOp::Assign    => C::Expression::BinOp{lhs, rhs, op: "=".to_string()},
         BinaryOp::Sub       => C::Expression::BinOp{lhs, rhs, op: "-".to_string()},
         BinaryOp::Div       => C::Expression::BinOp{lhs, rhs, op: "/".to_string()},

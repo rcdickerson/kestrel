@@ -1,11 +1,11 @@
 /* @ELAENIA
  * pre: left.size == right.size
      && left.size >= 1
-     && left.list == right.list;
+     && left.list =a= right.list;
  * pre_sketch: left.size <= 3;
  * forall: sort;
  * exists: sort;
- * post: left.list == right.list;
+ * post: left.list =a= right.list;
  * aspecs:
  *   compare(i, j) {
  *     pre: true;
@@ -42,10 +42,12 @@ void sort(int size, int list[size]) {
   int j = 0;
   while (i < size) {
     _invariant("l_i == r_i");
+    _invariant("l_list =a= r_list");
     j = size - 1;
     while (j > i) {
       _invariant("l_j < l_size");
       _invariant("l_j == r_j");
+      _invariant("l_list =a= r_list");
       int cmp;
       cmp = compare(list[j - 1], list[j]);
       if (cmp > 10) {

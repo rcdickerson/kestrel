@@ -299,6 +299,7 @@ fn bexpr_lhs(i: &str) -> IResult<&str, CondBExpr> {
     bexpr_false,
     bexpr_unop("!", CondBUnop::Not),
     bexpr_binop_a("==", CondBBinopA::Eq),
+    bexpr_binop_a("=a=", CondBBinopA::ArrayEq),
     bexpr_binop_a("!=", CondBBinopA::Neq),
     bexpr_binop_a("<", CondBBinopA::Lt),
     bexpr_binop_a("<=", CondBBinopA::Lte),

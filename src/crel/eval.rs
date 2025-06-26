@@ -250,6 +250,7 @@ fn eval_binop(lhs: &Expression, rhs: &Expression, op: &BinaryOp, exec: &mut Exec
         }
       }
     },
+    BinaryOp::ArrayEq => bool_binop(exec, |i1, i2| i1 == i2, |f1, f2| f1 == f2),
     BinaryOp::Assign => {
       let loc = exec.current_location();
       eval_expression(rhs, exec);

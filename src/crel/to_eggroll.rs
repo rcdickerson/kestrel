@@ -61,6 +61,7 @@ fn expression_to_eggroll(expr: &Expression) -> String {
       let op_egg = match op {
         BinaryOp::Add       => "+",
         BinaryOp::And       => "&&",
+        BinaryOp::ArrayEq   => "=a=",
         BinaryOp::Assign    => "=",
         BinaryOp::Sub       => "-",
         BinaryOp::Div       => "/",

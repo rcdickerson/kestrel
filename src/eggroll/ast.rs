@@ -19,6 +19,7 @@ define_language! {
     ">"   = Gt([Id; 2]),
     ">="  = Gte([Id; 2]),
     "=="  = Eq([Id; 2]),
+    "=a=" = ArrayEq([Id; 2]),
     "!="  = Neq([Id; 2]),
     "&&"  = And([Id; 2]),
     "||"  = Or([Id; 2]),

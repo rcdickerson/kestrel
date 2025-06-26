@@ -224,6 +224,7 @@ pub enum UnaryOp {
 pub enum BinaryOp {
   Add,
   And,
+  ArrayEq,
   Assign,
   Sub,
   Div,

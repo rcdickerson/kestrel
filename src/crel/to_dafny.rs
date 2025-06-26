@@ -242,18 +242,24 @@ fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
   }
 }
 
-fn initializer_to_dafny(ty: &Option<Type>, initializer: &Initializer) -> Daf::Initializer {
+fn initializer_to_dafny(ty: &Option<Type>, declarator: &Declarator, initializer: &Initializer) -> Daf::Initializer {
   match initializer {
     Initializer::Expression(expr) => {
       Daf::Initializer::Expression(expression_to_daf(expr))
     },
-    Initializer::List(inits) => {
+    Initializer::List(..) => {
+      let sizes = match declarator {
+        Declarator::Array{sizes, ..} => {
+          sizes.into_iter()
+            .map(|expr| expression_to_daf(expr))
+            .collect()
+        }
+        _ => panic!("Array initializer for a non-array declarator"),
+      };
       Daf::Initializer::Array {
         ty: type_to_daf(ty.as_ref().expect("array initializer is missing a type"))
             .expect("ill-typed array initializer"),
-        values: inits.into_iter()
-          .map(|init| initializer_to_dafny(ty, init))
-          .collect(),
+        sizes,
       }
     },
   }
@@ -329,7 +335,7 @@ impl DeclarationBuilder {
     for spec in &decl.specifiers { self.visit_specifier(spec); }
     self.visit_declarator(&decl.declarator);
     self.initializer = decl.initializer.as_ref().map(|init| {
-      initializer_to_dafny(&decl.get_type(), init)
+      initializer_to_dafny(&decl.get_type(), &decl.declarator, init)
     });
   }
 
@@ -379,6 +385,7 @@ impl DeclarationBuilder {
       self.name.clone().expect("Variable declaration has no name")
     );
     self.initializer.as_ref().map(|init| var.set_initializer(init.clone()));
+    var.set_array(self.is_array);
     var.set_const(self.is_const);
     var
   }

@@ -299,7 +299,7 @@ fn statement_to_sketch(stmt: &Statement) -> Sk::Statement {
       }
 
       // Termination counter.
-      let counter_name = format!("_{}", id).replace("-", "");
+      let counter_name = format!("_{}_term", id).replace("-", "");
       let (counter_ident, counter_decl)
         = declare_var(&counter_name, Sk::Type::Int, Sk::Expression::ConstInt(0));
 

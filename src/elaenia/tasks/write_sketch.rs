@@ -9,11 +9,13 @@ use crate::workflow::task::*;
 use std::collections::HashSet;
 use uuid::Uuid;
 
-pub struct WriteSketch { }
+pub struct WriteSketch {
+  add_unrolls: bool,
+}
 
 impl WriteSketch {
-  pub fn new() -> Self {
-    WriteSketch { }
+  pub fn new(add_unrolls: bool) -> Self {
+    WriteSketch { add_unrolls }
   }
 }
 
@@ -21,36 +23,39 @@ impl Task<ElaeniaContext> for WriteSketch {
   fn name(&self) -> String { "write-sketch".to_string() }
 
   fn run(&self, context: &mut ElaeniaContext) {
-    let crel = context.aligned_crel().as_ref().expect("Missing aligned CRel");
+    let crel = context.aligned_crel().as_ref()
+      .expect("Missing aligned CRel with forall-exists specifications");
     let (_, fundefs) = crate::crel::fundef::extract_fundefs(crel);
     let main_fun = fundefs.get("main").expect("No main function found");
 
-    let global_decls = &context.unaligned_crel().as_ref()
+    let global_decls = context.unaligned_crel().as_ref()
       .expect("Missing unaligned CRel")
-      .global_decls;
+      .global_decls.clone();
 
     let assume_precond = context.precondition_sketch().to_crel(StatementKind::Assume);
     let assert_postcond = context.postcondition().to_crel(StatementKind::Assert);
 
-    let mut add_unrolls = AddUnrolls::new();
+    let mut new_main_fun = main_fun.body.map(&mut AssertInvars::new());
+    if self.add_unrolls {
+      let mut unroller = AddUnrolls::new();
+      new_main_fun = new_main_fun.map(&mut unroller);
+      for unroll in unroller.added_unroll_funs {
+        context.accept_unroll_fun(unroll);
+      }
+    }
 
     let mut body_items: Vec<BlockItem> = Vec::new();
     body_items.push(BlockItem::Statement(assume_precond));
-    body_items.push(BlockItem::Statement(main_fun.body
-                                         .map(&mut AssertInvars::new())
-                                         .map(&mut add_unrolls)));
+    body_items.push(BlockItem::Statement(new_main_fun));
     body_items.push(BlockItem::Statement(assert_postcond));
     let new_body = Statement::Compound(body_items);
 
     let mut sketch = Sk::Source::new();
     for decl in global_decls {
-      sketch.declare_variable(&declaration_to_sketch(decl));
+      sketch.declare_variable(&declaration_to_sketch(&decl));
     }
     for havoc_decl in context.havoc_funs_as_decls() {
       sketch.declare_variable(&declaration_to_sketch(&havoc_decl));
-    }
-    for unroll in add_unrolls.added_unroll_funs {
-      context.accept_unroll_fun(unroll);
     }
     for choice_gen in context.choice_gens() {
       let mut fun = fun_to_sketch(

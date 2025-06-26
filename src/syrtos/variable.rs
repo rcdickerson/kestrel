@@ -7,6 +7,7 @@ pub struct Variable {
   name: String,
   ty: Type,
   initializer: Option<Initializer>,
+  is_array: bool,
   is_const: bool,
   is_ghost: bool,
   is_nullable: bool,
@@ -18,6 +19,7 @@ impl Variable {
       name,
       ty,
       initializer: None,
+      is_array: false,
       is_const: false,
       is_ghost: false,
       is_nullable: false,
@@ -31,6 +33,11 @@ impl Variable {
 
   pub fn set_initializer(&mut self, init: Initializer) -> &Self {
     self.initializer = Some(init);
+    self
+  }
+
+  pub fn set_array(&mut self, is_array: bool) -> &Self {
+    self.is_array = is_array;
     self
   }
 
@@ -60,7 +67,13 @@ impl Variable {
     }
     writer.write(&self.name);
     writer.write(": ");
-    self.ty.emit(writer);
+    if self.is_array {
+      writer.write("array<");
+      self.ty.emit(writer);
+      writer.write(">");
+    } else {
+      self.ty.emit(writer);
+    }
     if self.is_nullable {
       writer.write("?");
     }

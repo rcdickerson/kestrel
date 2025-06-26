@@ -4,13 +4,12 @@
 
 use crate::crel::ast::*;
 use crate::crel::fundef::FunDef;
-use crate::crel::mapper::*;
 use crate::daikon::invariant_parser::*;
 use crate::output_mode::*;
 use crate::spec::to_crel::*;
 use crate::workflow::context::*;
 use crate::workflow::task::*;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
@@ -47,7 +46,7 @@ impl InvarsDaikon {
   }
 }
 
-impl <Ctx: Context + AlignsCRel> Task<Ctx> for InvarsDaikon {
+impl <Ctx: Context + FindsInvariants> Task<Ctx> for InvarsDaikon {
   fn name(&self) -> String { "invars-daikon".to_string() }
 
   fn run(&self, context: &mut Ctx) {
@@ -66,16 +65,12 @@ impl <Ctx: Context + AlignsCRel> Task<Ctx> for InvarsDaikon {
 
     // Write Daikon output to file.
     println!("Writing Daikon to {}...", daikon_path_str);
-    let mut global_decls = context.unaligned_crel().as_ref()
-      .expect("Missing unaligned CRel")
-      .global_decls.clone();
+    let mut global_decls = context.global_decls().clone();
     global_decls.append(&mut self.extra_global_decls.clone());
     let daikon_output = OutputMode::Daikon.crel_to_daikon(
-        &context.aligned_crel().as_ref().expect("Missing aligned CRel"),
+        &context.daikon_crel(),
         global_decls,
-        context.unaligned_crel().as_ref()
-          .expect("Missing unaligned CRel")
-          .global_fundefs.clone(),
+        context.global_fundefs().clone(),
         &Some(daikon_path_str.to_string()),
         Some(&self.extra_fundefs),
         20);
@@ -163,12 +158,7 @@ impl <Ctx: Context + AlignsCRel> Task<Ctx> for InvarsDaikon {
       Result::Err(err) => panic!("Error parsing Daikon invariants: {}", err),
     };
     separate_eq(&mut invariants);
-    let mut keep_loops = LoopKeeper::new(invariants.keys().collect());
-    let mut crel = context.aligned_crel().as_ref()
-        .expect("Missing aligned CRel")
-        .map(&mut keep_loops);
-    crel.decorate_invariants(&invariants);
-    context.accept_aligned_crel(crel);
+    context.accept_invariants(invariants);
   }
 }
 
@@ -185,37 +175,5 @@ fn separate_eq(invariants: &mut HashMap<String, Vec<Expression>>) {
         _ => vec!(invar.clone())
       })
       .collect();
-  }
-}
-
-struct LoopKeeper<'a> {
-  keep_ids: HashSet<&'a String>,
-  handled_ids: HashSet<String>,
-}
-
-impl <'a> LoopKeeper<'a> {
-  fn new(keep_ids: HashSet<&'a String>) -> Self {
-    LoopKeeper{keep_ids, handled_ids: HashSet::new()}
-  }
-}
-
-impl CRelMapper for LoopKeeper<'_> {
-  fn map_statement(&mut self, stmt: &Statement) -> Statement {
-    match stmt {
-      Statement::While{id, condition, ..} => {
-        let lhid = loop_head_name(id);
-        if !self.keep_ids.contains(&lhid) && !self.handled_ids.contains(&lhid) {
-          self.handled_ids.insert(lhid);
-          Statement::If {
-            condition: condition.clone(),
-            then: Box::new(stmt.clone()),
-            els: None,
-          }
-        } else {
-          stmt.clone()
-        }
-      },
-      _ => stmt.clone(),
-    }
   }
 }

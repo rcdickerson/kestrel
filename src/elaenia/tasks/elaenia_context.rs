@@ -24,12 +24,12 @@ pub struct ElaeniaContext {
   unaligned_eggroll: Option<String>,
   aligned_eggroll: Option<RecExpr<Eggroll>>,
   aligned_eggroll_repetitions: Option<GuardedRepetitions>,
+  aligned_crel_no_spec: Option<CRel>,
   aligned_crel: Option<CRel>,
   sketch_output: Option<String>,
   solved_choice_funs: HashMap<String, FunDef>,
   solved_unrolls_left: HashMap<Uuid, i32>,
   solved_unrolls_right: HashMap<Uuid, i32>,
-
   aligned_output: Option<String>,
 
   choice_funs: Vec<FunDef>,
@@ -58,6 +58,7 @@ impl ElaeniaContext {
       unaligned_eggroll: None,
       aligned_eggroll: None,
       aligned_eggroll_repetitions: None,
+      aligned_crel_no_spec: None,
       aligned_crel: None,
       sketch_output: None,
       solved_choice_funs: HashMap::new(),
@@ -94,6 +95,14 @@ impl ElaeniaContext {
         rhs: Box::new(self.spec.pre.clone()),
       },
     }
+  }
+
+  pub fn accept_aligned_crel_no_spec(&mut self, crel: CRel) {
+    self.aligned_crel_no_spec = Some(crel);
+  }
+
+  pub fn aligned_crel_no_spec(&self) -> &Option<CRel> {
+    &self.aligned_crel_no_spec
   }
 
   pub fn accept_choice_fun(&mut self, fundef: FunDef) {
@@ -385,6 +394,30 @@ impl GeneratesDafny for ElaeniaContext {
                                               end   + topmatter.lines().count() + 1)))
       .collect::<HashMap<_, _>>();
     (format!("{}{}", topmatter, dafny_output), while_lines)
+  }
+}
+
+impl FindsInvariants for ElaeniaContext {
+  fn daikon_crel(&self) -> &CRel {
+    &self.aligned_crel_no_spec.as_ref().unwrap_or(
+      &self.aligned_crel.as_ref().expect("Missing aligned CRel."))
+  }
+
+  fn global_decls(&self) -> &Vec<Declaration> {
+    &self.unaligned_crel.as_ref().expect("Missing unaligned CRel").global_decls
+  }
+
+  fn global_fundefs(&self) -> &HashMap<String, FunDef> {
+    &self.unaligned_crel.as_ref().expect("Missing unaligned CRel").global_fundefs
+  }
+
+  fn accept_invariants(&mut self, invars: HashMap<String, Vec<Expression>>) {
+    let mut keep_loops = LoopKeeper::new(invars.keys().collect());
+    let mut crel = self.aligned_crel.as_ref()
+      .expect("Missing aligned CRel")
+      .map(&mut keep_loops);
+    crel.decorate_invariants(&invars);
+    self.accept_aligned_crel(crel);
   }
 }
 

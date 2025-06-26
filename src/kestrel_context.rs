@@ -1,6 +1,7 @@
 //! Contains data needed in a KestRel verification [Workflow].
 
 use crate::crel::ast::*;
+use crate::crel::fundef::*;
 use crate::crel::unaligned::*;
 use crate::eggroll::ast::*;
 use crate::eggroll::to_crel::*;
@@ -147,6 +148,29 @@ impl GeneratesDafny for KestrelContext {
           .expect("Missing unaligned CRel")
           .global_decls.clone(),
         &Some(output_path.clone()))
+  }
+}
+
+impl FindsInvariants for KestrelContext {
+  fn daikon_crel(&self) -> &CRel {
+    &self.aligned_crel.as_ref().expect("Missing aligned CRel.")
+  }
+
+  fn global_decls(&self) -> &Vec<Declaration> {
+    &self.unaligned_crel.as_ref().expect("Missing unaligned CRel").global_decls
+  }
+
+  fn global_fundefs(&self) -> &HashMap<String, FunDef> {
+    &self.unaligned_crel.as_ref().expect("Missing unaligned CRel").global_fundefs
+  }
+
+  fn accept_invariants(&mut self, invars: HashMap<String, Vec<Expression>>) {
+    let mut keep_loops = LoopKeeper::new(invars.keys().collect());
+    let mut crel = self.aligned_crel.as_ref()
+      .expect("Missing aligned CRel")
+      .map(&mut keep_loops);
+    crel.decorate_invariants(&invars);
+    self.accept_aligned_crel(crel);
   }
 }
 

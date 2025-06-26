@@ -172,13 +172,16 @@ impl DaikonConverter {
 
   fn convert_block_item(&mut self, item: BlockItem) -> BlockItem {
     match &item {
-      BlockItem::Declaration(decl) => {
-        let param_decl = ParameterDeclaration {
-          specifiers: decl.specifiers.clone(),
-          declarator: Some(decl.declarator.clone()),
-        };
-        self.cur_scope.push(ScopeItem::Decl(param_decl));
-        item
+      BlockItem::Declaration(decl) => match decl.declarator {
+        Declarator::Identifier{..} => {
+          let param_decl = ParameterDeclaration {
+            specifiers: decl.specifiers.clone(),
+            declarator: Some(decl.declarator.clone()),
+          };
+          self.cur_scope.push(ScopeItem::Decl(param_decl));
+          item
+        },
+        _ => item,
       },
       BlockItem::Statement(stmt) => BlockItem::Statement(self.convert_statement(stmt.clone())),
     }

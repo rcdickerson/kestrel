@@ -7,7 +7,7 @@ pub enum Initializer {
   Expression(Expression),
   Array {
     ty: Type,
-    values: Vec<Initializer>
+    sizes: Vec<Expression>,
   },
 }
 
@@ -15,14 +15,14 @@ impl Initializer {
   pub fn emit(&self, writer: &mut Writer) {
     match self {
       Initializer::Expression(expr) => expr.emit(writer, true),
-      Initializer::Array{ty, values} => {
+      Initializer::Array{ty, sizes} => {
         writer.write("new ");
         ty.emit(writer);
-        writer.write("[] [");
+        writer.write("[");
         let mut comma = "";
-        for val in values {
+        for size in sizes {
           writer.write(comma);
-          val.emit(writer);
+          size.emit(writer, false);
           comma = ", ";
         }
         writer.write("]");

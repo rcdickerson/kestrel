@@ -9,9 +9,9 @@
  * exists: right;
  * post: left.a == right.a && left.b == right.b && left.c == right.c;
  * aspecs:
- *   randEven(max) {
+ *   randB(max) {
  *     pre: true;
- *     post: 0 <= ret! && ret! < max && ret! % 2 == 0;
+ *     post: 0 <= ret! && ret! < max;
  *   }
  * especs:
  *   randB(max) {
@@ -21,8 +21,10 @@
  *   }
  */
 
-int randEven(int max);
 int randB(int max);
+int _randB(int size) {
+  return rand() % size;
+}
 
 void _test_gen(int size,
                int a0, int a1, int a2, int a3,
@@ -56,7 +58,7 @@ void left(int size, int a[size], int b[size], int c[size]) {
   int i = 0;
   while (i < size) {
     int x;
-    x = randEven(100);
+    x = randB(50);
     a[i] = a[i] + x;
     b[i] = b[i] + a[i];
     c[i] = c[i] + b[i];

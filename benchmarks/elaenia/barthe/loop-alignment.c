@@ -8,9 +8,9 @@
  * exists: right;
  * post: left.d == right.d;
  * aspecs:
- *   evenIndex(size) {
+ *   lowIndex(size) {
  *     pre: size >= 1;
- *     post: 0 <= ret! && ret! < size && ret! % 2 == 0;
+ *     post: 0 <= ret! && ret! * 2 < size;
  *   }
  * especs:
  *   anyIndex(size) {
@@ -20,8 +20,15 @@
  *   }
  */
 
-int evenIndex(int size);
+int lowIndex(int size);
+int _lowIndex(int size) {
+  return rand() % (size / 2);
+}
+
 int anyIndex(int size);
+int _anyIndex(int size) {
+  return rand() % size;
+}
 
 void _test_gen(int size,
                int a0, int a1, int a2, int a3,
@@ -47,9 +54,15 @@ void _test_gen(int size,
 void left(int size, int a[size+1], int b[size+1]) {
   int i = 1;
   int d[size+1] = {0};
+  int idx = 0;
+  int prev_idx = 0;
   while (i <= size) {
-    int idx;
-    idx = evenIndex(size);
+    _invariant("l_i - 1 == r_j");
+    _invariant("l_d == r_d");
+    _invariant("l_idx < r_size");
+    _invariant("l_prev_idx < r_size");
+    prev_idx = idx;
+    idx = lowIndex(size);
     b[i] = a[idx];
     d[i] = b[i-1];
     i = i + 1;
@@ -59,12 +72,9 @@ void left(int size, int a[size+1], int b[size+1]) {
 void right(int size, int a[size+1], int b[size+1]) {
   int j = 1;
   int d[size+1] = {0};
-
-  int first_idx;
-  first_idx = anyIndex(size);
-  d[1] = b[first_idx];
+  int idx = 0;
+  d[1] = b[0];
   while (j <= size - 1) {
-    int idx;
     idx = anyIndex(size);
     b[j] = a[idx];
     d[j+1] = b[j];

@@ -41,9 +41,11 @@ void sort(int size, int list[size]) {
   int i = 0;
   int j = 0;
   while (i < size) {
+    _invariant("l_i == r_i");
     j = size - 1;
     while (j > i) {
       _invariant("l_j < l_size");
+      _invariant("l_j == r_j");
       int cmp;
       cmp = compare(list[j - 1], list[j]);
       if (cmp > 10) {

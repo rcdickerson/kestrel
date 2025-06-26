@@ -30,6 +30,7 @@ impl Task<ElaeniaContext> for InsertSpecs {
   fn name(&self) -> String { "insert-elaenia-specs".to_string() }
   fn run(&self, context: &mut ElaeniaContext) {
     let crel = context.aligned_crel().clone().expect("Missing aligned CRel");
+    context.accept_aligned_crel_no_spec(crel.clone());
     let spec = context.spec().clone();
     let mut spec_inserter = SpecInserter::new(&spec, self.grammar_depth);
     let mapped_crel = spec_inserter.insert_specs_crel(&crel);

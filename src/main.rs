@@ -296,7 +296,7 @@ fn elaenia_workflow(args: Args) {
   workflow.add_task(RepeatRanged::new(1..4, &|depth| {
     Box::new(CompoundTask::from(vec!(
       Box::new(InsertSpecs::new(depth)),
-      Box::new(WriteSketch::new(false)),
+      Box::new(WriteSketch::new(true)),
       Box::new(SolveSketch::new(None)),
       Box::new(if_sketch_success(ElaeniaInvars::new())),
       Box::new(if_sketch_success(Houdafny::new(None))),

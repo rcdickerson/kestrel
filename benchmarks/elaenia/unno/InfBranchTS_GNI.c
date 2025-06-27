@@ -1,23 +1,30 @@
 /* @ELAENIA
- * pre: forall.low == exists.low;
+ * pre: forall.low == exists.low && forall.low >= 0;
  * pre_sketch: forall.low <= 4;
  * forall: inf_branch_ts;
  * exists: inf_branch_ts;
  * post: forall.x == exists.x;
  * aspecs:
- *  random() {
+ *  randInt() {
  *    pre:  true;
  *    post: ret! >= 0;
  *  }
  * especs:
- *  random() {
+ *  randInt() {
  *    choiceVars: n;
  *    pre:  n >= 0;
  *    post: ret! == n;
  *  }
  */
 
-int random();
+int randInt();
+int _randInt() {
+  int i = rand();
+  if (i < 0) {
+    i = i * -1;
+  }
+  return i;
+}
 
 void _test_gen(int low, int high1, int high2) {
   if (low < 0) { low = low * -1; }
@@ -31,11 +38,13 @@ void _test_gen(int low, int high1, int high2) {
 
 void inf_branch_ts(int low, int high) {
   int x = low;
+  int r = 0;
+  int max = 0;
   if (high != 0) {
     while (x > 0) {
-      int r;
-      r = random();
-      int max;
+      _invariant("left.x >= 0");
+      _invariant("right.x >= 0");
+      r = randInt();
       if (r < 1) {
         max = 1;
       } else {
@@ -49,6 +58,8 @@ void inf_branch_ts(int low, int high) {
     }
   } else {
     while (x > 0) {
+      _invariant("left.x >= 0");
+      _invariant("right.x >= 0");
       x = x - 1;
     }
   }

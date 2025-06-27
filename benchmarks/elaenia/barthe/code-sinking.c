@@ -1,11 +1,11 @@
 /* @ELAENIA
  * pre: left.size == right.size
      && left.size > 0
-     && left.a == right.a;
+     && left.a =a= right.a;
  * pre_sketch: left.size <= 4;
  * forall: left;
  * exists: right;
- * post: left.a == right.a;
+ * post: left.a =a= right.a;
  * aspecs:
  *   compare(i, j) {
  *     pre: true;
@@ -42,6 +42,20 @@ void left(int size, int a[size+1]) {
   int maxi = 0;
   int i = 0;
   while (i <= size) {
+    _invariant("l_i == r_j");
+    _invariant("0 <= l_i && l_i <= l_size + 1");
+    _invariant("0 <= r_j && r_j <= r_size + 1");
+    _invariant("0 <= l_maxi && l_maxi <= l_i && l_maxi <= l_size");
+    _invariant("0 <= r_maxi && r_maxi <= r_j && r_maxi <= r_size");
+    _invariant("(0 < r_j && r_j <= r_size) ==> r_max == r_a[r_maxi]");
+    _invariant("l_max == l_a[l_maxi]");
+    _invariant("r_j == r_size + 1 ==> l_max == r_a[r_size]");
+    _invariant("r_j == r_size + 1 ==> l_a[l_maxi] == r_a[r_size]");
+    _invariant("l_maxi == r_maxi");
+    _invariant("r_j == r_size + 1 ==> forall i: int :: (i >= 0 && i <= l_size && i != r_maxi && i != r_size) ==> (l_a[i] == r_a[i])");
+    _invariant("r_j <= r_size ==> l_a =a= r_a");
+    _invariant("l_i > 0 ==> l_max == r_max");
+    _invariant("r_j == r_size + 1 ==> l_a[l_size] == r_a[r_maxi]");
     int cmp;
     cmp = compare(max, a[i]);
     if (cmp < 10) {
@@ -59,6 +73,7 @@ void right(int size, int a[size+1]) {
   int j = 0;
   int max = 0;
   int maxi = 0;
+  int t = 0;
   while (j <= size) {
     if (j == 0) {
       max = a[0];
@@ -71,7 +86,7 @@ void right(int size, int a[size+1]) {
       maxi = j;
     }
     if (j == size) {
-      int t = a[size];
+      t = a[size];
       a[size] = max;
       a[maxi] = t;
     }

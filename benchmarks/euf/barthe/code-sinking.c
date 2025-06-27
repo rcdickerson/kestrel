@@ -36,7 +36,7 @@ void left(int a_in, int size) {
     _invariant("l_maxi == r_maxi");
     _invariant("0 < l_i ==> l_max == r_max");
     _invariant("l_max == read(l_a, l_maxi)");
-    _invariant("0 < r_j && r_j <= r_size ==> r_max == read(r_a, r_maxi)");
+    _invariant("(0 < r_j && r_j <= r_size) ==> r_max == read(r_a, r_maxi)");
     _invariant("r_j == r_size + 1 ==> forall i: int :: (i != r_maxi && i != r_size) ==> (read(l_a, i) == read(r_a, i))");
     _invariant("r_j == r_size + 1 ==> l_max == read(r_a, r_size)");
     _invariant("r_j == r_size + 1 ==> read(l_a, l_maxi) == read(r_a, r_size)");

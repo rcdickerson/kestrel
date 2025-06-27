@@ -93,6 +93,17 @@ impl ParameterDeclaration {
       initializer: None,
     })
   }
+
+  pub fn is_array(&self) -> bool {
+    self.declarator.as_ref().map(|decl| match decl {
+      Declarator::Array{..} => true,
+      _ => false,
+    }).unwrap_or(false)
+  }
+
+  pub fn name(&self) -> Option<String> {
+    self.declarator.as_ref().map(|decl| { decl.name() })
+  }
 }
 
 impl PartialOrd for ParameterDeclaration {

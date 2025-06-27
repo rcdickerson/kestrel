@@ -375,7 +375,30 @@ impl GeneratesDafny for ElaeniaContext {
       .collect::<Vec<String>>()
       .join("");
 
+    let mut assume_input_arrays_neq = Vec::new();
+    let param_pairs = main_fun.params.iter()
+      .enumerate()
+      .flat_map(|(i, p1)| {
+        main_fun.params[i+1..].iter().map(move |p2| (p1, p2))
+      });
+    for (p1, p2) in param_pairs {
+      let p1_name = p1.name();
+      let p2_name = p2.name();
+      if p1_name.is_none() || p2_name.is_none() {
+        continue;
+      }
+      if p1.is_array() && p2.is_array() {
+        assume_input_arrays_neq.push(BlockItem::Statement(
+          Statement::Assume(Box::new(Expression::Binop {
+            lhs: Box::new(Expression::Identifier{name: p1_name.unwrap()}),
+            rhs: Box::new(Expression::Identifier{name: p2_name.unwrap()}),
+            op: BinaryOp::NotEquals,
+          }))));
+      }
+    }
+
     let mut body_items: Vec<BlockItem> = Vec::new();
+    for neq in assume_input_arrays_neq { body_items.push(neq); }
     body_items.push(preconds);
     body_items.push(BlockItem::Statement(main_fun.body.clone()));
     body_items.push(postconds);

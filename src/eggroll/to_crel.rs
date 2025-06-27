@@ -361,7 +361,7 @@ fn expect_statement(sexp: &Sexp, ctx: &Context) -> Statement {
       },
       Sexp::Atom(Atom::S(s)) if s == "while-no-body" => {
         let condition = Box::new(expect_expression(&sexps[1], ctx));
-        let invariants = expect_invariants(&sexps[2], ctx).values().map(|v| v.clone()).collect();
+        let invariants = expect_invariants(&sexps[2], ctx);
         Statement::While {
           id: Uuid::new_v4(),
           runoff_link_id: None,
@@ -374,7 +374,7 @@ fn expect_statement(sexp: &Sexp, ctx: &Context) -> Statement {
       },
       Sexp::Atom(Atom::S(s)) if s == "while" => {
         let condition = Box::new(expect_expression(&sexps[1], ctx));
-        let invariants = expect_invariants(&sexps[2], ctx).values().map(|v| v.clone()).collect();
+        let invariants = expect_invariants(&sexps[2], ctx);
         let body = Some(Box::new(expect_statement(&sexps[3], ctx)));
         Statement::While {
           id: Uuid::new_v4(),
@@ -395,24 +395,22 @@ fn expect_statement(sexp: &Sexp, ctx: &Context) -> Statement {
   }
 }
 
-/// Returns a set of invariants indexed by the sexp that encoded each. The HashSet is
-/// to aid in de-duping invariants, as Expressions are not hashable. (If they ever
-/// become so, the return type of this function can become HashSet<Expression>.)
-fn expect_invariants(sexp: &Sexp, ctx: &Context) -> HashMap<String, Expression> {
+/// Returns a set of invariants indexed by the sexp that encoded each.
+fn expect_invariants(sexp: &Sexp, ctx: &Context) -> Vec<Expression> {
   match sexp {
     Sexp::List(sexps) => {
       match &sexps[0] {
         Sexp::Atom(Atom::S(s)) if s == "invariants" => {
-          let mut invars = HashMap::new();
+          let mut invars = Vec::new();
           for i in 1..sexps.len() {
-            invars.insert(sexps[i].to_string(), expect_expression(&sexps[i], ctx));
+            invars.push(expect_expression(&sexps[i], ctx));
           }
           invars
         },
         _ => panic!("Expected invariants, got: {}", sexp),
       }
     },
-    Sexp::Atom(Atom::S(s)) if s == "invariants" => HashMap::new(),
+    Sexp::Atom(Atom::S(s)) if s == "invariants" => Vec::new(),
     _ => panic!("Expected invariants, got: {}", sexp),
   }
 }
@@ -464,12 +462,8 @@ fn expect_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
     stutter_right: 0,
     condition_left: Box::new(expect_expression(&sexps[1], ctx)),
     condition_right: Box::new(expect_expression(&sexps[2], ctx)),
-    invariants_left: expect_invariants(&sexps[3], ctx).values()
-      .map(|v| v.clone())
-      .collect(),
-    invariants_right: expect_invariants(&sexps[4], ctx).values()
-      .map(|v| v.clone())
-      .collect(),
+    invariants_left: expect_invariants(&sexps[3], ctx),
+    invariants_right: expect_invariants(&sexps[4], ctx),
     body_left: Some(Box::new(expect_statement(&sexps[5], ctx))),
     body_right: Some(Box::new(expect_statement(&sexps[6], ctx))),
     body_merged: Some(Box::new(expect_statement(&sexps[7], ctx))),
@@ -498,9 +492,9 @@ fn expect_guarded_repeat_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
   let invars1 = expect_invariants(&sexps[4], ctx);
   let invars2 = expect_invariants(&sexps[5], ctx);
 
-  let mut combined_invars: Vec<_> = invars1.values().map(|v| v.clone()).collect();
-  for (sexp, expr) in &invars2 {
-    if !invars1.contains_key(sexp) {
+  let mut combined_invars: Vec<_> = invars1.clone();
+  for expr in &invars2 {
+    if !invars1.contains(expr) {
       combined_invars.push(expr.clone());
     }
   }
@@ -571,7 +565,7 @@ fn expect_guarded_repeat_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
       runoff_link_id: runoff_link_id.clone(),
       is_runoff: true,
       is_merged: false,
-      invariants: invars1.values().map(|v| v.clone()).collect(),
+      invariants: invars1,
       condition: Box::new(cond1),
       body: Some(Box::new(runoff_body_1))}),
     BlockItem::Statement(Statement::While {
@@ -579,7 +573,7 @@ fn expect_guarded_repeat_while_rel(sexps: &[Sexp], ctx: &Context) -> Statement {
       runoff_link_id: runoff_link_id.clone(),
       is_runoff: true,
       is_merged: false,
-      invariants: invars2.values().map(|v| v.clone()).collect(),
+      invariants: invars2,
       condition: Box::new(cond2),
       body: Some(Box::new(runoff_body_2))}),
   ];

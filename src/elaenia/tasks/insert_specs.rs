@@ -502,18 +502,7 @@ impl <'a> SpecInserter<'a> {
       });
     }
 
-    // Havoc function for the return value.
-    let havoc = self.make_havoc();
-    let call_havoc = Expression::Binop {
-      lhs: Box::new(Expression::Identifier{name: assignee_name.clone()}),
-      rhs: Box::new(Expression::ChoiceCall {
-        callee: Box::new(Expression::Identifier{name: havoc.name.clone()}),
-        args: self.in_scope_args(),
-      }),
-      op: BinaryOp::Assign,
-    };
-
-    // Pre and post conditions.
+    // Preconditoin assertion.
     let mut cond_var_mapping = HashMap::new();
     for (param, arg) in espec.params.iter().zip(args) {
       cond_var_mapping.insert(param.name().clone(), arg.clone());
@@ -521,16 +510,68 @@ impl <'a> SpecInserter<'a> {
     let assert_pre = spec_cond_to_expression(&espec.pre, &assignee_name, StatementKind::Assert)
       .map_vars(&|name| choice_var_mapping.get(&name).unwrap_or(&name).clone())
       .map(&mut ReplaceIdentifiers::new(cond_var_mapping.clone()));
-    let assume_post = spec_cond_to_expression(&espec.post, &assignee_name, StatementKind::Assume)
-      .map_vars(&|name| choice_var_mapping.get(&name).unwrap_or(&name).clone())
-      .map(&mut ReplaceIdentifiers::new(cond_var_mapping));
+
+    // If postcondition asserts a simple equality on the return value,
+    // assign the choice to the assignee. Otherwise, create a new havoc,
+    // assign its value to the assignee, and assume the function's
+    // postcondition.
+    // NOTE: The latter approach seemingly has a disadvantage, which
+    // is that Sketch will by default bound the value of the havoc return
+    // (havocs are uninterpreted functions) to be between 0 and 32.
+    // This can give Sketch leeway to synthesize bogus choice functions,
+    // e.g. by synthesizing a choice value which is large enough to
+    // falsify the postcondition, effectively turning it into an
+    // `assume false`.
+    let assignment_expr = match &espec.post {
+      KestrelCond::BExpr(expr) => match expr {
+        CondBExpr::BinopA { lhs, rhs, op } if *op == CondBBinopA::Eq => {
+          match (lhs, rhs) {
+            (CondAExpr::ReturnValue, _) => Some(rhs),
+            (_, CondAExpr::ReturnValue) => Some(lhs),
+            _ => None,
+          }
+        },
+        _ => None,
+      },
+      _ => None,
+    };
+    let post_stmts = match assignment_expr {
+      Some(expr) => {
+        vec!(Statement::Expression(Box::new(Expression::Binop {
+          lhs: Box::new(Expression::Identifier{name: assignee_name.clone()}),
+          rhs: Box::new(expr.to_crel()
+              .map_vars(&|name| choice_var_mapping.get(&name).unwrap_or(&name).clone())
+              .map(&mut ReplaceIdentifiers::new(cond_var_mapping))),
+          op: BinaryOp::Assign,
+        })))
+      },
+      None => {
+        // Havoc function for the return value.
+        let havoc = self.make_havoc();
+        let call_havoc = Expression::Binop {
+          lhs: Box::new(Expression::Identifier{name: assignee_name.clone()}),
+          rhs: Box::new(Expression::ChoiceCall {
+            callee: Box::new(Expression::Identifier{name: havoc.name.clone()}),
+            args: self.in_scope_args(),
+          }),
+          op: BinaryOp::Assign,
+        };
+        vec!(
+          Statement::Expression(Box::new(call_havoc)),
+          spec_cond_to_expression(&espec.post, &assignee_name, StatementKind::Assume)
+            .map_vars(&|name| choice_var_mapping.get(&name).unwrap_or(&name).clone())
+            .map(&mut ReplaceIdentifiers::new(cond_var_mapping)),
+        )
+      },
+    };
 
     // Putting it all together.
     let mut statements = Vec::new();
     statements.append(&mut choice_decls);
     statements.push(BlockItem::Statement(assert_pre));
-    statements.push(BlockItem::Statement(Statement::Expression(Box::new(call_havoc))));
-    statements.push(BlockItem::Statement(assume_post));
+    for post_stmt in post_stmts {
+      statements.push(BlockItem::Statement(post_stmt));
+    }
     Expression::Statement(Box::new(Statement::Compound(statements)))
   }
 }

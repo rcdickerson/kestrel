@@ -1,5 +1,5 @@
 /* @ELAENIA
- * pre: forall.low == exists.low && forall.high == 0 && exists.high == 0;
+ * pre: forall.low == exists.low && forall.low >= 0 && forall.high == 0 && exists.high == 0;
  * forall: ti_gni;
  * exists: ti_gni;
  * post: forall.ret == exists.ret;

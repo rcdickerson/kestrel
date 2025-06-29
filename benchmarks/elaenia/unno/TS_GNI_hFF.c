@@ -59,6 +59,7 @@ void ti_gni(int low, int high) {
     r = arb_bool();
     while ( r != 0 ) {
       _invariant("l_r == r_r");
+      _invariant("l_x == r_x");
       x = x + 1;
       r = arb_bool();
     }

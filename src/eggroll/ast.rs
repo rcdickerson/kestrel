@@ -83,6 +83,7 @@ define_language! {
 
     // Functions
     "call"        = Call(Box<[Id]>),
+    "choice-call" = ChoiceCall(Box<[Id]>),
     "fundef"      = FunDef([Id; 4]),
     "args"        = Args(Box<[Id]>),
     "params"      = Params(Box<[Id]>),
@@ -106,6 +107,5 @@ define_language! {
     "<|"  = RelLeft(Id),
     "|>"  = RelRight(Id),
     "while-rel" = WhileRel([Id; 7]),
-    "if-rel"    = IfRel([Id; 6]),
   }
 }

@@ -113,6 +113,14 @@ fn expression_to_c(expr: &Expression, output_asserts: bool, output_assumes: bool
           .collect::<Vec<C::Expression>>(),
       }
     },
+    Expression::ChoiceCall{ callee, args } => {
+      C::Expression::FnCall {
+        name: Box::new(expression_to_c(callee, output_asserts, output_assumes)),
+        args: args.iter()
+          .map(|a| expression_to_c(a, output_asserts, output_assumes))
+          .collect::<Vec<C::Expression>>(),
+      }
+    },
     Expression::Unop{ expr, op } => {
       let expr = Box::new(expression_to_c(expr, output_asserts, output_assumes));
       let op = match op {

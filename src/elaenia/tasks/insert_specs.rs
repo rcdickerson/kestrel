@@ -329,6 +329,9 @@ impl <'a> SpecInserter<'a> {
               Expression::Call{callee, args} => {
                 self.handle_fun_call(expr, &name, &args, &*callee)
               },
+              Expression::ChoiceCall{callee, args} => {
+                self.handle_fun_call(expr, &name, &args, &*callee)
+              },
               _ => expr.clone(),
             };
             self.mark_initialized(&name);
@@ -414,7 +417,7 @@ impl <'a> SpecInserter<'a> {
         let havoc = self.make_havoc();
         let call_havoc = Expression::Binop {
           lhs: Box::new(Expression::Identifier{name: assignee_name.clone()}),
-          rhs: Box::new(Expression::Call {
+          rhs: Box::new(Expression::ChoiceCall {
             callee: Box::new(Expression::Identifier{name: havoc.name.clone()}),
             args: self.in_scope_args(),
           }),
@@ -503,7 +506,7 @@ impl <'a> SpecInserter<'a> {
     let havoc = self.make_havoc();
     let call_havoc = Expression::Binop {
       lhs: Box::new(Expression::Identifier{name: assignee_name.clone()}),
-      rhs: Box::new(Expression::Call {
+      rhs: Box::new(Expression::ChoiceCall {
         callee: Box::new(Expression::Identifier{name: havoc.name.clone()}),
         args: self.in_scope_args(),
       }),

@@ -61,6 +61,7 @@ impl CountLoops for Expression {
       Expression::ConstFloat(_)       => LoopCounts::zero(),
       Expression::StringLiteral(_)    => LoopCounts::zero(),
       Expression::Call{..}            => LoopCounts::zero(),
+      Expression::ChoiceCall{..}      => LoopCounts::zero(),
       Expression::Unop{expr, ..}      => expr.count_loops(),
       Expression::Binop{lhs, rhs, ..} => lhs.count_loops().plus(&rhs.count_loops()),
       Expression::Forall{..}          => LoopCounts::zero(),

@@ -127,6 +127,14 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
           .collect::<Vec<Daf::Expression>>(),
       }
     },
+    Expression::ChoiceCall{ callee, args } => {
+      Daf::Expression::FnCall {
+        name: Box::new(expression_to_daf(callee)),
+        args: args.iter()
+          .map(expression_to_daf)
+          .collect::<Vec<Daf::Expression>>(),
+      }
+    },
     Expression::Unop{ expr, op } => {
       let expr = Box::new(expression_to_daf(expr));
       let op = match op {

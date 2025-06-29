@@ -109,6 +109,14 @@ fn expression_to_sketch(expr: &Expression) -> Sk::Expression {
           .collect::<Vec<Sk::Expression>>(),
       }
     },
+    Expression::ChoiceCall{ callee, args } => {
+      Sk::Expression::FnCall {
+        name: Box::new(expression_to_sketch(callee)),
+        args: args.iter()
+          .map(expression_to_sketch)
+          .collect::<Vec<Sk::Expression>>(),
+      }
+    },
     Expression::Unop{ expr, op } => {
       let expr = Box::new(expression_to_sketch(expr));
       let op = match op {

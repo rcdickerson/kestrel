@@ -10,7 +10,7 @@
  *  }
  *  arb_int() {
  *    pre:  true;
- *    post: true;
+ *    post: ret! >= 0;
  *  }
  * especs:
  *  arb_bool() {
@@ -20,7 +20,7 @@
  *  }
  *  arb_int() {
  *    choiceVars: n;
- *    pre: true;
+ *    pre: n >= 0;
  *    post: (ret! == n);
  *  }
  */

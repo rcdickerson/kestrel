@@ -2,10 +2,12 @@
 
 use clap::{Parser, ValueEnum};
 use kestrel::crel::unaligned::*;
+use kestrel::elaenia::cost_functions::optimize_choice::ElaeniaOptimizeChoiceCost;
 use kestrel::elaenia::parser::parse_elaenia_spec;
 use kestrel::elaenia::tasks::elaenia_context::ElaeniaContext;
 use kestrel::elaenia::tasks::elaenia_invars::*;
 use kestrel::elaenia::tasks::insert_specs::*;
+use kestrel::elaenia::tasks::mark_choice_functions::MarkChoiceFunctions;
 use kestrel::elaenia::tasks::solve_sketch::*;
 use kestrel::elaenia::tasks::syntactic_alignment::*;
 use kestrel::elaenia::tasks::write_dafny::*;
@@ -254,6 +256,7 @@ fn elaenia_workflow(args: Args) {
   // });
 
   let mut workflow = Workflow::new(context);
+  workflow.add_task(MarkChoiceFunctions::new());
   if args.verbose {
     workflow.add_task(PrintInfo::with_header("Unaligned Product Program",
         &|ctx: &ElaeniaContext| {
@@ -296,7 +299,7 @@ fn elaenia_workflow(args: Args) {
   workflow.add_task(RepeatRanged::new(1..4, &|depth| {
     Box::new(CompoundTask::from(vec!(
       Box::new(InsertSpecs::new(depth)),
-      Box::new(WriteSketch::new(true)),
+      Box::new(WriteSketch::new(false)),
       Box::new(SolveSketch::new(None)),
       Box::new(if_sketch_success(ElaeniaInvars::new())),
       Box::new(if_sketch_success(Houdafny::new(None))),

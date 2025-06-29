@@ -32,6 +32,12 @@ impl CollectVars for Expression {
           all_vars(args.clone()),
         ))
       },
+      Expression::ChoiceCall{callee, args} => {
+        union_all(vec!(
+          callee.vars(),
+          all_vars(args.clone()),
+        ))
+      },
       Expression::Ternary { condition, then, els } => {
         union_all(vec!(
           condition.vars(),

@@ -193,6 +193,10 @@ pub enum Expression {
     callee: Box<Expression>,
     args: Vec<Expression>,
   },
+  ChoiceCall {
+    callee: Box<Expression>,
+    args: Vec<Expression>,
+  },
   Unop {
     expr: Box<Expression>,
     op: UnaryOp,

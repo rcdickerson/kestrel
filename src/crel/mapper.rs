@@ -251,6 +251,16 @@ impl Expression {
           args: mapped_args,
         })
       },
+      Expression::ChoiceCall{callee, args} => {
+        let mapped_callee = callee.map(mapper);
+        let mapped_args = args.iter().map(|arg| {
+          arg.map(mapper)
+        }).collect();
+        mapper.map_expression(&Expression::ChoiceCall {
+          callee: Box::new(mapped_callee),
+          args: mapped_args,
+        })
+      },
       Expression::Unop{expr, op} => {
         let mapped_expr = expr.map(mapper);
         mapper.map_expression(&Expression::Unop {

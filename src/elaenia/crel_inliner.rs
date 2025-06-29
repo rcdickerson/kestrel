@@ -158,6 +158,10 @@ impl CRelInliner {
         callee: Box::new(self.inline_expression(callee)),
         args: args.into_iter().map(|arg| self.inline_expression(arg)).collect(),
       },
+      Expression::ChoiceCall{ callee, args } => Expression::ChoiceCall {
+        callee: Box::new(self.inline_expression(callee)),
+        args: args.into_iter().map(|arg| self.inline_expression(arg)).collect(),
+      },
       Expression::Unop{ expr, op } => Expression::Unop {
         expr: Box::new(self.inline_expression(expr)),
         op: op.clone(),

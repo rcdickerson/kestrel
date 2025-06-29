@@ -132,6 +132,11 @@ fn expect_expression(sexp: &Sexp, ctx: &Context) -> Expression {
         let args = expect_args(&sexps[2], ctx);
         Expression::Call{ callee, args }
       },
+      Sexp::Atom(Atom::S(s)) if s == "choice-call" => {
+        let callee = Box::new(expect_expression(&sexps[1], ctx));
+        let args = expect_args(&sexps[2], ctx);
+        Expression::ChoiceCall{ callee, args }
+      },
       Sexp::Atom(Atom::S(s)) if s.as_str() == "ternary" => Expression::Ternary {
         condition: Box::new(expect_expression(&sexps[1], ctx)),
         then: Box::new(expect_expression(&sexps[2], ctx)),

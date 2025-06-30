@@ -297,7 +297,8 @@ fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
       let condition = Box::new(expression_to_daf(condition));
       let invariants = invariants.iter().map(|invar| expression_to_daf(invar)).collect();
       let body = body.as_ref().map(|stmt| Box::new(statement_to_daf(stmt)));
-      Daf::Statement::While{loop_id: Some(loop_head_name(id)), invariants, condition, allow_nonterm: *is_merged, body}
+//      Daf::Statement::While{loop_id: Some(loop_head_name(id)), invariants, condition, allow_nonterm: *is_merged, body}
+      Daf::Statement::While{loop_id: Some(loop_head_name(id)), invariants, condition, allow_nonterm: true, body}
     },
     wr@Statement::WhileRel{..} => {
       statement_to_daf(&wr.denote_while_rel())

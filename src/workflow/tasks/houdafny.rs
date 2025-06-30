@@ -50,7 +50,6 @@ impl <Ctx: Context + AlignsCRel + GeneratesDafny> Task<Ctx> for Houdafny {
       // Write current aligned program as Dafny file.
       let (dafny_prog, while_lines) = context.generate_dafny(&dafny_path_str.to_string());
 
-      // println!("Writing Dafny to {}...", dafny_path);
       let mut file = File::create(&dafny_path)
         .unwrap_or_else(|_| panic!("Error creating file: {}", dafny_path_str));
       match file.write_all(dafny_prog.as_bytes()) {

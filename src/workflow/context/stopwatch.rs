@@ -6,6 +6,7 @@ pub trait Stopwatch {
   fn mark_completed(&mut self);
   fn task_timings(&self) -> Vec<(String, Duration)>;
   fn total_elapsed_time(&self) -> Duration;
+  fn set_timings_from(&mut self, other: &dyn Stopwatch);
 }
 
 #[derive(Clone)]
@@ -47,6 +48,13 @@ impl Stopwatch for WorkflowStopwatch {
     match self.completion_time {
       Some(duration) => duration,
       None => self.start_time.expect("Execution not marked as started").elapsed()
+    }
+  }
+
+  fn set_timings_from(&mut self, other: &dyn Stopwatch) {
+    self.task_timings = Vec::new();
+    for (name, duration) in other.task_timings() {
+      self.push_task_time(name, duration);
     }
   }
 }

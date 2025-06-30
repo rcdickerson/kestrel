@@ -220,4 +220,8 @@ impl Stopwatch for KestrelContext {
   fn total_elapsed_time(&self) -> Duration {
     self.stopwatch.total_elapsed_time()
   }
+
+  fn set_timings_from(&mut self, other: &dyn Stopwatch) {
+    self.stopwatch.set_timings_from(other);
+  }
 }

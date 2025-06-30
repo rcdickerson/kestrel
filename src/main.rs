@@ -2,12 +2,12 @@
 
 use clap::{Parser, ValueEnum};
 use kestrel::crel::unaligned::*;
-use kestrel::elaenia::cost_functions::optimize_choice::ElaeniaOptimizeChoiceCost;
 use kestrel::elaenia::parser::parse_elaenia_spec;
 use kestrel::elaenia::tasks::elaenia_context::ElaeniaContext;
 use kestrel::elaenia::tasks::elaenia_invars::*;
 use kestrel::elaenia::tasks::insert_specs::*;
 use kestrel::elaenia::tasks::mark_choice_functions::MarkChoiceFunctions;
+use kestrel::elaenia::tasks::set_parameters::SetParameters;
 use kestrel::elaenia::tasks::solve_sketch::*;
 use kestrel::elaenia::tasks::syntactic_alignment::*;
 use kestrel::elaenia::tasks::write_dafny::*;
@@ -249,11 +249,9 @@ fn elaenia_workflow(args: Args) {
 
   let mut context = ElaeniaContext::new(args.input.clone(), spec);
   context.set_working_dir(WORKING_DIR.to_string());
+  context.set_verbose(args.verbose);
   context.accept_unaligned_crel(unaligned_crel);
   context.accept_unaligned_eggroll(unaligned_eggroll);
-  // args.output.as_ref().map(|output_path| {
-  //   context.accept_output_path(output_path.clone());
-  // });
 
   let mut workflow = Workflow::new(context);
   workflow.add_task(MarkChoiceFunctions::new());
@@ -273,33 +271,44 @@ fn elaenia_workflow(args: Args) {
   }
   if args.dot { workflow.add_task(WriteDot::new()) }
   if args.space_size { workflow.add_task(ComputeSpace::new()) }
-  match args.extractor {
-    ExtractorArg::Unaligned => workflow.add_task(AlignNone::new()),
-    ExtractorArg::CountLoops => workflow.add_task(ElaeniaSyntacticAlignmentTask::new()),
-    ExtractorArg::SA => panic!("Semantic alignment currently unsupported for Elaenia workflows."),
-  }
-  workflow.add_task(AlignedCRel::new());
-  if args.verbose {
-    workflow.add_task(PrintInfo::with_header("Aligned Eggroll",
-        &|ctx: &ElaeniaContext| {
-          ctx.aligned_eggroll().as_ref()
-            .expect("Missing unaligned CRel")
-            .to_string()
-        }));
-  }
-  workflow.add_task(PrintInfo::with_header("Aligned Product Program",
-      &|ctx: &ElaeniaContext| {
-         ctx.aligned_crel().as_ref()
-          .expect("Missing aligned CRel")
-          .to_c(true, true).to_string()
-      }));
 
-  // Try solving the sketch starting at expression depth of 1 and iteratively
-  // moving up until either the sketch is solved or the max depth is reached.
-  workflow.add_task(RepeatRanged::new(1..4, &|depth| {
+  // Range over three settings: alignment cost function, max
+  // synthesizer generator AST depth, and whether to ask sketch to
+  // unroll loops.
+  let mut range = Vec::new();
+  for add_unrolls in [true, false] {
+    for depth in 1..4 {
+      for cost_function in [ElaeniaCostFunction::OptimizeStructure,
+                            ElaeniaCostFunction::OptimizeChoice] {
+        range.push((add_unrolls, depth, cost_function));
+      }
+    }
+  }
+  workflow.add_task(RepeatRanged::new(range, &|(add_unrolls, depth, cost_function)| {
     Box::new(CompoundTask::from(vec!(
-      Box::new(InsertSpecs::new(depth)),
-      Box::new(WriteSketch::new(false)),
+      Box::new(SetParameters::new(add_unrolls, depth, cost_function)),
+      Box::new(PrintInfo::with_header("Beginning Iteration", &|ctx: &ElaeniaContext| {
+        format!("add_unrolls: {}\ndepth: {}\ncost function: {}",
+                ctx.add_unrolls(),
+                ctx.ast_depth(),
+                ctx.cost_function().name())
+      })),
+      Box::new(ElaeniaSyntacticAlignmentTask::new()),
+      Box::new(AlignedCRel::new()),
+      Box::new(PredicateTask::new(&|ctx: &ElaeniaContext| ctx.is_verbose(),
+          Box::new(PrintInfo::with_header("Candidate Aligned Eggroll", &|ctx: &ElaeniaContext| {
+              ctx.aligned_eggroll().as_ref()
+              .expect("Missing unaligned CRel")
+              .to_string()
+          })))),
+      Box::new(PredicateTask::new(&|ctx: &ElaeniaContext| ctx.is_verbose(),
+          Box::new(PrintInfo::with_header("Candidate Aligned Product Program", &|ctx: &ElaeniaContext| {
+              ctx.aligned_crel().as_ref()
+              .expect("Missing aligned CRel")
+              .to_c(true, true).to_string()
+          })))),
+      Box::new(InsertSpecs::new()),
+      Box::new(WriteSketch::new(add_unrolls)),
       Box::new(SolveSketch::new(None)),
       Box::new(if_sketch_success(ElaeniaInvars::new())),
       Box::new(if_sketch_success(Houdafny::new(None))),

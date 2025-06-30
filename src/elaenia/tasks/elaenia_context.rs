@@ -15,6 +15,8 @@ use std::path::Path;
 use std::time::Duration;
 use uuid::Uuid;
 
+use super::syntactic_alignment::ElaeniaCostFunction;
+
 #[derive(Clone)]
 pub struct ElaeniaContext {
   workflow_name: String,
@@ -41,6 +43,11 @@ pub struct ElaeniaContext {
   output_filename: Option<String>,
 
   stopwatch: WorkflowStopwatch,
+
+  verbose: bool,
+  add_unrolls: bool,
+  ast_depth: usize,
+  cost_function: ElaeniaCostFunction,
 
   sketch_failed: bool,
   sketch_succeeded: bool,
@@ -72,6 +79,10 @@ impl ElaeniaContext {
       output_path: None,
       output_filename: None,
       stopwatch: WorkflowStopwatch::new(),
+      verbose: false,
+      add_unrolls: false,
+      ast_depth: 3,
+      cost_function: ElaeniaCostFunction::OptimizeStructure,
       sketch_failed: false,
       sketch_succeeded: false,
       timed_out: false,
@@ -187,6 +198,38 @@ impl ElaeniaContext {
       self.unroll_solutions_left().clone(),
       self.unroll_solutions_right().clone(),
     )));
+  }
+
+  pub fn set_verbose(&mut self, verbose: bool) {
+    self.verbose = verbose;
+  }
+
+  pub fn is_verbose(&self) -> bool {
+    self.verbose
+  }
+
+  pub fn set_add_unrolls(&mut self, add_unrolls: bool) {
+    self.add_unrolls = add_unrolls;
+  }
+
+  pub fn add_unrolls(&self) -> bool {
+    self.add_unrolls
+  }
+
+  pub fn set_ast_depth(&mut self, ast_depth: usize) {
+    self.ast_depth = ast_depth;
+  }
+
+  pub fn ast_depth(&self) -> usize {
+    self.ast_depth
+  }
+
+  pub fn set_cost_function(&mut self, cost_function: ElaeniaCostFunction) {
+    self.cost_function = cost_function;
+  }
+
+  pub fn cost_function(&self) -> &ElaeniaCostFunction {
+    &self.cost_function
   }
 
   pub fn mark_sketch_success(&mut self, succeeded: bool) {

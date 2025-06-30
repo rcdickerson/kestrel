@@ -70,9 +70,10 @@ impl OutputMode {
     let (dafny_output, while_lines) = new_main.to_dafny();
     let topmatter = format!("{}{}", globals, self.top(filename));
     let while_lines = while_lines.iter()
-      .map(|(id, (start, end))| (id.clone(), (start + topmatter.lines().count() + 1,
-                                              end   + topmatter.lines().count() + 1)))
+      .map(|(id, (start, end))| (id.clone(), (start + topmatter.lines().count(),
+                                              end   + topmatter.lines().count())))
       .collect::<HashMap<_, _>>();
+    println!("****** whileLines: {:?}", while_lines);
     (format!("{}{}", topmatter, dafny_output), while_lines)
   }
 

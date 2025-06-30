@@ -10,19 +10,11 @@ use crate::workflow::context::*;
 use crate::workflow::task::*;
 use std::collections::HashMap;
 
-pub struct InsertSpecs {
-  grammar_depth: u32,
-}
+pub struct InsertSpecs { }
 
 impl InsertSpecs {
-  pub fn new(grammar_depth: u32) -> Self {
-    InsertSpecs {
-      grammar_depth,
-    }
-  }
-
-  pub fn set_grammar_depth(&mut self, depth: u32) {
-    self.grammar_depth = depth;
+  pub fn new() -> Self {
+    InsertSpecs { }
   }
 }
 
@@ -32,7 +24,7 @@ impl Task<ElaeniaContext> for InsertSpecs {
     let crel = context.aligned_crel().clone().expect("Missing aligned CRel");
     context.accept_aligned_crel_no_spec(crel.clone());
     let spec = context.spec().clone();
-    let mut spec_inserter = SpecInserter::new(&spec, self.grammar_depth);
+    let mut spec_inserter = SpecInserter::new(&spec, context.ast_depth());
     let mapped_crel = spec_inserter.insert_specs_crel(&crel);
     context.accept_aligned_crel(mapped_crel);
     for gen in spec_inserter.added_choice_gens {
@@ -55,11 +47,11 @@ struct SpecInserter<'a> {
   current_id: u32,
   scope_identifiers: HashMap<String, (Type, bool)>,
   scope_arrays: HashMap<String, (Type, Vec<Expression>, bool)>,
-  grammar_depth: u32,
+  grammar_depth: usize,
 }
 
 impl <'a> SpecInserter<'a> {
-  fn new(spec: &'a ElaeniaSpec, grammar_depth: u32) -> SpecInserter<'a> {
+  fn new(spec: &'a ElaeniaSpec, grammar_depth: usize) -> SpecInserter<'a> {
     SpecInserter {
       spec,
       added_choice_funs: Vec::new(),

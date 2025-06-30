@@ -1,30 +1,24 @@
-//! A meta-[Task] which executes its enclosed task only when some
-//! predicate holds during the workflow execution.
-
-// It would be better to define tasks across a std::ops::Range
-// of arbitrary index, but this requires the index to implement
-// the Step trait, which is marked unstable at the time of writing.
-// https://github.com/rust-lang/rust/issues/42168
+//! A meta-[Task] which executes some set of subtasks over some range
+//! of values.
 
 use crate::workflow::task::*;
-use std::ops::Range;
 
-pub struct RepeatRanged<'a, Context> {
-  range: Range<u32>,
-  make_task_at: &'a dyn Fn(u32) -> Box<dyn Task<Context>>,
+pub struct RepeatRanged<'a, T, Context> {
+  range: Vec<T>,
+  make_task_at: &'a dyn Fn(T) -> Box<dyn Task<Context>>,
   finished: &'a dyn Fn(&Context) -> bool,
 }
 
-impl <'a, Context> RepeatRanged<'a, Context> {
-  pub fn new(range: Range<u32>,
-             make_task_at: &'a dyn Fn(u32) -> Box<dyn Task<Context>>,
+impl <'a, T, Context> RepeatRanged<'a, T, Context> {
+  pub fn new(range: Vec<T>,
+             make_task_at: &'a dyn Fn(T) -> Box<dyn Task<Context>>,
              finished: &'a dyn Fn(&Context) -> bool)
              -> Self {
     RepeatRanged { range, make_task_at, finished }
   }
 }
 
-impl <Context: Clone> Task<Context> for RepeatRanged<'_, Context> {
+impl <Context: Clone, T: Clone> Task<Context> for RepeatRanged<'_, T, Context> {
   fn name(&self) -> String { "repeat_range".to_string() }
   fn run(&self, context: &mut Context) {
     let mut try_context = context.clone();

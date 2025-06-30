@@ -73,7 +73,6 @@ impl OutputMode {
       .map(|(id, (start, end))| (id.clone(), (start + topmatter.lines().count() + 1,
                                               end   + topmatter.lines().count() + 1)))
       .collect::<HashMap<_, _>>();
-    println!("****** whileLines: {:?}", while_lines);
     (format!("{}{}", topmatter, dafny_output), while_lines)
   }
 

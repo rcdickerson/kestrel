@@ -15,7 +15,7 @@ SUMMARY_LATEX_NAME = 'summary.tex'
 EXTRACTION_TECHNIQUES = ['count-loops']
 KESTREL_BIN = './target/release/kestrel'
 SA_MAX_ITERATIONS = 30000
-TIMEOUT_SEC = 20 # 60 * 5
+TIMEOUT_SEC = 60 * 5
 
 def latex_cell(data):
   (time, success) = data
@@ -136,7 +136,6 @@ def run_benchmarks(output_dir):
                       '--infer-invariants', \
                       '--output-mode', 'dafny', \
                       '--output-summary', summary_file, \
-                      '--sa-max-iterations', str(SA_MAX_ITERATIONS), \
                       technique]
               try:
                 subprocess.run(args,

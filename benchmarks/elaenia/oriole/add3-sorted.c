@@ -3,6 +3,7 @@
      && (forall.length == exists.length)
      && (forall i: int, j: int, a: int, x: int :: (i == j) ==> lst_read(lst_store(a, i, x), j) == x)
      && (forall i: int, j: int, a: int, x: int :: (i != j) ==> lst_read(lst_store(a, i, x), j) == lst_read(a, j));
+ * pre_sketch: forall.length < 5;
  * forall: refinement;
  * exists: original;
  * post: forall.list == exists.list;
@@ -37,9 +38,11 @@ void original(int list_in, int length) {
   int list;
   list = shuffle(list_in);
   int i = 0;
+  int val_i = 0;
   while (i < length) {
+    _invariant("l_i == r_i");
     _invariant("l_list == r_list");
-    int val_i = lst_read(list, i);
+    val_i = lst_read(list, i);
     int updated = lst_store(list, i, val_i + 3);
     list = updated;
     i = i + 1;

@@ -8,23 +8,40 @@
  *     post: (0 <= ret!) && (ret! < 10) && (ret! % 2 == 1);
  * }
  * especs:
- *   rand() {
+ *   randI() {
  *     choiceVars: n;
  *     pre:  (0 <= n) && (n < 10);
  *     post: (ret! == n);
  * }
  */
 
-int rand();
+int randI();
+int _randI() {
+  int i = rand();
+  if (i < 0) { i = i * -1; }
+  return i;
+}
+
 int randOdd();
+int _randOdd() {
+  int i = rand();
+  if (i < 0) {
+    i = i * -1;
+  }
+  if (i % 2 == 1) {
+    i = i + 1;
+  }
+  return i;
+}
 
 void original() {
   int sum = 0;
   int i = 0;
   while (sum <= 100) {
     _invariant("l_sum == r_sum");
+    _invariant("l_i == r_i");
     int r;
-    r = rand();
+    r = randI();
     sum = sum + r + 1;
     if (i > 5) { assume(sum > 100); }
     i = i + 1;

@@ -276,8 +276,8 @@ fn elaenia_workflow(args: Args) {
   // synthesizer generator AST depth, and whether to ask sketch to
   // unroll loops.
   let mut range = Vec::new();
-  for add_unrolls in [false, true] {
-    for depth in 1..4 {
+  for depth in 1..4 {
+    for add_unrolls in [false, true] {
       for cost_function in [ElaeniaCostFunction::OptimizeStructure,
                             ElaeniaCostFunction::OptimizeChoice] {
         range.push((add_unrolls, depth, cost_function));

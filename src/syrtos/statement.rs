@@ -20,6 +20,7 @@ pub enum Statement {
     loop_id: Option<String>,
     condition: Box<Expression>,
     invariants: Vec<Expression>,
+    allow_nonterm: bool,
     body: Option<Box<Statement>>,
   }
 }
@@ -81,16 +82,16 @@ impl Statement {
         var.emit(writer);
         writer.write(";").new_line();
       },
-      Statement::While{loop_id, condition, invariants, body} => {
+      Statement::While{loop_id, condition, invariants, allow_nonterm, body} => {
         writer.write("while (");
         let start_line = writer.cur_line();
         condition.emit(writer, false);
-        if invariants.is_empty() {
+        if invariants.is_empty() && !*allow_nonterm {
           writer.write(") {").new_line();
         } else {
           writer.write(")").new_line();
           writer.indent();
-          if !writer.check_termination() {
+          if *allow_nonterm {
             writer.write("decreases *").new_line();
           }
           for invar in invariants {

@@ -517,11 +517,10 @@ impl <'a> SpecInserter<'a> {
     // postcondition.
     // NOTE: The latter approach seemingly has a disadvantage, which
     // is that Sketch will by default bound the value of the havoc return
-    // (havocs are uninterpreted functions) to be between 0 and 32.
-    // This can give Sketch leeway to synthesize bogus choice functions,
-    // e.g. by synthesizing a choice value which is large enough to
-    // falsify the postcondition, effectively turning it into an
-    // `assume false`.
+    // (havocs are uninterpreted functions) to be 5 bits (between 0 and 31,
+    // inclusive). This can give Sketch leeway to synthesize bogus choice
+    // functions, e.g. by synthesizing a choice value which is large enough to
+    // falsify the postcondition, effectively turning it into an `assume false`.
     let assignment_expr = match &espec.post {
       KestrelCond::BExpr(expr) => match expr {
         CondBExpr::BinopA { lhs, rhs, op } if *op == CondBBinopA::Eq => {

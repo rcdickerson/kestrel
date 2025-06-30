@@ -1,6 +1,11 @@
 use crate::crel::ast::*;
 use crate::escher as Sk;
 
+/// By default, Sketch does not provide solutions when loop executions
+/// exceed their unroll bound. We will relax this by assuming false
+/// whenever the number of loop executions goes above this amount.
+const MAX_ITERS: u32 = 7;
+
 impl CRel {
   pub fn to_sketch(&self) -> String {
     let mut source = Sk::Source::new();
@@ -290,13 +295,25 @@ fn statement_to_sketch(stmt: &Statement) -> Sk::Statement {
       None => { Sk::Statement::Return(None) },
       Some(ret) => { Sk::Statement::Return(Some(Box::new(expression_to_sketch(ret)))) },
     },
-    Statement::While{is_runoff, condition, ..} if *is_runoff => {
-      Sk::Statement::Assert(Box::new(Sk::Expression::UnOp {
-        expr: Box::new(expression_to_sketch(condition)),
-        op: "!".to_string(),
+    Statement::While{is_runoff, runoff_link_id, condition, ..} if *is_runoff => {
+      let id = runoff_link_id.expect("Loop marked runoff with no link ID");
+      let counter_name = format!("_{}_term", id).replace("-", "");
+      let counter_ident = Sk::Expression::Identifier{name: counter_name.clone()};
+      let triggered_nonterm = Sk::Expression::BinOp {
+        lhs: Box::new(counter_ident.clone()),
+        rhs: Box::new(Sk::Expression::ConstInt(MAX_ITERS as i32)),
+        op: ">=".to_string(),
+      };
+      Sk::Statement::Assert(Box::new(Sk::Expression::BinOp {
+        lhs: Box::new(triggered_nonterm),
+        rhs: Box::new(Sk::Expression::UnOp {
+          expr: Box::new(expression_to_sketch(condition)),
+          op: "!".to_string(),
+        }),
+        op: "||".to_string(),
       }))
     },
-    Statement::While{id, condition, body, ..} => {
+    Statement::While{id, condition, body, runoff_link_id, ..} => {
       fn declare_var(name: &String, typ: Sk::Type, init_val: Sk::Expression)
                      -> (Sk::Expression, Sk::Statement) {
         let ident = Sk::Expression::Identifier{name: name.clone()};
@@ -308,22 +325,10 @@ fn statement_to_sketch(stmt: &Statement) -> Sk::Statement {
       }
 
       // Termination counter.
-      let counter_name = format!("_{}_term", id).replace("-", "");
+      let counter_name = format!("_{}_term", runoff_link_id.unwrap_or(*id)).replace("-", "");
       let (counter_ident, counter_decl)
         = declare_var(&counter_name, Sk::Type::Int, Sk::Expression::ConstInt(0));
 
-      let counter_check = Sk::Statement::Seq(vec!(
-        Sk::Statement::If {
-          condition: Box::new(Sk::Expression::BinOp {
-            lhs: Box::new(counter_ident.clone()),
-            rhs: Box::new(Sk::Expression::ConstInt(6)),
-            op: ">".to_string(),
-          }),
-          then: Box::new(Sk::Statement::Assume(
-            Box::new(Sk::Expression::ConstBool(false)))),
-          els: None,
-        },
-      ));
       let counter_inc = Sk::Statement::Expression(Box::new(
         Sk::Expression::BinOp {
           lhs: Box::new(counter_ident.clone()),
@@ -336,17 +341,39 @@ fn statement_to_sketch(stmt: &Statement) -> Sk::Statement {
         }
       ));
 
-      let condition = Box::new(expression_to_sketch(condition));
+      let counter_check = Sk::Statement::Seq(vec!(
+        Sk::Statement::If {
+          condition: Box::new(Sk::Expression::BinOp {
+            lhs: Box::new(counter_ident.clone()),
+            rhs: Box::new(Sk::Expression::ConstInt(MAX_ITERS as i32)),
+            op: ">=".to_string(),
+          }),
+          then: Box::new(Sk::Statement::Assume(
+            Box::new(Sk::Expression::ConstBool(false)))),
+          els: None,
+        },
+      ));
+
+      let condition = Box::new(Sk::Expression::BinOp {
+        lhs: Box::new(expression_to_sketch(condition)),
+        rhs: Box::new(Sk::Expression::BinOp {
+          lhs: Box::new(counter_ident.clone()),
+          rhs: Box::new(Sk::Expression::ConstInt(MAX_ITERS as i32)),
+          op: "<".to_string(),
+        }),
+        op: "&&".to_string(),
+      });
       let body = match &body {
-        None => Sk::Statement::Seq(vec!(counter_check, counter_inc)),
+        None => counter_inc.clone(),
         Some(stmt) => Sk::Statement::Seq(vec!(
           statement_to_sketch(stmt),
-          counter_check,
           counter_inc)),
       };
       Sk::Statement::Seq(vec!(
         counter_decl,
-        Sk::Statement::While{condition, body: Some(Box::new(body))}))
+        Sk::Statement::While{condition, body: Some(Box::new(body))},
+        counter_check,
+      ))
     },
     wr@Statement::WhileRel{..} => {
       statement_to_sketch(&wr.denote_while_rel())

@@ -1,5 +1,5 @@
 /* @ELAENIA
- * pre: forall.low == exists.low && forall.low >= 0 forall.high == 1 && exists.high == 1;
+ * pre: forall.low == exists.low && forall.low >= 0 && forall.high == 1 && exists.high == 1;
  * forall: ti_gni;
  * exists: ti_gni;
  * post: forall.ret == exists.ret;
@@ -10,7 +10,7 @@
  *  }
  *  arb_int() {
  *    pre:  true;
- *    post: true;
+ *    post: ret! >= 0;
  *  }
  * especs:
  *  arb_bool() {
@@ -20,7 +20,7 @@
  *  }
  *  arb_int() {
  *    choiceVars: n;
- *    pre: true;
+ *    pre: n >= 0;
  *    post: (ret! == n);
  *  }
  */

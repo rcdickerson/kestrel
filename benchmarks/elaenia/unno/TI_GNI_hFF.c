@@ -42,7 +42,7 @@ void _test_gen(int low) {
 }
 
 void ti_gni(int low, int high) {
-  int x;
+  int x = 0;
   int r = 0;
   int ret;
   if (high != 0) {
@@ -53,6 +53,7 @@ void ti_gni(int low, int high) {
     r = arb_bool();
     while ( r != 0 ) {
       _invariant("l_r == r_r");
+      _invariant("l_x == r_x");
       x = x + 1;
       r = arb_bool();
     }

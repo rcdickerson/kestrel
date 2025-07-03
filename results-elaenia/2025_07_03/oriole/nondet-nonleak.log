@@ -1,0 +1,398 @@
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_structure
+Computed alignment by local loop counting.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==51022== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==51022== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==51022== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==51022== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==51022== 
+==51023== 
+==51023== For lists of detected and suppressed errors, rerun with: -s
+==51023== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51024== 
+==51024== For lists of detected and suppressed errors, rerun with: -s
+==51024== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51025== 
+==51025== For lists of detected and suppressed errors, rerun with: -s
+==51025== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51026== 
+==51026== For lists of detected and suppressed errors, rerun with: -s
+==51026== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51027== 
+==51027== For lists of detected and suppressed errors, rerun with: -s
+==51027== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51028== 
+==51028== For lists of detected and suppressed errors, rerun with: -s
+==51028== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51029== 
+==51029== For lists of detected and suppressed errors, rerun with: -s
+==51029== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51030== 
+==51030== For lists of detected and suppressed errors, rerun with: -s
+==51030== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51031== 
+==51031== For lists of detected and suppressed errors, rerun with: -s
+==51031== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51032== 
+==51032== For lists of detected and suppressed errors, rerun with: -s
+==51032== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51035== 
+==51035== For lists of detected and suppressed errors, rerun with: -s
+==51035== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51036== 
+==51036== For lists of detected and suppressed errors, rerun with: -s
+==51036== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51037== 
+==51037== For lists of detected and suppressed errors, rerun with: -s
+==51037== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51038== 
+==51038== For lists of detected and suppressed errors, rerun with: -s
+==51038== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51039== 
+==51039== For lists of detected and suppressed errors, rerun with: -s
+==51039== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51040== 
+==51040== For lists of detected and suppressed errors, rerun with: -s
+==51040== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51041== 
+==51041== For lists of detected and suppressed errors, rerun with: -s
+==51041== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51042== 
+==51042== For lists of detected and suppressed errors, rerun with: -s
+==51042== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51043== 
+==51043== For lists of detected and suppressed errors, rerun with: -s
+==51043== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51044== 
+==51044== For lists of detected and suppressed errors, rerun with: -s
+==51044== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51022== 
+==51022== For lists of detected and suppressed errors, rerun with: -s
+==51022== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume l_low == r_low;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(17,2): Warning: assume statement has no {:axiom} annotation
+   |
+17 |   assume (0 <= l_r) && (l_r < 100);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(21,12): Error: assertion might not hold
+   |
+21 |   assert (0 <= n_2) && (n_2 < 100);
+   |           ^^^^^^^^
+
+houdafny.dfy(21,28): Error: assertion might not hold
+   |
+21 |   assert (0 <= n_2) && (n_2 < 100);
+   |                         ^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 2 errors
+
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_choice
+Computed alignment by local loop counting.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==51163== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==51163== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==51163== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==51163== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==51163== 
+==51164== 
+==51164== For lists of detected and suppressed errors, rerun with: -s
+==51164== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51165== 
+==51165== For lists of detected and suppressed errors, rerun with: -s
+==51165== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51166== 
+==51166== For lists of detected and suppressed errors, rerun with: -s
+==51166== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51167== 
+==51167== For lists of detected and suppressed errors, rerun with: -s
+==51167== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51168== 
+==51168== For lists of detected and suppressed errors, rerun with: -s
+==51168== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51169== 
+==51169== For lists of detected and suppressed errors, rerun with: -s
+==51169== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51170== 
+==51170== For lists of detected and suppressed errors, rerun with: -s
+==51170== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51171== 
+==51171== For lists of detected and suppressed errors, rerun with: -s
+==51171== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51172== 
+==51172== For lists of detected and suppressed errors, rerun with: -s
+==51172== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51173== 
+==51173== For lists of detected and suppressed errors, rerun with: -s
+==51173== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51174== 
+==51174== For lists of detected and suppressed errors, rerun with: -s
+==51174== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51175== 
+==51175== For lists of detected and suppressed errors, rerun with: -s
+==51175== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51176== 
+==51176== For lists of detected and suppressed errors, rerun with: -s
+==51176== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51177== 
+==51177== For lists of detected and suppressed errors, rerun with: -s
+==51177== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51178== 
+==51178== For lists of detected and suppressed errors, rerun with: -s
+==51178== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51179== 
+==51179== For lists of detected and suppressed errors, rerun with: -s
+==51179== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51180== 
+==51180== For lists of detected and suppressed errors, rerun with: -s
+==51180== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51181== 
+==51181== For lists of detected and suppressed errors, rerun with: -s
+==51181== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51182== 
+==51182== For lists of detected and suppressed errors, rerun with: -s
+==51182== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51183== 
+==51183== For lists of detected and suppressed errors, rerun with: -s
+==51183== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51163== 
+==51163== For lists of detected and suppressed errors, rerun with: -s
+==51163== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume l_low == r_low;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(17,2): Warning: assume statement has no {:axiom} annotation
+   |
+17 |   assume (0 <= l_r) && (l_r < 100);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(21,12): Error: assertion might not hold
+   |
+21 |   assert (0 <= n_2) && (n_2 < 100);
+   |           ^^^^^^^^
+
+houdafny.dfy(21,28): Error: assertion might not hold
+   |
+21 |   assert (0 <= n_2) && (n_2 < 100);
+   |                         ^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 2 errors
+
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_structure
+Computed alignment by local loop counting.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==51298== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==51298== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==51298== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==51298== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==51298== 
+==51299== 
+==51299== For lists of detected and suppressed errors, rerun with: -s
+==51299== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51300== 
+==51300== For lists of detected and suppressed errors, rerun with: -s
+==51300== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51301== 
+==51301== For lists of detected and suppressed errors, rerun with: -s
+==51301== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51302== 
+==51302== For lists of detected and suppressed errors, rerun with: -s
+==51302== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51303== 
+==51303== For lists of detected and suppressed errors, rerun with: -s
+==51303== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51304== 
+==51304== For lists of detected and suppressed errors, rerun with: -s
+==51304== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51305== 
+==51305== For lists of detected and suppressed errors, rerun with: -s
+==51305== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51306== 
+==51306== For lists of detected and suppressed errors, rerun with: -s
+==51306== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51307== 
+==51307== For lists of detected and suppressed errors, rerun with: -s
+==51307== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51308== 
+==51308== For lists of detected and suppressed errors, rerun with: -s
+==51308== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51309== 
+==51309== For lists of detected and suppressed errors, rerun with: -s
+==51309== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51310== 
+==51310== For lists of detected and suppressed errors, rerun with: -s
+==51310== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51311== 
+==51311== For lists of detected and suppressed errors, rerun with: -s
+==51311== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51312== 
+==51312== For lists of detected and suppressed errors, rerun with: -s
+==51312== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51313== 
+==51313== For lists of detected and suppressed errors, rerun with: -s
+==51313== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51314== 
+==51314== For lists of detected and suppressed errors, rerun with: -s
+==51314== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51315== 
+==51315== For lists of detected and suppressed errors, rerun with: -s
+==51315== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51316== 
+==51316== For lists of detected and suppressed errors, rerun with: -s
+==51316== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51317== 
+==51317== For lists of detected and suppressed errors, rerun with: -s
+==51317== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51318== 
+==51318== For lists of detected and suppressed errors, rerun with: -s
+==51318== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==51298== 
+==51298== For lists of detected and suppressed errors, rerun with: -s
+==51298== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume l_low == r_low;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(17,2): Warning: assume statement has no {:axiom} annotation
+   |
+17 |   assume (0 <= l_r) && (l_r < 100);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 1 verified, 0 errors
+
+
+Aligned Product Program
+-----------------------
+
+function randInt(): int
+
+function havoc_1(l_high: int, l_low: int, r_low: int, r_high: int): int
+
+function choice_n_2(l_high: int, l_r: int, l_low: int, r_low: int, r_high: int): int {
+  1
+ }
+
+method Product(l_low: int, l_high: int, r_low: int, r_high: int)
+  decreases *
+{
+  assume l_low == r_low;
+  var l_r: int;
+  assert true;
+  l_r := havoc_1(l_high, l_low, r_low, r_high);
+  assume (0 <= l_r) && (l_r < 100);
+  var l_ret: int;
+  var r_r: int;
+  var n_2: int := choice_n_2(l_high, l_r, l_low, r_low, r_high);
+  assert (0 <= n_2) && (n_2 < 100);
+  r_r := n_2;
+  var r_ret: int;
+  if ((l_r == 5000) && (r_r == 5000)) {
+    l_ret := (l_high + l_low);
+    r_ret := (r_high + r_low);
+  } else {
+    if ((l_r == 5000) && (!(r_r == 5000))) {
+      l_ret := (l_high + l_low);
+      r_ret := r_low;
+    } else {
+      if ((!(l_r == 5000)) && (r_r == 5000)) {
+        l_ret := l_low;
+        r_ret := (r_high + r_low);
+      } else {
+        l_ret := l_low;
+        r_ret := r_low;
+      }
+    }
+  }
+  assert (l_low == r_low) && (l_ret == r_ret);
+}
+
+
+Per-Task Times (ms)
+-------------------
+insert-elaenia-specs: 0
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 0
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 339
+elaenia-invars: 1781
+houdafny: 1046
+compound_task: 3169
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 0
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 371
+elaenia-invars: 1783
+houdafny: 1077
+compound_task: 3233
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 0
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 360
+elaenia-invars: 1764
+houdafny: 1033
+repeat_range: 9560
+write-dafny: 0
+print-info: 0
+
+
+Extraction Settings
+-------------------
+Max AST Depth: 1
+Loop unrolling: true
+Cost function: structure
+Max AST Depth: 1
+
+Elaenia completed in 9561ms
+Verified: true

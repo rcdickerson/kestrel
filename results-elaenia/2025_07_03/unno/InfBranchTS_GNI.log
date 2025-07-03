@@ -1,0 +1,767 @@
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_structure
+Computed alignment by local loop counting.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:140 (2)
+
+*** Rejected
+    [0;31m[1751564474.1090 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:140 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751564474.1160 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751564474.1161 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_choice
+Computed alignment by local loop counting.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:140 (2)
+
+*** Rejected
+    [0;31m[1751564475.5860 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:140 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751564475.5940 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751564475.5941 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_structure
+Computed alignment by local loop counting.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==52835== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==52835== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==52835== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==52835== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==52835== 
+==52836== 
+==52836== For lists of detected and suppressed errors, rerun with: -s
+==52836== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52837== 
+==52837== For lists of detected and suppressed errors, rerun with: -s
+==52837== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52838== 
+==52838== For lists of detected and suppressed errors, rerun with: -s
+==52838== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52839== 
+==52839== For lists of detected and suppressed errors, rerun with: -s
+==52839== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52840== 
+==52840== For lists of detected and suppressed errors, rerun with: -s
+==52840== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52841== 
+==52841== For lists of detected and suppressed errors, rerun with: -s
+==52841== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52842== 
+==52842== For lists of detected and suppressed errors, rerun with: -s
+==52842== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52843== 
+==52843== For lists of detected and suppressed errors, rerun with: -s
+==52843== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52844== 
+==52844== For lists of detected and suppressed errors, rerun with: -s
+==52844== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52845== 
+==52845== For lists of detected and suppressed errors, rerun with: -s
+==52845== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52846== 
+==52846== For lists of detected and suppressed errors, rerun with: -s
+==52846== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52847== 
+==52847== For lists of detected and suppressed errors, rerun with: -s
+==52847== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52848== 
+==52848== For lists of detected and suppressed errors, rerun with: -s
+==52848== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52849== 
+==52849== For lists of detected and suppressed errors, rerun with: -s
+==52849== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52850== 
+==52850== For lists of detected and suppressed errors, rerun with: -s
+==52850== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52851== 
+==52851== For lists of detected and suppressed errors, rerun with: -s
+==52851== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52852== 
+==52852== For lists of detected and suppressed errors, rerun with: -s
+==52852== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52853== 
+==52853== For lists of detected and suppressed errors, rerun with: -s
+==52853== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52854== 
+==52854== For lists of detected and suppressed errors, rerun with: -s
+==52854== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52855== 
+==52855== For lists of detected and suppressed errors, rerun with: -s
+==52855== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==52835== 
+==52835== For lists of detected and suppressed errors, rerun with: -s
+==52835== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(31,2): Warning: assume statement has no {:axiom} annotation
+   |
+31 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(48,6): Warning: assume statement has no {:axiom} annotation
+   |
+48 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(63,6): Warning: assume statement has no {:axiom} annotation
+   |
+63 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(78,6): Warning: assume statement has no {:axiom} annotation
+   |
+78 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(93,6): Warning: assume statement has no {:axiom} annotation
+   |
+93 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(172,6): Warning: assume statement has no {:axiom} annotation
+    |
+172 |       assume l_r >= 0;
+    |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(217,8): Warning: assume statement has no {:axiom} annotation
+    |
+217 |         assume !(r_x > 0);
+    |         ^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(220,8): Warning: assume statement has no {:axiom} annotation
+    |
+220 |         assume l_r >= 0;
+    |         ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(239,8): Warning: assume statement has no {:axiom} annotation
+    |
+239 |         assume !(l_x > 0);
+    |         ^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(260,8): Warning: assume statement has no {:axiom} annotation
+    |
+260 |         assume l_r >= 0;
+    |         ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(275,8): Warning: assume statement has no {:axiom} annotation
+    |
+275 |         assume l_r >= 0;
+    |         ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(290,8): Warning: assume statement has no {:axiom} annotation
+    |
+290 |         assume l_r >= 0;
+    |         ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(305,8): Warning: assume statement has no {:axiom} annotation
+    |
+305 |         assume l_r >= 0;
+    |         ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(320,8): Warning: assume statement has no {:axiom} annotation
+    |
+320 |         assume l_r >= 0;
+    |         ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(351,8): Warning: assume statement has no {:axiom} annotation
+    |
+351 |         assume l_r >= 0;
+    |         ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(370,10): Warning: assume statement has no {:axiom} annotation
+    |
+370 |           assume !(r_x > 0);
+    |           ^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(373,10): Warning: assume statement has no {:axiom} annotation
+    |
+373 |           assume l_r >= 0;
+    |           ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(392,10): Warning: assume statement has no {:axiom} annotation
+    |
+392 |           assume !(l_x > 0);
+    |           ^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(424,12): Warning: assume statement has no {:axiom} annotation
+    |
+424 |             assume !(r_x > 0);
+    |             ^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(434,12): Warning: assume statement has no {:axiom} annotation
+    |
+434 |             assume !(l_x > 0);
+    |             ^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(465,12): Warning: assume statement has no {:axiom} annotation
+    |
+465 |             assume !(r_x > 0);
+    |             ^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(475,12): Warning: assume statement has no {:axiom} annotation
+    |
+475 |             assume !(l_x > 0);
+    |             ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 1 verified, 0 errors
+
+
+Aligned Product Program
+-----------------------
+
+function randInt(): int
+
+function havoc_1(r_max: int, l_r: int, r_r: int, r_low: int, r_x: int, r_high: int, l_low: int, l_max: int, l_x: int, l_high: int): int
+
+function havoc_3(r_max: int, l_r: int, r_r: int, r_low: int, r_x: int, r_high: int, l_low: int, l_max: int, l_x: int, l_high: int): int
+
+function havoc_5(r_max: int, l_r: int, r_r: int, r_low: int, r_x: int, r_high: int, l_low: int, l_max: int, l_x: int, l_high: int): int
+
+function havoc_6(r_max: int, l_r: int, r_r: int, r_low: int, r_x: int, r_high: int, l_low: int, l_max: int, l_x: int, l_high: int): int
+
+function choice_n_4(r_max: int, l_r: int, r_r: int, r_low: int, r_x: int, r_high: int, l_low: int, l_max: int, l_x: int, l_high: int): int {
+  0
+ }
+
+function choice_n_7(r_max: int, l_r: int, r_r: int, r_low: int, r_x: int, r_high: int, l_low: int, l_max: int, l_x: int, l_high: int): int {
+  0
+ }
+
+function choice_n_8(r_max: int, l_r: int, r_r: int, r_low: int, r_x: int, r_high: int, l_low: int, l_max: int, l_x: int, l_high: int): int {
+  0
+ }
+
+function choice_n_2(r_max: int, l_r: int, r_r: int, r_low: int, r_x: int, r_high: int, l_low: int, l_max: int, l_x: int, l_high: int): int {
+  1
+ }
+
+method Product(l_low: int, l_high: int, r_low: int, r_high: int)
+  decreases *
+{
+  assume (l_low == r_low) && (l_low >= 0);
+  var l_x: int;
+  l_x := l_low;
+  var l_r: int;
+  l_r := 0;
+  var l_max: int;
+  l_max := 0;
+  var r_x: int;
+  r_x := r_low;
+  var r_r: int;
+  r_r := 0;
+  var r_max: int;
+  r_max := 0;
+  if ((l_high != 0) && (r_high != 0)) {
+    if (l_x > 0) {
+      assert true;
+      l_r := havoc_1(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+      assume l_r >= 0;
+      if (l_r < 1) {
+        l_max := 1;
+      } else {
+        l_max := l_r;
+      }
+      if (l_max >= l_x) {
+        l_x := 0;
+      } else {
+        l_x := (l_x - l_max);
+      }
+    }
+    if (l_x > 0) {
+      assert true;
+      l_r := havoc_1(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+      assume l_r >= 0;
+      if (l_r < 1) {
+        l_max := 1;
+      } else {
+        l_max := l_r;
+      }
+      if (l_max >= l_x) {
+        l_x := 0;
+      } else {
+        l_x := (l_x - l_max);
+      }
+    }
+    if (l_x > 0) {
+      assert true;
+      l_r := havoc_1(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+      assume l_r >= 0;
+      if (l_r < 1) {
+        l_max := 1;
+      } else {
+        l_max := l_r;
+      }
+      if (l_max >= l_x) {
+        l_x := 0;
+      } else {
+        l_x := (l_x - l_max);
+      }
+    }
+    if (l_x > 0) {
+      assert true;
+      l_r := havoc_1(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+      assume l_r >= 0;
+      if (l_r < 1) {
+        l_max := 1;
+      } else {
+        l_max := l_r;
+      }
+      if (l_max >= l_x) {
+        l_x := 0;
+      } else {
+        l_x := (l_x - l_max);
+      }
+    }
+    if (r_x > 0) {
+      var n_2: int := choice_n_2(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+      assert n_2 >= 0;
+      r_r := n_2;
+      if (r_r < 1) {
+        r_max := 1;
+      } else {
+        r_max := r_r;
+      }
+      if (r_max >= r_x) {
+        r_x := 0;
+      } else {
+        r_x := (r_x - r_max);
+      }
+    }
+    if (r_x > 0) {
+      var n_2: int := choice_n_2(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+      assert n_2 >= 0;
+      r_r := n_2;
+      if (r_r < 1) {
+        r_max := 1;
+      } else {
+        r_max := r_r;
+      }
+      if (r_max >= r_x) {
+        r_x := 0;
+      } else {
+        r_x := (r_x - r_max);
+      }
+    }
+    if (r_x > 0) {
+      var n_2: int := choice_n_2(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+      assert n_2 >= 0;
+      r_r := n_2;
+      if (r_r < 1) {
+        r_max := 1;
+      } else {
+        r_max := r_r;
+      }
+      if (r_max >= r_x) {
+        r_x := 0;
+      } else {
+        r_x := (r_x - r_max);
+      }
+    }
+    if (r_x > 0) {
+      var n_2: int := choice_n_2(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+      assert n_2 >= 0;
+      r_r := n_2;
+      if (r_r < 1) {
+        r_max := 1;
+      } else {
+        r_max := r_r;
+      }
+      if (r_max >= r_x) {
+        r_x := 0;
+      } else {
+        r_x := (r_x - r_max);
+      }
+    }
+    while ((l_x > 0) && (r_x > 0))
+      decreases *
+      invariant l_x >= 0
+      invariant r_x >= 0
+    {
+      assert true;
+      l_r := havoc_3(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+      assume l_r >= 0;
+      var n_4: int := choice_n_4(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+      assert n_4 >= 0;
+      r_r := n_4;
+      if ((l_r < 1) && (r_r < 1)) {
+        l_max := 1;
+        r_max := 1;
+      } else {
+        if ((l_r < 1) && (!(r_r < 1))) {
+          l_max := 1;
+          r_max := r_r;
+        } else {
+          if ((!(l_r < 1)) && (r_r < 1)) {
+            l_max := l_r;
+            r_max := 1;
+          } else {
+            l_max := l_r;
+            r_max := r_r;
+          }
+        }
+      }
+      if ((l_max >= l_x) && (r_max >= r_x)) {
+        l_x := 0;
+        r_x := 0;
+      } else {
+        if ((l_max >= l_x) && (!(r_max >= r_x))) {
+          l_x := 0;
+          r_x := (r_x - r_max);
+        } else {
+          if ((!(l_max >= l_x)) && (r_max >= r_x)) {
+            l_x := (l_x - l_max);
+            r_x := 0;
+          } else {
+            l_x := (l_x - l_max);
+            r_x := (r_x - r_max);
+          }
+        }
+      }
+    }
+    if (l_x > 0) {
+      while (l_x > 0)
+        decreases *
+        invariant l_x >= 0
+        invariant r_x >= 0
+      {
+        assume !(r_x > 0);
+        assert true;
+        l_r := havoc_1(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+        assume l_r >= 0;
+        if (l_r < 1) {
+          l_max := 1;
+        } else {
+          l_max := l_r;
+        }
+        if (l_max >= l_x) {
+          l_x := 0;
+        } else {
+          l_x := (l_x - l_max);
+        }
+      }
+    }
+    if (r_x > 0) {
+      while (r_x > 0)
+        decreases *
+        invariant l_x >= 0
+        invariant r_x >= 0
+      {
+        assume !(l_x > 0);
+        var n_2: int := choice_n_2(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+        assert n_2 >= 0;
+        r_r := n_2;
+        if (r_r < 1) {
+          r_max := 1;
+        } else {
+          r_max := r_r;
+        }
+        if (r_max >= r_x) {
+          r_x := 0;
+        } else {
+          r_x := (r_x - r_max);
+        }
+      }
+    }
+  } else {
+    if ((l_high != 0) && (!(r_high != 0))) {
+      if (l_x > 0) {
+        assert true;
+        l_r := havoc_5(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+        assume l_r >= 0;
+        if (l_r < 1) {
+          l_max := 1;
+        } else {
+          l_max := l_r;
+        }
+        if (l_max >= l_x) {
+          l_x := 0;
+        } else {
+          l_x := (l_x - l_max);
+        }
+      }
+      if (l_x > 0) {
+        assert true;
+        l_r := havoc_5(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+        assume l_r >= 0;
+        if (l_r < 1) {
+          l_max := 1;
+        } else {
+          l_max := l_r;
+        }
+        if (l_max >= l_x) {
+          l_x := 0;
+        } else {
+          l_x := (l_x - l_max);
+        }
+      }
+      if (l_x > 0) {
+        assert true;
+        l_r := havoc_5(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+        assume l_r >= 0;
+        if (l_r < 1) {
+          l_max := 1;
+        } else {
+          l_max := l_r;
+        }
+        if (l_max >= l_x) {
+          l_x := 0;
+        } else {
+          l_x := (l_x - l_max);
+        }
+      }
+      if (l_x > 0) {
+        assert true;
+        l_r := havoc_5(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+        assume l_r >= 0;
+        if (l_r < 1) {
+          l_max := 1;
+        } else {
+          l_max := l_r;
+        }
+        if (l_max >= l_x) {
+          l_x := 0;
+        } else {
+          l_x := (l_x - l_max);
+        }
+      }
+      if (l_x > 0) {
+        assert true;
+        l_r := havoc_5(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+        assume l_r >= 0;
+        if (l_r < 1) {
+          l_max := 1;
+        } else {
+          l_max := l_r;
+        }
+        if (l_max >= l_x) {
+          l_x := 0;
+        } else {
+          l_x := (l_x - l_max);
+        }
+      }
+      if (r_x > 0) {
+        r_x := (r_x - 1);
+      }
+      if (r_x > 0) {
+        r_x := (r_x - 1);
+      }
+      if (r_x > 0) {
+        r_x := (r_x - 1);
+      }
+      if (r_x > 0) {
+        r_x := (r_x - 1);
+      }
+      while ((l_x > 0) && (r_x > 0))
+        decreases *
+        invariant l_x >= 0
+        invariant r_x >= 0
+      {
+        assert true;
+        l_r := havoc_6(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+        assume l_r >= 0;
+        if (l_r < 1) {
+          l_max := 1;
+        } else {
+          l_max := l_r;
+        }
+        if (l_max >= l_x) {
+          l_x := 0;
+        } else {
+          l_x := (l_x - l_max);
+        }
+        r_x := (r_x - 1);
+      }
+      if (l_x > 0) {
+        while (l_x > 0)
+          decreases *
+          invariant l_x >= 0
+          invariant r_x >= 0
+        {
+          assume !(r_x > 0);
+          assert true;
+          l_r := havoc_5(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+          assume l_r >= 0;
+          if (l_r < 1) {
+            l_max := 1;
+          } else {
+            l_max := l_r;
+          }
+          if (l_max >= l_x) {
+            l_x := 0;
+          } else {
+            l_x := (l_x - l_max);
+          }
+        }
+      }
+      if (r_x > 0) {
+        while (r_x > 0)
+          decreases *
+          invariant l_x >= 0
+          invariant r_x >= 0
+        {
+          assume !(l_x > 0);
+          r_x := (r_x - 1);
+        }
+      }
+    } else {
+      if ((!(l_high != 0)) && (r_high != 0)) {
+        while ((l_x > 0) && (r_x > 0))
+          decreases *
+          invariant l_x >= 0
+          invariant r_x >= 0
+        {
+          l_x := (l_x - 1);
+          var n_8: int := choice_n_8(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+          assert n_8 >= 0;
+          r_r := n_8;
+          if (r_r < 1) {
+            r_max := 1;
+          } else {
+            r_max := r_r;
+          }
+          if (r_max >= r_x) {
+            r_x := 0;
+          } else {
+            r_x := (r_x - r_max);
+          }
+        }
+        if (l_x > 0) {
+          while (l_x > 0)
+            decreases *
+            invariant l_x >= 0
+            invariant r_x >= 0
+          {
+            assume !(r_x > 0);
+            l_x := (l_x - 1);
+          }
+        }
+        if (r_x > 0) {
+          while (r_x > 0)
+            decreases *
+            invariant l_x >= 0
+            invariant r_x >= 0
+          {
+            assume !(l_x > 0);
+            var n_7: int := choice_n_7(r_max, l_r, r_r, r_low, r_x, r_high, l_low, l_max, l_x, l_high);
+            assert n_7 >= 0;
+            r_r := n_7;
+            if (r_r < 1) {
+              r_max := 1;
+            } else {
+              r_max := r_r;
+            }
+            if (r_max >= r_x) {
+              r_x := 0;
+            } else {
+              r_x := (r_x - r_max);
+            }
+          }
+        }
+      } else {
+        while ((l_x > 0) && (r_x > 0))
+          decreases *
+          invariant l_x >= 0
+          invariant r_x >= 0
+        {
+          l_x := (l_x - 1);
+          r_x := (r_x - 1);
+        }
+        if (l_x > 0) {
+          while (l_x > 0)
+            decreases *
+            invariant l_x >= 0
+            invariant r_x >= 0
+          {
+            assume !(r_x > 0);
+            l_x := (l_x - 1);
+          }
+        }
+        if (r_x > 0) {
+          while (r_x > 0)
+            decreases *
+            invariant l_x >= 0
+            invariant r_x >= 0
+          {
+            assume !(l_x > 0);
+            r_x := (r_x - 1);
+          }
+        }
+      }
+    }
+  }
+  assert l_x == r_x;
+}
+
+
+Per-Task Times (ms)
+-------------------
+insert-elaenia-specs: 0
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 8
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 1436
+elaenia-invars: 0
+houdafny: 0
+compound_task: 1446
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 9
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 1466
+elaenia-invars: 0
+houdafny: 0
+compound_task: 1477
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 8
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 1
+solve-sketch: 34506
+elaenia-invars: 2227
+houdafny: 1356
+repeat_range: 41026
+write-dafny: 0
+print-info: 0
+
+
+Extraction Settings
+-------------------
+Max AST Depth: 1
+Loop unrolling: true
+Cost function: structure
+Max AST Depth: 1
+
+Elaenia completed in 41027ms
+Verified: true

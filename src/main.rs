@@ -330,6 +330,15 @@ fn elaenia_workflow(args: Args) {
         }
         lines.join("\n") + "\n"
       }));
+  workflow.add_task(PrintInfo::with_header("Extraction Settings",
+      &|ctx: &ElaeniaContext| {
+        let mut lines = Vec::new();
+        lines.push(format!("Max AST Depth: {}", ctx.ast_depth()));
+        lines.push(format!("Loop unrolling: {}", ctx.add_unrolls()));
+        lines.push(format!("Cost function: {}", ctx.cost_function()));
+        lines.push(format!("Max AST Depth: {}", ctx.ast_depth()));
+        lines.join("\n") + "\n"
+      }));
   args.output_summary.map(|location| {
     workflow.add_task(WriteSummary::new(location, vec!(args.extractor.tag())));
   });

@@ -21,6 +21,15 @@ impl ElaeniaCostFunction {
   }
 }
 
+impl std::fmt::Display for ElaeniaCostFunction {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    write!(f, "{}", match self {
+      ElaeniaCostFunction::OptimizeStructure => "structure",
+      ElaeniaCostFunction::OptimizeChoice => "choice-information",
+    })
+  }
+}
+
 pub struct ElaeniaSyntacticAlignmentTask { }
 
 impl ElaeniaSyntacticAlignmentTask {

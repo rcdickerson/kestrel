@@ -1,0 +1,222 @@
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_structure
+Computed alignment by local loop counting.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==220861== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==220861== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==220861== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==220861== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==220861== 
+==220862== 
+==220862== For lists of detected and suppressed errors, rerun with: -s
+==220862== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220863== 
+==220863== For lists of detected and suppressed errors, rerun with: -s
+==220863== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220864== 
+==220864== For lists of detected and suppressed errors, rerun with: -s
+==220864== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220865== 
+==220865== For lists of detected and suppressed errors, rerun with: -s
+==220865== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220866== 
+==220866== For lists of detected and suppressed errors, rerun with: -s
+==220866== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220867== 
+==220867== For lists of detected and suppressed errors, rerun with: -s
+==220867== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220868== 
+==220868== For lists of detected and suppressed errors, rerun with: -s
+==220868== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220869== 
+==220869== For lists of detected and suppressed errors, rerun with: -s
+==220869== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220870== 
+==220870== For lists of detected and suppressed errors, rerun with: -s
+==220870== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220871== 
+==220871== For lists of detected and suppressed errors, rerun with: -s
+==220871== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220872== 
+==220872== For lists of detected and suppressed errors, rerun with: -s
+==220872== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220873== 
+==220873== For lists of detected and suppressed errors, rerun with: -s
+==220873== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220874== 
+==220874== For lists of detected and suppressed errors, rerun with: -s
+==220874== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220875== 
+==220875== For lists of detected and suppressed errors, rerun with: -s
+==220875== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220876== 
+==220876== For lists of detected and suppressed errors, rerun with: -s
+==220876== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220877== 
+==220877== For lists of detected and suppressed errors, rerun with: -s
+==220877== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220878== 
+==220878== For lists of detected and suppressed errors, rerun with: -s
+==220878== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220879== 
+==220879== For lists of detected and suppressed errors, rerun with: -s
+==220879== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220880== 
+==220880== For lists of detected and suppressed errors, rerun with: -s
+==220880== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220881== 
+==220881== For lists of detected and suppressed errors, rerun with: -s
+==220881== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==220861== 
+==220861== For lists of detected and suppressed errors, rerun with: -s
+==220861== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(19,2): Warning: assume statement has no {:axiom} annotation
+   |
+19 |   assume (l_l == r_l) && ((l_l >= 0) && ((l_h <= l_l) && (r_h <= r_l)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,2): Warning: assume statement has no {:axiom} annotation
+   |
+28 |   assume l_a1 >= 0;
+   |   ^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(31,2): Warning: assume statement has no {:axiom} annotation
+   |
+31 |   assume l_a2 >= 0;
+   |   ^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 1 verified, 0 errors
+
+
+Aligned Product Program
+-----------------------
+
+function any(): int
+
+function havoc_1(l_o: int, l_h: int, r_l: int, l_l: int, r_h: int, l_x: int): int
+
+function havoc_2(l_o: int, l_h: int, r_l: int, l_a1: int, l_l: int, r_h: int, l_x: int): int
+
+function choice_n_4(l_o: int, l_h: int, r_l: int, l_a1: int, l_l: int, r_h: int, l_a2: int, r_x: int, r_o: int, l_x: int): int {
+  l_a2
+ }
+
+function choice_n_3(l_o: int, l_h: int, r_l: int, l_a1: int, l_l: int, r_h: int, l_a2: int, r_x: int, r_o: int, l_x: int): int {
+  l_x
+ }
+
+method Product(l_l: int, l_h: int, r_l: int, r_h: int)
+  decreases *
+{
+  assume (l_l == r_l) && ((l_l >= 0) && ((l_h <= l_l) && (r_h <= r_l)));
+  var l_a1: int;
+  var l_a2: int;
+  var l_x: int;
+  l_x := 0;
+  var l_o: int;
+  l_o := 0;
+  assert true;
+  l_a1 := havoc_1(l_o, l_h, r_l, l_l, r_h, l_x);
+  assume l_a1 >= 0;
+  assert true;
+  l_a2 := havoc_2(l_o, l_h, r_l, l_a1, l_l, r_h, l_x);
+  assume l_a2 >= 0;
+  var r_a1: int;
+  var r_a2: int;
+  var r_x: int;
+  r_x := 0;
+  var r_o: int;
+  r_o := 0;
+  var n_3: int := choice_n_3(l_o, l_h, r_l, l_a1, l_l, r_h, l_a2, r_x, r_o, l_x);
+  assert n_3 >= 0;
+  r_a1 := n_3;
+  var n_4: int := choice_n_4(l_o, l_h, r_l, l_a1, l_l, r_h, l_a2, r_x, r_o, l_x);
+  assert n_4 >= 0;
+  r_a2 := n_4;
+  if ((l_h > l_l) && (r_h > r_l)) {
+    l_o := (l_l + l_a1);
+    r_o := (r_l + r_a1);
+  } else {
+    if ((l_h > l_l) && (!(r_h > r_l))) {
+      l_o := (l_l + l_a1);
+      r_x := r_a2;
+      if (r_x > r_l) {
+        r_o := r_x;
+      } else {
+        r_o := r_l;
+      }
+    } else {
+      if ((!(l_h > l_l)) && (r_h > r_l)) {
+        l_x := l_a2;
+        if (l_x > l_l) {
+          l_o := l_x;
+        } else {
+          l_o := l_l;
+        }
+        r_o := (r_l + r_a1);
+      } else {
+        l_x := l_a2;
+        r_x := r_a2;
+        if ((l_x > l_l) && (r_x > r_l)) {
+          l_o := l_x;
+          r_o := r_x;
+        } else {
+          if ((l_x > l_l) && (!(r_x > r_l))) {
+            l_o := l_x;
+            r_o := r_l;
+          } else {
+            if ((!(l_x > l_l)) && (r_x > r_l)) {
+              l_o := l_l;
+              r_o := r_x;
+            } else {
+              l_o := l_l;
+              r_o := r_l;
+            }
+          }
+        }
+      }
+    }
+  }
+  assert l_o == r_o;
+}
+
+
+Per-Task Times (ms)
+-------------------
+insert-elaenia-specs: 0
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 3
+aligned-crel: 0
+print-info: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 449
+elaenia-invars: 1882
+houdafny: 1150
+compound_task: 3482
+repeat_range: 3486
+write-dafny: 0
+print-info: 0
+
+
+Extraction Settings
+-------------------
+Max AST Depth: 1
+Loop unrolling: false
+Cost function: structure
+Max AST Depth: 1
+
+Elaenia completed in 3486ms
+Verified: true

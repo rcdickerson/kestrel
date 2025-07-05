@@ -5,12 +5,12 @@
  * post: forall.y == exists.z;
  * aspecs: any() {
  *     pre:  true;
- *     post: ret! >= 0;
+ *     post: true;
  * }
  * especs:
  *   any() {
  *     choiceVars: n;
- *     pre:  n >= 0;
+ *     pre:  true;
  *     post: ret! == n;
  * }
  */

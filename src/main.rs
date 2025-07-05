@@ -307,12 +307,21 @@ fn elaenia_workflow(args: Args) {
               .expect("Missing aligned CRel")
               .to_c(true, true).to_string()
           })))),
-      Box::new(InsertSpecs::new()),
-      Box::new(WriteSketch::new(add_unrolls)),
-      Box::new(SolveSketch::new(None)),
-      Box::new(if_sketch_success(ElaeniaInvars::new())),
-      Box::new(if_sketch_success(Houdafny::new(None))),
-    )))
+      Box::new(PredicateTask::new(&|ctx: &ElaeniaContext| {
+          ctx.add_unrolls() && ctx.aligned_crel().clone().expect("Missing aligned CRel").count_loops() == 0
+        }, Box::new(PrintInfo::new(&|_: &ElaeniaContext| {
+          "Skipping loop unroll for program without loops.".to_string()
+        })))),
+      Box::new(PredicateTask::new(&|ctx: &ElaeniaContext| {
+          !ctx.add_unrolls() || ctx.aligned_crel().clone().expect("Missing aligned CRel").count_loops() > 0
+        }, Box::new(CompoundTask::from(vec!(
+            Box::new(InsertSpecs::new()),
+            Box::new(WriteSketch::new(add_unrolls)),
+            Box::new(SolveSketch::new(None)),
+            Box::new(if_sketch_success(ElaeniaInvars::new())),
+            Box::new(if_sketch_success(Houdafny::new(None))),
+        )))))),
+    ))
   }, &|ctx: &ElaeniaContext| { ctx.is_verified() }));
 
   // If verification was successful, write the final product.

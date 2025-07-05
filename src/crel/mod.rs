@@ -10,6 +10,7 @@ pub mod daikon_converter;
 pub mod eval;
 pub mod fundef;
 pub mod invariant_decorator;
+pub mod loop_counter;
 pub mod map_vars;
 pub mod mapper;
 pub mod parser;

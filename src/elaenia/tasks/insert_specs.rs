@@ -9,6 +9,7 @@ use crate::elaenia::tasks::elaenia_context::*;
 use crate::workflow::context::*;
 use crate::workflow::task::*;
 use std::collections::HashMap;
+use std::collections::HashSet;
 
 pub struct InsertSpecs { }
 
@@ -27,8 +28,8 @@ impl Task<ElaeniaContext> for InsertSpecs {
     let mut spec_inserter = SpecInserter::new(&spec, context.ast_depth());
     let mapped_crel = spec_inserter.insert_specs_crel(&crel);
     context.accept_aligned_crel(mapped_crel);
-    for gen in spec_inserter.added_choice_gens {
-      context.accept_choice_gen(gen);
+    for (aexp_gen, bexp_gen) in spec_inserter.added_choice_gens {
+      context.accept_choice_gen(aexp_gen, bexp_gen);
     }
     for fun in spec_inserter.added_choice_funs {
       context.accept_choice_fun(fun);
@@ -42,11 +43,12 @@ impl Task<ElaeniaContext> for InsertSpecs {
 struct SpecInserter<'a> {
   spec: &'a ElaeniaSpec,
   added_choice_funs: Vec<FunDef>,
-  added_choice_gens: Vec<FunDef>,
+  added_choice_gens: Vec<(FunDef, FunDef)>,
   added_havoc_funs: Vec<FunDef>,
   current_id: u32,
   scope_identifiers: HashMap<String, (Type, bool)>,
   scope_arrays: HashMap<String, (Type, Vec<Expression>, bool)>,
+  choice_assignees: HashSet<String>,
   grammar_depth: usize,
 }
 
@@ -60,6 +62,7 @@ impl <'a> SpecInserter<'a> {
       current_id: 0,
       scope_identifiers: HashMap::new(),
       scope_arrays: HashMap::new(),
+      choice_assignees: HashSet::new(),
       grammar_depth,
     }
   }
@@ -84,6 +87,7 @@ impl <'a> SpecInserter<'a> {
   fn in_scope_params(&self) -> Vec<ParameterDeclaration> {
     let mut params = self.scope_identifiers.clone().into_iter()
       .filter(|(name,(_, initialized))| !name.ends_with("_in") && *initialized)
+      .filter(|(name, _)| !self.choice_assignees.contains(name))
       .map(|(name, (ty, _))| {
         ParameterDeclaration {
           specifiers: vec!(DeclarationSpecifier::TypeSpecifier(ty)),
@@ -92,6 +96,7 @@ impl <'a> SpecInserter<'a> {
       }).collect::<Vec<_>>();
     let mut array_params = self.scope_arrays.clone().into_iter()
       .filter(|(name,(_, _, initialized))| !name.ends_with("_in") && *initialized)
+      .filter(|(name, _)| !self.choice_assignees.contains(name))
       .map(|(name, (ty, sizes, _))| {
         ParameterDeclaration {
           specifiers: vec!(DeclarationSpecifier::TypeSpecifier(ty)),
@@ -105,10 +110,12 @@ impl <'a> SpecInserter<'a> {
   fn in_scope_args(&self) -> Vec<Expression> {
     let mut args = self.scope_identifiers.clone().into_iter()
       .filter(|(name,(_, initialized))| !name.ends_with("_in") && *initialized)
+      .filter(|(name, _)| !self.choice_assignees.contains(name))
       .map(|(name, _)| Expression::Identifier{name})
       .collect::<Vec<_>>();
     let mut array_args = self.scope_arrays.clone().into_iter()
       .filter(|(name,(_, _, initialized))| !name.ends_with("_in") && *initialized)
+      .filter(|(name, _)| !self.choice_assignees.contains(name))
       .map(|(name, _)| Expression::Identifier{name})
       .collect();
     args.append(&mut array_args);
@@ -436,6 +443,11 @@ impl <'a> SpecInserter<'a> {
     if espec_lookup.is_none() { return expr.clone(); }
     let espec = espec_lookup.unwrap();
 
+    // There will be choice constraints over the assignee. Leave it out of
+    // future choice function parameters to avoid exploding constraint
+    // complexity.
+    self.choice_assignees.insert(assignee_name.clone());
+
     // Generators will take in a parameter for maximum AST depth.
     let prepend_depth_param = |params: &Vec<ParameterDeclaration>| {
       let mut with_depth = vec!(ParameterDeclaration {
@@ -486,12 +498,19 @@ impl <'a> SpecInserter<'a> {
           args: prepend_depth_arg(&scope_args),
         }))),
       });
-      self.added_choice_gens.push(FunDef {
+      let aexp_fun = FunDef {
         specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Int)),
         name: choice_gen_name.clone(),
         params: prepend_depth_param(&scope_params),
         body: Statement::Return(Some(Box::new(Expression::SketchHole))),
-      });
+      };
+      let bexp_fun = FunDef {
+        specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Bool)),
+        name: format!("{}_bexp", choice_gen_name.clone()),
+        params: prepend_depth_param(&scope_params),
+        body: Statement::Return(Some(Box::new(Expression::SketchHole))),
+      };
+      self.added_choice_gens.push((aexp_fun, bexp_fun));
     }
 
     // Preconditoin assertion.
@@ -531,8 +550,8 @@ impl <'a> SpecInserter<'a> {
         vec!(Statement::Expression(Box::new(Expression::Binop {
           lhs: Box::new(Expression::Identifier{name: assignee_name.clone()}),
           rhs: Box::new(expr.to_crel()
-              .map_vars(&|name| choice_var_mapping.get(&name).unwrap_or(&name).clone())
-              .map(&mut ReplaceIdentifiers::new(cond_var_mapping))),
+                        .map_vars(&|name| choice_var_mapping.get(&name).unwrap_or(&name).clone())
+                        .map(&mut ReplaceIdentifiers::new(cond_var_mapping))),
           op: BinaryOp::Assign,
         })))
       },

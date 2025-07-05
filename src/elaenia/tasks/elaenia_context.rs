@@ -35,7 +35,7 @@ pub struct ElaeniaContext {
   aligned_output: Option<String>,
 
   choice_funs: Vec<FunDef>,
-  choice_gens: Vec<FunDef>,
+  choice_gens: Vec<(FunDef, FunDef)>,
   havoc_funs: Vec<FunDef>,
   unroll_funs: Vec<FunDef>,
 
@@ -124,11 +124,11 @@ impl ElaeniaContext {
     &self.choice_funs
   }
 
-  pub fn accept_choice_gen(&mut self, gendef: FunDef) {
-    self.choice_gens.push(gendef);
+  pub fn accept_choice_gen(&mut self, aexp_gendef: FunDef, bexp_gendef: FunDef) {
+    self.choice_gens.push((aexp_gendef, bexp_gendef));
   }
 
-  pub fn choice_gens(&self) -> &Vec<FunDef> {
+  pub fn choice_gens(&self) -> &Vec<(FunDef, FunDef)> {
     &self.choice_gens
   }
 

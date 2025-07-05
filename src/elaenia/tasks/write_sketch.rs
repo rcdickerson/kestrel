@@ -57,21 +57,75 @@ impl Task<ElaeniaContext> for WriteSketch {
     for havoc_decl in context.havoc_funs_as_decls() {
       sketch.declare_variable(&declaration_to_sketch(&havoc_decl));
     }
-    for choice_gen in context.choice_gens() {
-      let mut fun = fun_to_sketch(
-        &choice_gen.specifiers,
-        &choice_gen.name,
-        &choice_gen.params,
-        &choice_gen.body);
-      fun.set_body(&Sk::Statement::Seq(vec!(
+    for (aexp_gen, bexp_gen) in context.choice_gens() {
+      // AExp LHS generator.
+      let aexp_lhs_gen_name = format!("{}_lhs", aexp_gen.name);
+      let mut aexp_lhs_gen_fun = fun_to_sketch(
+        &aexp_gen.specifiers,
+        &aexp_lhs_gen_name,
+        &aexp_gen.params,
+        &aexp_gen.body);
+      aexp_lhs_gen_fun.set_body(&Sk::Statement::Seq(vec!(
         Sk::Statement::Assert(Box::new(Sk::Expression::BinOp {
           lhs: Box::new(Sk::Expression::Identifier{name: "depth".to_string()}),
           rhs: Box::new(Sk::Expression::ConstInt(0)),
           op: ">".to_string(),
         })),
-        build_grammar(&choice_gen.name, fun.get_params()))));
-      fun.set_generator(true);
-      sketch.push_function(&fun);
+        build_aexp_lhs_grammar(aexp_lhs_gen_fun.get_params()))));
+      aexp_lhs_gen_fun.set_generator(true);
+      sketch.push_function(&aexp_lhs_gen_fun);
+
+      // AExp generator.
+      let mut aexp_gen_fun = fun_to_sketch(
+        &aexp_gen.specifiers,
+        &aexp_gen.name,
+        &aexp_gen.params,
+        &aexp_gen.body);
+      aexp_gen_fun.set_body(&Sk::Statement::Seq(vec!(
+        Sk::Statement::Assert(Box::new(Sk::Expression::BinOp {
+          lhs: Box::new(Sk::Expression::Identifier{name: "depth".to_string()}),
+          rhs: Box::new(Sk::Expression::ConstInt(0)),
+          op: ">".to_string(),
+        })),
+        build_aexp_grammar(&aexp_gen.name,
+                           &aexp_lhs_gen_name,
+                           &bexp_gen.name,
+                           aexp_gen_fun.get_params()))));
+      aexp_gen_fun.set_generator(true);
+      sketch.push_function(&aexp_gen_fun);
+
+      // BExp LHS generator.
+      let bexp_lhs_gen_name = format!("{}_lhs", bexp_gen.name);
+      let mut bexp_lhs_gen_fun = fun_to_sketch(
+        &bexp_gen.specifiers,
+        &bexp_lhs_gen_name,
+        &bexp_gen.params,
+        &bexp_gen.body);
+      bexp_lhs_gen_fun.set_body(&Sk::Statement::Seq(vec!(
+        Sk::Statement::Assert(Box::new(Sk::Expression::BinOp {
+          lhs: Box::new(Sk::Expression::Identifier{name: "depth".to_string()}),
+          rhs: Box::new(Sk::Expression::ConstInt(0)),
+          op: ">".to_string(),
+        })),
+        build_bexp_lhs_grammar(&aexp_gen.name, bexp_lhs_gen_fun.get_params()))));
+      bexp_lhs_gen_fun.set_generator(true);
+      sketch.push_function(&bexp_lhs_gen_fun);
+
+      // BExp generator.
+      let mut bexp_gen_fun = fun_to_sketch(
+        &bexp_gen.specifiers,
+        &bexp_gen.name,
+        &bexp_gen.params,
+        &bexp_gen.body);
+      bexp_gen_fun.set_body(&Sk::Statement::Seq(vec!(
+        Sk::Statement::Assert(Box::new(Sk::Expression::BinOp {
+          lhs: Box::new(Sk::Expression::Identifier{name: "depth".to_string()}),
+          rhs: Box::new(Sk::Expression::ConstInt(0)),
+          op: ">".to_string(),
+        })),
+        build_bexp_grammar(&bexp_gen.name, &bexp_lhs_gen_name, bexp_gen_fun.get_params()))));
+      bexp_gen_fun.set_generator(true);
+      sketch.push_function(&bexp_gen_fun);
     }
     for choice_fun in context.choice_funs() {
       sketch.push_function(&fun_to_sketch(
@@ -309,72 +363,166 @@ impl crate::crel::mapper::CRelMapper for AssertInvars {
   }
 }
 
-fn build_grammar(generator_name: &String,
-                 params: &Vec<Sk::FunctionParameter>)
-                 -> Sk::Statement {
-  let recurse = Sk::Expression::FnCall {
-    name: Box::new(Sk::Expression::Identifier{name: generator_name.clone()}),
-    args: params.into_iter()
-      .map(|p| match &p.name {
-        Some(name) if name.as_str() == "depth" => Sk::Expression::BinOp {
-          lhs: Box::new(Sk::Expression::Identifier{ name: name.clone() }),
-          rhs: Box::new(Sk::Expression::ConstInt(1)),
-          op: "-".to_string(),
-        },
-        _ => Sk::Expression::Identifier {
-          name: p.name.clone().expect("Encountered nameless parameter")
-        },
-      })
-      .collect(),
-  };
-
+fn build_aexp_lhs_grammar(params: &Vec<Sk::FunctionParameter>)
+                          -> Sk::Statement {
   let mut options = vec!(
     Sk::Expression::Hole,
   );
   for param in params {
     match &param.name {
       Some(name) if name.as_str() == "depth" => (),
-      _ => if param.is_array {
-          let mut expr = Sk::Expression::Identifier {
-            name: param.name.clone().expect("Encountered nameless parameter")
-          };
-          for _ in 0..param.array_sizes.len() {
-            expr = Sk::Expression::ArrayIndex {
-              expr: Box::new(expr),
-              index: Box::new(recurse.clone()),
-            };
-          }
-          // options.push(expr);
-        } else {
+      _ => if !param.is_array {
           options.push(Sk::Expression::Identifier {
             name: param.name.clone().expect("Encountered nameless parameter")
           });
         }
     }
   }
+  Sk::Statement::Return(Some(Box::new(Sk::Expression::GeneratorOptions(options))))
+}
+
+fn build_aexp_grammar(aexp_generator_name: &String,
+                      aexp_lhs_generator_name: &String,
+                      bexp_generator_name: &String,
+                      params: &Vec<Sk::FunctionParameter>)
+                      -> Sk::Statement {
+  let sk_params = |depth_dec: i32| {
+    params.into_iter()
+      .map(|p| match &p.name {
+        Some(name) if name.as_str() == "depth" =>
+          match depth_dec {
+            0 => Sk::Expression::Identifier{ name: name.clone() },
+            _ => Sk::Expression::BinOp {
+              lhs: Box::new(Sk::Expression::Identifier{ name: name.clone() }),
+              rhs: Box::new(Sk::Expression::ConstInt(1)),
+              op: "-".to_string(),
+            },
+          }
+        _ => Sk::Expression::Identifier {
+          name: p.name.clone().expect("Encountered nameless parameter")
+        },
+      })
+    .collect::<Vec<_>>()
+  };
+  let aexp_lhs = Sk::Expression::FnCall {
+    name: Box::new(Sk::Expression::Identifier{name: aexp_lhs_generator_name.clone()}),
+    args: sk_params(0),
+  };
+  let recurse_aexp = Sk::Expression::FnCall {
+    name: Box::new(Sk::Expression::Identifier{name: aexp_generator_name.clone()}),
+    args: sk_params(1),
+  };
+  let recurse_bexp = Sk::Expression::FnCall {
+    name: Box::new(Sk::Expression::Identifier{name: bexp_generator_name.clone()}),
+    args: sk_params(1),
+  };
+
+  let mut options = vec!(
+    Sk::Expression::Hole,
+  );
+  options.push(aexp_lhs.clone());
   options.push(Sk::Expression::BinOp {
-    lhs: Box::new(recurse.clone()),
-    rhs: Box::new(recurse.clone()),
+    lhs: Box::new(aexp_lhs.clone()),
+    rhs: Box::new(recurse_aexp.clone()),
     op: "+".to_string(),
   });
   options.push(Sk::Expression::BinOp {
-    lhs: Box::new(recurse.clone()),
-    rhs: Box::new(recurse.clone()),
-    op: "-".to_string(),
-  });
-  options.push(Sk::Expression::BinOp {
-    lhs: Box::new(recurse.clone()),
-    rhs: Box::new(recurse.clone()),
+    lhs: Box::new(aexp_lhs.clone()),
+    rhs: Box::new(recurse_aexp.clone()),
     op: "*".to_string(),
   });
+  options.push(Sk::Expression::BinOp {
+    lhs: Box::new(recurse_aexp.clone()),
+    rhs: Box::new(recurse_aexp.clone()),
+    op: "-".to_string(),
+  });
   options.push(Sk::Expression::Ternary {
-    condition: Box::new(Sk::Expression::BinOp {
-      lhs: Box::new(recurse.clone()),
-      rhs: Box::new(recurse.clone()),
-      op: "<".to_string(),
-    }),
-    then: Box::new(recurse.clone()),
-    els: Box::new(recurse.clone()),
+    condition: Box::new(recurse_bexp.clone()),
+    then: Box::new(recurse_aexp.clone()),
+    els: Box::new(recurse_aexp.clone()),
+  });
+  Sk::Statement::Return(Some(Box::new(Sk::Expression::GeneratorOptions(options))))
+}
+
+fn build_bexp_lhs_grammar(aexp_generator_name: &String,
+                          params: &Vec<Sk::FunctionParameter>)
+                          -> Sk::Statement {
+  let sk_params = params.into_iter()
+    .map(|p| match &p.name {
+      Some(name) if name.as_str() == "depth" => Sk::Expression::BinOp {
+        lhs: Box::new(Sk::Expression::Identifier{ name: name.clone() }),
+        rhs: Box::new(Sk::Expression::ConstInt(1)),
+        op: "-".to_string(),
+      },
+      _ => Sk::Expression::Identifier {
+        name: p.name.clone().expect("Encountered nameless parameter")
+      },
+    })
+    .collect::<Vec<_>>();
+  let recurse_aexp = Sk::Expression::FnCall {
+    name: Box::new(Sk::Expression::Identifier{name: aexp_generator_name.clone()}),
+    args: sk_params.clone(),
+  };
+  let mut options = Vec::new();
+  options.push(Sk::Expression::BinOp {
+    lhs: Box::new(recurse_aexp.clone()),
+    rhs: Box::new(recurse_aexp.clone()),
+    op: "==".to_string(),
+  });
+  options.push(Sk::Expression::BinOp {
+    lhs: Box::new(recurse_aexp.clone()),
+    rhs: Box::new(recurse_aexp.clone()),
+    op: "<=".to_string(),
+  });
+  options.push(Sk::Expression::BinOp {
+    lhs: Box::new(recurse_aexp.clone()),
+    rhs: Box::new(recurse_aexp.clone()),
+    op: ">=".to_string(),
+  });
+  Sk::Statement::Return(Some(Box::new(Sk::Expression::GeneratorOptions(options))))
+}
+
+fn build_bexp_grammar(bexp_generator_name: &String,
+                      bexp_lhs_generator_name: &String,
+                      params: &Vec<Sk::FunctionParameter>)
+                      -> Sk::Statement {
+  let sk_params = |depth_dec: i32| {
+    params.into_iter()
+      .map(|p| match &p.name {
+        Some(name) if name.as_str() == "depth" =>
+          match depth_dec {
+            0 => Sk::Expression::Identifier{ name: name.clone() },
+            _ => Sk::Expression::BinOp {
+              lhs: Box::new(Sk::Expression::Identifier{ name: name.clone() }),
+              rhs: Box::new(Sk::Expression::ConstInt(1)),
+              op: "-".to_string(),
+            },
+          }
+        _ => Sk::Expression::Identifier {
+          name: p.name.clone().expect("Encountered nameless parameter")
+        },
+      })
+    .collect::<Vec<_>>()
+  };
+  let bexp_lhs = Sk::Expression::FnCall {
+    name: Box::new(Sk::Expression::Identifier{name: bexp_lhs_generator_name.clone()}),
+    args: sk_params(0),
+  };
+  let recurse_bexp = Sk::Expression::FnCall {
+    name: Box::new(Sk::Expression::Identifier{name: bexp_generator_name.clone()}),
+    args: sk_params(1),
+  };
+
+  let mut options = Vec::new();
+  options.push(bexp_lhs.clone());
+  options.push(Sk::Expression::BinOp {
+    lhs: Box::new(bexp_lhs.clone()),
+    rhs: Box::new(recurse_bexp.clone()),
+    op: "&&".to_string(),
+  });
+  options.push(Sk::Expression::UnOp {
+    expr: Box::new(recurse_bexp.clone()),
+    op: "!".to_string(),
   });
   Sk::Statement::Return(Some(Box::new(Sk::Expression::GeneratorOptions(options))))
 }

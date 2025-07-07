@@ -1,0 +1,298 @@
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_structure
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+
+
+*** Rejected
+    [0;31m[1751872910.8260 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751872910.8330 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751872910.8331 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_choice
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:78 (2)
+
+*** Rejected
+    [0;31m[1751872912.1710 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:78 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751872912.1780 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751872912.1781 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_structure
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:78 (2)
+
+*** Rejected
+    [0;31m[1751872913.5060 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:78 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751872913.5130 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751872913.5131 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_choice
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+
+
+*** Rejected
+    [0;31m[1751872914.8280 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751872914.8350 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751872914.8351 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 2
+cost function: optimize_structure
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+
+
+*** Rejected
+    [0;31m[1751872916.1870 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751872916.1940 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751872916.1941 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 2
+cost function: optimize_choice
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+
+
+*** Rejected
+    [0;31m[1751872917.5490 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751872917.5560 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751872917.5561 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 2
+cost function: optimize_structure
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+
+
+*** Rejected
+    [0;31m[1751872918.9040 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751872918.9280 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751872918.9281 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 2
+cost function: optimize_choice
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+
+
+*** Rejected
+    [0;31m[1751872921.2790 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751872921.2850 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751872921.2851 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 3
+cost function: optimize_structure
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+
+
+*** Rejected
+    [0;31m[1751872924.7540 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751872924.7630 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751872924.7631 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 3
+cost function: optimize_choice
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+
+
+*** Rejected
+    [0;31m[1751872930.2540 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751872930.2640 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751872930.2641 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 3
+cost function: optimize_structure
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+
+
+*** Rejected
+    [0;31m[1751872943.7590 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751872943.7650 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751872943.7660 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 3
+cost function: optimize_choice
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+
+
+*** Rejected
+    [0;31m[1751872947.2890 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751872947.2960 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751872947.2961 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 4
+cost function: optimize_structure
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+
+
+*** Rejected
+    [0;31m[1751873120.8550 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751873120.8630 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751873120.8631 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 4
+cost function: optimize_choice
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.

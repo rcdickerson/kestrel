@@ -1,0 +1,3208 @@
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_structure
+Treating naive product as final alignment.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==337094== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==337094== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==337094== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==337094== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==337094== 
+==337095== 
+==337095== For lists of detected and suppressed errors, rerun with: -s
+==337095== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337096== 
+==337096== For lists of detected and suppressed errors, rerun with: -s
+==337096== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337097== 
+==337097== For lists of detected and suppressed errors, rerun with: -s
+==337097== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337098== 
+==337098== For lists of detected and suppressed errors, rerun with: -s
+==337098== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337099== 
+==337099== For lists of detected and suppressed errors, rerun with: -s
+==337099== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337100== 
+==337100== For lists of detected and suppressed errors, rerun with: -s
+==337100== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337101== 
+==337101== For lists of detected and suppressed errors, rerun with: -s
+==337101== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337102== 
+==337102== For lists of detected and suppressed errors, rerun with: -s
+==337102== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337103== 
+==337103== For lists of detected and suppressed errors, rerun with: -s
+==337103== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337104== 
+==337104== For lists of detected and suppressed errors, rerun with: -s
+==337104== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337105== 
+==337105== For lists of detected and suppressed errors, rerun with: -s
+==337105== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337106== 
+==337106== For lists of detected and suppressed errors, rerun with: -s
+==337106== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337107== 
+==337107== For lists of detected and suppressed errors, rerun with: -s
+==337107== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337108== 
+==337108== For lists of detected and suppressed errors, rerun with: -s
+==337108== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337109== 
+==337109== For lists of detected and suppressed errors, rerun with: -s
+==337109== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337110== 
+==337110== For lists of detected and suppressed errors, rerun with: -s
+==337110== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337111== 
+==337111== For lists of detected and suppressed errors, rerun with: -s
+==337111== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337112== 
+==337112== For lists of detected and suppressed errors, rerun with: -s
+==337112== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337113== 
+==337113== For lists of detected and suppressed errors, rerun with: -s
+==337113== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337114== 
+==337114== For lists of detected and suppressed errors, rerun with: -s
+==337114== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337094== 
+==337094== For lists of detected and suppressed errors, rerun with: -s
+==337094== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,6): Warning: assume statement has no {:axiom} annotation
+   |
+33 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(29,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+29 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(72,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+72 |       invariant l_x == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(102,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+102 |       invariant l_x == 0
+    |                 ^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(31,6): Warning: assume statement has no {:axiom} annotation
+   |
+31 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(52,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(52,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(70,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+70 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(71,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+71 |       invariant r_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(77,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+77 |       invariant r_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(99,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+99 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(106,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+106 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(106,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+    |
+106 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 9 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(30,6): Warning: assume statement has no {:axiom} annotation
+   |
+30 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(64,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+64 |       invariant l_max == l_r
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(68,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |       invariant r_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(73,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+73 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(100,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+100 |       invariant r_x >= 1
+    |                 ^^^^^^^^
+
+houdafny.dfy(100,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+    |
+100 |       invariant r_x >= 1
+    |                 ^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(29,6): Warning: assume statement has no {:axiom} annotation
+   |
+29 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r <= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(63,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+63 |       invariant l_max <= l_r
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(70,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+70 |       invariant l_max != r_x
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(70,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+70 |       invariant l_max != r_x
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(100,2): Error: assertion might not hold
+    |
+100 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(62,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+62 |       invariant l_max >= l_r
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(97,2): Error: assertion might not hold
+   |
+97 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 2 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(96,2): Error: assertion might not hold
+   |
+96 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_choice
+Treating naive product as final alignment.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==337473== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==337473== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==337473== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==337473== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==337473== 
+==337474== 
+==337474== For lists of detected and suppressed errors, rerun with: -s
+==337474== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337475== 
+==337475== For lists of detected and suppressed errors, rerun with: -s
+==337475== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337476== 
+==337476== For lists of detected and suppressed errors, rerun with: -s
+==337476== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337479== 
+==337479== For lists of detected and suppressed errors, rerun with: -s
+==337479== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337480== 
+==337480== For lists of detected and suppressed errors, rerun with: -s
+==337480== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337481== 
+==337481== For lists of detected and suppressed errors, rerun with: -s
+==337481== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337482== 
+==337482== For lists of detected and suppressed errors, rerun with: -s
+==337482== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337483== 
+==337483== For lists of detected and suppressed errors, rerun with: -s
+==337483== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337484== 
+==337484== For lists of detected and suppressed errors, rerun with: -s
+==337484== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337485== 
+==337485== For lists of detected and suppressed errors, rerun with: -s
+==337485== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337486== 
+==337486== For lists of detected and suppressed errors, rerun with: -s
+==337486== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337487== 
+==337487== For lists of detected and suppressed errors, rerun with: -s
+==337487== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337488== 
+==337488== For lists of detected and suppressed errors, rerun with: -s
+==337488== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337489== 
+==337489== For lists of detected and suppressed errors, rerun with: -s
+==337489== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337490== 
+==337490== For lists of detected and suppressed errors, rerun with: -s
+==337490== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337491== 
+==337491== For lists of detected and suppressed errors, rerun with: -s
+==337491== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337492== 
+==337492== For lists of detected and suppressed errors, rerun with: -s
+==337492== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337493== 
+==337493== For lists of detected and suppressed errors, rerun with: -s
+==337493== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337494== 
+==337494== For lists of detected and suppressed errors, rerun with: -s
+==337494== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337495== 
+==337495== For lists of detected and suppressed errors, rerun with: -s
+==337495== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337473== 
+==337473== For lists of detected and suppressed errors, rerun with: -s
+==337473== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,6): Warning: assume statement has no {:axiom} annotation
+   |
+33 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(29,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+29 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(72,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+72 |       invariant l_x == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(101,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+101 |       invariant l_x == 0
+    |                 ^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(31,6): Warning: assume statement has no {:axiom} annotation
+   |
+31 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(52,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(52,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(70,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+70 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(71,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+71 |       invariant r_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(77,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+77 |       invariant r_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(98,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+98 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(105,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+105 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(105,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+    |
+105 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(111,2): Error: assertion might not hold
+    |
+111 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 10 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(30,6): Warning: assume statement has no {:axiom} annotation
+   |
+30 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(64,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+64 |       invariant l_max == l_r
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(68,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |       invariant r_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(73,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+73 |       invariant l_max != r_x
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(99,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+99 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(99,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+99 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(104,2): Error: assertion might not hold
+    |
+104 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 7 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(29,6): Warning: assume statement has no {:axiom} annotation
+   |
+29 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r <= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(63,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+63 |       invariant l_max <= l_r
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(67,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+67 |       invariant r_r == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(99,2): Error: assertion might not hold
+   |
+99 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 4 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(62,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+62 |       invariant l_max >= l_r
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(65,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |       invariant r_r <= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(96,2): Error: assertion might not hold
+   |
+96 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 3 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(94,2): Error: assertion might not hold
+   |
+94 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_structure
+Treating naive product as final alignment.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==337827== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==337827== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==337827== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==337827== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==337827== 
+==337828== 
+==337828== For lists of detected and suppressed errors, rerun with: -s
+==337828== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337830== 
+==337830== For lists of detected and suppressed errors, rerun with: -s
+==337830== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337832== 
+==337832== For lists of detected and suppressed errors, rerun with: -s
+==337832== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337833== 
+==337833== For lists of detected and suppressed errors, rerun with: -s
+==337833== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337834== 
+==337834== For lists of detected and suppressed errors, rerun with: -s
+==337834== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337835== 
+==337835== For lists of detected and suppressed errors, rerun with: -s
+==337835== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337836== 
+==337836== For lists of detected and suppressed errors, rerun with: -s
+==337836== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337837== 
+==337837== For lists of detected and suppressed errors, rerun with: -s
+==337837== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337840== 
+==337840== For lists of detected and suppressed errors, rerun with: -s
+==337840== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337841== 
+==337841== For lists of detected and suppressed errors, rerun with: -s
+==337841== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337842== 
+==337842== For lists of detected and suppressed errors, rerun with: -s
+==337842== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337843== 
+==337843== For lists of detected and suppressed errors, rerun with: -s
+==337843== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337844== 
+==337844== For lists of detected and suppressed errors, rerun with: -s
+==337844== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337845== 
+==337845== For lists of detected and suppressed errors, rerun with: -s
+==337845== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337846== 
+==337846== For lists of detected and suppressed errors, rerun with: -s
+==337846== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337847== 
+==337847== For lists of detected and suppressed errors, rerun with: -s
+==337847== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337848== 
+==337848== For lists of detected and suppressed errors, rerun with: -s
+==337848== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337849== 
+==337849== For lists of detected and suppressed errors, rerun with: -s
+==337849== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337850== 
+==337850== For lists of detected and suppressed errors, rerun with: -s
+==337850== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337851== 
+==337851== For lists of detected and suppressed errors, rerun with: -s
+==337851== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==337827== 
+==337827== For lists of detected and suppressed errors, rerun with: -s
+==337827== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,6): Warning: assume statement has no {:axiom} annotation
+   |
+33 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(29,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+29 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(69,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+69 |       invariant l_x == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(97,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+97 |       invariant l_x == 0
+   |                 ^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(31,6): Warning: assume statement has no {:axiom} annotation
+   |
+31 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(52,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(52,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(67,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+67 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(68,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |       invariant r_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(74,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+74 |       invariant r_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(94,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+94 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(101,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+101 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(101,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+    |
+101 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(108,2): Error: assertion might not hold
+    |
+108 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 10 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(30,6): Warning: assume statement has no {:axiom} annotation
+   |
+30 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(65,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |       invariant r_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(72,6): Error: assertion might not hold
+   |
+72 |       assert n_2 >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(95,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+95 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(95,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+95 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(101,2): Error: assertion might not hold
+    |
+101 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(29,6): Warning: assume statement has no {:axiom} annotation
+   |
+29 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r <= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(70,6): Error: assertion might not hold
+   |
+70 |       assert n_2 >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(93,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+93 |       invariant l_x < r_x
+   |                 ^^^^^^^^^
+
+houdafny.dfy(93,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+93 |       invariant l_x < r_x
+   |                 ^^^^^^^^^
+
+houdafny.dfy(98,2): Error: assertion might not hold
+   |
+98 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(69,6): Error: assertion might not hold
+   |
+69 |       assert n_2 >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(96,2): Error: assertion might not hold
+   |
+96 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 2 errors
+
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_choice
+Treating naive product as final alignment.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==338139== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==338139== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==338139== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==338139== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==338139== 
+==338140== 
+==338140== For lists of detected and suppressed errors, rerun with: -s
+==338140== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338141== 
+==338141== For lists of detected and suppressed errors, rerun with: -s
+==338141== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338142== 
+==338142== For lists of detected and suppressed errors, rerun with: -s
+==338142== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338143== 
+==338143== For lists of detected and suppressed errors, rerun with: -s
+==338143== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338144== 
+==338144== For lists of detected and suppressed errors, rerun with: -s
+==338144== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338145== 
+==338145== For lists of detected and suppressed errors, rerun with: -s
+==338145== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338146== 
+==338146== For lists of detected and suppressed errors, rerun with: -s
+==338146== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338147== 
+==338147== For lists of detected and suppressed errors, rerun with: -s
+==338147== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338148== 
+==338148== For lists of detected and suppressed errors, rerun with: -s
+==338148== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338149== 
+==338149== For lists of detected and suppressed errors, rerun with: -s
+==338149== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338150== 
+==338150== For lists of detected and suppressed errors, rerun with: -s
+==338150== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338151== 
+==338151== For lists of detected and suppressed errors, rerun with: -s
+==338151== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338152== 
+==338152== For lists of detected and suppressed errors, rerun with: -s
+==338152== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338159== 
+==338159== For lists of detected and suppressed errors, rerun with: -s
+==338159== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338160== 
+==338160== For lists of detected and suppressed errors, rerun with: -s
+==338160== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338161== 
+==338161== For lists of detected and suppressed errors, rerun with: -s
+==338161== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338162== 
+==338162== For lists of detected and suppressed errors, rerun with: -s
+==338162== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338163== 
+==338163== For lists of detected and suppressed errors, rerun with: -s
+==338163== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338164== 
+==338164== For lists of detected and suppressed errors, rerun with: -s
+==338164== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338165== 
+==338165== For lists of detected and suppressed errors, rerun with: -s
+==338165== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338139== 
+==338139== For lists of detected and suppressed errors, rerun with: -s
+==338139== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,6): Warning: assume statement has no {:axiom} annotation
+   |
+33 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(29,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+29 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(69,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+69 |       invariant l_x == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(100,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+100 |       invariant l_x == 0
+    |                 ^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(31,6): Warning: assume statement has no {:axiom} annotation
+   |
+31 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(52,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(52,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(67,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+67 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(68,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |       invariant r_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(74,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+74 |       invariant r_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(97,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+97 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(104,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+104 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(104,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+    |
+104 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(111,2): Error: assertion might not hold
+    |
+111 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 10 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(30,6): Warning: assume statement has no {:axiom} annotation
+   |
+30 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(65,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |       invariant r_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(72,6): Error: assertion might not hold
+   |
+72 |       assert n_2 >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(88,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+88 |       invariant l_max == l_r
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(98,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+98 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(98,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+98 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(104,2): Error: assertion might not hold
+    |
+104 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 7 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(29,6): Warning: assume statement has no {:axiom} annotation
+   |
+29 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r <= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(70,6): Error: assertion might not hold
+   |
+70 |       assert n_2 >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(86,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+86 |       invariant l_max <= l_r
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(95,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+95 |       invariant l_max != r_x
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(95,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+95 |       invariant l_max != r_x
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(100,2): Error: assertion might not hold
+    |
+100 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(69,6): Error: assertion might not hold
+   |
+69 |       assert n_2 >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(85,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+85 |       invariant l_max >= l_r
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(97,2): Error: assertion might not hold
+   |
+97 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 3 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(69,6): Error: assertion might not hold
+   |
+69 |       assert n_2 >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(96,2): Error: assertion might not hold
+   |
+96 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 2 errors
+
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 2
+cost function: optimize_structure
+Treating naive product as final alignment.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==338492== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==338492== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==338492== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==338492== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==338492== 
+==338493== 
+==338493== For lists of detected and suppressed errors, rerun with: -s
+==338493== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338495== 
+==338495== For lists of detected and suppressed errors, rerun with: -s
+==338495== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338497== 
+==338497== For lists of detected and suppressed errors, rerun with: -s
+==338497== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338498== 
+==338498== For lists of detected and suppressed errors, rerun with: -s
+==338498== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338499== 
+==338499== For lists of detected and suppressed errors, rerun with: -s
+==338499== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338500== 
+==338500== For lists of detected and suppressed errors, rerun with: -s
+==338500== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338501== 
+==338501== For lists of detected and suppressed errors, rerun with: -s
+==338501== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338502== 
+==338502== For lists of detected and suppressed errors, rerun with: -s
+==338502== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338503== 
+==338503== For lists of detected and suppressed errors, rerun with: -s
+==338503== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338504== 
+==338504== For lists of detected and suppressed errors, rerun with: -s
+==338504== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338505== 
+==338505== For lists of detected and suppressed errors, rerun with: -s
+==338505== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338506== 
+==338506== For lists of detected and suppressed errors, rerun with: -s
+==338506== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338510== 
+==338510== For lists of detected and suppressed errors, rerun with: -s
+==338510== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338514== 
+==338514== For lists of detected and suppressed errors, rerun with: -s
+==338514== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338515== 
+==338515== For lists of detected and suppressed errors, rerun with: -s
+==338515== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338516== 
+==338516== For lists of detected and suppressed errors, rerun with: -s
+==338516== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338517== 
+==338517== For lists of detected and suppressed errors, rerun with: -s
+==338517== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338518== 
+==338518== For lists of detected and suppressed errors, rerun with: -s
+==338518== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338519== 
+==338519== For lists of detected and suppressed errors, rerun with: -s
+==338519== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338520== 
+==338520== For lists of detected and suppressed errors, rerun with: -s
+==338520== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338492== 
+==338492== For lists of detected and suppressed errors, rerun with: -s
+==338492== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,6): Warning: assume statement has no {:axiom} annotation
+   |
+33 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(29,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+29 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(69,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+69 |       invariant l_x == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(98,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+98 |       invariant l_x == 0
+   |                 ^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(31,6): Warning: assume statement has no {:axiom} annotation
+   |
+31 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(52,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(52,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(67,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+67 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(68,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |       invariant r_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(74,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+74 |       invariant r_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(95,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+95 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(102,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+102 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(102,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+    |
+102 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 9 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(30,6): Warning: assume statement has no {:axiom} annotation
+   |
+30 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(65,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |       invariant r_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(70,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+70 |       invariant l_x < r_x
+   |                 ^^^^^^^^^
+
+houdafny.dfy(96,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+96 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(96,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+96 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(101,2): Error: assertion might not hold
+    |
+101 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(29,6): Warning: assume statement has no {:axiom} annotation
+   |
+29 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r <= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(65,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |       invariant r_r == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(97,2): Error: assertion might not hold
+   |
+97 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 3 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(64,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+64 |       invariant r_r <= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(95,2): Error: assertion might not hold
+   |
+95 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 2 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(94,2): Error: assertion might not hold
+   |
+94 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 2
+cost function: optimize_choice
+Treating naive product as final alignment.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==338850== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==338850== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==338850== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==338850== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==338850== 
+==338851== 
+==338851== For lists of detected and suppressed errors, rerun with: -s
+==338851== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338853== 
+==338853== For lists of detected and suppressed errors, rerun with: -s
+==338853== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338855== 
+==338855== For lists of detected and suppressed errors, rerun with: -s
+==338855== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338856== 
+==338856== For lists of detected and suppressed errors, rerun with: -s
+==338856== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338857== 
+==338857== For lists of detected and suppressed errors, rerun with: -s
+==338857== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338858== 
+==338858== For lists of detected and suppressed errors, rerun with: -s
+==338858== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338859== 
+==338859== For lists of detected and suppressed errors, rerun with: -s
+==338859== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338862== 
+==338862== For lists of detected and suppressed errors, rerun with: -s
+==338862== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338863== 
+==338863== For lists of detected and suppressed errors, rerun with: -s
+==338863== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338864== 
+==338864== For lists of detected and suppressed errors, rerun with: -s
+==338864== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338865== 
+==338865== For lists of detected and suppressed errors, rerun with: -s
+==338865== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338866== 
+==338866== For lists of detected and suppressed errors, rerun with: -s
+==338866== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338873== 
+==338873== For lists of detected and suppressed errors, rerun with: -s
+==338873== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338874== 
+==338874== For lists of detected and suppressed errors, rerun with: -s
+==338874== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338875== 
+==338875== For lists of detected and suppressed errors, rerun with: -s
+==338875== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338876== 
+==338876== For lists of detected and suppressed errors, rerun with: -s
+==338876== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338877== 
+==338877== For lists of detected and suppressed errors, rerun with: -s
+==338877== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338878== 
+==338878== For lists of detected and suppressed errors, rerun with: -s
+==338878== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338879== 
+==338879== For lists of detected and suppressed errors, rerun with: -s
+==338879== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338880== 
+==338880== For lists of detected and suppressed errors, rerun with: -s
+==338880== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==338850== 
+==338850== For lists of detected and suppressed errors, rerun with: -s
+==338850== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,6): Warning: assume statement has no {:axiom} annotation
+   |
+33 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(29,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+29 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(69,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+69 |       invariant l_x == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(100,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+100 |       invariant l_x == 0
+    |                 ^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(31,6): Warning: assume statement has no {:axiom} annotation
+   |
+31 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(52,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(52,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(67,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+67 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(68,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |       invariant r_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(74,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+74 |       invariant r_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(97,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+97 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(104,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+104 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(104,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+    |
+104 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(111,2): Error: assertion might not hold
+    |
+111 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 10 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(30,6): Warning: assume statement has no {:axiom} annotation
+   |
+30 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(65,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |       invariant r_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(88,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+88 |       invariant l_max == l_r
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(98,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+98 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(98,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+98 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(104,2): Error: assertion might not hold
+    |
+104 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(29,6): Warning: assume statement has no {:axiom} annotation
+   |
+29 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r <= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(86,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+86 |       invariant l_max <= l_r
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(95,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+95 |       invariant l_max != r_x
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(95,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+95 |       invariant l_max != r_x
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(100,2): Error: assertion might not hold
+    |
+100 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(85,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+85 |       invariant l_max >= l_r
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(97,2): Error: assertion might not hold
+   |
+97 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 2 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(96,2): Error: assertion might not hold
+   |
+96 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 2
+cost function: optimize_structure
+Treating naive product as final alignment.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==339207== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==339207== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==339207== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==339207== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==339207== 
+==339208== 
+==339208== For lists of detected and suppressed errors, rerun with: -s
+==339208== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339209== 
+==339209== For lists of detected and suppressed errors, rerun with: -s
+==339209== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339212== 
+==339212== For lists of detected and suppressed errors, rerun with: -s
+==339212== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339213== 
+==339213== For lists of detected and suppressed errors, rerun with: -s
+==339213== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339214== 
+==339214== For lists of detected and suppressed errors, rerun with: -s
+==339214== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339215== 
+==339215== For lists of detected and suppressed errors, rerun with: -s
+==339215== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339216== 
+==339216== For lists of detected and suppressed errors, rerun with: -s
+==339216== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339217== 
+==339217== For lists of detected and suppressed errors, rerun with: -s
+==339217== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339218== 
+==339218== For lists of detected and suppressed errors, rerun with: -s
+==339218== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339219== 
+==339219== For lists of detected and suppressed errors, rerun with: -s
+==339219== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339220== 
+==339220== For lists of detected and suppressed errors, rerun with: -s
+==339220== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339221== 
+==339221== For lists of detected and suppressed errors, rerun with: -s
+==339221== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339224== 
+==339224== For lists of detected and suppressed errors, rerun with: -s
+==339224== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339229== 
+==339229== For lists of detected and suppressed errors, rerun with: -s
+==339229== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339230== 
+==339230== For lists of detected and suppressed errors, rerun with: -s
+==339230== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339231== 
+==339231== For lists of detected and suppressed errors, rerun with: -s
+==339231== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339232== 
+==339232== For lists of detected and suppressed errors, rerun with: -s
+==339232== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339233== 
+==339233== For lists of detected and suppressed errors, rerun with: -s
+==339233== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339234== 
+==339234== For lists of detected and suppressed errors, rerun with: -s
+==339234== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339235== 
+==339235== For lists of detected and suppressed errors, rerun with: -s
+==339235== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339207== 
+==339207== For lists of detected and suppressed errors, rerun with: -s
+==339207== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,6): Warning: assume statement has no {:axiom} annotation
+   |
+33 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(29,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+29 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(72,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+72 |       invariant l_x == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(101,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+101 |       invariant l_x == 0
+    |                 ^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(31,6): Warning: assume statement has no {:axiom} annotation
+   |
+31 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(52,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(52,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(70,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+70 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(71,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+71 |       invariant r_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(77,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+77 |       invariant r_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(98,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+98 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(105,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+105 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(105,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+    |
+105 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(111,2): Error: assertion might not hold
+    |
+111 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 10 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(30,6): Warning: assume statement has no {:axiom} annotation
+   |
+30 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(64,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+64 |       invariant l_max == l_r
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(68,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |       invariant r_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(73,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+73 |       invariant l_max != r_x
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(99,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+99 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(99,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+99 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(104,2): Error: assertion might not hold
+    |
+104 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 7 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(29,6): Warning: assume statement has no {:axiom} annotation
+   |
+29 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r <= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(63,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+63 |       invariant l_max <= l_r
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(67,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+67 |       invariant r_r == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(99,2): Error: assertion might not hold
+   |
+99 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 4 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(62,22): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+62 |       invariant l_max >= l_r
+   |                 ^^^^^^^^^^^^
+
+houdafny.dfy(65,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |       invariant r_r <= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(96,2): Error: assertion might not hold
+   |
+96 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 3 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(94,2): Error: assertion might not hold
+   |
+94 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 2
+cost function: optimize_choice
+Treating naive product as final alignment.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==339600== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==339600== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==339600== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==339600== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==339600== 
+==339601== 
+==339601== For lists of detected and suppressed errors, rerun with: -s
+==339601== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339602== 
+==339602== For lists of detected and suppressed errors, rerun with: -s
+==339602== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339605== 
+==339605== For lists of detected and suppressed errors, rerun with: -s
+==339605== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339606== 
+==339606== For lists of detected and suppressed errors, rerun with: -s
+==339606== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339607== 
+==339607== For lists of detected and suppressed errors, rerun with: -s
+==339607== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339608== 
+==339608== For lists of detected and suppressed errors, rerun with: -s
+==339608== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339609== 
+==339609== For lists of detected and suppressed errors, rerun with: -s
+==339609== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339610== 
+==339610== For lists of detected and suppressed errors, rerun with: -s
+==339610== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339611== 
+==339611== For lists of detected and suppressed errors, rerun with: -s
+==339611== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339612== 
+==339612== For lists of detected and suppressed errors, rerun with: -s
+==339612== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339613== 
+==339613== For lists of detected and suppressed errors, rerun with: -s
+==339613== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339614== 
+==339614== For lists of detected and suppressed errors, rerun with: -s
+==339614== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339615== 
+==339615== For lists of detected and suppressed errors, rerun with: -s
+==339615== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339622== 
+==339622== For lists of detected and suppressed errors, rerun with: -s
+==339622== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339623== 
+==339623== For lists of detected and suppressed errors, rerun with: -s
+==339623== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339624== 
+==339624== For lists of detected and suppressed errors, rerun with: -s
+==339624== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339625== 
+==339625== For lists of detected and suppressed errors, rerun with: -s
+==339625== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339626== 
+==339626== For lists of detected and suppressed errors, rerun with: -s
+==339626== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339627== 
+==339627== For lists of detected and suppressed errors, rerun with: -s
+==339627== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339628== 
+==339628== For lists of detected and suppressed errors, rerun with: -s
+==339628== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339600== 
+==339600== For lists of detected and suppressed errors, rerun with: -s
+==339600== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,6): Warning: assume statement has no {:axiom} annotation
+   |
+33 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(29,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+29 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(69,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+69 |       invariant l_x == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(97,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+97 |       invariant l_x == 0
+   |                 ^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(31,6): Warning: assume statement has no {:axiom} annotation
+   |
+31 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(52,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(52,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(67,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+67 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(68,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |       invariant r_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(74,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+74 |       invariant r_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(94,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+94 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(101,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+101 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(101,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+    |
+101 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(108,2): Error: assertion might not hold
+    |
+108 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 10 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(30,6): Warning: assume statement has no {:axiom} annotation
+   |
+30 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(65,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |       invariant r_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(95,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+95 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(95,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+95 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(101,2): Error: assertion might not hold
+    |
+101 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(29,6): Warning: assume statement has no {:axiom} annotation
+   |
+29 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r <= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(93,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+93 |       invariant l_x < r_x
+   |                 ^^^^^^^^^
+
+houdafny.dfy(93,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+93 |       invariant l_x < r_x
+   |                 ^^^^^^^^^
+
+houdafny.dfy(98,2): Error: assertion might not hold
+   |
+98 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 4 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(96,2): Error: assertion might not hold
+   |
+96 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 3
+cost function: optimize_structure
+Treating naive product as final alignment.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==339924== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==339924== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==339924== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==339924== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==339924== 
+==339925== 
+==339925== For lists of detected and suppressed errors, rerun with: -s
+==339925== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339926== 
+==339926== For lists of detected and suppressed errors, rerun with: -s
+==339926== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339927== 
+==339927== For lists of detected and suppressed errors, rerun with: -s
+==339927== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339928== 
+==339928== For lists of detected and suppressed errors, rerun with: -s
+==339928== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339929== 
+==339929== For lists of detected and suppressed errors, rerun with: -s
+==339929== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339930== 
+==339930== For lists of detected and suppressed errors, rerun with: -s
+==339930== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339931== 
+==339931== For lists of detected and suppressed errors, rerun with: -s
+==339931== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339932== 
+==339932== For lists of detected and suppressed errors, rerun with: -s
+==339932== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339933== 
+==339933== For lists of detected and suppressed errors, rerun with: -s
+==339933== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339934== 
+==339934== For lists of detected and suppressed errors, rerun with: -s
+==339934== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339935== 
+==339935== For lists of detected and suppressed errors, rerun with: -s
+==339935== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339936== 
+==339936== For lists of detected and suppressed errors, rerun with: -s
+==339936== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339937== 
+==339937== For lists of detected and suppressed errors, rerun with: -s
+==339937== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339938== 
+==339938== For lists of detected and suppressed errors, rerun with: -s
+==339938== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339939== 
+==339939== For lists of detected and suppressed errors, rerun with: -s
+==339939== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339940== 
+==339940== For lists of detected and suppressed errors, rerun with: -s
+==339940== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339941== 
+==339941== For lists of detected and suppressed errors, rerun with: -s
+==339941== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339942== 
+==339942== For lists of detected and suppressed errors, rerun with: -s
+==339942== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339943== 
+==339943== For lists of detected and suppressed errors, rerun with: -s
+==339943== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339944== 
+==339944== For lists of detected and suppressed errors, rerun with: -s
+==339944== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==339924== 
+==339924== For lists of detected and suppressed errors, rerun with: -s
+==339924== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,6): Warning: assume statement has no {:axiom} annotation
+   |
+33 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(29,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+29 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(69,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+69 |       invariant l_x == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(97,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+97 |       invariant l_x == 0
+   |                 ^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(31,6): Warning: assume statement has no {:axiom} annotation
+   |
+31 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(52,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(52,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(67,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+67 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(68,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |       invariant r_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(74,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+74 |       invariant r_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(94,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+94 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(101,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+101 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(101,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+    |
+101 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(108,2): Error: assertion might not hold
+    |
+108 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 10 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(30,6): Warning: assume statement has no {:axiom} annotation
+   |
+30 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(65,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |       invariant r_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(95,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+95 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(95,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+95 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(101,2): Error: assertion might not hold
+    |
+101 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(29,6): Warning: assume statement has no {:axiom} annotation
+   |
+29 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r <= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(93,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+93 |       invariant l_x < r_x
+   |                 ^^^^^^^^^
+
+houdafny.dfy(93,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+93 |       invariant l_x < r_x
+   |                 ^^^^^^^^^
+
+houdafny.dfy(98,2): Error: assertion might not hold
+   |
+98 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 4 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(96,2): Error: assertion might not hold
+   |
+96 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 3
+cost function: optimize_choice
+Treating naive product as final alignment.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==340245== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==340245== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==340245== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==340245== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==340245== 
+==340246== 
+==340246== For lists of detected and suppressed errors, rerun with: -s
+==340246== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340247== 
+==340247== For lists of detected and suppressed errors, rerun with: -s
+==340247== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340248== 
+==340248== For lists of detected and suppressed errors, rerun with: -s
+==340248== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340249== 
+==340249== For lists of detected and suppressed errors, rerun with: -s
+==340249== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340250== 
+==340250== For lists of detected and suppressed errors, rerun with: -s
+==340250== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340251== 
+==340251== For lists of detected and suppressed errors, rerun with: -s
+==340251== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340252== 
+==340252== For lists of detected and suppressed errors, rerun with: -s
+==340252== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340253== 
+==340253== For lists of detected and suppressed errors, rerun with: -s
+==340253== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340254== 
+==340254== For lists of detected and suppressed errors, rerun with: -s
+==340254== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340261== 
+==340261== For lists of detected and suppressed errors, rerun with: -s
+==340261== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340262== 
+==340262== For lists of detected and suppressed errors, rerun with: -s
+==340262== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340263== 
+==340263== For lists of detected and suppressed errors, rerun with: -s
+==340263== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340264== 
+==340264== For lists of detected and suppressed errors, rerun with: -s
+==340264== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340265== 
+==340265== For lists of detected and suppressed errors, rerun with: -s
+==340265== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340266== 
+==340266== For lists of detected and suppressed errors, rerun with: -s
+==340266== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340267== 
+==340267== For lists of detected and suppressed errors, rerun with: -s
+==340267== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340268== 
+==340268== For lists of detected and suppressed errors, rerun with: -s
+==340268== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340269== 
+==340269== For lists of detected and suppressed errors, rerun with: -s
+==340269== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340270== 
+==340270== For lists of detected and suppressed errors, rerun with: -s
+==340270== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340271== 
+==340271== For lists of detected and suppressed errors, rerun with: -s
+==340271== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==340245== 
+==340245== For lists of detected and suppressed errors, rerun with: -s
+==340245== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,6): Warning: assume statement has no {:axiom} annotation
+   |
+33 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(29,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+29 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(54,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+54 |       invariant l_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(69,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+69 |       invariant l_x == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(98,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+98 |       invariant l_x == 0
+   |                 ^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(31,6): Warning: assume statement has no {:axiom} annotation
+   |
+31 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(23,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+23 |       invariant l_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(52,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(52,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+52 |       invariant l_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(67,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+67 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(68,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |       invariant r_max == 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(74,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+74 |       invariant r_x != 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(95,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+95 |       invariant l_x >= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(102,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+    |
+102 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+houdafny.dfy(102,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+    |
+102 |       invariant r_x != 0
+    |                 ^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 9 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(30,6): Warning: assume statement has no {:axiom} annotation
+   |
+30 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r == 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(65,22): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |       invariant r_max <= 0
+   |                 ^^^^^^^^^^
+
+houdafny.dfy(70,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+70 |       invariant l_x < r_x
+   |                 ^^^^^^^^^
+
+houdafny.dfy(96,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+96 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(96,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+96 |       invariant r_x >= 1
+   |                 ^^^^^^^^
+
+houdafny.dfy(101,2): Error: assertion might not hold
+    |
+101 |   assert l_x == r_x;
+    |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 6 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(29,6): Warning: assume statement has no {:axiom} annotation
+   |
+29 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(24,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+24 |       invariant l_r <= 0
+   |                 ^^^^^^^^
+
+houdafny.dfy(97,2): Error: assertion might not hold
+   |
+97 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 2 errors
+
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume (l_low == r_low) && (l_low >= 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,6): Warning: assume statement has no {:axiom} annotation
+   |
+28 |       assume l_r >= 0;
+   |       ^^^^^^^^^^^^^^^^
+
+houdafny.dfy(96,2): Error: assertion might not hold
+   |
+96 |   assert l_x == r_x;
+   |   ^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 3
+cost function: optimize_structure
+Treating naive product as final alignment.

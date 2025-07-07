@@ -1,0 +1,3176 @@
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_structure
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==329422== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==329422== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==329422== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==329422== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==329422== 
+==329423== 
+==329423== For lists of detected and suppressed errors, rerun with: -s
+==329423== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329424== 
+==329424== For lists of detected and suppressed errors, rerun with: -s
+==329424== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329431== 
+==329431== For lists of detected and suppressed errors, rerun with: -s
+==329431== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329432== 
+==329432== For lists of detected and suppressed errors, rerun with: -s
+==329432== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329433== 
+==329433== For lists of detected and suppressed errors, rerun with: -s
+==329433== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329434== 
+==329434== For lists of detected and suppressed errors, rerun with: -s
+==329434== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329435== 
+==329435== For lists of detected and suppressed errors, rerun with: -s
+==329435== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329436== 
+==329436== For lists of detected and suppressed errors, rerun with: -s
+==329436== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329437== 
+==329437== For lists of detected and suppressed errors, rerun with: -s
+==329437== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329438== 
+==329438== For lists of detected and suppressed errors, rerun with: -s
+==329438== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329439== 
+==329439== For lists of detected and suppressed errors, rerun with: -s
+==329439== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329440== 
+==329440== For lists of detected and suppressed errors, rerun with: -s
+==329440== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329441== 
+==329441== For lists of detected and suppressed errors, rerun with: -s
+==329441== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329442== 
+==329442== For lists of detected and suppressed errors, rerun with: -s
+==329442== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329443== 
+==329443== For lists of detected and suppressed errors, rerun with: -s
+==329443== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329444== 
+==329444== For lists of detected and suppressed errors, rerun with: -s
+==329444== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329445== 
+==329445== For lists of detected and suppressed errors, rerun with: -s
+==329445== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329446== 
+==329446== For lists of detected and suppressed errors, rerun with: -s
+==329446== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329447== 
+==329447== For lists of detected and suppressed errors, rerun with: -s
+==329447== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329450== 
+==329450== For lists of detected and suppressed errors, rerun with: -s
+==329450== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329422== 
+==329422== For lists of detected and suppressed errors, rerun with: -s
+==329422== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+33 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(34,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+34 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(35,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+35 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != 0
+   |               ^^^^^^^^
+
+houdafny.dfy(58,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+58 |     invariant l_sum != 0
+   |               ^^^^^^^^^^
+
+houdafny.dfy(61,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+61 |     invariant l_i != l_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(62,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+62 |     invariant l_i > r_i
+   |               ^^^^^^^^^
+
+houdafny.dfy(63,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+63 |     invariant l_i != r_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(65,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |     invariant l_list != r_i
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(66,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+66 |     invariant l_list != r_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(67,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+67 |     invariant l_sum != r_i
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(68,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |     invariant l_sum != r_sum
+   |               ^^^^^^^^^^^^^^
+
+houdafny.dfy(75,2): Error: assertion might not hold
+   |
+75 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 13 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(52,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |     invariant l_i >= 1
+   |               ^^^^^^^^
+
+houdafny.dfy(53,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+53 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(56,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+56 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(63,2): Error: assertion might not hold
+   |
+63 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(59,2): Error: assertion might not hold
+   |
+59 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_choice
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==329664== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==329664== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==329664== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==329664== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==329664== 
+==329670== 
+==329670== For lists of detected and suppressed errors, rerun with: -s
+==329670== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329673== 
+==329673== For lists of detected and suppressed errors, rerun with: -s
+==329673== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329674== 
+==329674== For lists of detected and suppressed errors, rerun with: -s
+==329674== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329675== 
+==329675== For lists of detected and suppressed errors, rerun with: -s
+==329675== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329676== 
+==329676== For lists of detected and suppressed errors, rerun with: -s
+==329676== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329677== 
+==329677== For lists of detected and suppressed errors, rerun with: -s
+==329677== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329678== 
+==329678== For lists of detected and suppressed errors, rerun with: -s
+==329678== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329679== 
+==329679== For lists of detected and suppressed errors, rerun with: -s
+==329679== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329680== 
+==329680== For lists of detected and suppressed errors, rerun with: -s
+==329680== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329681== 
+==329681== For lists of detected and suppressed errors, rerun with: -s
+==329681== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329682== 
+==329682== For lists of detected and suppressed errors, rerun with: -s
+==329682== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329683== 
+==329683== For lists of detected and suppressed errors, rerun with: -s
+==329683== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329684== 
+==329684== For lists of detected and suppressed errors, rerun with: -s
+==329684== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329685== 
+==329685== For lists of detected and suppressed errors, rerun with: -s
+==329685== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329686== 
+==329686== For lists of detected and suppressed errors, rerun with: -s
+==329686== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329687== 
+==329687== For lists of detected and suppressed errors, rerun with: -s
+==329687== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329688== 
+==329688== For lists of detected and suppressed errors, rerun with: -s
+==329688== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329689== 
+==329689== For lists of detected and suppressed errors, rerun with: -s
+==329689== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329690== 
+==329690== For lists of detected and suppressed errors, rerun with: -s
+==329690== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329691== 
+==329691== For lists of detected and suppressed errors, rerun with: -s
+==329691== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329664== 
+==329664== For lists of detected and suppressed errors, rerun with: -s
+==329664== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+33 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(34,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+34 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(35,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+35 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != 0
+   |               ^^^^^^^^
+
+houdafny.dfy(58,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+58 |     invariant l_sum != 0
+   |               ^^^^^^^^^^
+
+houdafny.dfy(61,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+61 |     invariant l_i != l_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(62,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+62 |     invariant l_i > r_i
+   |               ^^^^^^^^^
+
+houdafny.dfy(63,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+63 |     invariant l_i != r_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(65,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |     invariant l_list != r_i
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(66,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+66 |     invariant l_list != r_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(67,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+67 |     invariant l_sum != r_i
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(68,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |     invariant l_sum != r_sum
+   |               ^^^^^^^^^^^^^^
+
+houdafny.dfy(75,2): Error: assertion might not hold
+   |
+75 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 13 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(52,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |     invariant l_i >= 1
+   |               ^^^^^^^^
+
+houdafny.dfy(53,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+53 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(56,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+56 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(63,2): Error: assertion might not hold
+   |
+63 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(59,2): Error: assertion might not hold
+   |
+59 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_structure
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==329914== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==329914== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==329914== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==329914== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==329914== 
+==329915== 
+==329915== For lists of detected and suppressed errors, rerun with: -s
+==329915== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329916== 
+==329916== For lists of detected and suppressed errors, rerun with: -s
+==329916== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329917== 
+==329917== For lists of detected and suppressed errors, rerun with: -s
+==329917== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329918== 
+==329918== For lists of detected and suppressed errors, rerun with: -s
+==329918== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329919== 
+==329919== For lists of detected and suppressed errors, rerun with: -s
+==329919== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329920== 
+==329920== For lists of detected and suppressed errors, rerun with: -s
+==329920== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329921== 
+==329921== For lists of detected and suppressed errors, rerun with: -s
+==329921== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329922== 
+==329922== For lists of detected and suppressed errors, rerun with: -s
+==329922== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329923== 
+==329923== For lists of detected and suppressed errors, rerun with: -s
+==329923== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329924== 
+==329924== For lists of detected and suppressed errors, rerun with: -s
+==329924== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329925== 
+==329925== For lists of detected and suppressed errors, rerun with: -s
+==329925== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329926== 
+==329926== For lists of detected and suppressed errors, rerun with: -s
+==329926== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329927== 
+==329927== For lists of detected and suppressed errors, rerun with: -s
+==329927== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329928== 
+==329928== For lists of detected and suppressed errors, rerun with: -s
+==329928== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329929== 
+==329929== For lists of detected and suppressed errors, rerun with: -s
+==329929== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329930== 
+==329930== For lists of detected and suppressed errors, rerun with: -s
+==329930== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329931== 
+==329931== For lists of detected and suppressed errors, rerun with: -s
+==329931== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329932== 
+==329932== For lists of detected and suppressed errors, rerun with: -s
+==329932== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329933== 
+==329933== For lists of detected and suppressed errors, rerun with: -s
+==329933== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329934== 
+==329934== For lists of detected and suppressed errors, rerun with: -s
+==329934== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==329914== 
+==329914== For lists of detected and suppressed errors, rerun with: -s
+==329914== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+33 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(50,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+50 |     invariant l_i != 0
+   |               ^^^^^^^^
+
+houdafny.dfy(53,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+53 |     invariant l_sum != 0
+   |               ^^^^^^^^^^
+
+houdafny.dfy(62,2): Error: assertion might not hold
+   |
+62 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 4 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(49,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+49 |     invariant l_i >= 1
+   |               ^^^^^^^^
+
+houdafny.dfy(50,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+50 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(59,2): Error: assertion might not hold
+   |
+59 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 3 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(50,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+50 |     invariant r_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(57,2): Error: assertion might not hold
+   |
+57 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 2 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(56,2): Error: assertion might not hold
+   |
+56 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_choice
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==330187== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==330187== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==330187== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==330187== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==330187== 
+==330191== 
+==330191== For lists of detected and suppressed errors, rerun with: -s
+==330191== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330192== 
+==330192== For lists of detected and suppressed errors, rerun with: -s
+==330192== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330193== 
+==330193== For lists of detected and suppressed errors, rerun with: -s
+==330193== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330194== 
+==330194== For lists of detected and suppressed errors, rerun with: -s
+==330194== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330195== 
+==330195== For lists of detected and suppressed errors, rerun with: -s
+==330195== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330196== 
+==330196== For lists of detected and suppressed errors, rerun with: -s
+==330196== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330197== 
+==330197== For lists of detected and suppressed errors, rerun with: -s
+==330197== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330198== 
+==330198== For lists of detected and suppressed errors, rerun with: -s
+==330198== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330199== 
+==330199== For lists of detected and suppressed errors, rerun with: -s
+==330199== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330200== 
+==330200== For lists of detected and suppressed errors, rerun with: -s
+==330200== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330201== 
+==330201== For lists of detected and suppressed errors, rerun with: -s
+==330201== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330202== 
+==330202== For lists of detected and suppressed errors, rerun with: -s
+==330202== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330203== 
+==330203== For lists of detected and suppressed errors, rerun with: -s
+==330203== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330204== 
+==330204== For lists of detected and suppressed errors, rerun with: -s
+==330204== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330205== 
+==330205== For lists of detected and suppressed errors, rerun with: -s
+==330205== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330206== 
+==330206== For lists of detected and suppressed errors, rerun with: -s
+==330206== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330207== 
+==330207== For lists of detected and suppressed errors, rerun with: -s
+==330207== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330208== 
+==330208== For lists of detected and suppressed errors, rerun with: -s
+==330208== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330209== 
+==330209== For lists of detected and suppressed errors, rerun with: -s
+==330209== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330211== 
+==330211== For lists of detected and suppressed errors, rerun with: -s
+==330211== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330187== 
+==330187== For lists of detected and suppressed errors, rerun with: -s
+==330187== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+33 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(34,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+34 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(35,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+35 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != 0
+   |               ^^^^^^^^
+
+houdafny.dfy(58,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+58 |     invariant l_sum != 0
+   |               ^^^^^^^^^^
+
+houdafny.dfy(61,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+61 |     invariant l_i != l_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(62,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+62 |     invariant l_i > r_i
+   |               ^^^^^^^^^
+
+houdafny.dfy(63,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+63 |     invariant l_i != r_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(65,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |     invariant l_list != r_i
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(66,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+66 |     invariant l_list != r_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(67,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+67 |     invariant l_sum != r_i
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(68,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |     invariant l_sum != r_sum
+   |               ^^^^^^^^^^^^^^
+
+houdafny.dfy(75,2): Error: assertion might not hold
+   |
+75 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 13 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(52,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |     invariant l_i >= 1
+   |               ^^^^^^^^
+
+houdafny.dfy(53,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+53 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(56,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+56 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(63,2): Error: assertion might not hold
+   |
+63 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(59,2): Error: assertion might not hold
+   |
+59 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 2
+cost function: optimize_structure
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==330459== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==330459== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==330459== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==330459== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==330459== 
+==330468== 
+==330468== For lists of detected and suppressed errors, rerun with: -s
+==330468== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330469== 
+==330469== For lists of detected and suppressed errors, rerun with: -s
+==330469== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330470== 
+==330470== For lists of detected and suppressed errors, rerun with: -s
+==330470== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330471== 
+==330471== For lists of detected and suppressed errors, rerun with: -s
+==330471== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330472== 
+==330472== For lists of detected and suppressed errors, rerun with: -s
+==330472== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330473== 
+==330473== For lists of detected and suppressed errors, rerun with: -s
+==330473== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330474== 
+==330474== For lists of detected and suppressed errors, rerun with: -s
+==330474== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330475== 
+==330475== For lists of detected and suppressed errors, rerun with: -s
+==330475== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330476== 
+==330476== For lists of detected and suppressed errors, rerun with: -s
+==330476== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330477== 
+==330477== For lists of detected and suppressed errors, rerun with: -s
+==330477== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330478== 
+==330478== For lists of detected and suppressed errors, rerun with: -s
+==330478== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330479== 
+==330479== For lists of detected and suppressed errors, rerun with: -s
+==330479== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330480== 
+==330480== For lists of detected and suppressed errors, rerun with: -s
+==330480== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330481== 
+==330481== For lists of detected and suppressed errors, rerun with: -s
+==330481== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330482== 
+==330482== For lists of detected and suppressed errors, rerun with: -s
+==330482== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330483== 
+==330483== For lists of detected and suppressed errors, rerun with: -s
+==330483== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330484== 
+==330484== For lists of detected and suppressed errors, rerun with: -s
+==330484== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330485== 
+==330485== For lists of detected and suppressed errors, rerun with: -s
+==330485== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330486== 
+==330486== For lists of detected and suppressed errors, rerun with: -s
+==330486== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330488== 
+==330488== For lists of detected and suppressed errors, rerun with: -s
+==330488== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330459== 
+==330459== For lists of detected and suppressed errors, rerun with: -s
+==330459== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+33 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(34,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+34 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(35,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+35 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != 0
+   |               ^^^^^^^^
+
+houdafny.dfy(58,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+58 |     invariant l_sum != 0
+   |               ^^^^^^^^^^
+
+houdafny.dfy(61,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+61 |     invariant l_i != l_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(62,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+62 |     invariant l_i > r_i
+   |               ^^^^^^^^^
+
+houdafny.dfy(63,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+63 |     invariant l_i != r_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(65,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |     invariant l_list != r_i
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(66,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+66 |     invariant l_list != r_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(67,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+67 |     invariant l_sum != r_i
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(68,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |     invariant l_sum != r_sum
+   |               ^^^^^^^^^^^^^^
+
+houdafny.dfy(75,2): Error: assertion might not hold
+   |
+75 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 13 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(52,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |     invariant l_i >= 1
+   |               ^^^^^^^^
+
+houdafny.dfy(53,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+53 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(56,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+56 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(63,2): Error: assertion might not hold
+   |
+63 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(59,2): Error: assertion might not hold
+   |
+59 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 2
+cost function: optimize_choice
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==330703== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==330703== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==330703== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==330703== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==330703== 
+==330704== 
+==330704== For lists of detected and suppressed errors, rerun with: -s
+==330704== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330705== 
+==330705== For lists of detected and suppressed errors, rerun with: -s
+==330705== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330706== 
+==330706== For lists of detected and suppressed errors, rerun with: -s
+==330706== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330707== 
+==330707== For lists of detected and suppressed errors, rerun with: -s
+==330707== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330708== 
+==330708== For lists of detected and suppressed errors, rerun with: -s
+==330708== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330709== 
+==330709== For lists of detected and suppressed errors, rerun with: -s
+==330709== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330710== 
+==330710== For lists of detected and suppressed errors, rerun with: -s
+==330710== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330711== 
+==330711== For lists of detected and suppressed errors, rerun with: -s
+==330711== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330712== 
+==330712== For lists of detected and suppressed errors, rerun with: -s
+==330712== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330713== 
+==330713== For lists of detected and suppressed errors, rerun with: -s
+==330713== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330714== 
+==330714== For lists of detected and suppressed errors, rerun with: -s
+==330714== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330715== 
+==330715== For lists of detected and suppressed errors, rerun with: -s
+==330715== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330716== 
+==330716== For lists of detected and suppressed errors, rerun with: -s
+==330716== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330717== 
+==330717== For lists of detected and suppressed errors, rerun with: -s
+==330717== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330718== 
+==330718== For lists of detected and suppressed errors, rerun with: -s
+==330718== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330719== 
+==330719== For lists of detected and suppressed errors, rerun with: -s
+==330719== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330720== 
+==330720== For lists of detected and suppressed errors, rerun with: -s
+==330720== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330721== 
+==330721== For lists of detected and suppressed errors, rerun with: -s
+==330721== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330722== 
+==330722== For lists of detected and suppressed errors, rerun with: -s
+==330722== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330723== 
+==330723== For lists of detected and suppressed errors, rerun with: -s
+==330723== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330703== 
+==330703== For lists of detected and suppressed errors, rerun with: -s
+==330703== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+33 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(34,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+34 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(35,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+35 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != 0
+   |               ^^^^^^^^
+
+houdafny.dfy(58,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+58 |     invariant l_sum != 0
+   |               ^^^^^^^^^^
+
+houdafny.dfy(61,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+61 |     invariant l_i != l_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(62,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+62 |     invariant l_i > r_i
+   |               ^^^^^^^^^
+
+houdafny.dfy(63,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+63 |     invariant l_i != r_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(65,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |     invariant l_list != r_i
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(66,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+66 |     invariant l_list != r_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(67,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+67 |     invariant l_sum != r_i
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(68,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |     invariant l_sum != r_sum
+   |               ^^^^^^^^^^^^^^
+
+houdafny.dfy(75,2): Error: assertion might not hold
+   |
+75 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 13 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(52,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |     invariant l_i >= 1
+   |               ^^^^^^^^
+
+houdafny.dfy(53,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+53 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(56,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+56 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(63,2): Error: assertion might not hold
+   |
+63 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(59,2): Error: assertion might not hold
+   |
+59 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 2
+cost function: optimize_structure
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==330942== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==330942== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==330942== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==330942== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==330942== 
+==330943== 
+==330943== For lists of detected and suppressed errors, rerun with: -s
+==330943== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330944== 
+==330944== For lists of detected and suppressed errors, rerun with: -s
+==330944== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330945== 
+==330945== For lists of detected and suppressed errors, rerun with: -s
+==330945== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330946== 
+==330946== For lists of detected and suppressed errors, rerun with: -s
+==330946== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330947== 
+==330947== For lists of detected and suppressed errors, rerun with: -s
+==330947== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330948== 
+==330948== For lists of detected and suppressed errors, rerun with: -s
+==330948== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330949== 
+==330949== For lists of detected and suppressed errors, rerun with: -s
+==330949== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330950== 
+==330950== For lists of detected and suppressed errors, rerun with: -s
+==330950== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330951== 
+==330951== For lists of detected and suppressed errors, rerun with: -s
+==330951== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330952== 
+==330952== For lists of detected and suppressed errors, rerun with: -s
+==330952== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330953== 
+==330953== For lists of detected and suppressed errors, rerun with: -s
+==330953== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330954== 
+==330954== For lists of detected and suppressed errors, rerun with: -s
+==330954== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330958== 
+==330958== For lists of detected and suppressed errors, rerun with: -s
+==330958== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330959== 
+==330959== For lists of detected and suppressed errors, rerun with: -s
+==330959== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330960== 
+==330960== For lists of detected and suppressed errors, rerun with: -s
+==330960== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330961== 
+==330961== For lists of detected and suppressed errors, rerun with: -s
+==330961== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330962== 
+==330962== For lists of detected and suppressed errors, rerun with: -s
+==330962== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330963== 
+==330963== For lists of detected and suppressed errors, rerun with: -s
+==330963== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330964== 
+==330964== For lists of detected and suppressed errors, rerun with: -s
+==330964== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330965== 
+==330965== For lists of detected and suppressed errors, rerun with: -s
+==330965== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==330942== 
+==330942== For lists of detected and suppressed errors, rerun with: -s
+==330942== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+33 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(34,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+34 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(35,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+35 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != 0
+   |               ^^^^^^^^
+
+houdafny.dfy(58,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+58 |     invariant l_sum != 0
+   |               ^^^^^^^^^^
+
+houdafny.dfy(61,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+61 |     invariant l_i != l_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(62,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+62 |     invariant l_i > r_i
+   |               ^^^^^^^^^
+
+houdafny.dfy(63,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+63 |     invariant l_i != r_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(65,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |     invariant l_list != r_i
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(66,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+66 |     invariant l_list != r_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(67,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+67 |     invariant l_sum != r_i
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(68,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |     invariant l_sum != r_sum
+   |               ^^^^^^^^^^^^^^
+
+houdafny.dfy(75,2): Error: assertion might not hold
+   |
+75 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 13 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(52,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |     invariant l_i >= 1
+   |               ^^^^^^^^
+
+houdafny.dfy(53,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+53 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(56,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+56 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(63,2): Error: assertion might not hold
+   |
+63 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(59,2): Error: assertion might not hold
+   |
+59 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 2
+cost function: optimize_choice
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==331176== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==331176== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==331176== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==331176== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==331176== 
+==331179== 
+==331179== For lists of detected and suppressed errors, rerun with: -s
+==331179== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331180== 
+==331180== For lists of detected and suppressed errors, rerun with: -s
+==331180== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331181== 
+==331181== For lists of detected and suppressed errors, rerun with: -s
+==331181== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331182== 
+==331182== For lists of detected and suppressed errors, rerun with: -s
+==331182== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331183== 
+==331183== For lists of detected and suppressed errors, rerun with: -s
+==331183== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331184== 
+==331184== For lists of detected and suppressed errors, rerun with: -s
+==331184== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331185== 
+==331185== For lists of detected and suppressed errors, rerun with: -s
+==331185== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331186== 
+==331186== For lists of detected and suppressed errors, rerun with: -s
+==331186== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331187== 
+==331187== For lists of detected and suppressed errors, rerun with: -s
+==331187== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331188== 
+==331188== For lists of detected and suppressed errors, rerun with: -s
+==331188== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331189== 
+==331189== For lists of detected and suppressed errors, rerun with: -s
+==331189== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331190== 
+==331190== For lists of detected and suppressed errors, rerun with: -s
+==331190== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331191== 
+==331191== For lists of detected and suppressed errors, rerun with: -s
+==331191== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331192== 
+==331192== For lists of detected and suppressed errors, rerun with: -s
+==331192== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331193== 
+==331193== For lists of detected and suppressed errors, rerun with: -s
+==331193== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331194== 
+==331194== For lists of detected and suppressed errors, rerun with: -s
+==331194== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331195== 
+==331195== For lists of detected and suppressed errors, rerun with: -s
+==331195== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331196== 
+==331196== For lists of detected and suppressed errors, rerun with: -s
+==331196== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331197== 
+==331197== For lists of detected and suppressed errors, rerun with: -s
+==331197== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331198== 
+==331198== For lists of detected and suppressed errors, rerun with: -s
+==331198== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331176== 
+==331176== For lists of detected and suppressed errors, rerun with: -s
+==331176== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+33 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(34,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+34 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(35,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+35 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != 0
+   |               ^^^^^^^^
+
+houdafny.dfy(58,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+58 |     invariant l_sum != 0
+   |               ^^^^^^^^^^
+
+houdafny.dfy(61,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+61 |     invariant l_i != l_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(62,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+62 |     invariant l_i > r_i
+   |               ^^^^^^^^^
+
+houdafny.dfy(63,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+63 |     invariant l_i != r_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(65,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |     invariant l_list != r_i
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(66,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+66 |     invariant l_list != r_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(67,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+67 |     invariant l_sum != r_i
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(68,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |     invariant l_sum != r_sum
+   |               ^^^^^^^^^^^^^^
+
+houdafny.dfy(75,2): Error: assertion might not hold
+   |
+75 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 13 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(52,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |     invariant l_i >= 1
+   |               ^^^^^^^^
+
+houdafny.dfy(53,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+53 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(56,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+56 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(63,2): Error: assertion might not hold
+   |
+63 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(59,2): Error: assertion might not hold
+   |
+59 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 3
+cost function: optimize_structure
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==331424== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==331424== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==331424== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==331424== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==331424== 
+==331426== 
+==331426== For lists of detected and suppressed errors, rerun with: -s
+==331426== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331427== 
+==331427== For lists of detected and suppressed errors, rerun with: -s
+==331427== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331428== 
+==331428== For lists of detected and suppressed errors, rerun with: -s
+==331428== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331429== 
+==331429== For lists of detected and suppressed errors, rerun with: -s
+==331429== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331430== 
+==331430== For lists of detected and suppressed errors, rerun with: -s
+==331430== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331431== 
+==331431== For lists of detected and suppressed errors, rerun with: -s
+==331431== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331432== 
+==331432== For lists of detected and suppressed errors, rerun with: -s
+==331432== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331433== 
+==331433== For lists of detected and suppressed errors, rerun with: -s
+==331433== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331434== 
+==331434== For lists of detected and suppressed errors, rerun with: -s
+==331434== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331435== 
+==331435== For lists of detected and suppressed errors, rerun with: -s
+==331435== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331436== 
+==331436== For lists of detected and suppressed errors, rerun with: -s
+==331436== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331437== 
+==331437== For lists of detected and suppressed errors, rerun with: -s
+==331437== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331440== 
+==331440== For lists of detected and suppressed errors, rerun with: -s
+==331440== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331441== 
+==331441== For lists of detected and suppressed errors, rerun with: -s
+==331441== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331442== 
+==331442== For lists of detected and suppressed errors, rerun with: -s
+==331442== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331443== 
+==331443== For lists of detected and suppressed errors, rerun with: -s
+==331443== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331444== 
+==331444== For lists of detected and suppressed errors, rerun with: -s
+==331444== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331445== 
+==331445== For lists of detected and suppressed errors, rerun with: -s
+==331445== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331446== 
+==331446== For lists of detected and suppressed errors, rerun with: -s
+==331446== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331447== 
+==331447== For lists of detected and suppressed errors, rerun with: -s
+==331447== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331424== 
+==331424== For lists of detected and suppressed errors, rerun with: -s
+==331424== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+33 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(34,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+34 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(35,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+35 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != 0
+   |               ^^^^^^^^
+
+houdafny.dfy(58,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+58 |     invariant l_sum != 0
+   |               ^^^^^^^^^^
+
+houdafny.dfy(61,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+61 |     invariant l_i != l_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(62,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+62 |     invariant l_i > r_i
+   |               ^^^^^^^^^
+
+houdafny.dfy(63,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+63 |     invariant l_i != r_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(65,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |     invariant l_list != r_i
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(66,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+66 |     invariant l_list != r_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(67,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+67 |     invariant l_sum != r_i
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(68,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |     invariant l_sum != r_sum
+   |               ^^^^^^^^^^^^^^
+
+houdafny.dfy(75,2): Error: assertion might not hold
+   |
+75 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 13 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(52,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |     invariant l_i >= 1
+   |               ^^^^^^^^
+
+houdafny.dfy(53,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+53 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(56,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+56 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(63,2): Error: assertion might not hold
+   |
+63 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(59,2): Error: assertion might not hold
+   |
+59 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 3
+cost function: optimize_choice
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==331669== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==331669== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==331669== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==331669== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==331669== 
+==331670== 
+==331670== For lists of detected and suppressed errors, rerun with: -s
+==331670== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331671== 
+==331671== For lists of detected and suppressed errors, rerun with: -s
+==331671== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331672== 
+==331672== For lists of detected and suppressed errors, rerun with: -s
+==331672== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331673== 
+==331673== For lists of detected and suppressed errors, rerun with: -s
+==331673== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331674== 
+==331674== For lists of detected and suppressed errors, rerun with: -s
+==331674== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331675== 
+==331675== For lists of detected and suppressed errors, rerun with: -s
+==331675== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331676== 
+==331676== For lists of detected and suppressed errors, rerun with: -s
+==331676== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331677== 
+==331677== For lists of detected and suppressed errors, rerun with: -s
+==331677== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331678== 
+==331678== For lists of detected and suppressed errors, rerun with: -s
+==331678== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331679== 
+==331679== For lists of detected and suppressed errors, rerun with: -s
+==331679== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331680== 
+==331680== For lists of detected and suppressed errors, rerun with: -s
+==331680== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331684== 
+==331684== For lists of detected and suppressed errors, rerun with: -s
+==331684== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331687== 
+==331687== For lists of detected and suppressed errors, rerun with: -s
+==331687== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331688== 
+==331688== For lists of detected and suppressed errors, rerun with: -s
+==331688== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331689== 
+==331689== For lists of detected and suppressed errors, rerun with: -s
+==331689== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331690== 
+==331690== For lists of detected and suppressed errors, rerun with: -s
+==331690== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331691== 
+==331691== For lists of detected and suppressed errors, rerun with: -s
+==331691== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331692== 
+==331692== For lists of detected and suppressed errors, rerun with: -s
+==331692== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331693== 
+==331693== For lists of detected and suppressed errors, rerun with: -s
+==331693== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331694== 
+==331694== For lists of detected and suppressed errors, rerun with: -s
+==331694== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331669== 
+==331669== For lists of detected and suppressed errors, rerun with: -s
+==331669== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+33 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(34,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+34 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(35,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+35 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != 0
+   |               ^^^^^^^^
+
+houdafny.dfy(58,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+58 |     invariant l_sum != 0
+   |               ^^^^^^^^^^
+
+houdafny.dfy(61,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+61 |     invariant l_i != l_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(62,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+62 |     invariant l_i > r_i
+   |               ^^^^^^^^^
+
+houdafny.dfy(63,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+63 |     invariant l_i != r_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(65,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |     invariant l_list != r_i
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(66,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+66 |     invariant l_list != r_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(67,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+67 |     invariant l_sum != r_i
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(68,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |     invariant l_sum != r_sum
+   |               ^^^^^^^^^^^^^^
+
+houdafny.dfy(75,2): Error: assertion might not hold
+   |
+75 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 13 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(52,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |     invariant l_i >= 1
+   |               ^^^^^^^^
+
+houdafny.dfy(53,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+53 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(56,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+56 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(63,2): Error: assertion might not hold
+   |
+63 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(59,2): Error: assertion might not hold
+   |
+59 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 3
+cost function: optimize_structure
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==331911== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==331911== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==331911== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==331911== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==331911== 
+==331914== 
+==331914== For lists of detected and suppressed errors, rerun with: -s
+==331914== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331915== 
+==331915== For lists of detected and suppressed errors, rerun with: -s
+==331915== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331916== 
+==331916== For lists of detected and suppressed errors, rerun with: -s
+==331916== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331917== 
+==331917== For lists of detected and suppressed errors, rerun with: -s
+==331917== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331918== 
+==331918== For lists of detected and suppressed errors, rerun with: -s
+==331918== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331919== 
+==331919== For lists of detected and suppressed errors, rerun with: -s
+==331919== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331920== 
+==331920== For lists of detected and suppressed errors, rerun with: -s
+==331920== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331921== 
+==331921== For lists of detected and suppressed errors, rerun with: -s
+==331921== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331922== 
+==331922== For lists of detected and suppressed errors, rerun with: -s
+==331922== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331923== 
+==331923== For lists of detected and suppressed errors, rerun with: -s
+==331923== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331924== 
+==331924== For lists of detected and suppressed errors, rerun with: -s
+==331924== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331925== 
+==331925== For lists of detected and suppressed errors, rerun with: -s
+==331925== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331928== 
+==331928== For lists of detected and suppressed errors, rerun with: -s
+==331928== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331929== 
+==331929== For lists of detected and suppressed errors, rerun with: -s
+==331929== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331930== 
+==331930== For lists of detected and suppressed errors, rerun with: -s
+==331930== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331931== 
+==331931== For lists of detected and suppressed errors, rerun with: -s
+==331931== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331932== 
+==331932== For lists of detected and suppressed errors, rerun with: -s
+==331932== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331933== 
+==331933== For lists of detected and suppressed errors, rerun with: -s
+==331933== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331934== 
+==331934== For lists of detected and suppressed errors, rerun with: -s
+==331934== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331935== 
+==331935== For lists of detected and suppressed errors, rerun with: -s
+==331935== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==331911== 
+==331911== For lists of detected and suppressed errors, rerun with: -s
+==331911== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+33 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(34,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+34 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(35,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+35 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != 0
+   |               ^^^^^^^^
+
+houdafny.dfy(58,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+58 |     invariant l_sum != 0
+   |               ^^^^^^^^^^
+
+houdafny.dfy(61,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+61 |     invariant l_i != l_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(62,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+62 |     invariant l_i > r_i
+   |               ^^^^^^^^^
+
+houdafny.dfy(63,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+63 |     invariant l_i != r_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(65,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |     invariant l_list != r_i
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(66,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+66 |     invariant l_list != r_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(67,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+67 |     invariant l_sum != r_i
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(68,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |     invariant l_sum != r_sum
+   |               ^^^^^^^^^^^^^^
+
+houdafny.dfy(75,2): Error: assertion might not hold
+   |
+75 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 13 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(52,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |     invariant l_i >= 1
+   |               ^^^^^^^^
+
+houdafny.dfy(53,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+53 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(56,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+56 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(63,2): Error: assertion might not hold
+   |
+63 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(59,2): Error: assertion might not hold
+   |
+59 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 3
+cost function: optimize_choice
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==332156== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==332156== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==332156== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==332156== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==332156== 
+==332157== 
+==332157== For lists of detected and suppressed errors, rerun with: -s
+==332157== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332158== 
+==332158== For lists of detected and suppressed errors, rerun with: -s
+==332158== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332159== 
+==332159== For lists of detected and suppressed errors, rerun with: -s
+==332159== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332160== 
+==332160== For lists of detected and suppressed errors, rerun with: -s
+==332160== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332161== 
+==332161== For lists of detected and suppressed errors, rerun with: -s
+==332161== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332162== 
+==332162== For lists of detected and suppressed errors, rerun with: -s
+==332162== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332163== 
+==332163== For lists of detected and suppressed errors, rerun with: -s
+==332163== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332164== 
+==332164== For lists of detected and suppressed errors, rerun with: -s
+==332164== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332165== 
+==332165== For lists of detected and suppressed errors, rerun with: -s
+==332165== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332166== 
+==332166== For lists of detected and suppressed errors, rerun with: -s
+==332166== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332167== 
+==332167== For lists of detected and suppressed errors, rerun with: -s
+==332167== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332168== 
+==332168== For lists of detected and suppressed errors, rerun with: -s
+==332168== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332169== 
+==332169== For lists of detected and suppressed errors, rerun with: -s
+==332169== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332170== 
+==332170== For lists of detected and suppressed errors, rerun with: -s
+==332170== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332171== 
+==332171== For lists of detected and suppressed errors, rerun with: -s
+==332171== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332174== 
+==332174== For lists of detected and suppressed errors, rerun with: -s
+==332174== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332175== 
+==332175== For lists of detected and suppressed errors, rerun with: -s
+==332175== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332176== 
+==332176== For lists of detected and suppressed errors, rerun with: -s
+==332176== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332177== 
+==332177== For lists of detected and suppressed errors, rerun with: -s
+==332177== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332178== 
+==332178== For lists of detected and suppressed errors, rerun with: -s
+==332178== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332156== 
+==332156== For lists of detected and suppressed errors, rerun with: -s
+==332156== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+33 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(50,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+50 |     invariant l_i != 0
+   |               ^^^^^^^^
+
+houdafny.dfy(53,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+53 |     invariant l_sum != 0
+   |               ^^^^^^^^^^
+
+houdafny.dfy(62,2): Error: assertion might not hold
+   |
+62 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 4 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(49,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+49 |     invariant l_i >= 1
+   |               ^^^^^^^^
+
+houdafny.dfy(50,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+50 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(59,2): Error: assertion might not hold
+   |
+59 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 3 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(50,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+50 |     invariant r_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(57,2): Error: assertion might not hold
+   |
+57 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 2 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(56,2): Error: assertion might not hold
+   |
+56 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 4
+cost function: optimize_structure
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==332499== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==332499== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==332499== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==332499== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==332499== 
+==332500== 
+==332500== For lists of detected and suppressed errors, rerun with: -s
+==332500== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332501== 
+==332501== For lists of detected and suppressed errors, rerun with: -s
+==332501== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332502== 
+==332502== For lists of detected and suppressed errors, rerun with: -s
+==332502== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332503== 
+==332503== For lists of detected and suppressed errors, rerun with: -s
+==332503== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332504== 
+==332504== For lists of detected and suppressed errors, rerun with: -s
+==332504== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332505== 
+==332505== For lists of detected and suppressed errors, rerun with: -s
+==332505== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332506== 
+==332506== For lists of detected and suppressed errors, rerun with: -s
+==332506== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332508== 
+==332508== For lists of detected and suppressed errors, rerun with: -s
+==332508== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332509== 
+==332509== For lists of detected and suppressed errors, rerun with: -s
+==332509== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332510== 
+==332510== For lists of detected and suppressed errors, rerun with: -s
+==332510== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332511== 
+==332511== For lists of detected and suppressed errors, rerun with: -s
+==332511== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332512== 
+==332512== For lists of detected and suppressed errors, rerun with: -s
+==332512== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332513== 
+==332513== For lists of detected and suppressed errors, rerun with: -s
+==332513== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332514== 
+==332514== For lists of detected and suppressed errors, rerun with: -s
+==332514== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332515== 
+==332515== For lists of detected and suppressed errors, rerun with: -s
+==332515== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332516== 
+==332516== For lists of detected and suppressed errors, rerun with: -s
+==332516== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332517== 
+==332517== For lists of detected and suppressed errors, rerun with: -s
+==332517== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332518== 
+==332518== For lists of detected and suppressed errors, rerun with: -s
+==332518== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332519== 
+==332519== For lists of detected and suppressed errors, rerun with: -s
+==332519== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332520== 
+==332520== For lists of detected and suppressed errors, rerun with: -s
+==332520== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332499== 
+==332499== For lists of detected and suppressed errors, rerun with: -s
+==332499== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+33 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(34,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+34 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(35,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+35 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != 0
+   |               ^^^^^^^^
+
+houdafny.dfy(58,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+58 |     invariant l_sum != 0
+   |               ^^^^^^^^^^
+
+houdafny.dfy(61,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+61 |     invariant l_i != l_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(62,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+62 |     invariant l_i > r_i
+   |               ^^^^^^^^^
+
+houdafny.dfy(63,18): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+63 |     invariant l_i != r_sum
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(65,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+65 |     invariant l_list != r_i
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(66,21): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+66 |     invariant l_list != r_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(67,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+67 |     invariant l_sum != r_i
+   |               ^^^^^^^^^^^^
+
+houdafny.dfy(68,20): Error: this invariant could not be proved to be maintained by the loop
+ Related message: loop invariant violation
+   |
+68 |     invariant l_sum != r_sum
+   |               ^^^^^^^^^^^^^^
+
+houdafny.dfy(75,2): Error: assertion might not hold
+   |
+75 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 13 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(52,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+52 |     invariant l_i >= 1
+   |               ^^^^^^^^
+
+houdafny.dfy(53,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+53 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(55,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+55 |     invariant l_i != l_list
+   |               ^^^^^^^^^^^^^
+
+houdafny.dfy(56,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+56 |     invariant l_list != l_sum
+   |               ^^^^^^^^^^^^^^^
+
+houdafny.dfy(63,2): Error: assertion might not hold
+   |
+63 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 5 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(59,2): Error: assertion might not hold
+   |
+59 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 4
+cost function: optimize_choice
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==332775== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==332775== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==332775== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==332775== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==332775== 
+==332776== 
+==332776== For lists of detected and suppressed errors, rerun with: -s
+==332776== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332777== 
+==332777== For lists of detected and suppressed errors, rerun with: -s
+==332777== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332778== 
+==332778== For lists of detected and suppressed errors, rerun with: -s
+==332778== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332779== 
+==332779== For lists of detected and suppressed errors, rerun with: -s
+==332779== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332780== 
+==332780== For lists of detected and suppressed errors, rerun with: -s
+==332780== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332781== 
+==332781== For lists of detected and suppressed errors, rerun with: -s
+==332781== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332782== 
+==332782== For lists of detected and suppressed errors, rerun with: -s
+==332782== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332783== 
+==332783== For lists of detected and suppressed errors, rerun with: -s
+==332783== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332784== 
+==332784== For lists of detected and suppressed errors, rerun with: -s
+==332784== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332785== 
+==332785== For lists of detected and suppressed errors, rerun with: -s
+==332785== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332786== 
+==332786== For lists of detected and suppressed errors, rerun with: -s
+==332786== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332787== 
+==332787== For lists of detected and suppressed errors, rerun with: -s
+==332787== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332788== 
+==332788== For lists of detected and suppressed errors, rerun with: -s
+==332788== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332789== 
+==332789== For lists of detected and suppressed errors, rerun with: -s
+==332789== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332790== 
+==332790== For lists of detected and suppressed errors, rerun with: -s
+==332790== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332791== 
+==332791== For lists of detected and suppressed errors, rerun with: -s
+==332791== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332792== 
+==332792== For lists of detected and suppressed errors, rerun with: -s
+==332792== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332793== 
+==332793== For lists of detected and suppressed errors, rerun with: -s
+==332793== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332794== 
+==332794== For lists of detected and suppressed errors, rerun with: -s
+==332794== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332795== 
+==332795== For lists of detected and suppressed errors, rerun with: -s
+==332795== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==332775== 
+==332775== For lists of detected and suppressed errors, rerun with: -s
+==332775== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+33 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(50,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+50 |     invariant l_i != 0
+   |               ^^^^^^^^
+
+houdafny.dfy(53,20): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+53 |     invariant l_sum != 0
+   |               ^^^^^^^^^^
+
+houdafny.dfy(62,2): Error: assertion might not hold
+   |
+62 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 4 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(49,18): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+49 |     invariant l_i >= 1
+   |               ^^^^^^^^
+
+houdafny.dfy(50,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+50 |     invariant l_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(59,2): Error: assertion might not hold
+   |
+59 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 3 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(50,21): Error: this loop invariant could not be proved on entry
+ Related message: loop invariant violation
+   |
+50 |     invariant r_list != 0
+   |               ^^^^^^^^^^^
+
+houdafny.dfy(57,2): Error: assertion might not hold
+   |
+57 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 2 errors
+
+houdafny.dfy(21,2): Warning: assume statement has no {:axiom} annotation
+   |
+21 |   assume (l_list_in == r_list_in) && ((l_length == r_length) && (forall i: int, j: int, a: int, x: int :: ((!(i == j)) || (lst_read(lst_store(a, i, x), j) == x)) && forall i: int, j: int, a: int, x: int :: ((!(i != j)) || (lst_read(lst_store(a, i, x), j) == lst_read(a, j)))));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(25,2): Warning: assume statement has no {:axiom} annotation
+   |
+25 |   assume forall val: int :: (lst_contains(l_list_in, val) == lst_contains(l_list, val)) && forall i: int, j: int :: ((!(i < j)) || (lst_read(l_list, i) <= lst_read(l_list, j)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(56,2): Error: assertion might not hold
+   |
+56 |   assert l_sum == r_sum;
+   |   ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 0 verified, 1 error
+
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 4
+cost function: optimize_structure
+Treating naive product as final alignment.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.
+WARNING: Foralls are unsupported! Treating as true.

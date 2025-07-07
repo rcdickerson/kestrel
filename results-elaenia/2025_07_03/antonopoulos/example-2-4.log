@@ -1,0 +1,269 @@
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_structure
+Computed alignment by local loop counting.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:27 (2)
+
+*** Rejected
+    [0;31m[1751567863.5680 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:27 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751567863.5740 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751567863.5750 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_choice
+Computed alignment by local loop counting.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:27 (2)
+
+*** Rejected
+    [0;31m[1751567864.8760 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:27 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751567864.8850 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751567864.8851 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_structure
+Computed alignment by local loop counting.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:27 (2)
+
+*** Rejected
+    [0;31m[1751567866.1690 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:27 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751567866.1760 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751567866.1761 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_choice
+Computed alignment by local loop counting.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:27 (2)
+
+*** Rejected
+    [0;31m[1751567867.4560 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:27 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751567867.4630 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751567867.4631 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 2
+cost function: optimize_structure
+Computed alignment by local loop counting.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==62373== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==62373== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==62373== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==62373== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==62373== 
+==62377== 
+==62377== For lists of detected and suppressed errors, rerun with: -s
+==62377== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62378== 
+==62378== For lists of detected and suppressed errors, rerun with: -s
+==62378== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62379== 
+==62379== For lists of detected and suppressed errors, rerun with: -s
+==62379== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62380== 
+==62380== For lists of detected and suppressed errors, rerun with: -s
+==62380== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62381== 
+==62381== For lists of detected and suppressed errors, rerun with: -s
+==62381== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62382== 
+==62382== For lists of detected and suppressed errors, rerun with: -s
+==62382== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62383== 
+==62383== For lists of detected and suppressed errors, rerun with: -s
+==62383== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62384== 
+==62384== For lists of detected and suppressed errors, rerun with: -s
+==62384== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62385== 
+==62385== For lists of detected and suppressed errors, rerun with: -s
+==62385== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62386== 
+==62386== For lists of detected and suppressed errors, rerun with: -s
+==62386== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62387== 
+==62387== For lists of detected and suppressed errors, rerun with: -s
+==62387== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62388== 
+==62388== For lists of detected and suppressed errors, rerun with: -s
+==62388== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62389== 
+==62389== For lists of detected and suppressed errors, rerun with: -s
+==62389== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62390== 
+==62390== For lists of detected and suppressed errors, rerun with: -s
+==62390== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62391== 
+==62391== For lists of detected and suppressed errors, rerun with: -s
+==62391== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62392== 
+==62392== For lists of detected and suppressed errors, rerun with: -s
+==62392== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62393== 
+==62393== For lists of detected and suppressed errors, rerun with: -s
+==62393== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62394== 
+==62394== For lists of detected and suppressed errors, rerun with: -s
+==62394== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62395== 
+==62395== For lists of detected and suppressed errors, rerun with: -s
+==62395== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62396== 
+==62396== For lists of detected and suppressed errors, rerun with: -s
+==62396== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==62373== 
+==62373== For lists of detected and suppressed errors, rerun with: -s
+==62373== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(13,2): Warning: assume statement has no {:axiom} annotation
+   |
+13 |   assume true;
+   |   ^^^^^^^^^^^^
+
+houdafny.dfy(18,2): Warning: assume statement has no {:axiom} annotation
+   |
+18 |   assume true;
+   |   ^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 1 verified, 0 errors
+
+
+Aligned Product Program
+-----------------------
+
+function any(): int
+
+function havoc_1(): int
+
+function choice_n_2(l_y: int, l_x: int): int {
+  l_y - 1
+ }
+
+method Product()
+  decreases *
+{
+  assume true;
+  var l_x: int;
+  var l_y: int;
+  assert true;
+  l_x := havoc_1();
+  assume true;
+  l_y := l_x;
+  var r_t: int;
+  var r_z: int;
+  var n_2: int := choice_n_2(l_y, l_x);
+  assert true;
+  r_t := n_2;
+  r_z := (r_t + 1);
+  assert l_y == r_z;
+}
+
+
+Per-Task Times (ms)
+-------------------
+insert-elaenia-specs: 0
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 0
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 1306
+elaenia-invars: 0
+houdafny: 0
+compound_task: 1306
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 0
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 1299
+elaenia-invars: 0
+houdafny: 0
+compound_task: 1300
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 0
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 1287
+elaenia-invars: 0
+houdafny: 0
+compound_task: 1287
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 0
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 1296
+elaenia-invars: 0
+houdafny: 0
+compound_task: 1296
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 0
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 408
+elaenia-invars: 1726
+houdafny: 1027
+repeat_range: 8354
+write-dafny: 0
+print-info: 0
+
+
+Extraction Settings
+-------------------
+Max AST Depth: 2
+Loop unrolling: false
+Cost function: structure
+Max AST Depth: 2
+
+Elaenia completed in 8354ms
+Verified: true

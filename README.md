@@ -7,6 +7,10 @@ desirable product programs through a variety of configurable
 extraction techniques. The generated product programs may then be
 given to various off-the-shelf non-relational verifiers.
 
+Work on KestRel appeared at 
+[OOPSLA 2025](https://2025.splashcon.org/track/OOPSLA) 
+[[pdf](https://robd.io/papers/kestrel.pdf)].
+
 ## Dependencies
 
 KestRel requires the following system libraries and utilites:

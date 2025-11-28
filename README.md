@@ -9,7 +9,8 @@ given to various off-the-shelf non-relational verifiers.
 
 Work on KestRel appeared at 
 [OOPSLA 2025](https://2025.splashcon.org/track/OOPSLA) 
-[[pdf](https://robd.io/papers/kestrel.pdf)].
+[[pdf](https://robd.io/papers/kestrel.pdf)], where it
+won a distinguished artifact award.
 
 ## Dependencies
 

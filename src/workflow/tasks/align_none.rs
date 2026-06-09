@@ -12,11 +12,13 @@ impl AlignNone {
   }
 }
 
-impl Task for AlignNone {
+impl <Ctx: AlignsEggroll> Task<Ctx> for AlignNone {
   fn name(&self) -> String { "align-none".to_string() }
-  fn run(&self, context: &mut Context) {
+  fn run(&self, context: &mut Ctx) {
     println!("Treating naive product as final alignment.");
-    let rec_expr = context.unaligned_eggroll().parse().unwrap();
-    context.aligned_eggroll.replace(rec_expr);
+    let rec_expr = context.unaligned_eggroll().as_ref()
+        .expect("Missing unaligned Eggroll")
+        .parse().unwrap();
+    context.accept_aligned_eggroll(rec_expr);
   }
 }

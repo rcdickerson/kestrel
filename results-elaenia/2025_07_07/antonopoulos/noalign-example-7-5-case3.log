@@ -1,0 +1,294 @@
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_structure
+Treating naive product as final alignment.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:102 (2)
+
+*** Rejected
+    [0;31m[1751868970.6310 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:102 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751868970.6380 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751868970.6381 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_choice
+Treating naive product as final alignment.
+
+
+*** Rejected
+    [0;31m[1751868972.0010 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751868972.0090 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751868972.0091 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_structure
+Treating naive product as final alignment.
+Skipping loop unroll for program without loops.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_choice
+Treating naive product as final alignment.
+Skipping loop unroll for program without loops.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 2
+cost function: optimize_structure
+Treating naive product as final alignment.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==295375== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==295375== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==295375== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==295375== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==295375== 
+==295376== 
+==295376== For lists of detected and suppressed errors, rerun with: -s
+==295376== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295377== 
+==295377== For lists of detected and suppressed errors, rerun with: -s
+==295377== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295378== 
+==295378== For lists of detected and suppressed errors, rerun with: -s
+==295378== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295379== 
+==295379== For lists of detected and suppressed errors, rerun with: -s
+==295379== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295380== 
+==295380== For lists of detected and suppressed errors, rerun with: -s
+==295380== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295381== 
+==295381== For lists of detected and suppressed errors, rerun with: -s
+==295381== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295382== 
+==295382== For lists of detected and suppressed errors, rerun with: -s
+==295382== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295386== 
+==295386== For lists of detected and suppressed errors, rerun with: -s
+==295386== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295387== 
+==295387== For lists of detected and suppressed errors, rerun with: -s
+==295387== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295388== 
+==295388== For lists of detected and suppressed errors, rerun with: -s
+==295388== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295389== 
+==295389== For lists of detected and suppressed errors, rerun with: -s
+==295389== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295390== 
+==295390== For lists of detected and suppressed errors, rerun with: -s
+==295390== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295391== 
+==295391== For lists of detected and suppressed errors, rerun with: -s
+==295391== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295392== 
+==295392== For lists of detected and suppressed errors, rerun with: -s
+==295392== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295393== 
+==295393== For lists of detected and suppressed errors, rerun with: -s
+==295393== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295394== 
+==295394== For lists of detected and suppressed errors, rerun with: -s
+==295394== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295395== 
+==295395== For lists of detected and suppressed errors, rerun with: -s
+==295395== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295396== 
+==295396== For lists of detected and suppressed errors, rerun with: -s
+==295396== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295397== 
+==295397== For lists of detected and suppressed errors, rerun with: -s
+==295397== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295398== 
+==295398== For lists of detected and suppressed errors, rerun with: -s
+==295398== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==295375== 
+==295375== For lists of detected and suppressed errors, rerun with: -s
+==295375== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(19,2): Warning: assume statement has no {:axiom} annotation
+   |
+19 |   assume (l_l == r_l) && ((l_l >= 0) && ((l_h <= l_l) && (r_h > r_l)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(28,2): Warning: assume statement has no {:axiom} annotation
+   |
+28 |   assume l_a1 >= 0;
+   |   ^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(31,2): Warning: assume statement has no {:axiom} annotation
+   |
+31 |   assume l_a2 >= 0;
+   |   ^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 1 verified, 0 errors
+
+
+Aligned Product Program
+-----------------------
+
+function any(): int
+
+function havoc_1(l_x: int, l_l: int, l_o: int, r_h: int, l_h: int, r_l: int): int
+
+function havoc_2(l_x: int, l_l: int, l_o: int, r_h: int, l_a1: int, l_h: int, r_l: int): int
+
+function choice_n_4(r_o: int, l_x: int, l_l: int, r_x: int, l_o: int, l_a2: int, r_h: int, l_a1: int, l_h: int, r_l: int): int {
+  62
+ }
+
+function choice_n_3(r_o: int, l_x: int, l_l: int, r_x: int, l_o: int, l_a2: int, r_h: int, l_a1: int, l_h: int, r_l: int): int {
+  l_o - l_l
+ }
+
+method Product(l_l: int, l_h: int, r_l: int, r_h: int)
+  decreases *
+{
+  assume (l_l == r_l) && ((l_l >= 0) && ((l_h <= l_l) && (r_h > r_l)));
+  var l_a1: int;
+  var l_a2: int;
+  var l_x: int;
+  l_x := 0;
+  var l_o: int;
+  l_o := 0;
+  assert true;
+  l_a1 := havoc_1(l_x, l_l, l_o, r_h, l_h, r_l);
+  assume l_a1 >= 0;
+  assert true;
+  l_a2 := havoc_2(l_x, l_l, l_o, r_h, l_a1, l_h, r_l);
+  assume l_a2 >= 0;
+  if (l_h > l_l) {
+    l_o := (l_l + l_a1);
+  } else {
+    l_x := l_a2;
+    if (l_x > l_l) {
+      l_o := l_x;
+    } else {
+      l_o := l_l;
+    }
+  }
+  var r_a1: int;
+  var r_a2: int;
+  var r_x: int;
+  r_x := 0;
+  var r_o: int;
+  r_o := 0;
+  var n_3: int := choice_n_3(r_o, l_x, l_l, r_x, l_o, l_a2, r_h, l_a1, l_h, r_l);
+  assert n_3 >= 0;
+  r_a1 := n_3;
+  var n_4: int := choice_n_4(r_o, l_x, l_l, r_x, l_o, l_a2, r_h, l_a1, l_h, r_l);
+  assert n_4 >= 0;
+  r_a2 := n_4;
+  if (r_h > r_l) {
+    r_o := (r_l + r_a1);
+  } else {
+    r_x := r_a2;
+    if (r_x > r_l) {
+      r_o := r_x;
+    } else {
+      r_o := r_l;
+    }
+  }
+  assert l_o == r_o;
+}
+
+
+Per-Task Times (ms)
+-------------------
+insert-elaenia-specs: 0
+set-parameters: 0
+print-info: 0
+align-none: 0
+aligned-crel: 0
+print-info: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 1366
+elaenia-invars: 0
+houdafny: 0
+compound_task: 1366
+compound_task: 1366
+set-parameters: 0
+print-info: 0
+align-none: 0
+aligned-crel: 0
+print-info: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 1359
+elaenia-invars: 0
+houdafny: 0
+compound_task: 1359
+compound_task: 1360
+set-parameters: 0
+print-info: 0
+align-none: 0
+aligned-crel: 0
+print-info: 0
+print-info: 0
+print-info: 0
+compound_task: 0
+compound_task: 0
+set-parameters: 0
+print-info: 0
+align-none: 0
+aligned-crel: 0
+print-info: 0
+print-info: 0
+print-info: 0
+compound_task: 0
+compound_task: 0
+set-parameters: 0
+print-info: 0
+align-none: 0
+aligned-crel: 0
+print-info: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 495
+elaenia-invars: 1887
+houdafny: 1066
+compound_task: 3449
+repeat_range: 6177
+write-dafny: 0
+print-info: 0
+
+
+Extraction Settings
+-------------------
+Max AST Depth: 2
+Loop unrolling: false
+Cost function: structure
+Max AST Depth: 2
+
+Elaenia completed in 6177ms
+Verified: true

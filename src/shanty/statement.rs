@@ -21,7 +21,6 @@ pub enum Statement {
 }
 
 impl Statement {
-
   pub fn emit(&self, writer: &mut Writer) {
     match self {
       Statement::Break => {
@@ -29,7 +28,10 @@ impl Statement {
       },
       Statement::Expression(expr) => {
         expr.emit(writer, false);
-        writer.write(";").new_line();
+        match **expr {
+          Expression::Statement(_) => (),
+          _ => { writer.write(";").new_line(); },
+        }
       },
       Statement::If{condition, then, els} => {
         writer.write("if (");

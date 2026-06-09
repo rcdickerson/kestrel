@@ -17,19 +17,19 @@ impl WriteSummary {
   }
 }
 
-impl Task for WriteSummary {
+impl <Ctx: Context + Stopwatch> Task<Ctx> for WriteSummary {
   fn name(&self) -> String { "write-summary".to_string() }
-  fn run(&self, context: &mut Context) {
+  fn run(&self, context: &mut Ctx) {
     let mut file = OpenOptions::new()
       .create(true)
       .append(true)
       .open(self.location.clone())
       .unwrap();
     let mut line = Vec::new();
-    line.push(context.workflow_name.clone());
+    line.push(context.workflow_name().clone());
     line.append(&mut self.tags.clone());
-    line.push(format!("{}", context.elapsed_time().as_millis()));
-    line.push(format!("{}", context.verified));
+    line.push(format!("{}", context.total_elapsed_time().as_millis()));
+    line.push(format!("{}", context.is_verified()));
     if let Err(e) = writeln!(file, "{}", line.join(",")) {
       panic!("Unable to write to summary file: {}", e);
     }

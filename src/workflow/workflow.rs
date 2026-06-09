@@ -7,28 +7,28 @@ use crate::workflow::predicate_task::*;
 use crate::workflow::task::*;
 use std::time::Instant;
 
-pub struct Workflow<'a> {
-  context: &'a mut Context<'a>,
-  tasks: Vec<Box<dyn Task>>,
+pub struct Workflow<Ctx: Context + Stopwatch> {
+  context: Ctx,
+  tasks: Vec<Box<dyn Task<Ctx>>>,
 }
 
-impl <'a> Workflow<'a> {
-  pub fn new(context: &'a mut Context<'a>) -> Self {
+impl <'a, Ctx: Context + Stopwatch + 'static> Workflow<Ctx> {
+  pub fn new(context: Ctx) -> Self {
     Workflow {
       context,
       tasks: Vec::new(),
     }
   }
 
-  pub fn add_task(&mut self, task: impl Task + 'static) {
+  pub fn add_task(&mut self, task: impl Task<Ctx> + 'static) {
     self.tasks.push(Box::new(task));
   }
 
-  pub fn add_task_unless_verifed(&mut self, task: impl Task + 'static) {
-    self.add_task(PredicateTask::new(&|ctx| !ctx.verified, Box::new(task)));
+  pub fn add_task_unless_verifed(&mut self, task: impl Task<Ctx> + 'static) {
+    self.add_task(PredicateTask::new(&|ctx: &Ctx| !ctx.is_verified(), Box::new(task)));
   }
 
-  pub fn context(&self) -> &Context {
+  pub fn context(&self) -> &Ctx {
     &self.context
   }
 
@@ -37,7 +37,7 @@ impl <'a> Workflow<'a> {
     for task in &self.tasks {
       let task_start = Instant::now();
       task.run(&mut self.context);
-      self.context.task_timings.push((task.name(), task_start.elapsed()));
+      self.context.push_task_time(task.name(), task_start.elapsed());
     }
     self.context.mark_completed();
   }

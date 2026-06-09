@@ -13,30 +13,23 @@ pub trait CondToCRel {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct StatementKind {
-  pub crel_name: String,
-}
-
-impl CondToCRel for StatementKind {
-  fn to_crel(&self) -> crel::Expression {
-    crel::Expression::Identifier{name: self.crel_name.clone()}
-  }
+pub enum StatementKind {
+  Assume,
+  Assert,
 }
 
 impl KCondToCRel for KestrelCond {
   fn to_crel(&self, kind: StatementKind) -> crel::Statement {
     match self {
-      KestrelCond::BExpr(bexpr) => {
-        crel::Statement::Expression(Box::new(crel::Expression::Call {
-          callee: Box::new(kind.to_crel()),
-          args: vec!(bexpr.to_crel())
-        }))
+      KestrelCond::BExpr(bexpr) => match kind {
+        StatementKind::Assert => crel::Statement::Assert(Box::new(bexpr.to_crel())),
+        StatementKind::Assume => crel::Statement::Assume(Box::new(bexpr.to_crel())),
       },
       KestrelCond::ForLoop{index_var, start, end, body} => {
         let init_index = crel::Declaration {
           specifiers: vec!(crel::DeclarationSpecifier::TypeSpecifier(crel::Type::Int)),
           declarator: crel::Declarator::Identifier{name: index_var.clone()},
-          initializer: Some(start.to_crel()),
+          initializer: Some(crel::Initializer::Expression(start.to_crel())),
         };
         let wloop = crel::Statement::While {
           id: Uuid::new_v4(),
@@ -83,7 +76,10 @@ impl CondToCRel for CondAExpr {
   fn to_crel(&self) -> crel::Expression {
     match self {
       CondAExpr::Var(id) => {
-        crel::Expression::Identifier{name: id.clone()}
+        crel::Expression::Identifier{ name: id.clone() }
+      },
+      CondAExpr::ReturnValue => {
+        panic!("Cannot convert a condition return value into CRel.")
       },
       CondAExpr::QualifiedVar{exec, name} => {
         crel::Expression::Identifier{name: qualified_state_var(exec, name)}
@@ -129,8 +125,8 @@ impl CondToCRel for CondAExpr {
 impl CondToCRel for CondBExpr {
   fn to_crel(&self) -> crel::Expression {
     match self {
-      CondBExpr::True => crel::Expression::ConstInt(1),
-      CondBExpr::False => crel::Expression::ConstInt(0),
+      CondBExpr::True => crel::Expression::ConstBool(true),
+      CondBExpr::False => crel::Expression::ConstBool(false),
       CondBExpr::Unop{bexp, op} => {
         crel::Expression::Unop {
           expr: Box::new(bexp.to_crel()),
@@ -144,6 +140,7 @@ impl CondToCRel for CondBExpr {
           lhs: Box::new(lhs.to_crel()),
           rhs: Box::new(rhs.to_crel()),
           op: match op {
+            CondBBinopA::ArrayEq => crel::BinaryOp::ArrayEq,
             CondBBinopA::Eq => crel::BinaryOp::Equals,
             CondBBinopA::Neq => crel::BinaryOp::NotEquals,
             CondBBinopA::Lt => crel::BinaryOp::Lt,

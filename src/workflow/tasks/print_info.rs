@@ -1,14 +1,13 @@
 //! Prints some piece of information to the console.
 
-use crate::workflow::context::*;
 use crate::workflow::task::*;
 
-pub struct PrintInfo<'a> {
+pub struct PrintInfo<'a, Context> {
   header: Option<&'a str>,
   printer: &'a dyn Fn(&Context) -> String,
 }
 
-impl <'a> PrintInfo<'a> {
+impl <'a, Context> PrintInfo<'a, Context> {
   pub fn new(printer: &'a dyn Fn(&Context) -> String) -> Self {
     PrintInfo { header: None, printer }
   }
@@ -18,7 +17,7 @@ impl <'a> PrintInfo<'a> {
   }
 }
 
-impl Task for PrintInfo<'_> {
+impl <Context> Task<Context> for PrintInfo<'_, Context> {
   fn name(&self) -> String { "print-info".to_string() }
   fn run(&self, context: &mut Context) {
     self.header.map(|head| {

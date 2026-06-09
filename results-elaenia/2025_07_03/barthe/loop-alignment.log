@@ -1,0 +1,428 @@
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_structure
+Computed alignment by local loop counting.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:76 (2)
+
+*** Rejected
+    [0;31m[1751564831.9660 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:76 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751564831.9840 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751564831.9841 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_choice
+Computed alignment by local loop counting.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:76 (2)
+
+*** Rejected
+    [0;31m[1751564833.3970 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:76 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751564833.4040 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751564833.4041 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_structure
+Computed alignment by local loop counting.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==55353== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==55353== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==55353== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==55353== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==55353== 
+==55354== 
+==55354== For lists of detected and suppressed errors, rerun with: -s
+==55354== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55355== 
+==55355== For lists of detected and suppressed errors, rerun with: -s
+==55355== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55357== 
+==55357== For lists of detected and suppressed errors, rerun with: -s
+==55357== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55358== 
+==55358== For lists of detected and suppressed errors, rerun with: -s
+==55358== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55359== 
+==55359== For lists of detected and suppressed errors, rerun with: -s
+==55359== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55360== 
+==55360== For lists of detected and suppressed errors, rerun with: -s
+==55360== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55361== 
+==55361== For lists of detected and suppressed errors, rerun with: -s
+==55361== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55362== 
+==55362== For lists of detected and suppressed errors, rerun with: -s
+==55362== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55363== 
+==55363== For lists of detected and suppressed errors, rerun with: -s
+==55363== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55364== 
+==55364== For lists of detected and suppressed errors, rerun with: -s
+==55364== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55365== 
+==55365== For lists of detected and suppressed errors, rerun with: -s
+==55365== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55366== 
+==55366== For lists of detected and suppressed errors, rerun with: -s
+==55366== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55367== 
+==55367== For lists of detected and suppressed errors, rerun with: -s
+==55367== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55368== 
+==55368== For lists of detected and suppressed errors, rerun with: -s
+==55368== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55369== 
+==55369== Process terminating with default action of signal 8 (SIGFPE): dumping core
+==55369==  Integer divide by zero at address 0x1008CF25F2
+==55369==    at 0x4011E0: anyIndex (daikon_output.c:13)
+==55369==    by 0x401AF4: _main (daikon_output.c:180)
+==55369==    by 0x401D1F: _test_gen (daikon_output.c:215)
+==55369==    by 0x401DF3: _run_test (daikon_output.c:232)
+==55369==    by 0x4025BF: main (daikon_output.c:255)
+==55369== 
+==55369== For lists of detected and suppressed errors, rerun with: -s
+==55369== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Test case failed or timed out
+==55376== 
+==55376== For lists of detected and suppressed errors, rerun with: -s
+==55376== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Test case failed or timed out
+==55380== 
+==55380== For lists of detected and suppressed errors, rerun with: -s
+==55380== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55381== 
+==55381== Process terminating with default action of signal 8 (SIGFPE): dumping core
+==55381==  Integer divide by zero at address 0x1008CFFE02
+==55381==    at 0x4011E0: anyIndex (daikon_output.c:13)
+==55381==    by 0x401AF4: _main (daikon_output.c:180)
+==55381==    by 0x401D1F: _test_gen (daikon_output.c:215)
+==55381==    by 0x401DF3: _run_test (daikon_output.c:232)
+==55381==    by 0x4025BF: main (daikon_output.c:255)
+==55381== 
+==55381== For lists of detected and suppressed errors, rerun with: -s
+==55381== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55387== 
+==55387== Process terminating with default action of signal 8 (SIGFPE): dumping core
+==55387==  Integer divide by zero at address 0x1008D00DF2
+==55387==    at 0x4011E0: anyIndex (daikon_output.c:13)
+==55387==    by 0x401AF4: _main (daikon_output.c:180)
+==55387==    by 0x401D1F: _test_gen (daikon_output.c:215)
+==55387==    by 0x401DF3: _run_test (daikon_output.c:232)
+==55387==    by 0x4025BF: main (daikon_output.c:255)
+==55387== 
+==55387== For lists of detected and suppressed errors, rerun with: -s
+==55387== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Test case failed or timed out
+Test case failed or timed out
+Test case failed or timed out
+==55395== 
+==55395== For lists of detected and suppressed errors, rerun with: -s
+==55395== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Test case failed or timed out
+Test case failed or timed out
+Test case failed or timed out
+==55353== 
+==55353== For lists of detected and suppressed errors, rerun with: -s
+==55353== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(29,2): Warning: assume statement has no {:axiom} annotation
+   |
+29 |   assume (l_size + 1) == l_a.Length;
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(30,2): Warning: assume statement has no {:axiom} annotation
+   |
+30 |   assume (l_size + 1) == l_b.Length;
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(31,2): Warning: assume statement has no {:axiom} annotation
+   |
+31 |   assume (r_size + 1) == r_a.Length;
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(32,2): Warning: assume statement has no {:axiom} annotation
+   |
+32 |   assume (r_size + 1) == r_b.Length;
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(33,2): Warning: assume statement has no {:axiom} annotation
+   |
+33 |   assume l_a != l_b;
+   |   ^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(34,2): Warning: assume statement has no {:axiom} annotation
+   |
+34 |   assume l_a != r_a;
+   |   ^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(35,2): Warning: assume statement has no {:axiom} annotation
+   |
+35 |   assume l_a != r_b;
+   |   ^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(36,2): Warning: assume statement has no {:axiom} annotation
+   |
+36 |   assume l_b != r_a;
+   |   ^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(37,2): Warning: assume statement has no {:axiom} annotation
+   |
+37 |   assume l_b != r_b;
+   |   ^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(38,2): Warning: assume statement has no {:axiom} annotation
+   |
+38 |   assume r_a != r_b;
+   |   ^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(39,2): Warning: assume statement has no {:axiom} annotation
+   |
+39 |   assume (l_size == r_size) && ((l_size >= 1) && ((l_a == r_a) && (l_b == r_b)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(57,4): Warning: assume statement has no {:axiom} annotation
+   |
+57 |     assume (0 <= l_idx) && ((l_idx * 2) < l_size);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(66,4): Warning: assume statement has no {:axiom} annotation
+   |
+66 |     assume (0 <= l_idx) && ((l_idx * 2) < l_size);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(89,4): Warning: assume statement has no {:axiom} annotation
+   |
+89 |     assume (0 <= l_idx) && ((l_idx * 2) < l_size);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(108,6): Warning: assume statement has no {:axiom} annotation
+    |
+108 |       assume !(r_j <= (r_size - 1));
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(112,6): Warning: assume statement has no {:axiom} annotation
+    |
+112 |       assume (0 <= l_idx) && ((l_idx * 2) < l_size);
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(122,6): Warning: assume statement has no {:axiom} annotation
+    |
+122 |       assume !(l_i <= l_size);
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 1 verified, 0 errors
+
+
+Aligned Product Program
+-----------------------
+
+function lowIndex(size: int): int
+
+function anyIndex(size: int): int
+
+function havoc_1(l_prev_idx: int, l_size: int, r_j: int, r_size: int, l_i: int, r_idx: int, l_idx: int, l_d: array<int>, r_d: array<int>, r_a: array<int>, l_a: array<int>, l_b: array<int>, r_b: array<int>): int
+
+function havoc_3(l_prev_idx: int, l_size: int, r_j: int, r_size: int, l_i: int, r_idx: int, l_idx: int, l_d: array<int>, r_d: array<int>, r_a: array<int>, l_a: array<int>, l_b: array<int>, r_b: array<int>): int
+
+function choice_n_2(l_prev_idx: int, l_size: int, r_j: int, r_size: int, l_i: int, r_idx: int, l_idx: int, l_d: array<int>, r_d: array<int>, r_a: array<int>, l_a: array<int>, l_b: array<int>, r_b: array<int>): int {
+  l_prev_idx
+ }
+
+function choice_n_4(l_prev_idx: int, l_size: int, r_j: int, r_size: int, l_i: int, r_idx: int, l_idx: int, l_d: array<int>, r_d: array<int>, r_a: array<int>, l_a: array<int>, l_b: array<int>, r_b: array<int>): int {
+  l_prev_idx
+ }
+
+function choice_n_5(r_size: int, l_i: int, l_idx: int, l_size: int, r_j: int, r_idx: int, l_prev_idx: int, l_d: array<int>, r_d: array<int>, r_a: array<int>, l_a: array<int>, l_b: array<int>, r_b: array<int>): int {
+  0
+ }
+
+method Product(l_size: int, l_a: array<int>, l_b: array<int>, r_size: int, r_a: array<int>, r_b: array<int>)
+  decreases *
+  modifies l_a
+  modifies l_b
+  modifies r_a
+  modifies r_b
+{
+  assume (l_size + 1) == l_a.Length;
+  assume (l_size + 1) == l_b.Length;
+  assume (r_size + 1) == r_a.Length;
+  assume (r_size + 1) == r_b.Length;
+  assume l_a != l_b;
+  assume l_a != r_a;
+  assume l_a != r_b;
+  assume l_b != r_a;
+  assume l_b != r_b;
+  assume r_a != r_b;
+  assume (l_size == r_size) && ((l_size >= 1) && ((l_a == r_a) && (l_b == r_b)));
+  var l_i: int;
+  l_i := 1;
+  var l_d: array<int> := new int[l_size + 1];
+  var l_idx: int;
+  l_idx := 0;
+  var l_prev_idx: int;
+  l_prev_idx := 0;
+  var r_j: int;
+  r_j := 1;
+  var r_d: array<int> := new int[r_size + 1];
+  var r_idx: int;
+  r_idx := 0;
+  r_d[1] := r_b[0];
+  if (l_i <= l_size) {
+    l_prev_idx := l_idx;
+    assert l_size >= 1;
+    l_idx := havoc_1(l_prev_idx, l_size, r_j, r_size, l_i, r_idx, l_idx, l_d, r_d, r_a, l_a, l_b, r_b);
+    assume (0 <= l_idx) && ((l_idx * 2) < l_size);
+    l_b[l_i] := l_a[l_idx];
+    l_d[l_i] := l_b[l_i - 1];
+    l_i := (l_i + 1);
+  }
+  if (l_i <= l_size) {
+    l_prev_idx := l_idx;
+    assert l_size >= 1;
+    l_idx := havoc_1(l_prev_idx, l_size, r_j, r_size, l_i, r_idx, l_idx, l_d, r_d, r_a, l_a, l_b, r_b);
+    assume (0 <= l_idx) && ((l_idx * 2) < l_size);
+    l_b[l_i] := l_a[l_idx];
+    l_d[l_i] := l_b[l_i - 1];
+    l_i := (l_i + 1);
+  }
+  if (r_j <= (r_size - 1)) {
+    var n_2: int := choice_n_2(l_prev_idx, l_size, r_j, r_size, l_i, r_idx, l_idx, l_d, r_d, r_a, l_a, l_b, r_b);
+    assert (r_size >= 1) && ((0 <= n_2) && (n_2 < r_size));
+    r_idx := n_2;
+    r_b[r_j] := r_a[r_idx];
+    r_d[r_j + 1] := r_b[r_j];
+    r_j := (r_j + 1);
+  }
+  while ((l_i <= l_size) && (r_j <= (r_size - 1)))
+    decreases *
+    invariant (l_i - 1) == r_j
+    invariant l_d == r_d
+    invariant l_idx < r_size
+    invariant l_prev_idx < r_size
+  {
+    l_prev_idx := l_idx;
+    assert l_size >= 1;
+    l_idx := havoc_3(l_prev_idx, l_size, r_j, r_size, l_i, r_idx, l_idx, l_d, r_d, r_a, l_a, l_b, r_b);
+    assume (0 <= l_idx) && ((l_idx * 2) < l_size);
+    l_b[l_i] := l_a[l_idx];
+    l_d[l_i] := l_b[l_i - 1];
+    l_i := (l_i + 1);
+    var n_4: int := choice_n_4(l_prev_idx, l_size, r_j, r_size, l_i, r_idx, l_idx, l_d, r_d, r_a, l_a, l_b, r_b);
+    assert (r_size >= 1) && ((0 <= n_4) && (n_4 < r_size));
+    r_idx := n_4;
+    r_b[r_j] := r_a[r_idx];
+    r_d[r_j + 1] := r_b[r_j];
+    r_j := (r_j + 1);
+  }
+  if (l_i <= l_size) {
+    while (l_i <= l_size)
+      decreases *
+      invariant (l_i - 1) == r_j
+      invariant l_d == r_d
+      invariant l_idx < r_size
+      invariant l_prev_idx < r_size
+    {
+      assume !(r_j <= (r_size - 1));
+      l_prev_idx := l_idx;
+      assert l_size >= 1;
+      l_idx := havoc_1(l_prev_idx, l_size, r_j, r_size, l_i, r_idx, l_idx, l_d, r_d, r_a, l_a, l_b, r_b);
+      assume (0 <= l_idx) && ((l_idx * 2) < l_size);
+      l_b[l_i] := l_a[l_idx];
+      l_d[l_i] := l_b[l_i - 1];
+      l_i := (l_i + 1);
+    }
+  }
+  if (r_j <= (r_size - 1)) {
+    while (r_j <= (r_size - 1))
+      decreases *
+    {
+      assume !(l_i <= l_size);
+      var n_2: int := choice_n_2(l_prev_idx, l_size, r_j, r_size, l_i, r_idx, l_idx, l_d, r_d, r_a, l_a, l_b, r_b);
+      assert (r_size >= 1) && ((0 <= n_2) && (n_2 < r_size));
+      r_idx := n_2;
+      r_b[r_j] := r_a[r_idx];
+      r_d[r_j + 1] := r_b[r_j];
+      r_j := (r_j + 1);
+    }
+  }
+  var r_final_idx: int;
+  var n_5: int := choice_n_5(r_size, l_i, l_idx, l_size, r_j, r_idx, l_prev_idx, l_d, r_d, r_a, l_a, l_b, r_b);
+  assert (r_size >= 1) && ((0 <= n_5) && (n_5 < r_size));
+  r_final_idx := n_5;
+  r_b[r_size] := r_a[r_final_idx];
+  assert l_d == r_d;
+}
+
+
+Per-Task Times (ms)
+-------------------
+insert-elaenia-specs: 0
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 4
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 1432
+elaenia-invars: 0
+houdafny: 0
+compound_task: 1438
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 4
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 1414
+elaenia-invars: 0
+houdafny: 0
+compound_task: 1419
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 5
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 1
+solve-sketch: 915
+elaenia-invars: 2300
+houdafny: 1182
+repeat_range: 7264
+write-dafny: 0
+print-info: 0
+
+
+Extraction Settings
+-------------------
+Max AST Depth: 1
+Loop unrolling: true
+Cost function: structure
+Max AST Depth: 1
+
+Elaenia completed in 7265ms
+Verified: true

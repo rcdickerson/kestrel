@@ -1,10 +1,25 @@
 //! The main entry point for KestRel executions.
 
 use clap::{Parser, ValueEnum};
+use kestrel::crel::unaligned::*;
+use kestrel::elaenia::parser::parse_elaenia_spec;
+use kestrel::elaenia::tasks::elaenia_context::ElaeniaContext;
+use kestrel::elaenia::tasks::elaenia_invars::*;
+use kestrel::elaenia::tasks::insert_specs::*;
+use kestrel::elaenia::tasks::mark_choice_functions::MarkChoiceFunctions;
+use kestrel::elaenia::tasks::set_parameters::SetParameters;
+use kestrel::elaenia::tasks::solve_sketch::*;
+use kestrel::elaenia::tasks::syntactic_alignment::*;
+use kestrel::elaenia::tasks::write_dafny::*;
+use kestrel::elaenia::tasks::write_sketch::*;
+use kestrel::kestrel_context::KestrelContext;
 use kestrel::output_mode::*;
-use kestrel::spec::parser::parse_spec;
-use kestrel::unaligned::*;
+use kestrel::spec::parser::parse_kestrel_spec;
 use kestrel::workflow::*;
+use kestrel::workflow::task::*;
+use kestrel::workflow::context::*;
+
+const WORKING_DIR: &str = "./.kestrel-work";
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -12,6 +27,10 @@ struct Args {
   /// Input file.
   #[arg(short, long)]
   input: String,
+
+  /// Specification format.
+  #[arg(long, value_enum, default_value_t = SpecFormat::Kestrel)]
+  spec_format: SpecFormat,
 
   /// Output file.
   #[arg(short, long)]
@@ -74,6 +93,16 @@ struct Args {
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+enum SpecFormat {
+  /// Default Kestrel specification format; everything is universally
+  /// quantified.
+  Kestrel,
+
+  /// Elaenia forall-exists specification format.
+  Elaenia,
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 enum ExtractorArg {
   /// Local cost function extractor that minimizes total number of loops.
   CountLoops,
@@ -96,6 +125,22 @@ impl ExtractorArg {
   }
 }
 
+fn main() {
+  setup_working_dir().expect("Unable to create working directory.");
+  let args = Args::parse();
+  match args.spec_format {
+    SpecFormat::Kestrel => kestrel_workflow(args),
+    SpecFormat::Elaenia => elaenia_workflow(args),
+  };
+}
+
+fn setup_working_dir() -> Result<(), std::io::Error> {
+  let dir = std::fs::canonicalize(WORKING_DIR.to_string())?;
+  std::fs::remove_dir_all(&dir)?;
+  std::fs::create_dir_all(&dir)?;
+  Ok(())
+}
+
 /// The high-level KestRel workflow is:
 ///   1. Read in a C file and parse its @KESTREL spec.
 ///   2. Convert the C into CRel. CRel is a C-like IR which can represent
@@ -111,32 +156,37 @@ impl ExtractorArg {
 /// orthogonal translation concerns: 1) converting between
 /// non-relational and relational programs, and 2) packaging programs
 /// into an Egg-compatible language definition.
-fn main() {
-  let args = Args::parse();
-  let spec = parse_spec(&args.input).unwrap();
+fn kestrel_workflow(args: Args) {
   let mut raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
   if args.extractor == ExtractorArg::Unaligned {
     // Annotated invariants are relational.
     raw_crel.clear_invariants();
   }
-  let unaligned_crel = UnalignedCRel::from(&raw_crel, &spec);
-  let unaligned_eggroll = unaligned_crel.main.to_eggroll();
 
-  let mut context = Context::new(args.input);
-  context.spec = Some(&spec);
+  let spec = parse_kestrel_spec(&args.input).unwrap();
+  let unaligned_crel = UnalignedCRel::from_kestrel_spec(&raw_crel, &spec);
+  let unaligned_eggroll = unaligned_crel.unaligned_main.to_eggroll();
 
-  context.unaligned_crel = Some(&unaligned_crel);
-  context.unaligned_eggroll = Some(&unaligned_eggroll);
-  context.output_path = args.output.clone();
+  let mut context = KestrelContext::new(args.input.clone(), spec);
+  context.set_working_dir(WORKING_DIR.to_string());
+  context.accept_unaligned_crel(unaligned_crel);
+  context.accept_unaligned_eggroll(unaligned_eggroll);
+  args.output.as_ref().map(|output_path| {
+    context.accept_output_path(output_path.clone());
+  });
 
-  let mut workflow = Workflow::new(&mut context);
+  let mut workflow = Workflow::new(context);
   if args.verbose {
-    workflow.add_task(PrintInfo::with_header("Unaligned Product Program", &|ctx| {
-      ctx.unaligned_crel().main.to_c().to_string()
-    }));
+    workflow.add_task(PrintInfo::with_header("Unaligned Product Program",
+        &|ctx: &KestrelContext| {
+          ctx.unaligned_crel().as_ref()
+            .expect("Missing unaligned CRel")
+            .unaligned_main.to_c(false, false).to_string()
+        }));
   }
   if args.dot { workflow.add_task(WriteDot::new()) }
   if args.space_size { workflow.add_task(ComputeSpace::new()) }
+
   match args.extractor {
     ExtractorArg::Unaligned => workflow.add_task(AlignNone::new()),
     ExtractorArg::CountLoops => workflow.add_task(AlignCountLoops::new()),
@@ -163,25 +213,157 @@ fn main() {
   workflow.add_task(AlignedOutput::new(args.output_mode));
   match args.output {
     Some(_) => workflow.add_task(WriteProduct::new(args.output_mode)),
-    None => workflow.add_task(PrintInfo::with_header("Aligned Product Program", &|ctx| {
-      ctx.aligned_output().clone()
-    })),
+    None => workflow.add_task(PrintInfo::with_header("Aligned Product Program",
+        &|ctx: &KestrelContext| {
+          ctx.aligned_output().as_ref().expect("Missing aligned output").clone()
+        })),
   }
-  workflow.add_task(PrintInfo::with_header("Per-Task Times (ms)", &|ctx| {
-    let mut lines = Vec::new();
-    for (task_name, duration) in &ctx.task_timings {
-      lines.push(format!("{}: {}", task_name, duration.as_millis()));
-    }
-    lines.join("\n") + "\n"
-  }));
+  workflow.add_task(PrintInfo::with_header("Per-Task Times (ms)",
+      &|ctx: &KestrelContext| {
+        let mut lines = Vec::new();
+        for (task_name, duration) in &ctx.task_timings() {
+          lines.push(format!("{}: {}", task_name, duration.as_millis()));
+        }
+        lines.join("\n") + "\n"
+      }));
   args.output_summary.map(|location| {
     workflow.add_task(WriteSummary::new(location, vec!(args.extractor.tag())));
   });
+
   workflow.execute();
 
-  if args.verbose {
-  };
+  println!("KestRel completed in {}ms", workflow.context().total_elapsed_time().as_millis());
+  println!("Verified: {}", workflow.context().is_verified());
+}
 
-  println!("KestRel completed in {}ms", workflow.context().elapsed_time().as_millis());
-  println!("Verified: {}", workflow.context().verified);
+fn elaenia_workflow(args: Args) {
+  let mut raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
+  if args.extractor == ExtractorArg::Unaligned {
+    // Annotated invariants are relational.
+    raw_crel.clear_invariants();
+  }
+
+  let spec = parse_elaenia_spec(&args.input).unwrap();
+  let unaligned_crel = UnalignedCRel::from_elaenia_spec(&raw_crel, &spec);
+  let unaligned_eggroll = unaligned_crel.unaligned_main.to_eggroll();
+
+  let mut context = ElaeniaContext::new(args.input.clone(), spec);
+  context.set_working_dir(WORKING_DIR.to_string());
+  context.set_verbose(args.verbose);
+  context.accept_unaligned_crel(unaligned_crel);
+  context.accept_unaligned_eggroll(unaligned_eggroll);
+
+  let mut workflow = Workflow::new(context);
+  workflow.add_task(MarkChoiceFunctions::new());
+  if args.verbose {
+    workflow.add_task(PrintInfo::with_header("Unaligned Product Program",
+        &|ctx: &ElaeniaContext| {
+          ctx.unaligned_crel().as_ref()
+            .expect("Missing unaligned CRel")
+            .unaligned_main.to_c(true, true).to_string()
+        }));
+    workflow.add_task(PrintInfo::with_header("Unaligned Eggroll",
+        &|ctx: &ElaeniaContext| {
+          ctx.unaligned_eggroll().as_ref()
+            .expect("Missing unaligned Eggroll")
+            .to_string()
+        }));
+  }
+  if args.dot { workflow.add_task(WriteDot::new()) }
+  if args.space_size { workflow.add_task(ComputeSpace::new()) }
+
+  // Range over three settings: alignment cost function, max
+  // synthesizer generator AST depth, and whether to ask sketch to
+  // unroll loops.
+  let mut range = Vec::new();
+  for depth in 1..20 {
+    for add_unrolls in [false, true] {
+      for cost_function in [ElaeniaCostFunction::OptimizeStructure,
+                            ElaeniaCostFunction::OptimizeChoice] {
+        range.push((add_unrolls, depth, cost_function));
+      }
+    }
+  }
+  workflow.add_task(RepeatRanged::new(range, &|(add_unrolls, depth, cost_function)| {
+    Box::new(CompoundTask::from(vec!(
+      Box::new(SetParameters::new(add_unrolls, depth, cost_function)),
+      Box::new(PrintInfo::with_header("Beginning Iteration", &|ctx: &ElaeniaContext| {
+        format!("add_unrolls: {}\ndepth: {}\ncost function: {}",
+                ctx.add_unrolls(),
+                ctx.ast_depth(),
+                ctx.cost_function().name())
+      })),
+      Box::new(ElaeniaSyntacticAlignmentTask::new()),
+      Box::new(AlignedCRel::new()),
+      Box::new(PredicateTask::new(&|ctx: &ElaeniaContext| ctx.is_verbose(),
+          Box::new(PrintInfo::with_header("Candidate Aligned Eggroll", &|ctx: &ElaeniaContext| {
+              ctx.aligned_eggroll().as_ref()
+              .expect("Missing unaligned CRel")
+              .to_string()
+          })))),
+      Box::new(PredicateTask::new(&|ctx: &ElaeniaContext| ctx.is_verbose(),
+          Box::new(PrintInfo::with_header("Candidate Aligned Product Program", &|ctx: &ElaeniaContext| {
+              ctx.aligned_crel().as_ref()
+              .expect("Missing aligned CRel")
+              .to_c(true, true).to_string()
+          })))),
+      Box::new(PredicateTask::new(&|ctx: &ElaeniaContext| {
+          ctx.add_unrolls() && ctx.aligned_crel().clone().expect("Missing aligned CRel").count_loops() == 0
+        }, Box::new(PrintInfo::new(&|_: &ElaeniaContext| {
+          "Skipping loop unroll for program without loops.".to_string()
+        })))),
+      Box::new(PredicateTask::new(&|ctx: &ElaeniaContext| {
+          !ctx.add_unrolls() || ctx.aligned_crel().clone().expect("Missing aligned CRel").count_loops() > 0
+        }, Box::new(CompoundTask::from(vec!(
+            Box::new(InsertSpecs::new()),
+            Box::new(WriteSketch::new(add_unrolls)),
+            Box::new(SolveSketch::new(None)),
+            Box::new(if_sketch_success(ElaeniaInvars::new())),
+            Box::new(if_sketch_success(Houdafny::new(None))),
+        )))))),
+    ))
+  }, &|ctx: &ElaeniaContext| { ctx.is_verified() }));
+
+  // If verification was successful, write the final product.
+  workflow.add_task(if_verified(WriteDafny::new()));
+  workflow.add_task(if_verified(PrintInfo::with_header("Aligned Product Program",
+        &|ctx: &ElaeniaContext| {
+          ctx.aligned_output().as_ref().expect("Missing aligned output").clone()
+        })));
+
+  workflow.add_task(PrintInfo::with_header("Per-Task Times (ms)",
+      &|ctx: &ElaeniaContext| {
+        let mut lines = Vec::new();
+        for (task_name, duration) in &ctx.task_timings() {
+          lines.push(format!("{}: {}", task_name, duration.as_millis()));
+        }
+        lines.join("\n") + "\n"
+      }));
+  workflow.add_task(PrintInfo::with_header("Extraction Settings",
+      &|ctx: &ElaeniaContext| {
+        let mut lines = Vec::new();
+        lines.push(format!("Max AST Depth: {}", ctx.ast_depth()));
+        lines.push(format!("Loop unrolling: {}", ctx.add_unrolls()));
+        lines.push(format!("Cost function: {}", ctx.cost_function()));
+        lines.push(format!("Max AST Depth: {}", ctx.ast_depth()));
+        lines.join("\n") + "\n"
+      }));
+  args.output_summary.map(|location| {
+    workflow.add_task(WriteSummary::new(location, vec!(args.extractor.tag())));
+  });
+
+  workflow.execute();
+
+  println!("Elaenia completed in {}ms", workflow.context().total_elapsed_time().as_millis());
+  println!("Verified: {}", workflow.context().is_verified());
+}
+
+fn if_sketch_success<'a, T: Task<ElaeniaContext> + 'static>(task: T)
+      -> PredicateTask<'a, ElaeniaContext> {
+  PredicateTask::new(&|context: &ElaeniaContext| { context.sketch_succeeded() }, Box::new(task))
+}
+
+fn if_verified<'a, T: Task<ElaeniaContext> + 'static>(task: T)
+      -> PredicateTask<'a, ElaeniaContext> {
+  PredicateTask::new(&|context: &ElaeniaContext| { context.is_verified() }, Box::new(task))
 }

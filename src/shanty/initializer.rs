@@ -1,0 +1,36 @@
+use crate::shanty::Expression;
+use crate::shanty::Writer;
+
+#[derive(Clone, Debug)]
+pub enum Initializer {
+  Expression(Expression),
+  List(Vec<Initializer>),
+  Memset{name: String, size: Expression},
+}
+
+impl Initializer {
+  pub fn emit(&self, writer: &mut Writer) {
+    match self {
+      Initializer::Expression(expr) => expr.emit(writer, true),
+      Initializer::List(inits) => {
+        writer.write("{");
+        let mut comma = "";
+        for init in inits {
+          writer.write(comma);
+          init.emit(writer);
+          comma = ", ";
+        }
+        writer.write("}");
+      },
+      Initializer::Memset{name, size} => {
+        writer.write("memset(")
+          .write(name)
+          .write(", ");
+        size.emit(writer, false);
+        writer.write(", sizeof ");
+        writer.write(name);
+        writer.write(")");
+      },
+    }
+  }
+}

@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+
 use crate::names::union_all;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -35,6 +36,7 @@ pub enum KestrelType {
 #[derive(Clone, Debug, PartialEq)]
 pub enum CondAExpr {
   Var(String),
+  ReturnValue,
   QualifiedVar{exec: String, name: String},
   Int(i32),
   Float(f32),
@@ -45,9 +47,8 @@ pub enum CondAExpr {
 impl CondAExpr {
   pub fn state_vars(&self) -> HashSet<String> {
     match self {
-      CondAExpr::Var(name) => {
-        crate::names::singleton(name.clone())
-      },
+      CondAExpr::Var(id) => crate::names::singleton(id.to_string()),
+      CondAExpr::ReturnValue => HashSet::new(),
       CondAExpr::QualifiedVar{exec, name} => {
         let state_var = qualified_state_var(exec, name);
         crate::names::singleton(state_var)
@@ -72,6 +73,7 @@ impl CondAExpr {
   pub fn contains_binop_a(&self, binop: &CondABinop) -> bool {
     match self {
       CondAExpr::Var(..) => false,
+      CondAExpr::ReturnValue => false,
       CondAExpr::QualifiedVar{..} => false,
       CondAExpr::Int(_) => false,
       CondAExpr::Float(_) => false,
@@ -88,6 +90,8 @@ pub fn qualified_state_var(exec: &String, name: &String) -> String {
   match exec.as_ref() {
     "left" => format!("l_{}", name),
     "right" => format!("r_{}", name),
+    "forall" => format!("l_{}", name),
+    "exists" => format!("r_{}", name),
     _ => panic!("Unknown execution: {}", exec),
   }
 }
@@ -184,6 +188,7 @@ pub enum CondBUnop {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum CondBBinopA {
+  ArrayEq,
   Eq,
   Neq,
   Lt,

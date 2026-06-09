@@ -41,12 +41,18 @@ pub fn rewrites() -> Vec<Rewrite<Eggroll, ()>> {
                  }}),
     rewrite!("if-else-skip"; "(if ?c ?t)" => "(if-else ?c ?t skip)"),
     rewrite!("if-align"; "(<|> (if-else ?c1 ?t1 ?e1) (if-else ?c2 ?t2 ?e2))"
-                      => "(if-rel ?c1 ?c2 ?t1 ?t2 ?e1 ?e2)"),
-
-    rewrite!("push-rel-if-l"; "(<|> (if ?c ?t) ?s)" => "(if-else ?c (<|> ?t ?s) ?s)"),
-    rewrite!("push-rel-if-else-l"; "(<|> (if-else ?c ?t ?e) ?s)" => "(if-else ?c (<|> ?t ?s) (<|> ?e ?s))"),
-    rewrite!("push-rel-if-r"; "(<|> ?s (if ?c ?t))" => "(if-else ?c (<|> ?s ?t) ?s)"),
-    rewrite!("push-rel-if-else-r"; "(<|> ?s (if-else ?c ?t ?e))" => "(if-else ?c (<|> ?s ?t) (<|> ?s ?e))"),
+             => "(if-else (&& ?c1 ?c2) (<|> ?t1 ?t2)
+                   (if-else (&& ?c1 (not ?c2)) (<|> ?t1 ?e2)
+                     (if-else (&& (not ?c1) ?c2) (<|> ?e1 ?t2)
+                       (<|> ?e1 ?e2))))"),
+    rewrite!("push-rel-if-l"; "(<|> (if ?c ?t) ?s)"
+             => "(if-else ?c (<|> ?t ?s) ?s)"),
+    rewrite!("push-rel-if-else-l"; "(<|> (if-else ?c ?t ?e) ?s)"
+             => "(if-else ?c (<|> ?t ?s) (<|> ?e ?s))"),
+    rewrite!("push-rel-if-r"; "(<|> ?s (if ?c ?t))"
+             => "(if-else ?c (<|> ?s ?t) ?s)"),
+    rewrite!("push-rel-if-else-r"; "(<|> ?s (if-else ?c ?t ?e))"
+             => "(if-else ?c (<|> ?s ?t) (<|> ?s ?e))"),
   ]
 }
 

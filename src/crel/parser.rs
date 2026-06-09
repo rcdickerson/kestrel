@@ -21,8 +21,7 @@ pub fn parse_c_file(input_file: &String) -> CRel {
     .collect())
 }
 
- /// Read the given C string and parse it into the CRel IR.
-#[cfg(test)]
+/// Read the given C string and parse it into the CRel IR.
 pub fn parse_c_string(input_str: String) -> CRel {
   let config = Config::with_clang();
   let parse = lang_c::driver::parse_preprocessed(&config, input_str);
@@ -132,6 +131,9 @@ fn trans_declarator(decl: &Node<c::Declarator>) -> Declarator {
           .collect();
         function_params = Some(params);
       },
+      c::DerivedDeclarator::KRFunction(_) => {
+        is_function = true;
+      },
       c::DerivedDeclarator::Pointer(_) => {
         is_pointer = true;
       },
@@ -164,17 +166,25 @@ fn trans_parameter_declaration(decl: &Node<c::ParameterDeclaration>) -> Paramete
   ParameterDeclaration{specifiers, declarator}
 }
 
-fn trans_init_declarator(decl: &Node<c::InitDeclarator>) -> (Declarator, Option<Expression>) {
+fn trans_init_declarator(decl: &Node<c::InitDeclarator>) -> (Declarator, Option<Initializer>) {
   let dec = trans_declarator(&decl.node.declarator);
-  let init = trans_initializer(&decl.node.initializer);
+  let init = decl.node.initializer.as_ref().map(|init| {
+    trans_initializer(init)
+  });
   (dec, init)
 }
 
-fn trans_initializer(initializer: &Option<Node<c::Initializer>>) -> Option<Expression> {
-  initializer.as_ref().map(|init| match &init.node {
-      c::Initializer::Expression(expr) => trans_expression(expr).0,
-      _ => panic!("Unsupported initalizer: {:?}", init),
-    })
+fn trans_initializer(initializer: &Node<c::Initializer>) -> Initializer {
+  match &initializer.node {
+    c::Initializer::Expression(expr) => {
+      Initializer::Expression(trans_expression(expr).0)
+    },
+    c::Initializer::List(exprs) => {
+      Initializer::List(exprs.into_iter()
+                        .map(|item| trans_initializer(&item.node.initializer))
+                        .collect())
+    }
+  }
 }
 
 fn trans_type_specifier(type_spec: c::TypeSpecifier) -> Type {
@@ -356,11 +366,29 @@ fn trans_call_expression(expr: &Node<c::CallExpression>) -> ExprWithInvars {
         .collect();
       (Expression::Statement(Box::new(Statement::None)), invars)
     },
+    Expression::Identifier{name} if name == "assert" && expr.node.arguments.len() == 1 => {
+      (Expression::Statement(Box::new(Statement::Assert(
+        Box::new(trans_bexp(&expr.node.arguments[0]))
+      ))), invars)
+    },
+    Expression::Identifier{name} if name == "assume" && expr.node.arguments.len() == 1 => {
+      (Expression::Statement(Box::new(Statement::Assume(
+        Box::new(trans_bexp(&expr.node.arguments[0]))
+      ))), invars)
+    },
     _ => {
       let args = expr.node.arguments.iter()
         .map(|arg| trans_expression(arg).0)
         .collect();
       (Expression::Call{callee: Box::new(callee), args}, invars)
     },
+  }
+}
+
+fn trans_bexp(c_expr: &Node<c::Expression>) -> Expression {
+  match trans_expression(c_expr).0 {
+    Expression::ConstInt(0) => Expression::ConstBool(false),
+    Expression::ConstInt(_) => Expression::ConstBool(true),
+    crel_expr => crel_expr,
   }
 }

@@ -16,6 +16,18 @@ impl ParameterDeclaration {
   }
 }
 
+impl Statement {
+  pub fn to_dafny(&self) -> Daf::Statement {
+    statement_to_daf(self)
+  }
+}
+
+impl Expression {
+  pub fn to_dafny(&self) -> Daf::Expression {
+    expression_to_daf(self)
+  }
+}
+
 fn crel_to_daf(crel: &CRel, source: &mut Daf::Source) {
   match crel {
     CRel::Declaration(decl) => {
@@ -47,12 +59,33 @@ fn fun_to_daf(specifiers: &Vec<DeclarationSpecifier>,
   }
 
   let mut method = Daf::Method::new(name, ret_type);
+  let mut new_body = Vec::new();
   for param in params.iter()
     .filter(|param| param.declarator.is_some())
     .map(decl_to_param) {
       method.push_param(&param);
+      if param.is_array {
+        method.push_modifies(&param);
+        param.array_sizes.get(0).map(|size| {
+          let size_eq = Daf::Expression::BinOp {
+            lhs: Box::new(size.clone()),
+            rhs: Box::new(Daf::Expression::Identifier {
+              id: Daf::Identifier::compound2(param.name, "Length".to_string()),
+            }),
+            op: "==".to_string(),
+          };
+          new_body.push(Daf::Statement::Assume(Box::new(size_eq)));
+        });
+      }
     }
-  method.set_body(&statement_to_daf(body));
+
+  let orig_body = statement_to_daf(body);
+  if new_body.is_empty() {
+    method.set_body(&orig_body);
+  } else {
+    new_body.push(orig_body);
+    method.set_body(&Daf::Statement::Seq(new_body));
+  }
   method
 }
 
@@ -79,12 +112,22 @@ fn param_decl_to_param(decl: &ParameterDeclaration) -> Daf::Parameter {
 fn expression_to_daf(expr: &Expression) -> Daf::Expression {
   match expr {
     Expression::Identifier{name} => Daf::Expression::Identifier {
-      name: name.clone(),
+      id: Daf::Identifier::simple(name.clone()),
     },
+    Expression::ConstBool(true) => Daf::Expression::ConstTrue,
+    Expression::ConstBool(false) => Daf::Expression::ConstFalse,
     Expression::ConstInt(i) => Daf::Expression::ConstInt(*i),
     Expression::ConstFloat(f) => Daf::Expression::ConstFloat(*f),
     Expression::StringLiteral(s) => Daf::Expression::StringLiteral(s.clone()),
     Expression::Call{ callee, args } => {
+      Daf::Expression::FnCall {
+        name: Box::new(expression_to_daf(callee)),
+        args: args.iter()
+          .map(expression_to_daf)
+          .collect::<Vec<Daf::Expression>>(),
+      }
+    },
+    Expression::ChoiceCall{ callee, args } => {
       Daf::Expression::FnCall {
         name: Box::new(expression_to_daf(callee)),
         args: args.iter()
@@ -119,6 +162,61 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
         BinaryOp::Mul       => Daf::Expression::BinOp{lhs, rhs, op: "*".to_string()},
         BinaryOp::NotEquals => Daf::Expression::BinOp{lhs, rhs, op: "!=".to_string()},
         BinaryOp::Or        => Daf::Expression::BinOp{lhs, rhs, op: "||".to_string()},
+        BinaryOp::ArrayEq   => {
+          let index_var = "arr_eq_n".to_string();
+          let lt_left_len = Daf::Expression::BinOp {
+            lhs: Box::new(Daf::Expression::Identifier {
+              id: Daf::Identifier::Simple(index_var.clone())
+            }),
+            rhs: Box::new(Daf::Expression::Identifier {
+              id: Daf::Identifier::Compound {
+                lhs: Box::new(Daf::Identifier::Expression(lhs.clone())),
+                rhs: Box::new(Daf::Identifier::Simple("Length".to_string())),
+              }
+            }),
+            op: "<".to_string(),
+          };
+          let lt_right_len = Daf::Expression::BinOp {
+            lhs: Box::new(Daf::Expression::Identifier {
+              id: Daf::Identifier::Simple(index_var.clone())
+            }),
+            rhs: Box::new(Daf::Expression::Identifier {
+              id: Daf::Identifier::Compound {
+                lhs: Box::new(Daf::Identifier::Expression(rhs.clone())),
+                rhs: Box::new(Daf::Identifier::Simple("Length".to_string())),
+              }
+            }),
+            op: "<".to_string(),
+          };
+          let lt_lengths = Daf::Expression::BinOp {
+            lhs: Box::new(lt_left_len),
+            rhs: Box::new(lt_right_len),
+            op: "&&".to_string(),
+          };
+          let eq_at_index = Daf::Expression::BinOp {
+            lhs: Box::new(Daf::Expression::ArrayIndex {
+              expr: lhs,
+              index: Box::new(Daf::Expression::Identifier {
+                id: Daf::Identifier::Simple(index_var.clone())
+              }),
+            }),
+            rhs: Box::new(Daf::Expression::ArrayIndex {
+              expr: rhs,
+              index: Box::new(Daf::Expression::Identifier {
+                id: Daf::Identifier::Simple(index_var.clone())
+              }),
+            }),
+            op: "==".to_string(),
+          };
+          Daf::Expression::Forall {
+            bindings: vec! [(index_var.clone(), Daf::Type::Nat)],
+            condition: Box::new(Daf::Expression::BinOp {
+              lhs: Box::new(lt_lengths),
+              rhs: Box::new(eq_at_index),
+              op: "==>".to_string(),
+            })
+          }
+        }
       }
     },
     Expression::Forall { bindings, condition } => {
@@ -126,15 +224,38 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
         bindings: bindings.iter().map(|(v, t)| (v.clone(), type_to_daf(t).unwrap())).collect(),
         condition: Box::new(expression_to_daf(condition))
       }
-    }
-    Expression::Statement(stmt) => {
-      Daf::Expression::Statement(Box::new(statement_to_daf(stmt)))
+    },
+    Expression::SketchHole => panic!("Cannot convert sketch holes to Dafny"),
+    Expression::Ternary{condition, then, els} => Daf::Expression::Ternary {
+      condition: Box::new(expression_to_daf(condition)),
+      then: Box::new(expression_to_daf(then)),
+      els: Box::new(expression_to_daf(els)),
+    },
+    Expression::Statement(stmt) => match statement_to_daf(stmt) {
+      Daf::Statement::Expression(expr) => *expr,
+      daf_stmt => Daf::Expression::Statement(Box::new(daf_stmt))
     },
   }
 }
 
 fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
   match stmt {
+    Statement::Assert(expr) => {
+      let daf_expr = match expression_to_daf(expr) {
+        Daf::Expression::ConstInt(0) => Daf::Expression::ConstFalse,
+        Daf::Expression::ConstInt(_) => Daf::Expression::ConstTrue,
+        expr => expr,
+      };
+      Daf::Statement::Assert(Box::new(daf_expr))
+    },
+    Statement::Assume(expr) => {
+      let daf_expr = match expression_to_daf(expr) {
+        Daf::Expression::ConstInt(0) => Daf::Expression::ConstFalse,
+        Daf::Expression::ConstInt(_) => Daf::Expression::ConstTrue,
+        expr => expr,
+      };
+      Daf::Statement::Assume(Box::new(daf_expr))
+    },
     Statement::BasicBlock(items) => {
       Daf::Statement::Seq(items.iter().map(block_item_to_daf).collect())
     },
@@ -142,8 +263,9 @@ fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
     Statement::Compound(items) => {
       Daf::Statement::Seq(items.iter().map(block_item_to_daf).collect())
     },
-    Statement::Expression(expr) => {
-      Daf::Statement::Expression(Box::new(expression_to_daf(expr)))
+    Statement::Expression(expr) => match expression_to_daf(expr) {
+      Daf::Expression::Statement(stmt) => *stmt,
+      daf_expr => Daf::Statement::Expression(Box::new(daf_expr))
     },
     Statement::GuardedRepeat{repetitions, condition, body, ..} => {
       let mut ifs = Vec::new();
@@ -171,11 +293,38 @@ fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
       None => { Daf::Statement::Return(None) },
       Some(ret) => { Daf::Statement::Return(Some(Box::new(expression_to_daf(ret)))) },
     },
-    Statement::While{id, invariants, condition, body, ..} => {
+    Statement::While{id, invariants, condition, body, is_merged, ..} => {
       let condition = Box::new(expression_to_daf(condition));
       let invariants = invariants.iter().map(|invar| expression_to_daf(invar)).collect();
       let body = body.as_ref().map(|stmt| Box::new(statement_to_daf(stmt)));
-      Daf::Statement::While{loop_id: Some(loop_head_name(id)), invariants, condition, body}
+//      Daf::Statement::While{loop_id: Some(loop_head_name(id)), invariants, condition, allow_nonterm: *is_merged, body}
+      Daf::Statement::While{loop_id: Some(loop_head_name(id)), invariants, condition, allow_nonterm: true, body}
+    },
+    wr@Statement::WhileRel{..} => {
+      statement_to_daf(&wr.denote_while_rel())
+    }
+  }
+}
+
+fn initializer_to_dafny(ty: &Option<Type>, declarator: &Declarator, initializer: &Initializer) -> Daf::Initializer {
+  match initializer {
+    Initializer::Expression(expr) => {
+      Daf::Initializer::Expression(expression_to_daf(expr))
+    },
+    Initializer::List(..) => {
+      let sizes = match declarator {
+        Declarator::Array{sizes, ..} => {
+          sizes.into_iter()
+            .map(|expr| expression_to_daf(expr))
+            .collect()
+        }
+        _ => panic!("Array initializer for a non-array declarator"),
+      };
+      Daf::Initializer::Array {
+        ty: type_to_daf(ty.as_ref().expect("array initializer is missing a type"))
+            .expect("ill-typed array initializer"),
+        sizes,
+      }
     },
   }
 }
@@ -205,7 +354,7 @@ fn type_to_daf(ty: &Type) -> Option<Daf::Type> {
 struct DeclarationBuilder {
   name: Option<String>,
   ty: Option<Daf::Type>,
-  val: Option<Daf::Expression>,
+  initializer: Option<Daf::Initializer>,
   is_array: bool,
   array_sizes: Vec<Daf::Expression>,
   is_function: bool,
@@ -219,7 +368,7 @@ impl DeclarationBuilder {
     DeclarationBuilder {
       name: None,
       ty: None,
-      val: None,
+      initializer: None,
       is_array: false,
       array_sizes: Vec::new(),
       is_function: false,
@@ -249,12 +398,9 @@ impl DeclarationBuilder {
   fn visit_init_declarator(&mut self, decl: &Declaration) {
     for spec in &decl.specifiers { self.visit_specifier(spec); }
     self.visit_declarator(&decl.declarator);
-    match &decl.initializer {
-      None => (),
-      Some(expr) => {
-        self.val = Some(expression_to_daf(expr));
-      }
-    }
+    self.initializer = decl.initializer.as_ref().map(|init| {
+      initializer_to_dafny(&decl.get_type(), &decl.declarator, init)
+    });
   }
 
   fn visit_declarator(&mut self, decl: &Declarator) {
@@ -302,14 +448,15 @@ impl DeclarationBuilder {
       self.ty.clone().expect("Variable declaration has no type"),
       self.name.clone().expect("Variable declaration has no name")
     );
-    self.val.as_ref().map(|expr| var.set_value(expr));
+    self.initializer.as_ref().map(|init| var.set_initializer(init.clone()));
+    var.set_array(self.is_array);
     var.set_const(self.is_const);
     var
   }
 
   fn build_param(&self) -> Daf::Parameter {
     if self.is_function { panic!("Unsupported: function declarator as function parameter"); }
-    if self.val.is_some() { panic!("Unsupported: function parameter initialized to value"); }
+    if self.initializer.is_some() { panic!("Unsupported: function parameter initialized to value"); }
 
     let ty = self.ty.as_ref().expect("Parameter has no type").clone();
     let mut param = match self.name.as_ref() {

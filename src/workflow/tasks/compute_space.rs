@@ -15,12 +15,14 @@ impl ComputeSpace {
   }
 }
 
-impl Task for ComputeSpace {
+impl <Ctx: Context + AlignsEggroll> Task<Ctx> for ComputeSpace {
   fn name(&self) -> String { "compute-space".to_string() }
 
-  fn run(&self, context: &mut Context) {
+  fn run(&self, context: &mut Ctx) {
     let runner = Runner::default()
-      .with_expr(&context.unaligned_eggroll().parse().unwrap())
+      .with_expr(&context.unaligned_eggroll().as_ref()
+                 .expect("Missing unaligned eggroll")
+                 .parse().unwrap())
       .run(&crate::eggroll::rewrite::rewrites());
     let seen = &mut HashSet::new();
     println!("\nAlignment space size: {}", space_size(&runner.egraph, runner.roots[0], seen));

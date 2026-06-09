@@ -27,10 +27,15 @@ impl MapVars for Expression {
   {
     match self {
       Expression::Identifier{name} => Expression::Identifier{name: f(name.clone())},
+      Expression::ConstBool(b) => Expression::ConstBool(*b),
       Expression::ConstInt(i) => Expression::ConstInt(*i),
       Expression::ConstFloat(f) => Expression::ConstFloat(*f),
       Expression::StringLiteral(s) => Expression::StringLiteral(s.clone()),
       Expression::Call{callee, args} => Expression::Call {
+        callee: Box::new(callee.map_vars(f)),
+        args: args.iter().map(|a| a.map_vars(f)).collect(),
+      },
+      Expression::ChoiceCall{callee, args} => Expression::ChoiceCall {
         callee: Box::new(callee.map_vars(f)),
         args: args.iter().map(|a| a.map_vars(f)).collect(),
       },
@@ -47,6 +52,12 @@ impl MapVars for Expression {
         bindings: bindings.iter().map(|(v, t)| (f(v.clone()), t.clone())).collect(),
         condition: Box::new(condition.clone().map_vars(f)),
       },
+      Expression::SketchHole => Expression::SketchHole,
+      Expression::Ternary { condition, then, els } => Expression::Ternary {
+        condition: Box::new(condition.map_vars(f)),
+        then: Box::new(then.map_vars(f)),
+        els: Box::new(els.map_vars(f)),
+      },
       Expression::Statement(stmt) => {
         Expression::Statement(Box::new(stmt.map_vars(f)))
       }
@@ -59,6 +70,8 @@ impl MapVars for Statement {
     where F: Fn(String) -> String
   {
     match self {
+      Statement::Assert(expr) => Statement::Assert(Box::new(expr.map_vars(f))),
+      Statement::Assume(expr) => Statement::Assume(Box::new(expr.map_vars(f))),
       Statement::BasicBlock(items) => {
         Statement::BasicBlock(items.iter().map(|i| i.map_vars(f)).collect())
       },
@@ -97,6 +110,22 @@ impl MapVars for Statement {
         is_runoff: *is_runoff,
         is_merged: *is_merged,
       },
+      Statement::WhileRel{id, unroll_left, unroll_right, stutter_left, stutter_right, invariants_left, invariants_right, condition_left, condition_right, body_left, body_right, body_merged} => {
+        Statement::WhileRel {
+          id: id.clone(),
+          unroll_left: *unroll_left,
+          unroll_right: *unroll_right,
+          stutter_left: *stutter_left,
+          stutter_right: *stutter_right,
+          invariants_left: invariants_left.clone(),
+          invariants_right: invariants_right.clone(),
+          condition_left: Box::new(condition_left.map_vars(f)),
+          condition_right: Box::new(condition_right.map_vars(f)),
+          body_left: body_left.as_ref().map(|body| Box::new(body.map_vars(f))),
+          body_right: body_right.as_ref().map(|body| Box::new(body.map_vars(f))),
+          body_merged: body_merged.as_ref().map(|body| Box::new(body.map_vars(f))),
+        }
+      }
     }
   }
 }
@@ -147,6 +176,17 @@ impl MapVars for Declaration {
       specifiers: self.specifiers.clone(),
       declarator: self.declarator.map_vars(f),
       initializer: self.initializer.as_ref().map(|expr| expr.map_vars(f)),
+    }
+  }
+}
+
+impl MapVars for Initializer {
+  fn map_vars<F>(&self, f: &F) -> Self where F: Fn(String) -> String {
+    match self {
+      Initializer::Expression(expr) => Initializer::Expression(expr.map_vars(f)),
+      Initializer::List(exprs) => Initializer::List(exprs.into_iter()
+        .map(|expr| expr.map_vars(f))
+        .collect())
     }
   }
 }

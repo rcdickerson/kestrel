@@ -39,6 +39,7 @@ pub fn crel_to_eggroll(crel: &CRel) -> String {
 fn expression_to_eggroll(expr: &Expression) -> String {
   match expr {
     Expression::Identifier{name} => name.clone(),
+    Expression::ConstBool(b) => format!("(const-bool {})", b),
     Expression::ConstInt(i) => format!("(const-int {})", i),
     Expression::ConstFloat(f) => format!("(const-float {})", f),
     Expression::StringLiteral(s) => format!("(lit-string {})", s.clone()),
@@ -50,6 +51,14 @@ fn expression_to_eggroll(expr: &Expression) -> String {
         .join(" ");
       format!("(call {} (args {}))", callee_egg, args_egg)
     },
+    Expression::ChoiceCall{callee, args} => {
+      let callee_egg = expression_to_eggroll(callee);
+      let args_egg = args.iter()
+        .map(expression_to_eggroll)
+        .collect::<Vec<String>>()
+        .join(" ");
+      format!("(choice-call {} (args {}))", callee_egg, args_egg)
+    },
     Expression::Unop{expr, op} => match op {
       UnaryOp::Minus => format!("(neg {})", expression_to_eggroll(expr)),
       UnaryOp::Not => format!("(not {})", expression_to_eggroll(expr)),
@@ -60,6 +69,7 @@ fn expression_to_eggroll(expr: &Expression) -> String {
       let op_egg = match op {
         BinaryOp::Add       => "+",
         BinaryOp::And       => "&&",
+        BinaryOp::ArrayEq   => "=a=",
         BinaryOp::Assign    => "=",
         BinaryOp::Sub       => "-",
         BinaryOp::Div       => "/",
@@ -83,12 +93,21 @@ fn expression_to_eggroll(expr: &Expression) -> String {
         .join(" ");
       format!("(forall (bindings {}) {})", bindings, expression_to_eggroll(condition))
     },
+    Expression::SketchHole => "sketch-hole".to_string(),
+    Expression::Ternary { condition, then, els } => {
+      format!("(ternary {} {} {})",
+              expression_to_eggroll(condition),
+              expression_to_eggroll(then),
+              expression_to_eggroll(els))
+    },
     Expression::Statement(stmt) => statement_to_eggroll(stmt),
   }
 }
 
 fn statement_to_eggroll(stmt: &Statement) -> String {
   match stmt {
+    Statement::Assert(expr) => format!("(assert {})", expression_to_eggroll(expr)),
+    Statement::Assume(expr) => format!("(assume {})", expression_to_eggroll(expr)),
     Statement::BasicBlock(items) => {
       let items_eggroll = items.iter()
         .map(block_item_to_eggroll)
@@ -138,6 +157,22 @@ fn statement_to_eggroll(stmt: &Statement) -> String {
                               statement_to_eggroll(stmt)),
       }
     },
+    Statement::WhileRel{condition_left,
+                        condition_right,
+                        invariants_left,
+                        invariants_right,
+                        body_left,
+                        body_right,
+                        body_merged, ..} => {
+      format!("(while-rel {} {} {} {} {} {} {})",
+              expression_to_eggroll(condition_left),
+              expression_to_eggroll(condition_right),
+              invariants_to_eggroll(invariants_left),
+              invariants_to_eggroll(invariants_right),
+              body_left.as_ref().map_or("()".to_string(), |body| statement_to_eggroll(body)),
+              body_right.as_ref().map_or("()".to_string(), |body| statement_to_eggroll(body)),
+              body_merged.as_ref().map_or("()".to_string(), |body| statement_to_eggroll(body)))
+    }
   }
 }
 
@@ -198,11 +233,25 @@ fn declaration_to_eggroll(decl: &Declaration) -> String {
   match decl.initializer.as_ref() {
     None => format!("(declaration (specifiers {}) {} no-initializer)", specs_egg, decl_egg),
     Some(init) => {
-      let init_egg = expression_to_eggroll(init);
-      format!("(declaration (specifiers {}) {} (initializer {}))",
+      let init_egg = initializer_to_eggroll(init);
+      format!("(declaration (specifiers {}) {} {})",
               specs_egg, decl_egg, init_egg)
 
     }
+  }
+}
+
+fn initializer_to_eggroll(init: &Initializer) -> String {
+  match init {
+    Initializer::Expression(expr) => {
+      format!("(initializer-expr {})", expression_to_eggroll(expr))
+    },
+    Initializer::List(inits) => {
+      format!("(initializer-list {})", inits.into_iter()
+          .map(|init| initializer_to_eggroll(init))
+          .collect::<Vec<_>>()
+          .join(" "))
+    },
   }
 }
 

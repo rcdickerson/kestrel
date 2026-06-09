@@ -1,0 +1,501 @@
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_structure
+Computed alignment by local loop counting.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==54274== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==54274== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==54274== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==54274== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==54274== 
+==54275== 
+==54275== For lists of detected and suppressed errors, rerun with: -s
+==54275== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54276== 
+==54276== For lists of detected and suppressed errors, rerun with: -s
+==54276== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54277== 
+==54277== For lists of detected and suppressed errors, rerun with: -s
+==54277== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54278== 
+==54278== For lists of detected and suppressed errors, rerun with: -s
+==54278== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54279== 
+==54279== For lists of detected and suppressed errors, rerun with: -s
+==54279== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54280== 
+==54280== For lists of detected and suppressed errors, rerun with: -s
+==54280== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54281== 
+==54281== For lists of detected and suppressed errors, rerun with: -s
+==54281== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54282== 
+==54282== For lists of detected and suppressed errors, rerun with: -s
+==54282== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54283== 
+==54283== For lists of detected and suppressed errors, rerun with: -s
+==54283== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54284== 
+==54284== For lists of detected and suppressed errors, rerun with: -s
+==54284== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54285== 
+==54285== For lists of detected and suppressed errors, rerun with: -s
+==54285== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54286== 
+==54286== For lists of detected and suppressed errors, rerun with: -s
+==54286== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54287== 
+==54287== For lists of detected and suppressed errors, rerun with: -s
+==54287== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54288== 
+==54288== For lists of detected and suppressed errors, rerun with: -s
+==54288== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54289== 
+==54289== For lists of detected and suppressed errors, rerun with: -s
+==54289== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54290== 
+==54290== For lists of detected and suppressed errors, rerun with: -s
+==54290== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54291== 
+==54291== For lists of detected and suppressed errors, rerun with: -s
+==54291== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54292== 
+==54292== For lists of detected and suppressed errors, rerun with: -s
+==54292== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54293== 
+==54293== For lists of detected and suppressed errors, rerun with: -s
+==54293== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54294== 
+==54294== For lists of detected and suppressed errors, rerun with: -s
+==54294== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==54274== 
+==54274== For lists of detected and suppressed errors, rerun with: -s
+==54274== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(59,2): Warning: assume statement has no {:axiom} annotation
+   |
+59 |   assume (l_low == r_low) && ((l_low >= 0) && ((l_high == 0) && (r_high == 0)));
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(71,4): Warning: assume statement has no {:axiom} annotation
+   |
+71 |     assume true;
+   |     ^^^^^^^^^^^^
+
+houdafny.dfy(109,14): Warning: assume statement has no {:axiom} annotation
+    |
+109 |               assume !(1 == 1);
+    |               ^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(117,14): Warning: assume statement has no {:axiom} annotation
+    |
+117 |               assume !(1 == 1);
+    |               ^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(128,6): Warning: assume statement has no {:axiom} annotation
+    |
+128 |       assume true;
+    |       ^^^^^^^^^^^^
+
+houdafny.dfy(163,12): Warning: assume statement has no {:axiom} annotation
+    |
+163 |             assume !(r_r != 0);
+    |             ^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(173,12): Warning: assume statement has no {:axiom} annotation
+    |
+173 |             assume !(1 == 1);
+    |             ^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(187,8): Warning: assume statement has no {:axiom} annotation
+    |
+187 |         assume (l_r == 0) || (l_r == 1);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(201,14): Warning: assume statement has no {:axiom} annotation
+    |
+201 |               assume (l_r == 0) || (l_r == 1);
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(214,12): Warning: assume statement has no {:axiom} annotation
+    |
+214 |             assume (l_r == 0) || (l_r == 1);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(223,14): Warning: assume statement has no {:axiom} annotation
+    |
+223 |               assume !(1 == 1);
+    |               ^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(227,14): Warning: assume statement has no {:axiom} annotation
+    |
+227 |               assume (l_r == 0) || (l_r == 1);
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(234,14): Warning: assume statement has no {:axiom} annotation
+    |
+234 |               assume !(l_r != 0);
+    |               ^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(244,8): Warning: assume statement has no {:axiom} annotation
+    |
+244 |         assume (l_r == 0) || (l_r == 1);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(257,10): Warning: assume statement has no {:axiom} annotation
+    |
+257 |           assume (l_r == 0) || (l_r == 1);
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(269,12): Warning: assume statement has no {:axiom} annotation
+    |
+269 |             assume !(r_r != 0);
+    |             ^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(273,12): Warning: assume statement has no {:axiom} annotation
+    |
+273 |             assume (l_r == 0) || (l_r == 1);
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(282,12): Warning: assume statement has no {:axiom} annotation
+    |
+282 |             assume !(l_r != 0);
+    |             ^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 1 verified, 0 errors
+
+
+Aligned Product Program
+-----------------------
+
+function arb_bool(): int
+
+function arb_int(): int
+
+function havoc_1(r_r: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int
+
+function havoc_3(r_r: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int
+
+function havoc_8(l_x: int, r_r: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int
+
+function havoc_10(l_x: int, r_r: int, r_x: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int
+
+function havoc_11(l_x: int, r_r: int, r_x: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int
+
+function havoc_12(l_x: int, r_r: int, r_x: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int
+
+function havoc_13(l_x: int, r_r: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int
+
+function havoc_15(l_x: int, r_r: int, r_x: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int
+
+function havoc_17(l_x: int, r_r: int, r_x: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int
+
+function choice_n_6(l_x: int, r_r: int, r_x: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int
+
+function choice_n_16(l_x: int, r_r: int, r_x: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int
+
+function choice_n_14(l_x: int, r_r: int, r_x: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int {
+  l_r
+ }
+
+function choice_n_7(l_x: int, r_r: int, r_x: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int {
+  0
+ }
+
+function choice_n_9(l_x: int, r_r: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int {
+  0
+ }
+
+function choice_n_4(l_x: int, r_r: int, r_x: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int {
+  0
+ }
+
+function choice_n_2(l_x: int, r_r: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int {
+  0
+ }
+
+function choice_n_5(l_x: int, r_r: int, l_ret: int, r_x: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int {
+  0
+ }
+
+function choice_n_18(l_x: int, r_r: int, r_x: int, l_r: int, l_low: int, r_low: int, l_high: int, r_high: int): int {
+  l_r
+ }
+
+method Product(l_low: int, l_high: int, r_low: int, r_high: int)
+  decreases *
+{
+  assume (l_low == r_low) && ((l_low >= 0) && ((l_high == 0) && (r_high == 0)));
+  var l_ret: int;
+  var l_x: int;
+  var l_r: int;
+  l_r := 0;
+  var r_ret: int;
+  var r_x: int;
+  var r_r: int;
+  r_r := 0;
+  if ((l_high != 0) && (r_high != 0)) {
+    assert true;
+    l_x := havoc_1(r_r, l_r, l_low, r_low, l_high, r_high);
+    assume true;
+    var n_2: int := choice_n_2(l_x, r_r, l_r, l_low, r_low, l_high, r_high);
+    assert true;
+    r_x := n_2;
+    if ((l_x >= l_low) && (r_x >= r_low)) {
+      l_ret := l_x;
+      r_ret := r_x;
+    } else {
+      if ((l_x >= l_low) && (!(r_x >= r_low))) {
+        l_ret := l_x;
+        if (1 == 1) {
+          while (1 == 1)
+            decreases *
+          {
+            r_x := r_x;
+          }
+        }
+      } else {
+        if ((!(l_x >= l_low)) && (r_x >= r_low)) {
+          if (1 == 1) {
+            while (1 == 1)
+              decreases *
+            {
+              l_x := l_x;
+            }
+          }
+          r_ret := r_x;
+        } else {
+          while ((1 == 1) && (1 == 1))
+            decreases *
+          {
+            l_x := l_x;
+            r_x := r_x;
+          }
+          if (1 == 1) {
+            while (1 == 1)
+              decreases *
+            {
+              assume !(1 == 1);
+              l_x := l_x;
+            }
+          }
+          if (1 == 1) {
+            while (1 == 1)
+              decreases *
+            {
+              assume !(1 == 1);
+              r_x := r_x;
+            }
+          }
+        }
+      }
+    }
+  } else {
+    if ((l_high != 0) && (!(r_high != 0))) {
+      assert true;
+      l_x := havoc_3(r_r, l_r, l_low, r_low, l_high, r_high);
+      assume true;
+      r_x := r_low;
+      var n_4: int := choice_n_4(l_x, r_r, r_x, l_r, l_low, r_low, l_high, r_high);
+      assert (n_4 == 0) || (n_4 == 1);
+      r_r := n_4;
+      if (l_x >= l_low) {
+        l_ret := l_x;
+        if (r_r != 0) {
+          while (r_r != 0)
+            decreases *
+            invariant l_r == r_r
+            invariant l_x == r_x
+          {
+            r_x := (r_x + 1);
+            var n_5: int := choice_n_5(l_x, r_r, l_ret, r_x, l_r, l_low, r_low, l_high, r_high);
+            assert (n_5 == 0) || (n_5 == 1);
+            r_r := n_5;
+          }
+        }
+      } else {
+        while ((1 == 1) && (r_r != 0))
+          decreases *
+          invariant l_r == r_r
+          invariant l_x == r_x
+        {
+          l_x := l_x;
+          r_x := (r_x + 1);
+          var n_7: int := choice_n_7(l_x, r_r, r_x, l_r, l_low, r_low, l_high, r_high);
+          assert (n_7 == 0) || (n_7 == 1);
+          r_r := n_7;
+        }
+        if (1 == 1) {
+          while (1 == 1)
+            decreases *
+          {
+            assume !(r_r != 0);
+            l_x := l_x;
+          }
+        }
+        if (r_r != 0) {
+          while (r_r != 0)
+            decreases *
+            invariant l_r == r_r
+            invariant l_x == r_x
+          {
+            assume !(1 == 1);
+            r_x := (r_x + 1);
+            var n_6: int := choice_n_6(l_x, r_r, r_x, l_r, l_low, r_low, l_high, r_high);
+            assert (n_6 == 0) || (n_6 == 1);
+            r_r := n_6;
+          }
+        }
+      }
+      r_ret := r_x;
+    } else {
+      if ((!(l_high != 0)) && (r_high != 0)) {
+        l_x := l_low;
+        assert true;
+        l_r := havoc_8(l_x, r_r, l_r, l_low, r_low, l_high, r_high);
+        assume (l_r == 0) || (l_r == 1);
+        var n_9: int := choice_n_9(l_x, r_r, l_r, l_low, r_low, l_high, r_high);
+        assert true;
+        r_x := n_9;
+        if (r_x >= r_low) {
+          if (l_r != 0) {
+            while (l_r != 0)
+              decreases *
+              invariant l_r == r_r
+              invariant l_x == r_x
+            {
+              l_x := (l_x + 1);
+              assert true;
+              l_r := havoc_10(l_x, r_r, r_x, l_r, l_low, r_low, l_high, r_high);
+              assume (l_r == 0) || (l_r == 1);
+            }
+          }
+          r_ret := r_x;
+        } else {
+          while ((l_r != 0) && (1 == 1))
+            decreases *
+            invariant l_r == r_r
+            invariant l_x == r_x
+          {
+            l_x := (l_x + 1);
+            assert true;
+            l_r := havoc_12(l_x, r_r, r_x, l_r, l_low, r_low, l_high, r_high);
+            assume (l_r == 0) || (l_r == 1);
+            r_x := r_x;
+          }
+          if (l_r != 0) {
+            while (l_r != 0)
+              decreases *
+              invariant l_r == r_r
+              invariant l_x == r_x
+            {
+              assume !(1 == 1);
+              l_x := (l_x + 1);
+              assert true;
+              l_r := havoc_11(l_x, r_r, r_x, l_r, l_low, r_low, l_high, r_high);
+              assume (l_r == 0) || (l_r == 1);
+            }
+          }
+          if (1 == 1) {
+            while (1 == 1)
+              decreases *
+            {
+              assume !(l_r != 0);
+              r_x := r_x;
+            }
+          }
+        }
+        l_ret := l_x;
+      } else {
+        l_x := l_low;
+        assert true;
+        l_r := havoc_13(l_x, r_r, l_r, l_low, r_low, l_high, r_high);
+        assume (l_r == 0) || (l_r == 1);
+        r_x := r_low;
+        var n_14: int := choice_n_14(l_x, r_r, r_x, l_r, l_low, r_low, l_high, r_high);
+        assert (n_14 == 0) || (n_14 == 1);
+        r_r := n_14;
+        while ((l_r != 0) && (r_r != 0))
+          decreases *
+          invariant l_r == r_r
+          invariant l_x == r_x
+        {
+          l_x := (l_x + 1);
+          assert true;
+          l_r := havoc_17(l_x, r_r, r_x, l_r, l_low, r_low, l_high, r_high);
+          assume (l_r == 0) || (l_r == 1);
+          r_x := (r_x + 1);
+          var n_18: int := choice_n_18(l_x, r_r, r_x, l_r, l_low, r_low, l_high, r_high);
+          assert (n_18 == 0) || (n_18 == 1);
+          r_r := n_18;
+        }
+        if (l_r != 0) {
+          while (l_r != 0)
+            decreases *
+            invariant l_r == r_r
+            invariant l_x == r_x
+          {
+            assume !(r_r != 0);
+            l_x := (l_x + 1);
+            assert true;
+            l_r := havoc_15(l_x, r_r, r_x, l_r, l_low, r_low, l_high, r_high);
+            assume (l_r == 0) || (l_r == 1);
+          }
+        }
+        if (r_r != 0) {
+          while (r_r != 0)
+            decreases *
+            invariant l_r == r_r
+            invariant l_x == r_x
+          {
+            assume !(l_r != 0);
+            r_x := (r_x + 1);
+            var n_16: int := choice_n_16(l_x, r_r, r_x, l_r, l_low, r_low, l_high, r_high);
+            assert (n_16 == 0) || (n_16 == 1);
+            r_r := n_16;
+          }
+        }
+        l_ret := l_x;
+        r_ret := r_x;
+      }
+    }
+  }
+  assert l_ret == r_ret;
+}
+
+
+Per-Task Times (ms)
+-------------------
+insert-elaenia-specs: 0
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 22
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 1
+solve-sketch: 624
+elaenia-invars: 2265
+houdafny: 1197
+repeat_range: 4111
+write-dafny: 0
+print-info: 0
+
+
+Extraction Settings
+-------------------
+Max AST Depth: 1
+Loop unrolling: false
+Cost function: structure
+Max AST Depth: 1
+
+Elaenia completed in 4112ms
+Verified: true

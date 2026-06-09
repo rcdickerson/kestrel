@@ -15,17 +15,19 @@ impl AlignedCRel {
   }
 }
 
-impl Task for AlignedCRel {
+impl <Ctx: AlignsEggroll + AlignsCRel> Task<Ctx> for AlignedCRel {
   fn name(&self) -> String { "aligned-crel".to_string() }
-  fn run(&self, context: &mut Context) {
-    let reps = context.aligned_eggroll_repetitions.clone()
+  fn run(&self, context: &mut Ctx) {
+    let reps = context.aligned_eggroll_repetitions().clone()
       .unwrap_or(GuardedRepetitions::new());
     let aligned_crel = eggroll_to_crel(
-      &context.aligned_eggroll().to_string(),
+      &context.aligned_eggroll().as_ref().
+        expect("Missing aligned eggroll")
+        .to_string(),
       &Config::default(),
       &reps)
       .map(&mut LoopIdReassigner{});
-    context.aligned_crel.replace(aligned_crel);
+    context.accept_aligned_crel(aligned_crel);
   }
 }
 

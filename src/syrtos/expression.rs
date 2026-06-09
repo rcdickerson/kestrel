@@ -1,3 +1,4 @@
+use crate::syrtos::Identifier;
 use crate::syrtos::Statement;
 use crate::syrtos::Type;
 use crate::syrtos::Writer;
@@ -9,9 +10,10 @@ pub enum Expression {
   ConstFloat(f32),
   ConstTrue,
   ConstFalse,
-  Identifier{name: String},
+  Identifier{id: Identifier},
   FnCall{name: Box<Expression>, args: Vec<Expression>},
   StringLiteral(String),
+  Ternary{condition: Box<Expression>, then: Box<Expression>, els: Box<Expression>},
   UnOp{expr: Box<Expression>, op: String},
   BinOp{lhs: Box<Expression>, rhs: Box<Expression>, op: String},
   Forall{bindings: Vec<(String, Type)>, condition: Box<Expression>},
@@ -19,7 +21,6 @@ pub enum Expression {
 }
 
 impl Expression {
-
   pub fn emit(&self, writer: &mut Writer, subexp: bool) {
     match self {
       Expression::ArrayIndex{expr, index} => {
@@ -40,8 +41,8 @@ impl Expression {
       Expression::ConstFalse => {
         writer.write("false");
       },
-      Expression::Identifier{name} => {
-        writer.write(name);
+      Expression::Identifier{id} => {
+        id.emit(writer);
       },
       Expression::FnCall{name, args} => {
         name.emit(writer, false);
@@ -56,6 +57,16 @@ impl Expression {
       },
       Expression::StringLiteral(s) => {
         writer.write(s);
+      },
+      Expression::Ternary { condition, then, els } => {
+        if subexp { writer.write("("); }
+        writer.write("if ");
+        condition.emit(writer, true);
+        writer.write(" then ");
+        then.emit(writer, true);
+        writer.write(" else ");
+        els.emit(writer, true);
+        if subexp { writer.write(")"); }
       },
       Expression::UnOp{expr, op} => {
         if subexp { writer.write("("); }

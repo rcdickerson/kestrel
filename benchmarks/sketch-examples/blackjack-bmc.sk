@@ -1,0 +1,37 @@
+generator int synth_choice(int handValue, int depth) {
+  assert depth > 0;
+  return {| ??
+          | handValue
+          | (synth_choice(handValue, depth - 1) - synth_choice(handValue, depth - 1))
+          | ((synth_choice(handValue, depth - 1) <= synth_choice(handValue, depth - 1)) ? synth_choice(handValue, depth - 1) : synth_choice(handValue, depth - 1))
+          |};
+}
+
+int choice(int handValue) {
+  return synth_choice(handValue, 3);
+}
+
+harness void play(int handValue1) {
+  assume(handValue1 >= 2);
+  assume(handValue1 <= 20);
+
+  if (handValue1 < 21) {
+    int c1 = choice(handValue1);
+    assert c1 >= 1 && c1 <= 10;
+    int handValue2 = handValue1 + c1;
+    if (handValue2 < 21) {
+      int c2 = choice(handValue2);
+      assert c2 >= 1 && c2 <= 10;
+      int handValue3 = handValue2 + c2;
+      if (handValue3 < 21) {
+        assert false;
+      } else {
+        assert handValue3 == 21;
+      }
+    } else {
+      assert handValue2 == 21;
+    }
+  } else {
+    assert handValue1 == 21;
+  }
+}

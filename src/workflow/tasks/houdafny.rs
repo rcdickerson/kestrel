@@ -4,7 +4,6 @@
 
 use crate::crel::ast::*;
 use crate::crel::visitor::CRelVisitor;
-use crate::output_mode::*;
 use crate::workflow::context::*;
 use crate::workflow::task::*;
 use regex::Regex;
@@ -12,7 +11,6 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 use std::fs::File;
 use std::io::prelude::*;
-use std::path::Path;
 use std::process::Command;
 use std::process::Stdio;
 use std::time::Duration;
@@ -38,22 +36,22 @@ impl Houdafny {
   }
 }
 
-impl Task for Houdafny {
+impl <Ctx: Context + AlignsCRel + GeneratesDafny> Task<Ctx> for Houdafny {
   fn name(&self) -> String { "houdafny".to_string() }
 
-  fn run(&self, context: &mut Context) {
-    let dafny_path = "houdafny.dfy".to_string();
+  fn run(&self, context: &mut Ctx) {
+    let working_dir = std::fs::canonicalize(context.working_dir())
+      .expect("unable to canonicalize working dir");
+    let houdafny_name = "houdafny.dfy";
+    let dafny_path = working_dir.join(houdafny_name);
+    let dafny_path_str = dafny_path.to_str()
+      .expect("Unable to create path for dafny output.");
     loop {
       // Write current aligned program as Dafny file.
-      let (dafny_prog, while_lines) = OutputMode::Dafny.crel_to_dafny(
-        &context.aligned_crel(),
-        context.spec(),
-        context.unaligned_crel().global_decls.clone(),
-        &Some(dafny_path.clone()));
+      let (dafny_prog, while_lines) = context.generate_dafny(&dafny_path_str.to_string());
 
-      // println!("Writing Dafny to {}...", dafny_path);
-      let mut file = File::create(&Path::new(dafny_path.clone().as_str()))
-        .unwrap_or_else(|_| panic!("Error creating file: {}", dafny_path));
+      let mut file = File::create(&dafny_path)
+        .unwrap_or_else(|_| panic!("Error creating file: {}", dafny_path_str));
       match file.write_all(dafny_prog.as_bytes()) {
         Ok(_) => (), // println!("Done"),
         Err(err) => panic!("Error writing output file: {}", err),
@@ -62,7 +60,8 @@ impl Task for Houdafny {
       // Run Dafny.
       // println!("Running Dafny verification...");
       let mut child = Command::new("dafny")
-        .args(["verify", "houdafny.dfy", "--error-limit", "0", "--allow-warnings"])
+        .current_dir(working_dir.clone())
+        .args(["verify", houdafny_name, "--error-limit", "0", "--allow-warnings"])
         .stdout(Stdio::piped())
         .spawn()
         .unwrap();
@@ -72,7 +71,7 @@ impl Task for Houdafny {
         Some(status) => status,
         None => {
           println!("Dafny timed out.");
-          context.timed_out = true;
+          context.mark_timed_out(true);
           child.kill().unwrap();
           child.wait().unwrap();
           return;
@@ -86,7 +85,7 @@ impl Task for Houdafny {
       // some failure without bad invariants.
       println!("{}", dafny_output);
       if status.success() {
-        context.verified = true;
+        context.mark_verified(true);
         break;
       }
       let bad_invar_lines = parse_bad_invariants(dafny_output.to_string());
@@ -102,8 +101,9 @@ impl Task for Houdafny {
         }
         by_loop_id.get_mut(&loop_id).unwrap().insert(offset - 1);
       }
-      context.aligned_crel.as_mut().expect("missing aligned CRel")
-        .walk(&mut InvarRemover::new(&by_loop_id));
+      let mut aligned_crel = context.aligned_crel().clone().expect("Missing aligned CRel");
+      aligned_crel.walk(&mut InvarRemover::new(&by_loop_id));
+      context.accept_aligned_crel(aligned_crel);
     }
   }
 }

@@ -102,9 +102,16 @@ fn aexp_qualified_var(i: &str) -> IResult<&str, CondAExpr> {
     name: name.to_string()}))
 }
 
+fn aexp_return_value(i: &str) -> IResult<&str, CondAExpr> {
+  let (i, _)  = multispace0(i)?;
+  let (i, _)  = tag("ret!")(i)?;
+  Ok((i, CondAExpr::ReturnValue))
+}
+
 fn aexp_index(i: &str) -> IResult<&str, CondAExpr> {
   let (i, _)       = multispace0(i)?;
   let (i, id)      = alt((aexp_qualified_var,
+                          aexp_return_value,
                           aexp_var))(i)?;
   let (i, _)       = multispace0(i)?;
   let (i, indices) = many1(delimited(tag("["), aexpr_no_float, tag("]")))(i)?;
@@ -151,6 +158,7 @@ fn aexp_funcall(i: &str) -> IResult<&str, CondAExpr> {
 fn aexpr_lhs(i: &str) -> IResult<&str, CondAExpr> {
   let (i, _) = multispace0(i)?;
   alt((
+    aexp_return_value,
     aexp_int,
     aexp_float,
     aexp_funcall,
@@ -173,6 +181,7 @@ pub fn aexpr(i: &str) -> IResult<&str, CondAExpr> {
     aexp_float,
     aexp_funcall,
     aexp_index,
+    aexp_return_value,
     aexp_qualified_var,
     aexp_var,
     delimited(tag("("), aexpr, tag(")")),
@@ -290,6 +299,7 @@ fn bexpr_lhs(i: &str) -> IResult<&str, CondBExpr> {
     bexpr_false,
     bexpr_unop("!", CondBUnop::Not),
     bexpr_binop_a("==", CondBBinopA::Eq),
+    bexpr_binop_a("=a=", CondBBinopA::ArrayEq),
     bexpr_binop_a("!=", CondBBinopA::Neq),
     bexpr_binop_a("<", CondBBinopA::Lt),
     bexpr_binop_a("<=", CondBBinopA::Lte),
@@ -419,7 +429,7 @@ fn spec_comment(i: &str) -> IResult<&str, KestrelSpec> {
   delimited(tag("/*"), kestrel_spec, tag("*/"))(i)
 }
 
-pub fn parse_spec(input_file: &String) -> Result<KestrelSpec, String> {
+pub fn parse_kestrel_spec(input_file: &String) -> Result<KestrelSpec, String> {
   match fs::read_to_string(input_file) {
     Err(err) => Err(err.to_string()),
     Ok(input) => {

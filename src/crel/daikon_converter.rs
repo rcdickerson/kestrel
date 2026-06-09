@@ -83,6 +83,8 @@ impl DaikonConverter {
     //stmt.assign_loop_ids();
 
     match &stmt {
+      Statement::Assert(_) => stmt,
+      Statement::Assume(_) => stmt,
       Statement::BasicBlock(items) => {
         Statement::BasicBlock(items.iter()
                               .map(|item| self.convert_block_item(item.clone()))
@@ -154,6 +156,9 @@ impl DaikonConverter {
           is_merged: *is_merged,
         }
       },
+      wr@Statement::WhileRel{..} => {
+        self.convert_statement(wr.denote_while_rel())
+      },
     }
   }
 
@@ -167,13 +172,16 @@ impl DaikonConverter {
 
   fn convert_block_item(&mut self, item: BlockItem) -> BlockItem {
     match &item {
-      BlockItem::Declaration(decl) => {
-        let param_decl = ParameterDeclaration {
-          specifiers: decl.specifiers.clone(),
-          declarator: Some(decl.declarator.clone()),
-        };
-        self.cur_scope.push(ScopeItem::Decl(param_decl));
-        item
+      BlockItem::Declaration(decl) => match decl.declarator {
+        Declarator::Identifier{..} => {
+          let param_decl = ParameterDeclaration {
+            specifiers: decl.specifiers.clone(),
+            declarator: Some(decl.declarator.clone()),
+          };
+          self.cur_scope.push(ScopeItem::Decl(param_decl));
+          item
+        },
+        _ => item,
       },
       BlockItem::Statement(stmt) => BlockItem::Statement(self.convert_statement(stmt.clone())),
     }

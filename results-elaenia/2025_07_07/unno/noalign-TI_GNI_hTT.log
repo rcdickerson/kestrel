@@ -1,0 +1,228 @@
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_structure
+Treating naive product as final alignment.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:143 (2)
+
+*** Rejected
+    [0;31m[1751875713.6400 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:143 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751875713.6470 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751875713.6471 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_choice
+Treating naive product as final alignment.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:143 (2)
+
+*** Rejected
+    [0;31m[1751875715.0290 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:143 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751875715.0360 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751875715.0361 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_structure
+Treating naive product as final alignment.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:143 (2)
+
+*** Rejected
+    [0;31m[1751875716.4190 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:143 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751875716.4260 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751875716.4261 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_choice
+Treating naive product as final alignment.
+
+
+*** Rejected
+    [0;31m[1751875717.8410 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751875717.8470 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751875717.8471 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 2
+cost function: optimize_structure
+Treating naive product as final alignment.
+
+
+*** Rejected
+    [0;31m[1751875720.2750 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751875720.2820 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751875720.2821 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 2
+cost function: optimize_choice
+Treating naive product as final alignment.
+
+
+*** Rejected
+    [0;31m[1751875721.7030 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751875721.7100 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751875721.7101 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 2
+cost function: optimize_structure
+Treating naive product as final alignment.
+
+
+*** Rejected
+    [0;31m[1751875723.2160 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751875723.2230 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751875723.2231 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 2
+cost function: optimize_choice
+Treating naive product as final alignment.
+
+
+*** Rejected
+    [0;31m[1751875724.6900 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751875724.6990 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751875724.6991 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 3
+cost function: optimize_structure
+Treating naive product as final alignment.
+
+
+*** Rejected
+    [0;31m[1751875737.4030 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751875737.4100 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751875737.4101 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 3
+cost function: optimize_choice
+Treating naive product as final alignment.
+
+
+*** Rejected
+    [0;31m[1751875745.1020 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751875745.1110 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751875745.1111 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 3
+cost function: optimize_structure
+Treating naive product as final alignment.
+
+
+*** Rejected
+    [0;31m[1751875760.7720 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751875760.7790 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751875760.7791 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 3
+cost function: optimize_choice
+Treating naive product as final alignment.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:143 (2)
+
+*** Rejected
+    [0;31m[1751875762.4590 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:143 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751875762.4660 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751875762.4661 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 4
+cost function: optimize_structure
+Treating naive product as final alignment.
+
+
+*** Rejected
+    [0;31m[1751875853.5290 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751875853.5360 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751875853.5361 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 4
+cost function: optimize_choice
+Treating naive product as final alignment.

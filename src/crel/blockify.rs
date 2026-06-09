@@ -33,6 +33,8 @@ impl Blockify for Expression {
 impl Blockify for Statement {
   fn blockify(&self) -> Self {
     match self {
+      Statement::Assert(_) => self.clone(),
+      Statement::Assume(_) => self.clone(),
       Statement::BasicBlock(_) => self.clone(),
       Statement::Break => Statement::Break,
       Statement::Compound(items) => {
@@ -73,6 +75,33 @@ impl Blockify for Statement {
           is_merged: *is_merged,
         }
       },
+      Statement::WhileRel{id,
+                          unroll_left,
+                          unroll_right,
+                          stutter_left,
+                          stutter_right,
+                          condition_left,
+                          condition_right,
+                          invariants_left,
+                          invariants_right,
+                          body_left,
+                          body_right,
+                          body_merged} => {
+        Statement::WhileRel {
+          id: id.clone(),
+          unroll_left: *unroll_left,
+          unroll_right: *unroll_right,
+          stutter_left: *stutter_left,
+          stutter_right: *stutter_right,
+          condition_left: condition_left.clone(),
+          condition_right: condition_right.clone(),
+          invariants_left: invariants_left.clone(),
+          invariants_right: invariants_right.clone(),
+          body_left: body_left.as_ref().map(|stmt| Box::new(stmt.blockify())),
+          body_right: body_right.as_ref().map(|stmt| Box::new(stmt.blockify())),
+          body_merged: body_merged.as_ref().map(|stmt| Box::new(stmt.blockify())),
+        }
+      },
     }
   }
 }
@@ -84,6 +113,8 @@ fn blockify_items(items: &Vec<BlockItem>) -> Vec<BlockItem> {
     match item {
       BlockItem::Declaration(_) => current_block.push(item.clone()),
       BlockItem::Statement(stmt) => match stmt.blockify() {
+        Statement::Assert(expr) => current_block.push(BlockItem::Statement(Statement::Assert(expr))),
+        Statement::Assume(expr) => current_block.push(BlockItem::Statement(Statement::Assume(expr))),
         Statement::BasicBlock(items) => current_block.append(&mut items.clone()),
         Statement::Break => current_block.push(BlockItem::Statement(Statement::Break)),
         Statement::Compound(items) => {
@@ -121,20 +152,19 @@ fn blockify_items(items: &Vec<BlockItem>) -> Vec<BlockItem> {
         Statement::Return(expr) => {
           current_block.push(BlockItem::Statement(Statement::Return(expr)))
         },
-        Statement::While{id, runoff_link_id, invariants: invariant, condition, body, is_runoff, is_merged} => {
+        wloop@Statement::While{..} => {
           if !current_block.is_empty() {
             blocks.push(BlockItem::Statement(Statement::BasicBlock(current_block.clone())));
             current_block = vec!{};
           }
-          blocks.push(BlockItem::Statement(Statement::While{
-            id,
-            runoff_link_id,
-            invariants: invariant,
-            condition,
-            body,
-            is_runoff,
-            is_merged,
-          }))
+          blocks.push(BlockItem::Statement(wloop));
+        },
+        wloop@Statement::WhileRel{..} => {
+          if !current_block.is_empty() {
+            blocks.push(BlockItem::Statement(Statement::BasicBlock(current_block.clone())));
+            current_block = vec!{};
+          }
+          blocks.push(BlockItem::Statement(wloop));
         },
       },
     }

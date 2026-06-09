@@ -1,0 +1,540 @@
+use crate::crel::ast::*;
+use crate::crel::fundef::*;
+use crate::crel::unaligned::*;
+use crate::eggroll::ast::*;
+use crate::eggroll::to_crel::*;
+use crate::elaenia::crel_inliner::*;
+use crate::elaenia::elaenia_spec::*;
+use crate::spec::condition::KestrelCond;
+use crate::spec::to_crel::*;
+use crate::syrtos as Daf;
+use crate::workflow::context::*;
+use egg::RecExpr;
+use std::collections::HashMap;
+use std::path::Path;
+use std::time::Duration;
+use uuid::Uuid;
+
+use super::syntactic_alignment::ElaeniaCostFunction;
+
+#[derive(Clone)]
+pub struct ElaeniaContext {
+  workflow_name: String,
+  working_dir: String,
+  spec: ElaeniaSpec,
+  unaligned_crel: Option<UnalignedCRel>,
+  unaligned_eggroll: Option<String>,
+  aligned_eggroll: Option<RecExpr<Eggroll>>,
+  aligned_eggroll_repetitions: Option<GuardedRepetitions>,
+  aligned_crel_no_spec: Option<CRel>,
+  aligned_crel: Option<CRel>,
+  sketch_output: Option<String>,
+  solved_choice_funs: HashMap<String, FunDef>,
+  solved_unrolls_left: HashMap<Uuid, i32>,
+  solved_unrolls_right: HashMap<Uuid, i32>,
+  aligned_output: Option<String>,
+
+  choice_funs: Vec<FunDef>,
+  choice_gens: Vec<(FunDef, FunDef)>,
+  havoc_funs: Vec<FunDef>,
+  unroll_funs: Vec<FunDef>,
+
+  output_path: Option<String>,
+  output_filename: Option<String>,
+
+  stopwatch: WorkflowStopwatch,
+
+  verbose: bool,
+  add_unrolls: bool,
+  ast_depth: usize,
+  cost_function: ElaeniaCostFunction,
+
+  sketch_failed: bool,
+  sketch_succeeded: bool,
+  timed_out: bool,
+  verified: bool,
+}
+
+impl ElaeniaContext {
+  pub fn new(workflow_name: String, spec: ElaeniaSpec) -> Self {
+    ElaeniaContext {
+      workflow_name,
+      working_dir: ".".to_string(),
+      spec,
+      unaligned_crel: None,
+      unaligned_eggroll: None,
+      aligned_eggroll: None,
+      aligned_eggroll_repetitions: None,
+      aligned_crel_no_spec: None,
+      aligned_crel: None,
+      sketch_output: None,
+      solved_choice_funs: HashMap::new(),
+      solved_unrolls_left: HashMap::new(),
+      solved_unrolls_right: HashMap::new(),
+      aligned_output: None,
+      choice_funs: Vec::new(),
+      choice_gens: Vec::new(),
+      havoc_funs: Vec::new(),
+      unroll_funs: Vec::new(),
+      output_path: None,
+      output_filename: None,
+      stopwatch: WorkflowStopwatch::new(),
+      verbose: false,
+      add_unrolls: false,
+      ast_depth: 3,
+      cost_function: ElaeniaCostFunction::OptimizeStructure,
+      sketch_failed: false,
+      sketch_succeeded: false,
+      timed_out: false,
+      verified: false,
+    }
+  }
+
+  pub fn set_working_dir(&mut self, path: String) {
+    self.working_dir = path;
+  }
+
+  pub fn spec(&self) -> &ElaeniaSpec {
+    &self.spec
+  }
+
+  pub fn precondition_sketch(&self) -> KestrelCond {
+    match &self.spec.pre_sketch {
+      None => self.spec.pre.clone(),
+      Some(pre_sk) => KestrelCond::And {
+        lhs: Box::new(pre_sk.clone()),
+        rhs: Box::new(self.spec.pre.clone()),
+      },
+    }
+  }
+
+  pub fn accept_aligned_crel_no_spec(&mut self, crel: CRel) {
+    self.aligned_crel_no_spec = Some(crel);
+  }
+
+  pub fn aligned_crel_no_spec(&self) -> &Option<CRel> {
+    &self.aligned_crel_no_spec
+  }
+
+  pub fn accept_choice_fun(&mut self, fundef: FunDef) {
+    self.choice_funs.push(fundef);
+  }
+
+  pub fn choice_funs(&self) -> &Vec<FunDef> {
+    &self.choice_funs
+  }
+
+  pub fn accept_choice_gen(&mut self, aexp_gendef: FunDef, bexp_gendef: FunDef) {
+    self.choice_gens.push((aexp_gendef, bexp_gendef));
+  }
+
+  pub fn choice_gens(&self) -> &Vec<(FunDef, FunDef)> {
+    &self.choice_gens
+  }
+
+  pub fn accept_havoc_fun(&mut self, havocdef: FunDef) {
+    self.havoc_funs.push(havocdef);
+  }
+
+  pub fn havoc_funs(&self) -> &Vec<FunDef> {
+    &self.havoc_funs
+  }
+
+  pub fn havoc_funs_as_decls(&self) -> Vec<Declaration> {
+    self.havoc_funs.clone().into_iter().map(|havoc_fun| Declaration{
+      specifiers: havoc_fun.specifiers.clone(),
+      declarator: Declarator::Function {
+        name: havoc_fun.name.clone(),
+        params: havoc_fun.params.clone(),
+      },
+      initializer: None,
+    })
+    .collect()
+  }
+
+  pub fn accept_unroll_fun(&mut self, unrolldef: FunDef) {
+    self.unroll_funs.push(unrolldef);
+  }
+
+  pub fn unroll_funs(&self) -> &Vec<FunDef> {
+    &self.unroll_funs
+  }
+
+  pub fn accept_sketch_output(&mut self, sketch_output: String) {
+    self.sketch_output = Some(sketch_output);
+  }
+
+  pub fn sketch_output(&self) -> &Option<String> {
+    &self.sketch_output
+  }
+
+  pub fn accept_choice_solution(&mut self, name: String, solution: FunDef) {
+    self.solved_choice_funs.insert(name, solution);
+  }
+
+  pub fn choice_solutions(&self) -> &HashMap<String, FunDef> {
+    &self.solved_choice_funs
+  }
+
+  pub fn accept_unroll_solution_left(&mut self, loop_id: Uuid, unrolls: i32) {
+    self.solved_unrolls_left.insert(loop_id, unrolls);
+  }
+
+  pub fn unroll_solutions_left(&self) -> &HashMap<Uuid, i32> {
+    &self.solved_unrolls_left
+  }
+
+  pub fn accept_unroll_solution_right(&mut self, loop_id: Uuid, unrolls: i32) {
+    self.solved_unrolls_right.insert(loop_id, unrolls);
+  }
+
+  pub fn unroll_solutions_right(&self) -> &HashMap<Uuid, i32> {
+    &self.solved_unrolls_right
+  }
+
+  pub fn annotate_unrolls(&mut self) {
+    let crel = self.aligned_crel.as_ref().expect("No aligned CRel");
+    self.aligned_crel = Some(crel.map(&mut UnrollAnnotator::new(
+      self.unroll_solutions_left().clone(),
+      self.unroll_solutions_right().clone(),
+    )));
+  }
+
+  pub fn set_verbose(&mut self, verbose: bool) {
+    self.verbose = verbose;
+  }
+
+  pub fn is_verbose(&self) -> bool {
+    self.verbose
+  }
+
+  pub fn set_add_unrolls(&mut self, add_unrolls: bool) {
+    self.add_unrolls = add_unrolls;
+  }
+
+  pub fn add_unrolls(&self) -> bool {
+    self.add_unrolls
+  }
+
+  pub fn set_ast_depth(&mut self, ast_depth: usize) {
+    self.ast_depth = ast_depth;
+  }
+
+  pub fn ast_depth(&self) -> usize {
+    self.ast_depth
+  }
+
+  pub fn set_cost_function(&mut self, cost_function: ElaeniaCostFunction) {
+    self.cost_function = cost_function;
+  }
+
+  pub fn cost_function(&self) -> &ElaeniaCostFunction {
+    &self.cost_function
+  }
+
+  pub fn mark_sketch_success(&mut self, succeeded: bool) {
+    self.sketch_failed = !succeeded;
+    self.sketch_succeeded = succeeded;
+  }
+
+  pub fn clear_sketch_success(&mut self) {
+    self.sketch_failed = false;
+    self.sketch_succeeded = false;
+  }
+
+  pub fn sketch_failed(&self) -> bool {
+    self.sketch_failed
+  }
+
+  pub fn sketch_succeeded(&self) -> bool {
+    self.sketch_succeeded
+  }
+}
+
+struct UnrollAnnotator {
+  left_unrolls: HashMap<Uuid, i32>,
+  right_unrolls: HashMap<Uuid, i32>,
+}
+impl UnrollAnnotator {
+  fn new(left_unrolls: HashMap<Uuid, i32>,
+         right_unrolls: HashMap<Uuid, i32>) -> Self {
+    UnrollAnnotator { left_unrolls, right_unrolls }
+  }
+}
+impl crate::crel::mapper::CRelMapper for UnrollAnnotator {
+  fn map_statement(&mut self, stmt: &Statement) -> Statement {
+    match stmt {
+      Statement::WhileRel {
+        id,
+        stutter_left,
+        stutter_right,
+        invariants_left,
+        invariants_right,
+        condition_left,
+        condition_right,
+        body_left,
+        body_right,
+        body_merged,
+        ..
+      } => Statement::WhileRel {
+        id: id.clone(),
+        unroll_left: *self.left_unrolls.get(&id).unwrap_or(&0) as usize,
+        unroll_right: *self.right_unrolls.get(&id).unwrap_or(&0) as usize,
+        stutter_left: *stutter_left,
+        stutter_right: *stutter_right,
+        invariants_left: invariants_left.clone(),
+        invariants_right: invariants_right.clone(),
+        condition_left: condition_left.clone(),
+        condition_right: condition_right.clone(),
+        body_left: body_left.clone(),
+        body_right: body_right.clone(),
+        body_merged: body_merged.clone(),
+      },
+      _ => stmt.clone(),
+    }
+  }
+}
+
+impl Context for ElaeniaContext {
+  fn workflow_name(&self) -> &String {
+    &self.workflow_name
+  }
+
+  fn working_dir(&self) -> &String {
+    &self.working_dir
+  }
+
+  fn precondition(&self) -> &KestrelCond {
+    &self.spec.pre
+  }
+
+  fn postcondition(&self) -> &KestrelCond {
+    &self.spec.post
+  }
+
+  fn mark_verified(&mut self, verified: bool) {
+    self.verified = verified;
+  }
+
+  fn is_verified(&self) -> bool {
+    self.verified
+  }
+
+  fn mark_timed_out(&mut self, timed_out: bool) {
+    self.timed_out = timed_out;
+  }
+
+  fn is_timed_out(&self) -> bool {
+    self.timed_out
+  }
+}
+
+impl AlignsCRel for ElaeniaContext {
+  fn unaligned_crel(&self) -> &Option<UnalignedCRel> {
+    &self.unaligned_crel
+  }
+
+  fn accept_unaligned_crel(&mut self, crel: UnalignedCRel) {
+    self.unaligned_crel = Some(crel);
+  }
+
+  fn aligned_crel(&self) -> &Option<CRel> {
+    &self.aligned_crel
+  }
+
+  fn accept_aligned_crel(&mut self, crel: CRel) {
+    self.aligned_crel = Some(crel);
+  }
+}
+
+impl AlignsEggroll for ElaeniaContext {
+  fn unaligned_eggroll(&self) -> &Option<String> {
+    &self.unaligned_eggroll
+  }
+
+  fn accept_unaligned_eggroll(&mut self, eggroll: String) {
+    self.unaligned_eggroll = Some(eggroll);
+  }
+
+  fn aligned_eggroll(&self) -> &Option<RecExpr<Eggroll>> {
+    &self.aligned_eggroll
+  }
+
+  fn accept_aligned_eggroll(&mut self, eggroll: RecExpr<Eggroll>) {
+    self.aligned_eggroll = Some(eggroll);
+  }
+
+  fn aligned_eggroll_repetitions(&self) -> &Option<GuardedRepetitions> {
+    &self.aligned_eggroll_repetitions
+  }
+
+  fn accept_aligned_eggroll_repetitions(&mut self, reps: GuardedRepetitions) {
+    self.aligned_eggroll_repetitions = Some(reps);
+  }
+}
+
+impl GeneratesDafny for ElaeniaContext {
+  fn generate_dafny(&self, _: &String)
+                    -> (String, HashMap<String, (usize, usize)>) {
+    let aligned_crel = self.aligned_crel().as_ref().expect("Missing aligned CRel");
+    let (_, fundefs) = crate::crel::fundef::extract_fundefs(&aligned_crel);
+    let main_fun = fundefs.get("main").expect("No main function found");
+
+    let preconds  = BlockItem::Statement(self.spec().pre.to_crel(StatementKind::Assume));
+    let postconds = BlockItem::Statement(self.spec().post.to_crel(StatementKind::Assert));
+
+    let unaligned_crel = self.unaligned_crel().as_ref().expect("Missing unaligned CRel");
+
+    let mut global_decls = unaligned_crel.global_decls.clone();
+    global_decls.append(&mut self.havoc_funs_as_decls());
+    global_decls.append(&mut self.choice_funs().iter()
+        .filter(|fun| self.choice_solutions().get(&fun.name).is_none())
+        .map(|fun| Declaration {
+            specifiers: fun.specifiers.clone(),
+            declarator: Declarator::Function {
+                name: fun.name.clone(),
+                params: fun.params.clone(),
+            },
+            initializer: None,
+        }).collect());
+    let globals = global_decls.iter()
+      .map(|decl| CRel::Declaration(decl.clone()).to_dafny().0)
+      .collect::<Vec<String>>()
+      .join("");
+
+    let choice_funs = self.choice_solutions().iter()
+      .map(|(name, fundef)| {
+        let mut source = Daf::Source::new();
+        let mut fun = Daf::Function::new(name, Daf::Type::Int);
+        for param in &fundef.params {
+          fun.push_param(&param.to_dafny());
+        }
+        let mut inliner = CRelInliner::new();
+        let inlined_body = inliner.inline_statement(&fundef.body);
+        fun.set_body(&inlined_body.to_dafny());
+        source.push_function(&fun);
+        source.to_string().replace(";", "")
+      })
+      .collect::<Vec<String>>()
+      .join("");
+
+    let mut assume_input_arrays_neq = Vec::new();
+    let param_pairs = main_fun.params.iter()
+      .enumerate()
+      .flat_map(|(i, p1)| {
+        main_fun.params[i+1..].iter().map(move |p2| (p1, p2))
+      });
+    for (p1, p2) in param_pairs {
+      let p1_name = p1.name();
+      let p2_name = p2.name();
+      if p1_name.is_none() || p2_name.is_none() {
+        continue;
+      }
+      if p1.is_array() && p2.is_array() {
+        assume_input_arrays_neq.push(BlockItem::Statement(
+          Statement::Assume(Box::new(Expression::Binop {
+            lhs: Box::new(Expression::Identifier{name: p1_name.unwrap()}),
+            rhs: Box::new(Expression::Identifier{name: p2_name.unwrap()}),
+            op: BinaryOp::NotEquals,
+          }))));
+      }
+    }
+
+    let mut body_items: Vec<BlockItem> = Vec::new();
+    for neq in assume_input_arrays_neq { body_items.push(neq); }
+    body_items.push(preconds);
+    body_items.push(BlockItem::Statement(main_fun.body.clone()));
+    body_items.push(postconds);
+    let new_body = Statement::Compound(body_items);
+
+    let new_main = CRel::FunctionDefinition {
+      specifiers: vec!(DeclarationSpecifier::TypeSpecifier(Type::Void)),
+      name: "Product".to_string(),
+      params: main_fun.params.clone(),
+      body: Box::new(new_body),
+    };
+    let (dafny_output, while_lines) = new_main.to_dafny();
+    let topmatter = format!("{}{}", globals, choice_funs);
+    let while_lines = while_lines.iter()
+      .map(|(id, (start, end))| (id.clone(), (start + topmatter.lines().count() + 1,
+                                              end   + topmatter.lines().count() + 1)))
+      .collect::<HashMap<_, _>>();
+    (format!("{}{}", topmatter, dafny_output), while_lines)
+  }
+}
+
+impl FindsInvariants for ElaeniaContext {
+  fn daikon_crel(&self) -> &CRel {
+    &self.aligned_crel_no_spec.as_ref().unwrap_or(
+      &self.aligned_crel.as_ref().expect("Missing aligned CRel."))
+  }
+
+  fn global_decls(&self) -> &Vec<Declaration> {
+    &self.unaligned_crel.as_ref().expect("Missing unaligned CRel").global_decls
+  }
+
+  fn global_fundefs(&self) -> &HashMap<String, FunDef> {
+    &self.unaligned_crel.as_ref().expect("Missing unaligned CRel").global_fundefs
+  }
+
+  fn accept_invariants(&mut self, invars: HashMap<String, Vec<Expression>>) {
+    let mut keep_loops = LoopKeeper::new(invars.keys().collect());
+    let mut crel = self.aligned_crel.as_ref()
+      .expect("Missing aligned CRel")
+      .map(&mut keep_loops);
+    crel.decorate_invariants(&invars);
+    self.accept_aligned_crel(crel);
+  }
+}
+
+impl OutputsAlignment for ElaeniaContext {
+  fn aligned_output(&self) -> &Option<String> {
+    &self.aligned_output
+  }
+
+  fn accept_aligned_output(&mut self, output: String) {
+    self.aligned_output = Some(output);
+  }
+
+  fn accept_output_path(&mut self, path: String) {
+    self.output_path = Some(path.clone());
+    self.output_filename = Some(Path::new(&path)
+      .file_name().unwrap()
+      .to_str().unwrap()
+      .to_string());
+  }
+
+  fn output_path(&self) -> &Option<String> {
+    &self.output_path
+  }
+
+  fn output_filename(&self) -> &Option<String> {
+    &self.output_filename
+  }
+}
+
+impl Stopwatch for ElaeniaContext {
+ fn mark_started(&mut self) {
+    self.stopwatch.mark_started();
+  }
+
+  fn mark_completed(&mut self) {
+    self.stopwatch.mark_completed();
+  }
+
+  fn push_task_time(&mut self, task_name: String, duration: Duration) {
+    self.stopwatch.push_task_time(task_name, duration);
+  }
+
+  fn task_timings(&self) -> Vec<(String, Duration)> {
+    self.stopwatch.task_timings()
+  }
+
+  fn total_elapsed_time(&self) -> Duration {
+    self.stopwatch.total_elapsed_time()
+  }
+
+  fn set_timings_from(&mut self, other: &dyn Stopwatch) {
+    self.stopwatch.set_timings_from(other);
+  }
+}

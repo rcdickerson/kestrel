@@ -21,15 +21,17 @@ impl AlignCountLoops {
   }
 }
 
-impl Task for AlignCountLoops {
+impl <Ctx: AlignsEggroll> Task<Ctx> for AlignCountLoops {
   fn name(&self) -> String { "align-count-loops".to_string() }
-  fn run(&self, context: &mut Context) {
+  fn run(&self, context: &mut Ctx) {
     let runner = Runner::default()
-      .with_expr(&context.unaligned_eggroll().parse().unwrap())
+      .with_expr(&context.unaligned_eggroll().as_ref()
+                 .expect("Missing unaligned Eggroll")
+                 .parse().unwrap())
       .run(&crate::eggroll::rewrite::rewrites());
     let extractor = Extractor::new(&runner.egraph, MinLoops);
     let (_, best) = extractor.find_best(runner.roots[0]);
     println!("Computed alignment by local loop counting.");
-    context.aligned_eggroll.replace(best);
+    context.accept_aligned_eggroll(best);
   }
 }

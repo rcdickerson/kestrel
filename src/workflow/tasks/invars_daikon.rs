@@ -3,51 +3,79 @@
 //! of candidates can be further refined with, e.g., [Houdafny].)
 
 use crate::crel::ast::*;
-use crate::crel::mapper::*;
+use crate::crel::fundef::FunDef;
 use crate::daikon::invariant_parser::*;
 use crate::output_mode::*;
 use crate::spec::to_crel::*;
 use crate::workflow::context::*;
 use crate::workflow::task::*;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
-use std::path::Path;
 use std::process::Command;
 use std::process::Stdio;
 use std::time::Duration;
 use wait_timeout::ChildExt;
 
 pub struct InvarsDaikon {
+  extra_global_decls: Vec<Declaration>,
+  extra_fundefs: Vec<FunDef>,
   timeout_secs: u64,
 }
 
 impl InvarsDaikon {
+
   pub fn new(timeout_secs: Option<u64>) -> Self {
     InvarsDaikon {
+      extra_global_decls: Vec::new(),
+      extra_fundefs: Vec::new(),
       timeout_secs: match timeout_secs {
         Some(to) => to,
         None => 3600,
       }
     }
   }
+
+  pub fn add_global_decl(&mut self, declaration: Declaration) {
+    self.extra_global_decls.push(declaration);
+  }
+
+  pub fn add_fundef(&mut self, fundef: FunDef) {
+    self.extra_fundefs.push(fundef);
+  }
 }
 
-impl Task for InvarsDaikon {
+impl <Ctx: Context + FindsInvariants> Task<Ctx> for InvarsDaikon {
   fn name(&self) -> String { "invars-daikon".to_string() }
 
-  fn run(&self, context: &mut Context) {
+  fn run(&self, context: &mut Ctx) {
+    let working_dir = std::fs::canonicalize(context.working_dir())
+      .expect("unable to canonicalize working dir");
+
+    let daikon_c_name = "daikon_output.c";
+    let daikon_path = working_dir.join(daikon_c_name);
+    let daikon_path_str = daikon_path.to_str()
+      .expect("Unable to create path for daikon output.");
+
+    let exec_name = "daikon_output";
+    let exec_path = working_dir.join(exec_name);
+    let exec_path_str = exec_path.to_str()
+      .expect("Unable to create path for instrumented executable.");
+
     // Write Daikon output to file.
-    let daikon_path = "daikon_output.c".to_string();
-    println!("Writing Daikon to {}...", daikon_path);
+    println!("Writing Daikon to {}...", daikon_path_str);
+    let mut global_decls = context.global_decls().clone();
+    global_decls.append(&mut self.extra_global_decls.clone());
     let daikon_output = OutputMode::Daikon.crel_to_daikon(
-        &context.aligned_crel(),
-        context.unaligned_crel().global_decls.clone(),
-        context.unaligned_crel().fundefs.clone(),
-        &Some(daikon_path.clone()));
-    let mut file = File::create(&Path::new(daikon_path.clone().as_str()))
-      .unwrap_or_else(|_| panic!("Error creating file: {}", daikon_path));
+        &context.daikon_crel(),
+        global_decls,
+        context.global_fundefs().clone(),
+        &Some(daikon_path_str.to_string()),
+        Some(&self.extra_fundefs),
+        20);
+    let mut file = File::create(&daikon_path)
+      .unwrap_or_else(|_| panic!("Error creating file: {}", daikon_path_str));
     match file.write_all(daikon_output.as_bytes()) {
       Ok(_) => println!("Done"),
       Err(err) => panic!("Error writing output file: {}", err),
@@ -56,7 +84,8 @@ impl Task for InvarsDaikon {
     // Compile and run Daikon.
     println!("Compiling Daikon output...");
     let mut gcc_child = Command::new("gcc")
-      .args(["-gdwarf-2", "-O0", "-no-pie", "-o", "daikon_output", "daikon_output.c"])
+      .current_dir(working_dir.clone())
+      .args(["-gdwarf-2", "-O0", "-no-pie", "-o", exec_name, daikon_c_name])
       .spawn()
       .unwrap();
     let timeout = Duration::from_secs(self.timeout_secs);
@@ -64,7 +93,7 @@ impl Task for InvarsDaikon {
       Some(_) => (),
       None => {
         println!("Daikon compilation via gcc timed out.");
-        context.timed_out = true;
+        context.mark_timed_out(true);
         gcc_child.kill().unwrap();
         gcc_child.wait().unwrap();
         return;
@@ -73,23 +102,24 @@ impl Task for InvarsDaikon {
 
     println!("Running Kvasir...");
     let mut kvasir_child = Command::new("kvasir-dtrace")
-      .args(["./daikon_output"])
+      .current_dir(working_dir.clone())
+      .args([exec_path_str])
       .spawn()
       .unwrap();
     match kvasir_child.wait_timeout(timeout).unwrap() {
       Some(_) => (),
       None => {
         println!("Kvasir timed out.");
-        context.timed_out = true;
+        context.mark_timed_out(true);
         kvasir_child.kill().unwrap();
         kvasir_child.wait().unwrap();
         return;
       }
     };
 
-
     println!("Running Daikon...");
     let mut daikon_child = Command::new("java")
+      .current_dir(working_dir.clone())
       .args(["-cp",
              format!("{}/daikon.jar", env::var("DAIKONDIR").expect("$DAIKONDIR not set")).as_str(),
              "daikon.Daikon",
@@ -104,7 +134,7 @@ impl Task for InvarsDaikon {
       Some(status) => status,
       None => {
         println!("Daikon timed out.");
-        context.timed_out = true;
+        context.mark_timed_out(true);
         daikon_child.kill().unwrap();
         daikon_child.wait().unwrap();
         return;
@@ -128,10 +158,7 @@ impl Task for InvarsDaikon {
       Result::Err(err) => panic!("Error parsing Daikon invariants: {}", err),
     };
     separate_eq(&mut invariants);
-    let mut keep_loops = LoopKeeper::new(invariants.keys().collect());
-    let mut crel = context.aligned_crel().map(&mut keep_loops);
-    crel.decorate_invariants(&invariants);
-    context.aligned_crel.replace(crel);
+    context.accept_invariants(invariants);
   }
 }
 
@@ -148,37 +175,5 @@ fn separate_eq(invariants: &mut HashMap<String, Vec<Expression>>) {
         _ => vec!(invar.clone())
       })
       .collect();
-  }
-}
-
-struct LoopKeeper<'a> {
-  keep_ids: HashSet<&'a String>,
-  handled_ids: HashSet<String>,
-}
-
-impl <'a> LoopKeeper<'a> {
-  fn new(keep_ids: HashSet<&'a String>) -> Self {
-    LoopKeeper{keep_ids, handled_ids: HashSet::new()}
-  }
-}
-
-impl CRelMapper for LoopKeeper<'_> {
-  fn map_statement(&mut self, stmt: &Statement) -> Statement {
-    match stmt {
-      Statement::While{id, condition, ..} => {
-        let lhid = loop_head_name(id);
-        if !self.keep_ids.contains(&lhid) && !self.handled_ids.contains(&lhid) {
-          self.handled_ids.insert(lhid);
-          Statement::If {
-            condition: condition.clone(),
-            then: Box::new(stmt.clone()),
-            els: None,
-          }
-        } else {
-          stmt.clone()
-        }
-      },
-      _ => stmt.clone(),
-    }
   }
 }

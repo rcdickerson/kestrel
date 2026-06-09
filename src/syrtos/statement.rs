@@ -4,6 +4,8 @@ use crate::syrtos::Writer;
 
 #[derive(Clone, Debug)]
 pub enum Statement {
+  Assert(Box<Expression>),
+  Assume(Box<Expression>),
   Break,
   Expression(Box<Expression>),
   If {
@@ -18,6 +20,7 @@ pub enum Statement {
     loop_id: Option<String>,
     condition: Box<Expression>,
     invariants: Vec<Expression>,
+    allow_nonterm: bool,
     body: Option<Box<Statement>>,
   }
 }
@@ -26,6 +29,16 @@ impl Statement {
 
   pub fn emit(&self, writer: &mut Writer) {
     match self {
+      Statement::Assert(expr) => {
+        writer.write("assert ");
+        expr.emit(writer, false);
+        writer.write(";").new_line();
+      },
+      Statement::Assume(expr) => {
+        writer.write("assume ");
+        expr.emit(writer, false);
+        writer.write(";").new_line();
+      },
       Statement::Break => {
         writer.write_line("break;");
       },
@@ -69,16 +82,16 @@ impl Statement {
         var.emit(writer);
         writer.write(";").new_line();
       },
-      Statement::While{loop_id, condition, invariants, body} => {
+      Statement::While{loop_id, condition, invariants, allow_nonterm, body} => {
         writer.write("while (");
         let start_line = writer.cur_line();
         condition.emit(writer, false);
-        if invariants.is_empty() {
+        if invariants.is_empty() && !*allow_nonterm {
           writer.write(") {").new_line();
         } else {
           writer.write(")").new_line();
           writer.indent();
-          if !writer.check_termination() {
+          if *allow_nonterm {
             writer.write("decreases *").new_line();
           }
           for invar in invariants {

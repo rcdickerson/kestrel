@@ -22,6 +22,7 @@ impl CollectVars for Expression {
   fn vars(&self) -> HashSet<String> {
     match self {
       Expression::Identifier{name} => singleton(name.clone()),
+      Expression::ConstBool(_) => HashSet::new(),
       Expression::ConstInt(_) => HashSet::new(),
       Expression::ConstFloat(_) => HashSet::new(),
       Expression::StringLiteral(_) => HashSet::new(),
@@ -31,11 +32,25 @@ impl CollectVars for Expression {
           all_vars(args.clone()),
         ))
       },
+      Expression::ChoiceCall{callee, args} => {
+        union_all(vec!(
+          callee.vars(),
+          all_vars(args.clone()),
+        ))
+      },
+      Expression::Ternary { condition, then, els } => {
+        union_all(vec!(
+          condition.vars(),
+          then.vars(),
+          els.vars(),
+        ))
+      },
       Expression::Unop{expr, op: _} => expr.vars(),
       Expression::Binop{lhs, rhs, op: _} => {
         union_all(vec!(lhs.vars(), rhs.vars()))
       },
       Expression::Forall{condition, ..} => condition.vars(),
+      Expression::SketchHole => HashSet::new(),
       Expression::Statement(stmt) => stmt.vars(),
     }
   }
@@ -44,6 +59,8 @@ impl CollectVars for Expression {
 impl CollectVars for Statement {
   fn vars(&self) -> HashSet<String> {
     match self {
+      Statement::Assert(expr) => expr.vars(),
+      Statement::Assume(expr) => expr.vars(),
       Statement::BasicBlock(items) => all_vars(items.clone()),
       Statement::Break => HashSet::new(),
       Statement::Compound(items) => all_vars(items.clone()),
@@ -76,6 +93,13 @@ impl CollectVars for Statement {
           None => condition.vars(),
           Some(body) => union_all(vec!(condition.vars(), body.vars()))
         }
+      },
+      Statement::WhileRel{condition_left, condition_right, body_left, body_right, body_merged, ..} => {
+        let mut vars = vec! [condition_left.vars(), condition_right.vars()];
+        body_left.as_ref().map(|body| vars.push(body.vars()));
+        body_right.as_ref().map(|body| vars.push(body.vars()));
+        body_merged.as_ref().map(|body| vars.push(body.vars()));
+        union_all(vars)
       },
     }
   }
@@ -113,6 +137,17 @@ impl CollectVars for Declarator {
       Declarator::Pointer(decl) => {
         decl.vars()
       }
+    }
+  }
+}
+
+impl CollectVars for Initializer {
+  fn vars(&self) -> HashSet<String> {
+    match self {
+      Initializer::Expression(expr) => expr.vars(),
+      Initializer::List(exprs) => union_all(exprs.into_iter()
+          .map(|expr| expr.vars())
+          .collect::<Vec<_>>()),
     }
   }
 }

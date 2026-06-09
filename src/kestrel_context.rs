@@ -1,0 +1,227 @@
+//! Contains data needed in a KestRel verification [Workflow].
+
+use crate::crel::ast::*;
+use crate::crel::fundef::*;
+use crate::crel::unaligned::*;
+use crate::eggroll::ast::*;
+use crate::eggroll::to_crel::*;
+use crate::output_mode::*;
+use crate::spec::KestrelSpec;
+use crate::spec::condition::KestrelCond;
+use crate::workflow::context::*;
+use egg::*;
+use std::collections::HashMap;
+use std::path::Path;
+use std::time::Duration;
+
+/// A container for data needed in a KestRel verification [Workflow].
+#[derive(Clone)]
+pub struct KestrelContext {
+  workflow_name: String,
+  working_dir: String,
+  spec: KestrelSpec,
+  unaligned_crel: Option<UnalignedCRel>,
+  unaligned_eggroll: Option<String>,
+  aligned_eggroll: Option<RecExpr<Eggroll>>,
+  aligned_eggroll_repetitions: Option<GuardedRepetitions>,
+  aligned_crel: Option<CRel>,
+  aligned_output: Option<String>,
+  output_path: Option<String>,
+  output_filename: Option<String>,
+  stopwatch: WorkflowStopwatch,
+  timed_out: bool,
+  verified: bool,
+}
+
+impl KestrelContext {
+  pub fn new(workflow_name: String, spec: KestrelSpec) -> Self {
+    KestrelContext {
+      workflow_name,
+      working_dir: ".".to_string(),
+      spec,
+      unaligned_crel: None,
+      unaligned_eggroll: None,
+      aligned_eggroll: None,
+      aligned_eggroll_repetitions: None,
+      aligned_crel: None,
+      aligned_output: None,
+      output_path: None,
+      output_filename: None,
+      stopwatch: WorkflowStopwatch::new(),
+      timed_out: false,
+      verified: false,
+    }
+  }
+
+  pub fn set_working_dir(&mut self, path: String) {
+    self.working_dir = path
+  }
+}
+
+impl Context for KestrelContext {
+  fn workflow_name(&self) -> &String {
+    &self.workflow_name
+  }
+
+  fn working_dir(&self) -> &String {
+    &self.working_dir
+  }
+
+  fn precondition(&self) -> &KestrelCond {
+    &self.spec.pre
+  }
+
+  fn postcondition(&self) -> &KestrelCond {
+    &self.spec.post
+  }
+
+  fn mark_verified(&mut self, verified: bool) {
+    self.verified = verified;
+  }
+
+  fn is_verified(&self) -> bool {
+    self.verified
+  }
+
+  fn mark_timed_out(&mut self, timed_out: bool) {
+    self.timed_out = timed_out;
+  }
+
+  fn is_timed_out(&self) -> bool {
+    self.timed_out
+  }
+}
+
+impl AlignsCRel for KestrelContext {
+  fn unaligned_crel(&self) -> &Option<UnalignedCRel> {
+    &self.unaligned_crel
+  }
+
+  fn accept_unaligned_crel(&mut self, crel: UnalignedCRel) {
+    self.unaligned_crel = Some(crel);
+  }
+
+  fn aligned_crel(&self) -> &Option<CRel> {
+    &self.aligned_crel
+  }
+
+  fn accept_aligned_crel(&mut self, crel: CRel) {
+    self.aligned_crel = Some(crel);
+  }
+}
+
+impl AlignsEggroll for KestrelContext {
+  fn unaligned_eggroll(&self) -> &Option<String> {
+    &self.unaligned_eggroll
+  }
+
+  fn accept_unaligned_eggroll(&mut self, eggroll: String) {
+    self.unaligned_eggroll = Some(eggroll);
+  }
+
+  fn aligned_eggroll(&self) -> &Option<RecExpr<Eggroll>> {
+    &self.aligned_eggroll
+  }
+
+  fn accept_aligned_eggroll(&mut self, eggroll: RecExpr<Eggroll>) {
+    self.aligned_eggroll = Some(eggroll);
+  }
+
+  fn aligned_eggroll_repetitions(&self) -> &Option<GuardedRepetitions> {
+    &self.aligned_eggroll_repetitions
+  }
+
+  fn accept_aligned_eggroll_repetitions(&mut self, reps: GuardedRepetitions) {
+    self.aligned_eggroll_repetitions = Some(reps);
+  }
+}
+
+impl GeneratesDafny for KestrelContext {
+  fn generate_dafny(&self, output_path: &String)
+                    -> (String, HashMap<String, (usize, usize)>) {
+    OutputMode::Dafny.crel_to_dafny(
+        self.aligned_crel().as_ref()
+            .expect("Missing aligned CRel"),
+        self.precondition(),
+        self.postcondition(),
+        self.unaligned_crel().as_ref()
+          .expect("Missing unaligned CRel")
+          .global_decls.clone(),
+        &Some(output_path.clone()))
+  }
+}
+
+impl FindsInvariants for KestrelContext {
+  fn daikon_crel(&self) -> &CRel {
+    &self.aligned_crel.as_ref().expect("Missing aligned CRel.")
+  }
+
+  fn global_decls(&self) -> &Vec<Declaration> {
+    &self.unaligned_crel.as_ref().expect("Missing unaligned CRel").global_decls
+  }
+
+  fn global_fundefs(&self) -> &HashMap<String, FunDef> {
+    &self.unaligned_crel.as_ref().expect("Missing unaligned CRel").global_fundefs
+  }
+
+  fn accept_invariants(&mut self, invars: HashMap<String, Vec<Expression>>) {
+    let mut keep_loops = LoopKeeper::new(invars.keys().collect());
+    let mut crel = self.aligned_crel.as_ref()
+      .expect("Missing aligned CRel")
+      .map(&mut keep_loops);
+    crel.decorate_invariants(&invars);
+    self.accept_aligned_crel(crel);
+  }
+}
+
+impl OutputsAlignment for KestrelContext {
+  fn aligned_output(&self) -> &Option<String> {
+    &self.aligned_output
+  }
+
+  fn accept_aligned_output(&mut self, output: String) {
+    self.aligned_output = Some(output);
+  }
+
+  fn accept_output_path(&mut self, path: String) {
+    self.output_path = Some(path.clone());
+    self.output_filename = Some(Path::new(&path)
+      .file_name().unwrap()
+      .to_str().unwrap()
+      .to_string());
+  }
+
+  fn output_path(&self) -> &Option<String> {
+    &self.output_path
+  }
+
+  fn output_filename(&self) -> &Option<String> {
+    &self.output_filename
+  }
+}
+
+impl Stopwatch for KestrelContext {
+ fn mark_started(&mut self) {
+    self.stopwatch.mark_started();
+  }
+
+  fn mark_completed(&mut self) {
+    self.stopwatch.mark_completed();
+  }
+
+  fn push_task_time(&mut self, task_name: String, duration: Duration) {
+    self.stopwatch.push_task_time(task_name, duration);
+  }
+
+  fn task_timings(&self) -> Vec<(String, Duration)> {
+    self.stopwatch.task_timings()
+  }
+
+  fn total_elapsed_time(&self) -> Duration {
+    self.stopwatch.total_elapsed_time()
+  }
+
+  fn set_timings_from(&mut self, other: &dyn Stopwatch) {
+    self.stopwatch.set_timings_from(other);
+  }
+}

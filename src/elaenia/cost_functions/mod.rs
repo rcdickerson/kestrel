@@ -1,0 +1,4 @@
+//! Cost functions for Elaenia workflow.
+
+pub mod optimize_choice;
+pub mod optimize_complexity;

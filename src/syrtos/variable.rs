@@ -1,4 +1,4 @@
-use crate::syrtos::Expression;
+use crate::syrtos::Initializer;
 use crate::syrtos::Type;
 use crate::syrtos::Writer;
 
@@ -6,7 +6,8 @@ use crate::syrtos::Writer;
 pub struct Variable {
   name: String,
   ty: Type,
-  value: Option<Expression>,
+  initializer: Option<Initializer>,
+  is_array: bool,
   is_const: bool,
   is_ghost: bool,
   is_nullable: bool,
@@ -17,7 +18,8 @@ impl Variable {
     Variable {
       name,
       ty,
-      value: None,
+      initializer: None,
+      is_array: false,
       is_const: false,
       is_ghost: false,
       is_nullable: false,
@@ -29,8 +31,13 @@ impl Variable {
     self
   }
 
-  pub fn set_value(&mut self, value: &Expression) -> &Self {
-    self.value = Some(value.clone());
+  pub fn set_initializer(&mut self, init: Initializer) -> &Self {
+    self.initializer = Some(init);
+    self
+  }
+
+  pub fn set_array(&mut self, is_array: bool) -> &Self {
+    self.is_array = is_array;
     self
   }
 
@@ -60,14 +67,20 @@ impl Variable {
     }
     writer.write(&self.name);
     writer.write(": ");
-    self.ty.emit(writer);
+    if self.is_array {
+      writer.write("array<");
+      self.ty.emit(writer);
+      writer.write(">");
+    } else {
+      self.ty.emit(writer);
+    }
     if self.is_nullable {
       writer.write("?");
     }
-    match &self.value {
-      Some(value) => {
+    match &self.initializer {
+      Some(init) => {
         writer.write(" := ");
-        value.emit(writer, false);
+        init.emit(writer);
       }
       _ => ()
     }

@@ -1,0 +1,312 @@
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_structure
+Computed alignment by local loop counting.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:72 (2)
+
+*** Rejected
+    [0;31m[1751564852.0370 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:72 (2)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751564852.0460 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751564852.0461 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: false
+depth: 1
+cost function: optimize_choice
+Computed alignment by local loop counting.
+  UNSATISFIABLE ASSERTION Assert at sketch.sk:58 (4)
+
+*** Rejected
+    [0;31m[1751564853.3960 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at sketch.sk:58 (4)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1751564853.4020 - DEBUG] [SKETCH] stack trace written to file: /home/rob/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1751564853.4030 - DEBUG] Backend solver input file at /home/rob/.sketch/tmp/sketch.sk/input0.tmp[0m
+Failed to solve sketch.
+
+Beginning Iteration
+-------------------
+add_unrolls: true
+depth: 1
+cost function: optimize_structure
+Computed alignment by local loop counting.
+Writing Daikon to /home/rob/code/kestrel/.kestrel-work/daikon_output.c...
+Done
+Compiling Daikon output...
+Running Kvasir...
+==55611== kvasir-5.8.18, C/C++ Language Front-End for Daikon with DynComp comparability analysis tool.
+==55611== Copyright (C) 2007-2022, University of Washington CSE PLSE Group
+==55611== Using Valgrind-3.19.0.Fjalar and LibVEX; rerun with -h for copyright info
+==55611== Command: /home/rob/code/kestrel/.kestrel-work/daikon_output
+==55611== 
+==55612== 
+==55612== For lists of detected and suppressed errors, rerun with: -s
+==55612== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55613== 
+==55613== For lists of detected and suppressed errors, rerun with: -s
+==55613== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55614== 
+==55614== For lists of detected and suppressed errors, rerun with: -s
+==55614== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55615== 
+==55615== For lists of detected and suppressed errors, rerun with: -s
+==55615== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55616== 
+==55616== For lists of detected and suppressed errors, rerun with: -s
+==55616== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55617== 
+==55617== For lists of detected and suppressed errors, rerun with: -s
+==55617== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55618== 
+==55618== For lists of detected and suppressed errors, rerun with: -s
+==55618== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55619== 
+==55619== For lists of detected and suppressed errors, rerun with: -s
+==55619== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55620== 
+==55620== For lists of detected and suppressed errors, rerun with: -s
+==55620== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55621== 
+==55621== For lists of detected and suppressed errors, rerun with: -s
+==55621== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55622== 
+==55622== For lists of detected and suppressed errors, rerun with: -s
+==55622== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55623== 
+==55623== For lists of detected and suppressed errors, rerun with: -s
+==55623== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55624== 
+==55624== For lists of detected and suppressed errors, rerun with: -s
+==55624== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55625== 
+==55625== For lists of detected and suppressed errors, rerun with: -s
+==55625== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55626== 
+==55626== For lists of detected and suppressed errors, rerun with: -s
+==55626== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55628== 
+==55628== For lists of detected and suppressed errors, rerun with: -s
+==55628== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55629== 
+==55629== For lists of detected and suppressed errors, rerun with: -s
+==55629== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55630== 
+==55630== For lists of detected and suppressed errors, rerun with: -s
+==55630== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55631== 
+==55631== For lists of detected and suppressed errors, rerun with: -s
+==55631== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55632== 
+==55632== For lists of detected and suppressed errors, rerun with: -s
+==55632== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==55611== 
+==55611== For lists of detected and suppressed errors, rerun with: -s
+==55611== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Running Daikon...
+houdafny.dfy(23,2): Warning: assume statement has no {:axiom} annotation
+   |
+23 |   assume (l_N == r_N) && (l_N > 0);
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(42,4): Warning: assume statement has no {:axiom} annotation
+   |
+42 |     assume (0 <= l_r) && (l_r < 50);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(49,4): Warning: assume statement has no {:axiom} annotation
+   |
+49 |     assume (0 <= l_r) && (l_r < 50);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(67,4): Warning: assume statement has no {:axiom} annotation
+   |
+67 |     assume (0 <= l_r) && (l_r < 50);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(80,6): Warning: assume statement has no {:axiom} annotation
+   |
+80 |       assume !(r_i <= r_N);
+   |       ^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(83,6): Warning: assume statement has no {:axiom} annotation
+   |
+83 |       assume (0 <= l_r) && (l_r < 50);
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+houdafny.dfy(94,6): Warning: assume statement has no {:axiom} annotation
+   |
+94 |       assume !(l_i <= l_N);
+   |       ^^^^^^^^^^^^^^^^^^^^^
+
+
+Dafny program verifier finished with 1 verified, 0 errors
+
+
+Aligned Product Program
+-----------------------
+
+function randB(max: int): int
+
+function havoc_2(r_i: int, r_r: int, l_r: int, l_i: int, r_N: int, l_x: int, l_N: int, r_x: int): int
+
+function havoc_4(r_i: int, r_r: int, l_r: int, l_i: int, r_N: int, l_x: int, l_N: int, r_x: int): int
+
+function choice_n_5(r_i: int, r_r: int, l_r: int, l_i: int, r_N: int, l_x: int, l_N: int, r_x: int): int {
+  l_r
+ }
+
+function choice_n_1(r_i: int, l_i: int, r_N: int, l_x: int, l_N: int, l_r: int, r_x: int): int {
+  r_x
+ }
+
+function choice_n_3(r_i: int, r_r: int, l_r: int, l_i: int, r_N: int, l_x: int, l_N: int, r_x: int): int {
+  l_x
+ }
+
+method Product(l_N: int, r_N: int)
+  decreases *
+{
+  assume (l_N == r_N) && (l_N > 0);
+  var l_x: int;
+  l_x := 0;
+  var l_i: int;
+  l_i := 0;
+  var l_r: int;
+  l_r := 0;
+  var r_x: int;
+  r_x := 0;
+  var r_i: int;
+  r_i := 1;
+  var n_1: int := choice_n_1(r_i, l_i, r_N, l_x, l_N, l_r, r_x);
+  assert (0 <= n_1) && (n_1 < 100);
+  r_x := n_1;
+  var r_r: int;
+  r_r := 0;
+  if (l_i <= l_N) {
+    assert true;
+    l_r := havoc_2(r_i, r_r, l_r, l_i, r_N, l_x, l_N, r_x);
+    assume (0 <= l_r) && (l_r < 50);
+    l_x := (l_x + l_r);
+    l_i := (l_i + 1);
+  }
+  if (l_i <= l_N) {
+    assert true;
+    l_r := havoc_2(r_i, r_r, l_r, l_i, r_N, l_x, l_N, r_x);
+    assume (0 <= l_r) && (l_r < 50);
+    l_x := (l_x + l_r);
+    l_i := (l_i + 1);
+  }
+  if (r_i <= r_N) {
+    var n_3: int := choice_n_3(r_i, r_r, l_r, l_i, r_N, l_x, l_N, r_x);
+    assert (0 <= n_3) && (n_3 < 100);
+    r_r := n_3;
+    r_x := (r_x + r_r);
+    r_i := (r_i + 1);
+  }
+  while ((l_i <= l_N) && (r_i <= r_N))
+    decreases *
+    invariant l_x == r_x
+    invariant l_i == r_i
+  {
+    assert true;
+    l_r := havoc_4(r_i, r_r, l_r, l_i, r_N, l_x, l_N, r_x);
+    assume (0 <= l_r) && (l_r < 50);
+    l_x := (l_x + l_r);
+    l_i := (l_i + 1);
+    var n_5: int := choice_n_5(r_i, r_r, l_r, l_i, r_N, l_x, l_N, r_x);
+    assert (0 <= n_5) && (n_5 < 100);
+    r_r := n_5;
+    r_x := (r_x + r_r);
+    r_i := (r_i + 1);
+  }
+  if (l_i <= l_N) {
+    while (l_i <= l_N)
+      decreases *
+    {
+      assume !(r_i <= r_N);
+      assert true;
+      l_r := havoc_2(r_i, r_r, l_r, l_i, r_N, l_x, l_N, r_x);
+      assume (0 <= l_r) && (l_r < 50);
+      l_x := (l_x + l_r);
+      l_i := (l_i + 1);
+    }
+  }
+  if (r_i <= r_N) {
+    while (r_i <= r_N)
+      decreases *
+      invariant l_x == r_x
+      invariant l_i == r_i
+    {
+      assume !(l_i <= l_N);
+      var n_3: int := choice_n_3(r_i, r_r, l_r, l_i, r_N, l_x, l_N, r_x);
+      assert (0 <= n_3) && (n_3 < 100);
+      r_r := n_3;
+      r_x := (r_x + r_r);
+      r_i := (r_i + 1);
+    }
+  }
+  assert l_x == r_x;
+}
+
+
+Per-Task Times (ms)
+-------------------
+insert-elaenia-specs: 0
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 2
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 1358
+elaenia-invars: 0
+houdafny: 0
+compound_task: 1362
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 2
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 1354
+elaenia-invars: 0
+houdafny: 0
+compound_task: 1356
+set-parameters: 0
+print-info: 0
+elaenia-syntactic-alignment: 2
+aligned-crel: 0
+print-info: 0
+print-info: 0
+insert-elaenia-specs: 0
+write-sketch: 0
+solve-sketch: 916
+elaenia-invars: 2171
+houdafny: 1168
+repeat_range: 6978
+write-dafny: 0
+print-info: 0
+
+
+Extraction Settings
+-------------------
+Max AST Depth: 1
+Loop unrolling: true
+Cost function: structure
+Max AST Depth: 1
+
+Elaenia completed in 6979ms
+Verified: true

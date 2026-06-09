@@ -19,6 +19,7 @@ define_language! {
     ">"   = Gt([Id; 2]),
     ">="  = Gte([Id; 2]),
     "=="  = Eq([Id; 2]),
+    "=a=" = ArrayEq([Id; 2]),
     "!="  = Neq([Id; 2]),
     "&&"  = And([Id; 2]),
     "||"  = Or([Id; 2]),
@@ -33,8 +34,11 @@ define_language! {
     "index"         = Index([Id; 2]),
     "seq"           = Seq([Id; 2]),
     "assert"        = Assert(Id),
+    "assume"        = Assume(Id),
     "break"         = Break,
     "skip"          = Skip,
+    "sketch-hole"   = SketchHole,
+    "ternary"       = Ternary([Id; 3]),
 
     // An abbreviated form of :
     //   while c1 && c2 { b1; b2 };
@@ -65,7 +69,8 @@ define_language! {
     // Declarations
     "declaration" = Declaration([Id; 3]),
     "param-declaration" = ParamDeclaration([Id; 2]),
-    "initializer" = Initializer(Id),
+    "initializer-expr" = ExpressionInitializer(Id),
+    "initializer-list" = ListInitializer(Id),
     "fun-declarator" = FunDeclarator([Id; 2]),
     "sized-array" = SizedArray([Id; 2]),
     "array-sizes" = ArraySizes(Box<[Id]>),
@@ -78,6 +83,7 @@ define_language! {
 
     // Functions
     "call"        = Call(Box<[Id]>),
+    "choice-call" = ChoiceCall(Box<[Id]>),
     "fundef"      = FunDef([Id; 4]),
     "args"        = Args(Box<[Id]>),
     "params"      = Params(Box<[Id]>),
@@ -88,7 +94,8 @@ define_language! {
     "basic-block" = BasicBlock(Box<[Id]>),
 
     // Literals
-    "const-int"  = ConstInt(Id),
+    "const-bool"  = ConstBool(Id),
+    "const-int"   = ConstInt(Id),
     "const-float" = ConstFloat(Id),
     Num(usize),
     Identifier(Symbol),
@@ -100,6 +107,5 @@ define_language! {
     "<|"  = RelLeft(Id),
     "|>"  = RelRight(Id),
     "while-rel" = WhileRel([Id; 7]),
-    "if-rel"    = IfRel([Id; 6]),
   }
 }

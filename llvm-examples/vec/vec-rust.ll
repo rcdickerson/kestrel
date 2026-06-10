@@ -1,0 +1,4832 @@
+; ModuleID = 'vec.b9aa750463ab79bf-cgu.0'
+source_filename = "vec.b9aa750463ab79bf-cgu.0"
+target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
+target triple = "x86_64-unknown-linux-gnu"
+
+%"core::mem::maybe_uninit::MaybeUninit<[u8; 8]>" = type { [8 x i8] }
+
+@alloc_3e1ebac14318b612ab4efabc52799932 = private unnamed_addr constant [186 x i8] c"unsafe precondition(s) violated: usize::unchecked_add cannot overflow\0A\0AThis indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety.", align 1
+@anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0 = private unnamed_addr constant <{ [8 x i8], [8 x i8] }> <{ [8 x i8] zeroinitializer, [8 x i8] undef }>, align 8
+@alloc_db07ae5a9ce650d9b7cc970d048e6f0c = private unnamed_addr constant [186 x i8] c"unsafe precondition(s) violated: usize::unchecked_mul cannot overflow\0A\0AThis indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety.", align 1
+@alloc_a3d2b5d5ca5ae6cb8e15f957d2e3fcf3 = private unnamed_addr constant [76 x i8] c"/rustc/1159e78c4747b02ef996e55082b704c09b970588/library/core/src/num/mod.rs\00", align 1
+@alloc_dedc3316d8095c6818acf3bea79285b7 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_a3d2b5d5ca5ae6cb8e15f957d2e3fcf3, [16 x i8] c"K\00\00\00\00\00\00\00\E0\04\00\00\05\00\00\00" }>, align 8
+@alloc_fad0cd83b7d1858a846a172eb260e593 = private unnamed_addr constant [42 x i8] c"is_aligned_to: align is not a power-of-two", align 1
+@alloc_e92e94d0ff530782b571cfd99ec66aef = private unnamed_addr constant <{ ptr, [8 x i8] }> <{ ptr @alloc_fad0cd83b7d1858a846a172eb260e593, [8 x i8] c"*\00\00\00\00\00\00\00" }>, align 8
+@alloc_e3122ba88327f96970ccc11fb79a6996 = private unnamed_addr constant [82 x i8] c"/rustc/1159e78c4747b02ef996e55082b704c09b970588/library/core/src/ptr/const_ptr.rs\00", align 1
+@alloc_863114602ff53edf107e51a9c9035fa2 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_e3122ba88327f96970ccc11fb79a6996, [16 x i8] c"Q\00\00\00\00\00\00\00\92\05\00\00\0D\00\00\00" }>, align 8
+@alloc_bd3468a7b96187f70c1ce98a3e7a63bf = private unnamed_addr constant [283 x i8] c"unsafe precondition(s) violated: ptr::copy_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap\0A\0AThis indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety.", align 1
+@alloc_2875d9f120b8cc0de1c30c014c7b6715 = private unnamed_addr constant [283 x i8] c"unsafe precondition(s) violated: ptr::swap_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap\0A\0AThis indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety.", align 1
+@alloc_c56eb266e2eb0583f6d9c32f34e15f34 = private unnamed_addr constant [79 x i8] c"/rustc/1159e78c4747b02ef996e55082b704c09b970588/library/core/src/iter/range.rs\00", align 1
+@alloc_fd64454da950bfc3a5094deff8af2c1a = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_c56eb266e2eb0583f6d9c32f34e15f34, [16 x i8] c"N\00\00\00\00\00\00\00\AB\01\00\00\01\00\00\00" }>, align 8
+@alloc_5ee6cd0de5bab89c84438a39fb5fb08c = private unnamed_addr constant [221 x i8] c"unsafe precondition(s) violated: ptr::copy requires that both pointer arguments are aligned and non-null\0A\0AThis indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety.", align 1
+@alloc_5f856c9c5a649671acdbf03081b5c1d0 = private unnamed_addr constant [221 x i8] c"unsafe precondition(s) violated: ptr::replace requires that the pointer argument is aligned and non-null\0A\0AThis indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety.", align 1
+@alloc_560a59ed819b9d9a5841f6e731c4c8e5 = private unnamed_addr constant [210 x i8] c"unsafe precondition(s) violated: NonNull::new_unchecked requires that the pointer is non-null\0A\0AThis indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety.", align 1
+@alloc_64e308ef4babfeb8b6220184de794a17 = private unnamed_addr constant [221 x i8] c"unsafe precondition(s) violated: hint::assert_unchecked must never be called when the condition is false\0A\0AThis indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety.", align 1
+@alloc_1be5ea12ba708d9a11b6e93a7d387a75 = private unnamed_addr constant [281 x i8] c"unsafe precondition(s) violated: Layout::from_size_align_unchecked requires that align is a power of 2 and the rounded-up allocation size does not exceed isize::MAX\0A\0AThis indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety.", align 1
+@alloc_fcfc72ba160b068cd397c5f3b5c50193 = private unnamed_addr constant [81 x i8] c"/rustc/1159e78c4747b02ef996e55082b704c09b970588/library/core/src/alloc/layout.rs\00", align 1
+@alloc_6cbafdbbc16bd54f947f743d383ddf32 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_fcfc72ba160b068cd397c5f3b5c50193, [16 x i8] c"P\00\00\00\00\00\00\00V\01\00\00\12\00\00\00" }>, align 8
+@alloc_1d6e4bfe7d2b96ab3af8255b2a238662 = private unnamed_addr constant [21 x i8] c"dest is out of bounds", align 1
+@alloc_28a99374df9f6a24257b657befd73a1e = private unnamed_addr constant <{ ptr, [8 x i8] }> <{ ptr @alloc_1d6e4bfe7d2b96ab3af8255b2a238662, [8 x i8] c"\15\00\00\00\00\00\00\00" }>, align 8
+@alloc_6e55a9a35d865776db17ea7feabc5377 = private unnamed_addr constant [76 x i8] c"/rustc/1159e78c4747b02ef996e55082b704c09b970588/library/core/src/ptr/mod.rs\00", align 1
+@alloc_e950d2cbe5a1f3be947ddf29520cc447 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_6e55a9a35d865776db17ea7feabc5377, [16 x i8] c"K\00\00\00\00\00\00\00r\02\00\00\09\00\00\00" }>, align 8
+@alloc_8ea069ad6adec5a06a2a02df3a9e63e3 = private unnamed_addr constant [33 x i8] c"assertion failed: k <= self.len()", align 1
+@alloc_ea2aa99b40d18172244ac5425fc833e9 = private unnamed_addr constant [78 x i8] c"/rustc/1159e78c4747b02ef996e55082b704c09b970588/library/core/src/slice/mod.rs\00", align 1
+@alloc_ee03dea50baa6bbd4fcd9295607ecf8e = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_ea2aa99b40d18172244ac5425fc833e9, [16 x i8] c"M\00\00\00\00\00\00\00`\0E\00\00\09\00\00\00" }>, align 8
+@alloc_d1084648e479974e70c9329824bf76f9 = private unnamed_addr constant [9 x i8] c"mid > len", align 1
+@alloc_716ff0773fff869d3b6edfdef8f974a4 = private unnamed_addr constant <{ ptr, [8 x i8] }> <{ ptr @alloc_d1084648e479974e70c9329824bf76f9, [8 x i8] c"\09\00\00\00\00\00\00\00" }>, align 8
+@alloc_3bcb7a2d1936a26846ce8b498dc9c73b = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_ea2aa99b40d18172244ac5425fc833e9, [16 x i8] c"M\00\00\00\00\00\00\00\8E\08\00\00 \00\00\00" }>, align 8
+@alloc_22d400c7b835b5bba9ba03229c44bdea = private unnamed_addr constant [52 x i8] c"destination and source slices have different lengths", align 1
+@alloc_940028eef1a3be8e8d7847074d3f96b9 = private unnamed_addr constant <{ ptr, [8 x i8] }> <{ ptr @alloc_22d400c7b835b5bba9ba03229c44bdea, [8 x i8] c"4\00\00\00\00\00\00\00" }>, align 8
+@alloc_6b0b11c9e93314b588b613b55005cf18 = private unnamed_addr constant [221 x i8] c"unsafe precondition(s) violated: slice::split_at_mut_unchecked requires the index to be within the slice\0A\0AThis indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety.", align 1
+@alloc_f7192d85903faa6e3e7a0ae26b7c40f8 = private unnamed_addr constant [78 x i8] c"/rustc/1159e78c4747b02ef996e55082b704c09b970588/library/core/src/ub_checks.rs\00", align 1
+@alloc_c546c23a9ba92cfed6659b88891d1475 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_f7192d85903faa6e3e7a0ae26b7c40f8, [16 x i8] c"M\00\00\00\00\00\00\00\94\00\00\006\00\00\00" }>, align 8
+@alloc_5c1a2f972552229672fc942406cfc298 = private unnamed_addr constant [283 x i8] c"unsafe precondition(s) violated: slice::from_raw_parts_mut requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`\0A\0AThis indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety.", align 1
+@alloc_43d35a14c992c8e65bf34e940e23c654 = private unnamed_addr constant [80 x i8] c"/rustc/1159e78c4747b02ef996e55082b704c09b970588/library/core/src/slice/index.rs\00", align 1
+@alloc_fbdf8a2fe403f7a54c6f7ede5e097c6d = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_43d35a14c992c8e65bf34e940e23c654, [16 x i8] c"O\00\00\00\00\00\00\00Z\03\00\004\00\00\00" }>, align 8
+@alloc_c7dab0e5d9681c0687828c3a3e231129 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_43d35a14c992c8e65bf34e940e23c654, [16 x i8] c"O\00\00\00\00\00\00\00a\03\00\002\00\00\00" }>, align 8
+@alloc_6cf8335a41b6142a88e4fdda35b36d5f = private unnamed_addr constant [80 x i8] c"/rustc/1159e78c4747b02ef996e55082b704c09b970588/library/core/src/ptr/mut_ptr.rs\00", align 1
+@alloc_ccc8df90bcd31f00cc1ef6258c4f5fcb = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_6cf8335a41b6142a88e4fdda35b36d5f, [16 x i8] c"O\00\00\00\00\00\00\00\02\06\00\00\12\00\00\00" }>, align 8
+@alloc_9d79d8c062dffecfb60990b27bb153d1 = private unnamed_addr constant [81 x i8] c"/rustc/1159e78c4747b02ef996e55082b704c09b970588/library/core/src/slice/rotate.rs\00", align 1
+@alloc_75f738e45fcea5f863bbdf53853be947 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_9d79d8c062dffecfb60990b27bb153d1, [16 x i8] c"P\00\00\00\00\00\00\00\03\01\00\00\15\00\00\00" }>, align 8
+@alloc_445d36c51cd8939727988f9e2beafd2f = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_9d79d8c062dffecfb60990b27bb153d1, [16 x i8] c"P\00\00\00\00\00\00\00\F3\00\00\00\15\00\00\00" }>, align 8
+@alloc_5cdae0d4da70f085aa332804c095a7c9 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_6e55a9a35d865776db17ea7feabc5377, [16 x i8] c"K\00\00\00\00\00\00\00\0F\02\00\00\05\00\00\00" }>, align 8
+@alloc_763310d78c99c2c1ad3f8a9821e942f3 = private unnamed_addr constant [61 x i8] c"is_nonoverlapping: `size_of::<T>() * count` overflows a usize", align 1
+@alloc_1ed849c6ee52a8526306210aa0274020 = private unnamed_addr constant [77 x i8] c"/rustc/1159e78c4747b02ef996e55082b704c09b970588/library/alloc/src/vec/mod.rs\00", align 1
+@alloc_c6bb06645422f63e5caafbecf5372290 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_1ed849c6ee52a8526306210aa0274020, [16 x i8] c"L\00\00\00\00\00\00\00\8A\06\00\00\12\00\00\00" }>, align 8
+@alloc_52d95b50b454bcb389e2cb9db2f24cf0 = private unnamed_addr constant [81 x i8] c"/rustc/1159e78c4747b02ef996e55082b704c09b970588/library/core/src/ptr/non_null.rs\00", align 1
+@alloc_827fc580ae74785f56b1507bfd6b2422 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_52d95b50b454bcb389e2cb9db2f24cf0, [16 x i8] c"P\00\00\00\00\00\00\00l\05\00\00\12\00\00\00" }>, align 8
+@alloc_8e97afaeee774873d13f09bb95d8211a = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_52d95b50b454bcb389e2cb9db2f24cf0, [16 x i8] c"P\00\00\00\00\00\00\00\09\01\00\00\1B\00\00\00" }>, align 8
+@anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.1 = private unnamed_addr constant <{ [8 x i8], [8 x i8] }> <{ [8 x i8] c"\01\00\00\00\00\00\00\80", [8 x i8] undef }>, align 8
+@alloc_a7fa9d3fb4e500bb0a05d64fc033e7e6 = private unnamed_addr constant [81 x i8] c"/rustc/1159e78c4747b02ef996e55082b704c09b970588/library/alloc/src/raw_vec/mod.rs\00", align 1
+@alloc_b843684ea72bd7c23df9545c2c214a39 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_a7fa9d3fb4e500bb0a05d64fc033e7e6, [16 x i8] c"P\00\00\00\00\00\00\00\17\02\00\005\00\00\00" }>, align 8
+@alloc_fdb538210a3621dd812e8ce41fce3b1b = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_a7fa9d3fb4e500bb0a05d64fc033e7e6, [16 x i8] c"P\00\00\00\00\00\00\00\18\02\00\00\1E\00\00\00" }>, align 8
+@alloc_6063ead69d50f7a7c922c644d29332a1 = private unnamed_addr constant [79 x i8] c"/rustc/1159e78c4747b02ef996e55082b704c09b970588/library/core/src/ptr/unique.rs\00", align 1
+@alloc_bc704b58ff50e4ee5adaad05a93e255b = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_6063ead69d50f7a7c922c644d29332a1, [16 x i8] c"N\00\00\00\00\00\00\00X\00\00\00$\00\00\00" }>, align 8
+@alloc_b35a3211fdaebd94ee4323cc79deaead = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_a7fa9d3fb4e500bb0a05d64fc033e7e6, [16 x i8] c"P\00\00\00\00\00\00\00\DD\02\00\003\00\00\00" }>, align 8
+@alloc_c7508afe75565ec65fb29e9c9b96c524 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_a7fa9d3fb4e500bb0a05d64fc033e7e6, [16 x i8] c"P\00\00\00\00\00\00\00\DE\02\00\00\22\00\00\00" }>, align 8
+@alloc_1a1d8cb79ef47a3843fada63c3e7a828 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_a7fa9d3fb4e500bb0a05d64fc033e7e6, [16 x i8] c"P\00\00\00\00\00\00\00c\02\00\00\0D\00\00\00" }>, align 8
+@alloc_e32c9f49965bcd982ae19540c5ba95f8 = private unnamed_addr constant [36 x i8] c"Tried to shrink to a larger capacity", align 1
+@alloc_52f548b6953b1f75b3b067c87f664dd5 = private unnamed_addr constant <{ ptr, [8 x i8] }> <{ ptr @alloc_e32c9f49965bcd982ae19540c5ba95f8, [8 x i8] c"$\00\00\00\00\00\00\00" }>, align 8
+@alloc_8e71fe95569f166f35ae210d9d8f03fb = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_a7fa9d3fb4e500bb0a05d64fc033e7e6, [16 x i8] c"P\00\00\00\00\00\00\00\B9\02\00\00\09\00\00\00" }>, align 8
+@alloc_e4a41f3244bedccdc1cc07eda892a496 = private unnamed_addr constant [75 x i8] c"/rustc/1159e78c4747b02ef996e55082b704c09b970588/library/alloc/src/alloc.rs\00", align 1
+@alloc_f7e59eafaaa863f0e693d2b1e968d7c1 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_e4a41f3244bedccdc1cc07eda892a496, [16 x i8] c"J\00\00\00\00\00\00\00B\01\00\00\11\00\00\00" }>, align 8
+@alloc_395eb72583a779fbfaecb780b608482a = private unnamed_addr constant [7 x i8] c"vec.rs\00", align 1
+@alloc_0fd2452616de0877d1117a43dc5d90ce = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00\15\00\00\00\18\00\00\00" }>, align 8
+@alloc_81e7f85290d411817b909193b324fe5d = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00\16\00\00\00\0C\00\00\00" }>, align 8
+@alloc_c3dfcf74be379622f6656e59538804de = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00\17\00\00\009\00\00\00" }>, align 8
+@alloc_48020fe56060af98110b606585944509 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00\18\00\00\00%\00\00\00" }>, align 8
+@alloc_7f6166f516c439965104e4812b22b89a = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00\18\00\00\00\17\00\00\00" }>, align 8
+@alloc_4fb11a6b2e2b1cc5c5bf132426b6c7dc = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00 \00\00\00\18\00\00\00" }>, align 8
+@alloc_d48f4f53c2314360e939512a99eeb9b9 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00\22\00\00\00\1E\00\00\00" }>, align 8
+@alloc_60e4055e631b7e6fdef72936ed35c959 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00#\00\00\00\17\00\00\00" }>, align 8
+@alloc_6c6f5722775aa1550adc0149477f711a = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\008\00\00\00\1A\00\00\00" }>, align 8
+@alloc_d5a50a0e50e6f3d28f5df43600647d90 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00:\00\00\00\17\00\00\00" }>, align 8
+@alloc_8b19964faed6a0bf339c3406354f1692 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00C\00\00\00\18\00\00\00" }>, align 8
+@alloc_ab8963c2cef9e24181a675e1b33dde7b = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00D\00\00\00\13\00\00\00" }>, align 8
+@alloc_0867b3dfc5d2c228c11bd476dab4a4fd = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00F\00\00\00\1D\00\00\00" }>, align 8
+@alloc_031271eb85ad69ec9bab72a4bddd6e96 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00F\00\00\00\12\00\00\00" }>, align 8
+@alloc_b90abfee72441a25947009aeed475893 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00B\00\00\00\09\00\00\00" }>, align 8
+@alloc_4f9c4013f3ce07e74df828db080ca103 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00M\00\00\00\13\00\00\00" }>, align 8
+@alloc_96905ba5ea007b95c0d3337af17b9829 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00N\00\00\00\13\00\00\00" }>, align 8
+@alloc_70677258a21939ac134a5a1c8915b783 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00O\00\00\00\19\00\00\00" }>, align 8
+@alloc_3d594e81a1363d6a6bd4716680c97d7e = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00O\00\00\00\18\00\00\00" }>, align 8
+@alloc_2ea7acb71b32918bb458705e164f64f0 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00P\00\00\00$\00\00\00" }>, align 8
+@alloc_7be8bde8e8708be578012ca37fe26d6b = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00P\00\00\00\13\00\00\00" }>, align 8
+@alloc_9369aa85704a28572c5b936847f3197e = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00V\00\00\00\13\00\00\00" }>, align 8
+@alloc_c6d9a57eb8d0938bcca9809dcb429aa8 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00W\00\00\00\13\00\00\00" }>, align 8
+@alloc_a2b3454adb2a7bf29b4472c98c78af1b = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00X\00\00\00*\00\00\00" }>, align 8
+@alloc_deca47cbd3f13c6854948efe099d2191 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00X\00\00\00$\00\00\00" }>, align 8
+@alloc_c4ac4437505554b8bf89bf7f1fc0b779 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00X\00\00\00\13\00\00\00" }>, align 8
+@alloc_179d133c0ee58b7f135c2827fdfdb37d = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00a\00\00\00\11\00\00\00" }>, align 8
+@alloc_a59ce246985cc3a75f04dbe8cc62b18b = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00b\00\00\00\11\00\00\00" }>, align 8
+@alloc_19e7fed5e75ce30512ee7c9aa7382bd5 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00h\00\00\00+\00\00\00" }>, align 8
+@alloc_6c1e05324ee4fe5ef4bbd1d370bd1877 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00i\00\00\00\18\00\00\00" }>, align 8
+@alloc_5830960b4db6c988bdabc8ebe648910c = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00i\00\00\000\00\00\00" }>, align 8
+@alloc_922b4aca0ef064364eb888ea581266b9 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00i\00\00\00,\00\00\00" }>, align 8
+@alloc_96aaf5ba9a27534a6929858745f659a5 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00e\00\00\00+\00\00\00" }>, align 8
+@alloc_568ba8636d3ed3cbb687b50001cf3a8f = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00f\00\00\00\1B\00\00\00" }>, align 8
+@alloc_ac41f8096d09932a5dec227074c53ff8 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00f\00\00\00\17\00\00\00" }>, align 8
+@alloc_1cfb1b388cf58eae86712e64bbc28d42 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00f\00\00\001\00\00\00" }>, align 8
+@alloc_6880694d80016c83f67e68b81ceb4690 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_395eb72583a779fbfaecb780b608482a, [16 x i8] c"\06\00\00\00\00\00\00\00k\00\00\00\0C\00\00\00" }>, align 8
+
+; <core::ops::range::Range<usize> as core::slice::index::SliceIndex<[T]>>::index_mut
+; Function Attrs: inlinehint nonlazybind uwtable
+define { ptr, i64 } @"_ZN106_$LT$core..ops..range..Range$LT$usize$GT$$u20$as$u20$core..slice..index..SliceIndex$LT$$u5b$T$u5d$$GT$$GT$9index_mut17h56d09af24db3f151E"(i64 %self.0, i64 %self.1, ptr align 1 %slice.0, i64 %slice.1, ptr align 8 %0) unnamed_addr #0 {
+start:
+  %_5 = alloca [16 x i8], align 8
+  %_13 = icmp ult i64 %self.1, %self.0
+  br i1 %_13, label %bb3, label %bb4
+
+bb4:                                              ; preds = %start
+  %_14 = sub nuw i64 %self.1, %self.0
+  %1 = getelementptr inbounds i8, ptr %_5, i64 8
+  store i64 %_14, ptr %1, align 8
+  store i64 1, ptr %_5, align 8
+  %2 = getelementptr inbounds i8, ptr %_5, i64 8
+  %new_len = load i64, ptr %2, align 8
+  %_8 = icmp ugt i64 %self.1, %slice.1
+  br i1 %_8, label %bb1, label %bb2
+
+bb3:                                              ; preds = %start
+; call core::slice::index::slice_index_order_fail
+  call void @_ZN4core5slice5index22slice_index_order_fail17heab0cef01ebb2d7fE(i64 %self.0, i64 %self.1, ptr align 8 %0) #16
+  unreachable
+
+bb2:                                              ; preds = %bb4
+  %_16 = getelementptr inbounds nuw i8, ptr %slice.0, i64 %self.0
+  %3 = insertvalue { ptr, i64 } poison, ptr %_16, 0
+  %4 = insertvalue { ptr, i64 } %3, i64 %new_len, 1
+  ret { ptr, i64 } %4
+
+bb1:                                              ; preds = %bb4
+; call core::slice::index::slice_end_index_len_fail
+  call void @_ZN4core5slice5index24slice_end_index_len_fail17hb04774ae50b54dc9E(i64 %self.1, i64 %slice.1, ptr align 8 %0) #16
+  unreachable
+}
+
+; <core::ops::range::RangeTo<usize> as core::slice::index::SliceIndex<[T]>>::index_mut
+; Function Attrs: inlinehint nonlazybind uwtable
+define { ptr, i64 } @"_ZN108_$LT$core..ops..range..RangeTo$LT$usize$GT$$u20$as$u20$core..slice..index..SliceIndex$LT$$u5b$T$u5d$$GT$$GT$9index_mut17hde09201e7972c57fE"(i64 %self, ptr align 1 %slice.0, i64 %slice.1, ptr align 8 %0) unnamed_addr #0 {
+start:
+; call <core::ops::range::Range<usize> as core::slice::index::SliceIndex<[T]>>::index_mut
+  %1 = call { ptr, i64 } @"_ZN106_$LT$core..ops..range..Range$LT$usize$GT$$u20$as$u20$core..slice..index..SliceIndex$LT$$u5b$T$u5d$$GT$$GT$9index_mut17h56d09af24db3f151E"(i64 0, i64 %self, ptr align 1 %slice.0, i64 %slice.1, ptr align 8 %0)
+  %_0.0 = extractvalue { ptr, i64 } %1, 0
+  %_0.1 = extractvalue { ptr, i64 } %1, 1
+  %2 = insertvalue { ptr, i64 } poison, ptr %_0.0, 0
+  %3 = insertvalue { ptr, i64 } %2, i64 %_0.1, 1
+  ret { ptr, i64 } %3
+}
+
+; <core::result::Result<T,F> as core::ops::try_trait::FromResidual<core::result::Result<core::convert::Infallible,E>>>::from_residual
+; Function Attrs: inlinehint nonlazybind uwtable
+define zeroext i1 @"_ZN153_$LT$core..result..Result$LT$T$C$F$GT$$u20$as$u20$core..ops..try_trait..FromResidual$LT$core..result..Result$LT$core..convert..Infallible$C$E$GT$$GT$$GT$13from_residual17h8416fd7878346931E"(ptr align 8 %0) unnamed_addr #0 {
+start:
+  ret i1 true
+}
+
+; core::intrinsics::cold_path
+; Function Attrs: cold nounwind nonlazybind uwtable
+define internal void @_ZN4core10intrinsics9cold_path17h5f911c730b7cfc63E() unnamed_addr #1 {
+start:
+  ret void
+}
+
+; core::cmp::Ord::max
+; Function Attrs: inlinehint nonlazybind uwtable
+define i64 @_ZN4core3cmp3Ord3max17hb75eb9ad28594c42E(i64 %0, i64 %1) unnamed_addr #0 personality ptr @rust_eh_personality {
+start:
+  %2 = alloca [16 x i8], align 8
+  %_6 = alloca [1 x i8], align 1
+  %_0 = alloca [8 x i8], align 8
+  %other = alloca [8 x i8], align 8
+  %self = alloca [8 x i8], align 8
+  store i64 %0, ptr %self, align 8
+  store i64 %1, ptr %other, align 8
+  store i8 1, ptr %_6, align 1
+  %_3.i = load i64, ptr %other, align 8
+  %_4.i = load i64, ptr %self, align 8
+  %_0.i = icmp ult i64 %_3.i, %_4.i
+  br label %bb1
+
+bb5:                                              ; preds = %cleanup
+  br label %bb9
+
+cleanup:                                          ; No predecessors!
+  %3 = landingpad { ptr, i32 }
+          cleanup
+  %4 = extractvalue { ptr, i32 } %3, 0
+  %5 = extractvalue { ptr, i32 } %3, 1
+  store ptr %4, ptr %2, align 8
+  %6 = getelementptr inbounds i8, ptr %2, i64 8
+  store i32 %5, ptr %6, align 8
+  br label %bb5
+
+bb1:                                              ; preds = %start
+  br i1 %_0.i, label %bb2, label %bb3
+
+bb3:                                              ; preds = %bb1
+  %7 = load i64, ptr %other, align 8
+  store i64 %7, ptr %_0, align 8
+  %8 = load i8, ptr %_6, align 1
+  %9 = trunc nuw i8 %8 to i1
+  br i1 %9, label %bb7, label %bb4
+
+bb2:                                              ; preds = %bb1
+  store i8 0, ptr %_6, align 1
+  %10 = load i64, ptr %self, align 8
+  store i64 %10, ptr %_0, align 8
+  br label %bb4
+
+bb4:                                              ; preds = %bb2, %bb7, %bb3
+  %11 = load i64, ptr %_0, align 8
+  ret i64 %11
+
+bb7:                                              ; preds = %bb3
+  br label %bb4
+
+bb9:                                              ; preds = %bb5
+  %12 = load i8, ptr %_6, align 1
+  %13 = trunc nuw i8 %12 to i1
+  br i1 %13, label %bb8, label %bb6
+
+bb6:                                              ; preds = %bb8, %bb9
+  %14 = load ptr, ptr %2, align 8
+  %15 = getelementptr inbounds i8, ptr %2, i64 8
+  %16 = load i32, ptr %15, align 8
+  %17 = insertvalue { ptr, i32 } poison, ptr %14, 0
+  %18 = insertvalue { ptr, i32 } %17, i32 %16, 1
+  resume { ptr, i32 } %18
+
+bb8:                                              ; preds = %bb9
+  br label %bb6
+}
+
+; core::num::<impl usize>::unchecked_add::precondition_check
+; Function Attrs: inlinehint nounwind nonlazybind uwtable
+define internal void @"_ZN4core3num23_$LT$impl$u20$usize$GT$13unchecked_add18precondition_check17hee9793ace191b2e7E"(i64 %lhs, i64 %rhs, ptr align 8 %0) unnamed_addr #2 {
+start:
+  %_6 = alloca [16 x i8], align 8
+  %_4 = alloca [48 x i8], align 8
+  %1 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %lhs, i64 %rhs)
+  %_8.0 = extractvalue { i64, i1 } %1, 0
+  %_8.1 = extractvalue { i64, i1 } %1, 1
+  br i1 %_8.1, label %bb1, label %bb2
+
+bb2:                                              ; preds = %start
+  ret void
+
+bb1:                                              ; preds = %start
+  %2 = getelementptr inbounds nuw { ptr, i64 }, ptr %_6, i64 0
+  store ptr @alloc_3e1ebac14318b612ab4efabc52799932, ptr %2, align 8
+  %3 = getelementptr inbounds i8, ptr %2, i64 8
+  store i64 186, ptr %3, align 8
+  store ptr %_6, ptr %_4, align 8
+  %4 = getelementptr inbounds i8, ptr %_4, i64 8
+  store i64 1, ptr %4, align 8
+  %5 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %6 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %7 = getelementptr inbounds i8, ptr %_4, i64 32
+  store ptr %5, ptr %7, align 8
+  %8 = getelementptr inbounds i8, ptr %7, i64 8
+  store i64 %6, ptr %8, align 8
+  %9 = getelementptr inbounds i8, ptr %_4, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %9, align 8
+  %10 = getelementptr inbounds i8, ptr %9, i64 8
+  store i64 0, ptr %10, align 8
+; call core::panicking::panic_nounwind_fmt
+  call void @_ZN4core9panicking18panic_nounwind_fmt17h6c46f1098922b4b6E(ptr align 8 %_4, i1 zeroext false, ptr align 8 %0) #17
+  unreachable
+}
+
+; core::num::<impl usize>::unchecked_mul::precondition_check
+; Function Attrs: inlinehint nounwind nonlazybind uwtable
+define internal void @"_ZN4core3num23_$LT$impl$u20$usize$GT$13unchecked_mul18precondition_check17he8723be0d355b218E"(i64 %lhs, i64 %rhs, ptr align 8 %0) unnamed_addr #2 {
+start:
+  %_6 = alloca [16 x i8], align 8
+  %_4 = alloca [48 x i8], align 8
+  %1 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %lhs, i64 %rhs)
+  %_8.0 = extractvalue { i64, i1 } %1, 0
+  %_8.1 = extractvalue { i64, i1 } %1, 1
+  br i1 %_8.1, label %bb1, label %bb2
+
+bb2:                                              ; preds = %start
+  ret void
+
+bb1:                                              ; preds = %start
+  %2 = getelementptr inbounds nuw { ptr, i64 }, ptr %_6, i64 0
+  store ptr @alloc_db07ae5a9ce650d9b7cc970d048e6f0c, ptr %2, align 8
+  %3 = getelementptr inbounds i8, ptr %2, i64 8
+  store i64 186, ptr %3, align 8
+  store ptr %_6, ptr %_4, align 8
+  %4 = getelementptr inbounds i8, ptr %_4, i64 8
+  store i64 1, ptr %4, align 8
+  %5 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %6 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %7 = getelementptr inbounds i8, ptr %_4, i64 32
+  store ptr %5, ptr %7, align 8
+  %8 = getelementptr inbounds i8, ptr %7, i64 8
+  store i64 %6, ptr %8, align 8
+  %9 = getelementptr inbounds i8, ptr %_4, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %9, align 8
+  %10 = getelementptr inbounds i8, ptr %9, i64 8
+  store i64 0, ptr %10, align 8
+; call core::panicking::panic_nounwind_fmt
+  call void @_ZN4core9panicking18panic_nounwind_fmt17h6c46f1098922b4b6E(ptr align 8 %_4, i1 zeroext false, ptr align 8 %0) #17
+  unreachable
+}
+
+; core::num::<impl usize>::next_power_of_two
+; Function Attrs: inlinehint nonlazybind uwtable
+define internal i64 @"_ZN4core3num23_$LT$impl$u20$usize$GT$17next_power_of_two17h628b989f8c72cddfE"(i64 %self) unnamed_addr #0 {
+start:
+  %0 = alloca [4 x i8], align 4
+  %_2 = alloca [8 x i8], align 8
+  %_4 = icmp ule i64 %self, 1
+  br i1 %_4, label %bb3, label %bb4
+
+bb4:                                              ; preds = %start
+  %p = sub i64 %self, 1
+  %1 = call i64 @llvm.ctlz.i64(i64 %p, i1 true)
+  %2 = trunc i64 %1 to i32
+  store i32 %2, ptr %0, align 4
+  %z = load i32, ptr %0, align 4
+  %3 = and i32 %z, 63
+  %4 = zext i32 %3 to i64
+  %5 = lshr i64 -1, %4
+  store i64 %5, ptr %_2, align 8
+  br label %bb2
+
+bb3:                                              ; preds = %start
+  store i64 0, ptr %_2, align 8
+  br label %bb2
+
+bb2:                                              ; preds = %bb3, %bb4
+  %6 = load i64, ptr %_2, align 8
+  %7 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %6, i64 1)
+  %_3.0 = extractvalue { i64, i1 } %7, 0
+  %_3.1 = extractvalue { i64, i1 } %7, 1
+  br i1 %_3.1, label %panic, label %bb1
+
+bb1:                                              ; preds = %bb2
+  ret i64 %_3.0
+
+panic:                                            ; preds = %bb2
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_add_overflow17h3253708af8a8c611E(ptr align 8 @alloc_dedc3316d8095c6818acf3bea79285b7) #16
+  unreachable
+}
+
+; core::ptr::swap_chunk
+; Function Attrs: inlinehint nonlazybind uwtable
+define void @_ZN4core3ptr10swap_chunk17h1a813f2cb6912de3E(ptr align 1 %x, ptr align 1 %y) unnamed_addr #0 {
+start:
+  %_4 = alloca [1 x i8], align 1
+  %_3 = alloca [1 x i8], align 1
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %_3, ptr align 1 %x, i64 1, i1 false)
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %_4, ptr align 1 %y, i64 1, i1 false)
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %x, ptr align 1 %_4, i64 1, i1 false)
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %y, ptr align 1 %_3, i64 1, i1 false)
+  ret void
+}
+
+; core::ptr::swap_chunk
+; Function Attrs: inlinehint nonlazybind uwtable
+define void @_ZN4core3ptr10swap_chunk17h736ecc390021c6d4E(ptr align 1 %x, ptr align 1 %y) unnamed_addr #0 {
+start:
+  %_4 = alloca [4 x i8], align 1
+  %_3 = alloca [4 x i8], align 1
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %_3, ptr align 1 %x, i64 4, i1 false)
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %_4, ptr align 1 %y, i64 4, i1 false)
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %x, ptr align 1 %_4, i64 4, i1 false)
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %y, ptr align 1 %_3, i64 4, i1 false)
+  ret void
+}
+
+; core::ptr::swap_chunk
+; Function Attrs: inlinehint nonlazybind uwtable
+define void @_ZN4core3ptr10swap_chunk17h9428c2cd1fa8754eE(ptr align 1 %x, ptr align 1 %y) unnamed_addr #0 {
+start:
+  %_4 = alloca [8 x i8], align 1
+  %_3 = alloca [8 x i8], align 1
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %_3, ptr align 1 %x, i64 8, i1 false)
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %_4, ptr align 1 %y, i64 8, i1 false)
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %x, ptr align 1 %_4, i64 8, i1 false)
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %y, ptr align 1 %_3, i64 8, i1 false)
+  ret void
+}
+
+; core::ptr::swap_chunk
+; Function Attrs: inlinehint nonlazybind uwtable
+define void @_ZN4core3ptr10swap_chunk17hd0b82e4a1744d0a5E(ptr align 1 %x, ptr align 1 %y) unnamed_addr #0 {
+start:
+  %_4 = alloca [2 x i8], align 1
+  %_3 = alloca [2 x i8], align 1
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %_3, ptr align 1 %x, i64 2, i1 false)
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %_4, ptr align 1 %y, i64 2, i1 false)
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %x, ptr align 1 %_4, i64 2, i1 false)
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %y, ptr align 1 %_3, i64 2, i1 false)
+  ret void
+}
+
+; core::ptr::copy_nonoverlapping::precondition_check
+; Function Attrs: inlinehint nounwind nonlazybind uwtable
+define internal void @_ZN4core3ptr19copy_nonoverlapping18precondition_check17h16ff54272e2f8953E(ptr %src, ptr %dst, i64 %size, i64 %align, i64 %count, ptr align 8 %0) unnamed_addr #2 personality ptr @rust_eh_personality {
+start:
+  %1 = alloca [4 x i8], align 4
+  %_29 = alloca [48 x i8], align 8
+  %_24 = alloca [4 x i8], align 4
+  %_23 = alloca [8 x i8], align 8
+  %_22 = alloca [8 x i8], align 8
+  %_21 = alloca [8 x i8], align 8
+  %_20 = alloca [48 x i8], align 8
+  %_17 = alloca [16 x i8], align 8
+  %_15 = alloca [48 x i8], align 8
+  %is_zst = alloca [1 x i8], align 1
+  %align1 = alloca [8 x i8], align 8
+  %zero_size = alloca [1 x i8], align 1
+  %2 = icmp eq i64 %count, 0
+  br i1 %2, label %bb1, label %bb2
+
+bb1:                                              ; preds = %start
+  store i8 1, ptr %zero_size, align 1
+  store i64 %align, ptr %align1, align 8
+  %3 = load i8, ptr %zero_size, align 1
+  %4 = trunc nuw i8 %3 to i1
+  %5 = zext i1 %4 to i8
+  store i8 %5, ptr %is_zst, align 1
+  %6 = call i64 @llvm.ctpop.i64(i64 %align)
+  %7 = trunc i64 %6 to i32
+  store i32 %7, ptr %_24, align 4
+  %8 = load i32, ptr %_24, align 4
+  %9 = icmp eq i32 %8, 1
+  br i1 %9, label %bb26, label %bb15
+
+bb2:                                              ; preds = %start
+  %10 = icmp eq i64 %size, 0
+  %11 = zext i1 %10 to i8
+  store i8 %11, ptr %zero_size, align 1
+  store i64 %align, ptr %align1, align 8
+  %12 = load i8, ptr %zero_size, align 1
+  %13 = trunc nuw i8 %12 to i1
+  %14 = zext i1 %13 to i8
+  store i8 %14, ptr %is_zst, align 1
+  %15 = call i64 @llvm.ctpop.i64(i64 %align)
+  %16 = trunc i64 %15 to i32
+  store i32 %16, ptr %_24, align 4
+  %17 = load i32, ptr %_24, align 4
+  %18 = icmp eq i32 %17, 1
+  br i1 %18, label %bb14, label %bb15
+
+bb26:                                             ; preds = %bb1
+  store ptr %src, ptr %_22, align 8
+  %19 = sub i64 %align, 1
+  store i64 %19, ptr %_23, align 8
+  %20 = load i64, ptr %_22, align 8
+  %21 = load i64, ptr %_23, align 8
+  %22 = and i64 %20, %21
+  store i64 %22, ptr %_21, align 8
+  %23 = load i64, ptr %_21, align 8
+  %24 = icmp eq i64 %23, 0
+  br i1 %24, label %bb27, label %bb11
+
+bb15:                                             ; preds = %bb2, %bb1
+  store ptr @alloc_e92e94d0ff530782b571cfd99ec66aef, ptr %_20, align 8
+  %25 = getelementptr inbounds i8, ptr %_20, i64 8
+  store i64 1, ptr %25, align 8
+  %26 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %27 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %28 = getelementptr inbounds i8, ptr %_20, i64 32
+  store ptr %26, ptr %28, align 8
+  %29 = getelementptr inbounds i8, ptr %28, i64 8
+  store i64 %27, ptr %29, align 8
+  %30 = getelementptr inbounds i8, ptr %_20, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %30, align 8
+  %31 = getelementptr inbounds i8, ptr %30, i64 8
+  store i64 0, ptr %31, align 8
+; invoke core::panicking::panic_fmt
+  invoke void @_ZN4core9panicking9panic_fmt17h62f63d096dd276afE(ptr align 8 %_20, ptr align 8 @alloc_863114602ff53edf107e51a9c9035fa2) #16
+          to label %unreachable unwind label %terminate
+
+bb27:                                             ; preds = %bb26
+  br label %bb12
+
+bb11:                                             ; preds = %bb14, %bb26
+  br label %bb6
+
+bb12:                                             ; preds = %bb10, %bb27
+  br label %bb3
+
+bb14:                                             ; preds = %bb2
+  store ptr %src, ptr %_22, align 8
+  %32 = sub i64 %align, 1
+  store i64 %32, ptr %_23, align 8
+  %33 = load i64, ptr %_22, align 8
+  %34 = load i64, ptr %_23, align 8
+  %35 = and i64 %33, %34
+  store i64 %35, ptr %_21, align 8
+  %36 = load i64, ptr %_21, align 8
+  %37 = icmp eq i64 %36, 0
+  br i1 %37, label %bb10, label %bb11
+
+bb10:                                             ; preds = %bb14
+  %38 = load i8, ptr %is_zst, align 1
+  %39 = trunc nuw i8 %38 to i1
+  br i1 %39, label %bb12, label %bb13
+
+bb13:                                             ; preds = %bb10
+  %40 = load i64, ptr %_22, align 8
+  %_18 = icmp eq i64 %40, 0
+  %_8 = xor i1 %_18, true
+  br i1 %_8, label %bb3, label %bb6
+
+bb6:                                              ; preds = %bb11, %bb13
+  br label %bb7
+
+bb3:                                              ; preds = %bb12, %bb13
+  %41 = load i8, ptr %zero_size, align 1
+  %is_zst2 = trunc nuw i8 %41 to i1
+  %42 = call i64 @llvm.ctpop.i64(i64 %align)
+  %43 = trunc i64 %42 to i32
+  store i32 %43, ptr %1, align 4
+  %_32 = load i32, ptr %1, align 4
+  %44 = icmp eq i32 %_32, 1
+  br i1 %44, label %bb21, label %bb22
+
+bb21:                                             ; preds = %bb3
+  %_31 = ptrtoint ptr %dst to i64
+  %45 = load i64, ptr %_23, align 8
+  %_30 = and i64 %_31, %45
+  %46 = icmp eq i64 %_30, 0
+  br i1 %46, label %bb17, label %bb18
+
+bb22:                                             ; preds = %bb3
+  store ptr @alloc_e92e94d0ff530782b571cfd99ec66aef, ptr %_29, align 8
+  %47 = getelementptr inbounds i8, ptr %_29, i64 8
+  store i64 1, ptr %47, align 8
+  %48 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %49 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %50 = getelementptr inbounds i8, ptr %_29, i64 32
+  store ptr %48, ptr %50, align 8
+  %51 = getelementptr inbounds i8, ptr %50, i64 8
+  store i64 %49, ptr %51, align 8
+  %52 = getelementptr inbounds i8, ptr %_29, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %52, align 8
+  %53 = getelementptr inbounds i8, ptr %52, i64 8
+  store i64 0, ptr %53, align 8
+; invoke core::panicking::panic_fmt
+  invoke void @_ZN4core9panicking9panic_fmt17h62f63d096dd276afE(ptr align 8 %_29, ptr align 8 @alloc_863114602ff53edf107e51a9c9035fa2) #16
+          to label %unreachable unwind label %terminate
+
+bb17:                                             ; preds = %bb21
+  br i1 %is_zst2, label %bb19, label %bb20
+
+bb18:                                             ; preds = %bb21
+  br label %bb5
+
+bb20:                                             ; preds = %bb17
+  %_27 = icmp eq i64 %_31, 0
+  %_11 = xor i1 %_27, true
+  br i1 %_11, label %bb4, label %bb5
+
+bb19:                                             ; preds = %bb17
+  br label %bb4
+
+bb5:                                              ; preds = %bb18, %bb20
+  br label %bb7
+
+bb4:                                              ; preds = %bb19, %bb20
+; invoke core::ub_checks::maybe_is_nonoverlapping::runtime
+  %_6 = invoke zeroext i1 @_ZN4core9ub_checks23maybe_is_nonoverlapping7runtime17h36d50c1458048b39E(ptr %src, ptr %dst, i64 %size, i64 %count)
+          to label %bb24 unwind label %terminate
+
+terminate:                                        ; preds = %bb15, %bb22, %bb4
+  %54 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_cannot_unwind
+  call void @_ZN4core9panicking19panic_cannot_unwind17h864cccdfd8b0af98E() #18
+  unreachable
+
+bb24:                                             ; preds = %bb4
+  br i1 %_6, label %bb9, label %bb8
+
+bb8:                                              ; preds = %bb7, %bb24
+  %55 = getelementptr inbounds nuw { ptr, i64 }, ptr %_17, i64 0
+  store ptr @alloc_bd3468a7b96187f70c1ce98a3e7a63bf, ptr %55, align 8
+  %56 = getelementptr inbounds i8, ptr %55, i64 8
+  store i64 283, ptr %56, align 8
+  store ptr %_17, ptr %_15, align 8
+  %57 = getelementptr inbounds i8, ptr %_15, i64 8
+  store i64 1, ptr %57, align 8
+  %58 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %59 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %60 = getelementptr inbounds i8, ptr %_15, i64 32
+  store ptr %58, ptr %60, align 8
+  %61 = getelementptr inbounds i8, ptr %60, i64 8
+  store i64 %59, ptr %61, align 8
+  %62 = getelementptr inbounds i8, ptr %_15, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %62, align 8
+  %63 = getelementptr inbounds i8, ptr %62, i64 8
+  store i64 0, ptr %63, align 8
+; call core::panicking::panic_nounwind_fmt
+  call void @_ZN4core9panicking18panic_nounwind_fmt17h6c46f1098922b4b6E(ptr align 8 %_15, i1 zeroext false, ptr align 8 %0) #17
+  unreachable
+
+bb9:                                              ; preds = %bb24
+  ret void
+
+bb7:                                              ; preds = %bb6, %bb5
+  br label %bb8
+
+unreachable:                                      ; preds = %bb15, %bb22
+  unreachable
+}
+
+; core::ptr::swap_nonoverlapping
+; Function Attrs: inlinehint nonlazybind uwtable
+define void @_ZN4core3ptr19swap_nonoverlapping17h228a7dc258276ec8E(ptr %x, ptr %y, i64 %count, ptr align 8 %0) unnamed_addr #0 {
+start:
+  %1 = alloca [8 x i8], align 8
+  %_13 = alloca [8 x i8], align 8
+  br label %bb1
+
+bb1:                                              ; preds = %start
+; call core::ptr::swap_nonoverlapping::precondition_check
+  call void @_ZN4core3ptr19swap_nonoverlapping18precondition_check17h5bbc4bd38883fc17E(ptr %x, ptr %y, i64 1, i64 1, i64 %count, ptr align 8 %0) #19
+  br label %bb3
+
+bb3:                                              ; preds = %bb1
+  %2 = mul nuw nsw i64 %count, 1
+  store i64 %2, ptr %1, align 8
+  %bytes = load i64, ptr %1, align 8
+  store i64 %bytes, ptr %_13, align 8
+  %3 = load i64, ptr %_13, align 8
+  %4 = icmp eq i64 %3, 0
+  %_14 = select i1 %4, i64 0, i64 1
+  %5 = trunc nuw i64 %_14 to i1
+  br i1 %5, label %bb5, label %bb7
+
+bb5:                                              ; preds = %bb3
+  %bytes1 = load i64, ptr %_13, align 8
+; call core::ptr::swap_nonoverlapping_bytes
+  call void @_ZN4core3ptr25swap_nonoverlapping_bytes17hd059f981ad134416E(ptr %x, ptr %y, i64 %bytes1)
+  br label %bb4
+
+bb7:                                              ; preds = %bb3
+  br label %bb4
+
+bb4:                                              ; preds = %bb7, %bb5
+  ret void
+
+bb9:                                              ; No predecessors!
+  unreachable
+}
+
+; core::ptr::swap_nonoverlapping::precondition_check
+; Function Attrs: inlinehint nounwind nonlazybind uwtable
+define internal void @_ZN4core3ptr19swap_nonoverlapping18precondition_check17h5bbc4bd38883fc17E(ptr %x, ptr %y, i64 %size, i64 %align, i64 %count, ptr align 8 %0) unnamed_addr #2 personality ptr @rust_eh_personality {
+start:
+  %1 = alloca [4 x i8], align 4
+  %_31 = alloca [48 x i8], align 8
+  %_26 = alloca [4 x i8], align 4
+  %_25 = alloca [8 x i8], align 8
+  %_24 = alloca [8 x i8], align 8
+  %_23 = alloca [8 x i8], align 8
+  %_22 = alloca [48 x i8], align 8
+  %_19 = alloca [16 x i8], align 8
+  %_17 = alloca [48 x i8], align 8
+  %is_zst = alloca [1 x i8], align 1
+  %align1 = alloca [8 x i8], align 8
+  %ptr = alloca [8 x i8], align 8
+  %zero_size = alloca [1 x i8], align 1
+  %2 = icmp eq i64 %size, 0
+  br i1 %2, label %bb1, label %bb2
+
+bb1:                                              ; preds = %start
+  store i8 1, ptr %zero_size, align 1
+  store ptr %x, ptr %ptr, align 8
+  store i64 %align, ptr %align1, align 8
+  %3 = load i8, ptr %zero_size, align 1
+  %4 = trunc nuw i8 %3 to i1
+  %5 = zext i1 %4 to i8
+  store i8 %5, ptr %is_zst, align 1
+  %6 = call i64 @llvm.ctpop.i64(i64 %align)
+  %7 = trunc i64 %6 to i32
+  store i32 %7, ptr %_26, align 4
+  %8 = load i32, ptr %_26, align 4
+  %9 = icmp eq i32 %8, 1
+  br i1 %9, label %bb26, label %bb15
+
+bb2:                                              ; preds = %start
+  %10 = icmp eq i64 %count, 0
+  %11 = zext i1 %10 to i8
+  store i8 %11, ptr %zero_size, align 1
+  store ptr %x, ptr %ptr, align 8
+  store i64 %align, ptr %align1, align 8
+  %12 = load i8, ptr %zero_size, align 1
+  %13 = trunc nuw i8 %12 to i1
+  %14 = zext i1 %13 to i8
+  store i8 %14, ptr %is_zst, align 1
+  %15 = call i64 @llvm.ctpop.i64(i64 %align)
+  %16 = trunc i64 %15 to i32
+  store i32 %16, ptr %_26, align 4
+  %17 = load i32, ptr %_26, align 4
+  %18 = icmp eq i32 %17, 1
+  br i1 %18, label %bb14, label %bb15
+
+bb26:                                             ; preds = %bb1
+  store ptr %x, ptr %_24, align 8
+  %19 = sub i64 %align, 1
+  store i64 %19, ptr %_25, align 8
+  %20 = load i64, ptr %_24, align 8
+  %21 = load i64, ptr %_25, align 8
+  %22 = and i64 %20, %21
+  store i64 %22, ptr %_23, align 8
+  %23 = load i64, ptr %_23, align 8
+  %24 = icmp eq i64 %23, 0
+  br i1 %24, label %bb27, label %bb11
+
+bb15:                                             ; preds = %bb2, %bb1
+  store ptr @alloc_e92e94d0ff530782b571cfd99ec66aef, ptr %_22, align 8
+  %25 = getelementptr inbounds i8, ptr %_22, i64 8
+  store i64 1, ptr %25, align 8
+  %26 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %27 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %28 = getelementptr inbounds i8, ptr %_22, i64 32
+  store ptr %26, ptr %28, align 8
+  %29 = getelementptr inbounds i8, ptr %28, i64 8
+  store i64 %27, ptr %29, align 8
+  %30 = getelementptr inbounds i8, ptr %_22, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %30, align 8
+  %31 = getelementptr inbounds i8, ptr %30, i64 8
+  store i64 0, ptr %31, align 8
+; invoke core::panicking::panic_fmt
+  invoke void @_ZN4core9panicking9panic_fmt17h62f63d096dd276afE(ptr align 8 %_22, ptr align 8 @alloc_863114602ff53edf107e51a9c9035fa2) #16
+          to label %unreachable unwind label %terminate
+
+bb27:                                             ; preds = %bb26
+  br label %bb12
+
+bb11:                                             ; preds = %bb14, %bb26
+  br label %bb6
+
+bb12:                                             ; preds = %bb10, %bb27
+  br label %bb3
+
+bb14:                                             ; preds = %bb2
+  store ptr %x, ptr %_24, align 8
+  %32 = sub i64 %align, 1
+  store i64 %32, ptr %_25, align 8
+  %33 = load i64, ptr %_24, align 8
+  %34 = load i64, ptr %_25, align 8
+  %35 = and i64 %33, %34
+  store i64 %35, ptr %_23, align 8
+  %36 = load i64, ptr %_23, align 8
+  %37 = icmp eq i64 %36, 0
+  br i1 %37, label %bb10, label %bb11
+
+bb10:                                             ; preds = %bb14
+  %38 = load i8, ptr %is_zst, align 1
+  %39 = trunc nuw i8 %38 to i1
+  br i1 %39, label %bb12, label %bb13
+
+bb13:                                             ; preds = %bb10
+  %40 = load i64, ptr %_24, align 8
+  %_20 = icmp eq i64 %40, 0
+  %_8 = xor i1 %_20, true
+  br i1 %_8, label %bb3, label %bb6
+
+bb6:                                              ; preds = %bb11, %bb13
+  br label %bb7
+
+bb3:                                              ; preds = %bb12, %bb13
+  %41 = load i8, ptr %zero_size, align 1
+  %is_zst2 = trunc nuw i8 %41 to i1
+  %42 = call i64 @llvm.ctpop.i64(i64 %align)
+  %43 = trunc i64 %42 to i32
+  store i32 %43, ptr %1, align 4
+  %_34 = load i32, ptr %1, align 4
+  %44 = icmp eq i32 %_34, 1
+  br i1 %44, label %bb21, label %bb22
+
+bb21:                                             ; preds = %bb3
+  %_33 = ptrtoint ptr %y to i64
+  %45 = load i64, ptr %_25, align 8
+  %_32 = and i64 %_33, %45
+  %46 = icmp eq i64 %_32, 0
+  br i1 %46, label %bb17, label %bb18
+
+bb22:                                             ; preds = %bb3
+  store ptr @alloc_e92e94d0ff530782b571cfd99ec66aef, ptr %_31, align 8
+  %47 = getelementptr inbounds i8, ptr %_31, i64 8
+  store i64 1, ptr %47, align 8
+  %48 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %49 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %50 = getelementptr inbounds i8, ptr %_31, i64 32
+  store ptr %48, ptr %50, align 8
+  %51 = getelementptr inbounds i8, ptr %50, i64 8
+  store i64 %49, ptr %51, align 8
+  %52 = getelementptr inbounds i8, ptr %_31, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %52, align 8
+  %53 = getelementptr inbounds i8, ptr %52, i64 8
+  store i64 0, ptr %53, align 8
+; invoke core::panicking::panic_fmt
+  invoke void @_ZN4core9panicking9panic_fmt17h62f63d096dd276afE(ptr align 8 %_31, ptr align 8 @alloc_863114602ff53edf107e51a9c9035fa2) #16
+          to label %unreachable unwind label %terminate
+
+bb17:                                             ; preds = %bb21
+  br i1 %is_zst2, label %bb19, label %bb20
+
+bb18:                                             ; preds = %bb21
+  br label %bb5
+
+bb20:                                             ; preds = %bb17
+  %_29 = icmp eq i64 %_33, 0
+  %_12 = xor i1 %_29, true
+  br i1 %_12, label %bb4, label %bb5
+
+bb19:                                             ; preds = %bb17
+  br label %bb4
+
+bb5:                                              ; preds = %bb18, %bb20
+  br label %bb7
+
+bb4:                                              ; preds = %bb19, %bb20
+  %src = load ptr, ptr %ptr, align 8
+  %54 = load ptr, ptr %ptr, align 8
+; invoke core::ub_checks::maybe_is_nonoverlapping::runtime
+  %_6 = invoke zeroext i1 @_ZN4core9ub_checks23maybe_is_nonoverlapping7runtime17h36d50c1458048b39E(ptr %54, ptr %y, i64 %size, i64 %count)
+          to label %bb24 unwind label %terminate
+
+terminate:                                        ; preds = %bb15, %bb22, %bb4
+  %55 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_cannot_unwind
+  call void @_ZN4core9panicking19panic_cannot_unwind17h864cccdfd8b0af98E() #18
+  unreachable
+
+bb24:                                             ; preds = %bb4
+  br i1 %_6, label %bb9, label %bb8
+
+bb8:                                              ; preds = %bb7, %bb24
+  %56 = getelementptr inbounds nuw { ptr, i64 }, ptr %_19, i64 0
+  store ptr @alloc_2875d9f120b8cc0de1c30c014c7b6715, ptr %56, align 8
+  %57 = getelementptr inbounds i8, ptr %56, i64 8
+  store i64 283, ptr %57, align 8
+  store ptr %_19, ptr %_17, align 8
+  %58 = getelementptr inbounds i8, ptr %_17, i64 8
+  store i64 1, ptr %58, align 8
+  %59 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %60 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %61 = getelementptr inbounds i8, ptr %_17, i64 32
+  store ptr %59, ptr %61, align 8
+  %62 = getelementptr inbounds i8, ptr %61, i64 8
+  store i64 %60, ptr %62, align 8
+  %63 = getelementptr inbounds i8, ptr %_17, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %63, align 8
+  %64 = getelementptr inbounds i8, ptr %63, i64 8
+  store i64 0, ptr %64, align 8
+; call core::panicking::panic_nounwind_fmt
+  call void @_ZN4core9panicking18panic_nounwind_fmt17h6c46f1098922b4b6E(ptr align 8 %_17, i1 zeroext false, ptr align 8 %0) #17
+  unreachable
+
+bb9:                                              ; preds = %bb24
+  ret void
+
+bb7:                                              ; preds = %bb6, %bb5
+  br label %bb8
+
+unreachable:                                      ; preds = %bb15, %bb22
+  unreachable
+}
+
+; core::ptr::swap_nonoverlapping_bytes
+; Function Attrs: inlinehint nonlazybind uwtable
+define internal void @_ZN4core3ptr25swap_nonoverlapping_bytes17hd059f981ad134416E(ptr %x, ptr %y, i64 %bytes) unnamed_addr #0 {
+start:
+  %_13 = alloca [8 x i8], align 8
+  %_7 = alloca [8 x i8], align 8
+  %chunks = udiv i64 %bytes, 8
+  %tail = urem i64 %bytes, 8
+  store i64 %chunks, ptr %_7, align 8
+  %0 = load i64, ptr %_7, align 8
+  %1 = icmp eq i64 %0, 0
+  %_8 = select i1 %1, i64 0, i64 1
+  %2 = trunc nuw i64 %_8 to i1
+  br i1 %2, label %bb1, label %bb3
+
+bb1:                                              ; preds = %start
+  %chunks1 = load i64, ptr %_7, align 8
+; call core::ptr::swap_nonoverlapping_bytes::swap_nonoverlapping_chunks
+  call void @_ZN4core3ptr25swap_nonoverlapping_bytes26swap_nonoverlapping_chunks17h0c4c4f02632db480E(ptr %x, ptr %y, i64 %chunks1)
+  br label %bb4
+
+bb3:                                              ; preds = %start
+  br label %bb4
+
+bb4:                                              ; preds = %bb3, %bb1
+  store i64 %tail, ptr %_13, align 8
+  %3 = load i64, ptr %_13, align 8
+  %4 = icmp eq i64 %3, 0
+  %_14 = select i1 %4, i64 0, i64 1
+  %5 = trunc nuw i64 %_14 to i1
+  br i1 %5, label %bb5, label %bb7
+
+bb5:                                              ; preds = %bb4
+  %tail2 = load i64, ptr %_13, align 8
+  %delta = mul i64 %chunks, 8
+  %_18 = getelementptr inbounds nuw i8, ptr %x, i64 %delta
+  %_19 = getelementptr inbounds nuw i8, ptr %y, i64 %delta
+; call core::ptr::swap_nonoverlapping_bytes::swap_nonoverlapping_short
+  call void @_ZN4core3ptr25swap_nonoverlapping_bytes25swap_nonoverlapping_short17h31f7cb6c2f3b589fE(ptr %_18, ptr %_19, i64 %tail2)
+  br label %bb8
+
+bb7:                                              ; preds = %bb4
+  br label %bb8
+
+bb8:                                              ; preds = %bb7, %bb5
+  ret void
+
+bb9:                                              ; No predecessors!
+  unreachable
+}
+
+; core::ptr::swap_nonoverlapping_bytes::swap_nonoverlapping_short
+; Function Attrs: inlinehint nonlazybind uwtable
+define internal void @_ZN4core3ptr25swap_nonoverlapping_bytes25swap_nonoverlapping_short17h31f7cb6c2f3b589fE(ptr %x, ptr %y, i64 %bytes) unnamed_addr #0 {
+start:
+  %i = alloca [8 x i8], align 8
+  store i64 0, ptr %i, align 8
+  %_6 = and i64 %bytes, 4
+  %0 = icmp eq i64 %_6, 0
+  br i1 %0, label %bb3, label %bb1
+
+bb3:                                              ; preds = %start
+  br label %bb4
+
+bb1:                                              ; preds = %start
+  %count = load i64, ptr %i, align 8
+  %self = getelementptr inbounds nuw i8, ptr %x, i64 %count
+  %count1 = load i64, ptr %i, align 8
+  %self2 = getelementptr inbounds nuw i8, ptr %y, i64 %count1
+; call core::ptr::swap_chunk
+  call void @_ZN4core3ptr10swap_chunk17h736ecc390021c6d4E(ptr align 1 %self, ptr align 1 %self2)
+  %1 = load i64, ptr %i, align 8
+  %2 = or i64 %1, 4
+  store i64 %2, ptr %i, align 8
+  br label %bb4
+
+bb4:                                              ; preds = %bb1, %bb3
+  %_16 = and i64 %bytes, 2
+  %3 = icmp eq i64 %_16, 0
+  br i1 %3, label %bb7, label %bb5
+
+bb7:                                              ; preds = %bb4
+  br label %bb8
+
+bb5:                                              ; preds = %bb4
+  %count3 = load i64, ptr %i, align 8
+  %self4 = getelementptr inbounds nuw i8, ptr %x, i64 %count3
+  %count5 = load i64, ptr %i, align 8
+  %self6 = getelementptr inbounds nuw i8, ptr %y, i64 %count5
+; call core::ptr::swap_chunk
+  call void @_ZN4core3ptr10swap_chunk17hd0b82e4a1744d0a5E(ptr align 1 %self4, ptr align 1 %self6)
+  %4 = load i64, ptr %i, align 8
+  %5 = or i64 %4, 2
+  store i64 %5, ptr %i, align 8
+  br label %bb8
+
+bb8:                                              ; preds = %bb5, %bb7
+  %_26 = and i64 %bytes, 1
+  %6 = icmp eq i64 %_26, 0
+  br i1 %6, label %bb11, label %bb9
+
+bb11:                                             ; preds = %bb8
+  br label %bb12
+
+bb9:                                              ; preds = %bb8
+  %count7 = load i64, ptr %i, align 8
+  %self8 = getelementptr inbounds nuw i8, ptr %x, i64 %count7
+  %count9 = load i64, ptr %i, align 8
+  %self10 = getelementptr inbounds nuw i8, ptr %y, i64 %count9
+; call core::ptr::swap_chunk
+  call void @_ZN4core3ptr10swap_chunk17h1a813f2cb6912de3E(ptr align 1 %self8, ptr align 1 %self10)
+  %7 = load i64, ptr %i, align 8
+  %8 = or i64 %7, 1
+  store i64 %8, ptr %i, align 8
+  br label %bb12
+
+bb12:                                             ; preds = %bb9, %bb11
+  ret void
+}
+
+; core::ptr::swap_nonoverlapping_bytes::swap_nonoverlapping_chunks
+; Function Attrs: nonlazybind uwtable
+define void @_ZN4core3ptr25swap_nonoverlapping_bytes26swap_nonoverlapping_chunks17h0c4c4f02632db480E(ptr %x, ptr %y, i64 %chunks) unnamed_addr #3 {
+start:
+  %_7 = alloca [16 x i8], align 8
+  %iter = alloca [16 x i8], align 8
+  store i64 0, ptr %iter, align 8
+  %0 = getelementptr inbounds i8, ptr %iter, i64 8
+  store i64 %chunks, ptr %0, align 8
+  br label %bb1
+
+bb1:                                              ; preds = %bb6, %start
+  %other = getelementptr inbounds i8, ptr %iter, i64 8
+  %_20 = load i64, ptr %iter, align 8
+  %1 = getelementptr inbounds i8, ptr %iter, i64 8
+  %_21 = load i64, ptr %1, align 8
+  %_15 = icmp ult i64 %_20, %_21
+  br i1 %_15, label %bb3, label %bb4
+
+bb4:                                              ; preds = %bb1
+  ret void
+
+bb3:                                              ; preds = %bb1
+  %old = load i64, ptr %iter, align 8
+  br label %bb5
+
+bb5:                                              ; preds = %bb3
+; call core::num::<impl usize>::unchecked_add::precondition_check
+  call void @"_ZN4core3num23_$LT$impl$u20$usize$GT$13unchecked_add18precondition_check17hee9793ace191b2e7E"(i64 %old, i64 1, ptr align 8 @alloc_fd64454da950bfc3a5094deff8af2c1a) #19
+  br label %bb6
+
+bb6:                                              ; preds = %bb5
+  %_19 = add nuw i64 %old, 1
+  store i64 %_19, ptr %iter, align 8
+  %2 = getelementptr inbounds i8, ptr %_7, i64 8
+  store i64 %old, ptr %2, align 8
+  store i64 1, ptr %_7, align 8
+  %3 = getelementptr inbounds i8, ptr %_7, i64 8
+  %i = load i64, ptr %3, align 8
+  %_12 = getelementptr inbounds nuw %"core::mem::maybe_uninit::MaybeUninit<[u8; 8]>", ptr %x, i64 %i
+  %_14 = getelementptr inbounds nuw %"core::mem::maybe_uninit::MaybeUninit<[u8; 8]>", ptr %y, i64 %i
+; call core::ptr::swap_chunk
+  call void @_ZN4core3ptr10swap_chunk17h9428c2cd1fa8754eE(ptr align 1 %_12, ptr align 1 %_14)
+  br label %bb1
+}
+
+; core::ptr::drop_in_place<alloc::vec::Vec<u8>>
+; Function Attrs: nonlazybind uwtable
+define void @"_ZN4core3ptr46drop_in_place$LT$alloc..vec..Vec$LT$u8$GT$$GT$17hc7e67fbd50bb3196E"(ptr align 8 %_1) unnamed_addr #3 personality ptr @rust_eh_personality {
+start:
+  %0 = alloca [16 x i8], align 8
+; invoke <alloc::vec::Vec<T,A> as core::ops::drop::Drop>::drop
+  invoke void @"_ZN70_$LT$alloc..vec..Vec$LT$T$C$A$GT$$u20$as$u20$core..ops..drop..Drop$GT$4drop17hf91aa7a484ae3ad4E"(ptr align 8 %_1)
+          to label %bb4 unwind label %cleanup
+
+bb3:                                              ; preds = %cleanup
+; invoke core::ptr::drop_in_place<alloc::raw_vec::RawVec<u8>>
+  invoke void @"_ZN4core3ptr53drop_in_place$LT$alloc..raw_vec..RawVec$LT$u8$GT$$GT$17h2c3d443082750af0E"(ptr align 8 %_1) #20
+          to label %bb1 unwind label %terminate
+
+cleanup:                                          ; preds = %start
+  %1 = landingpad { ptr, i32 }
+          cleanup
+  %2 = extractvalue { ptr, i32 } %1, 0
+  %3 = extractvalue { ptr, i32 } %1, 1
+  store ptr %2, ptr %0, align 8
+  %4 = getelementptr inbounds i8, ptr %0, i64 8
+  store i32 %3, ptr %4, align 8
+  br label %bb3
+
+bb4:                                              ; preds = %start
+; call core::ptr::drop_in_place<alloc::raw_vec::RawVec<u8>>
+  call void @"_ZN4core3ptr53drop_in_place$LT$alloc..raw_vec..RawVec$LT$u8$GT$$GT$17h2c3d443082750af0E"(ptr align 8 %_1)
+  ret void
+
+terminate:                                        ; preds = %bb3
+  %5 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_in_cleanup
+  call void @_ZN4core9panicking16panic_in_cleanup17hb509fce69c32fbdaE() #18
+  unreachable
+
+bb1:                                              ; preds = %bb3
+  %6 = load ptr, ptr %0, align 8
+  %7 = getelementptr inbounds i8, ptr %0, i64 8
+  %8 = load i32, ptr %7, align 8
+  %9 = insertvalue { ptr, i32 } poison, ptr %6, 0
+  %10 = insertvalue { ptr, i32 } %9, i32 %8, 1
+  resume { ptr, i32 } %10
+}
+
+; core::ptr::copy::precondition_check
+; Function Attrs: inlinehint nounwind nonlazybind uwtable
+define internal void @_ZN4core3ptr4copy18precondition_check17hc0db865546abed67E(ptr %src, ptr %dst, i64 %align, i1 zeroext %zero_size, ptr align 8 %0) unnamed_addr #2 personality ptr @rust_eh_personality {
+start:
+  %1 = alloca [4 x i8], align 4
+  %2 = alloca [4 x i8], align 4
+  %_23 = alloca [48 x i8], align 8
+  %_14 = alloca [48 x i8], align 8
+  %_11 = alloca [16 x i8], align 8
+  %_9 = alloca [48 x i8], align 8
+  %3 = call i64 @llvm.ctpop.i64(i64 %align)
+  %4 = trunc i64 %3 to i32
+  store i32 %4, ptr %2, align 4
+  %_18 = load i32, ptr %2, align 4
+  %5 = icmp eq i32 %_18, 1
+  br i1 %5, label %bb10, label %bb11
+
+bb10:                                             ; preds = %start
+  %_16 = ptrtoint ptr %src to i64
+  %_17 = sub i64 %align, 1
+  %_15 = and i64 %_16, %_17
+  %6 = icmp eq i64 %_15, 0
+  br i1 %6, label %bb6, label %bb7
+
+bb11:                                             ; preds = %start
+  store ptr @alloc_e92e94d0ff530782b571cfd99ec66aef, ptr %_14, align 8
+  %7 = getelementptr inbounds i8, ptr %_14, i64 8
+  store i64 1, ptr %7, align 8
+  %8 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %9 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %10 = getelementptr inbounds i8, ptr %_14, i64 32
+  store ptr %8, ptr %10, align 8
+  %11 = getelementptr inbounds i8, ptr %10, i64 8
+  store i64 %9, ptr %11, align 8
+  %12 = getelementptr inbounds i8, ptr %_14, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %12, align 8
+  %13 = getelementptr inbounds i8, ptr %12, i64 8
+  store i64 0, ptr %13, align 8
+; invoke core::panicking::panic_fmt
+  invoke void @_ZN4core9panicking9panic_fmt17h62f63d096dd276afE(ptr align 8 %_14, ptr align 8 @alloc_863114602ff53edf107e51a9c9035fa2) #16
+          to label %unreachable unwind label %terminate
+
+bb6:                                              ; preds = %bb10
+  br i1 %zero_size, label %bb8, label %bb9
+
+bb7:                                              ; preds = %bb10
+  br label %bb4
+
+bb9:                                              ; preds = %bb6
+  %_12 = icmp eq i64 %_16, 0
+  %_5 = xor i1 %_12, true
+  br i1 %_5, label %bb1, label %bb4
+
+bb8:                                              ; preds = %bb6
+  br label %bb1
+
+bb4:                                              ; preds = %bb7, %bb9
+  br label %bb5
+
+bb1:                                              ; preds = %bb8, %bb9
+  %14 = call i64 @llvm.ctpop.i64(i64 %align)
+  %15 = trunc i64 %14 to i32
+  store i32 %15, ptr %1, align 4
+  %_26 = load i32, ptr %1, align 4
+  %16 = icmp eq i32 %_26, 1
+  br i1 %16, label %bb17, label %bb18
+
+bb17:                                             ; preds = %bb1
+  %_25 = ptrtoint ptr %dst to i64
+  %_24 = and i64 %_25, %_17
+  %17 = icmp eq i64 %_24, 0
+  br i1 %17, label %bb13, label %bb14
+
+bb18:                                             ; preds = %bb1
+  store ptr @alloc_e92e94d0ff530782b571cfd99ec66aef, ptr %_23, align 8
+  %18 = getelementptr inbounds i8, ptr %_23, i64 8
+  store i64 1, ptr %18, align 8
+  %19 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %20 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %21 = getelementptr inbounds i8, ptr %_23, i64 32
+  store ptr %19, ptr %21, align 8
+  %22 = getelementptr inbounds i8, ptr %21, i64 8
+  store i64 %20, ptr %22, align 8
+  %23 = getelementptr inbounds i8, ptr %_23, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %23, align 8
+  %24 = getelementptr inbounds i8, ptr %23, i64 8
+  store i64 0, ptr %24, align 8
+; invoke core::panicking::panic_fmt
+  invoke void @_ZN4core9panicking9panic_fmt17h62f63d096dd276afE(ptr align 8 %_23, ptr align 8 @alloc_863114602ff53edf107e51a9c9035fa2) #16
+          to label %unreachable unwind label %terminate
+
+bb13:                                             ; preds = %bb17
+  br i1 %zero_size, label %bb15, label %bb16
+
+bb14:                                             ; preds = %bb17
+  br label %bb3
+
+bb16:                                             ; preds = %bb13
+  %_21 = icmp eq i64 %_25, 0
+  %_6 = xor i1 %_21, true
+  br i1 %_6, label %bb2, label %bb3
+
+bb15:                                             ; preds = %bb13
+  br label %bb2
+
+bb3:                                              ; preds = %bb14, %bb16
+  br label %bb5
+
+bb2:                                              ; preds = %bb15, %bb16
+  ret void
+
+bb5:                                              ; preds = %bb4, %bb3
+  %25 = getelementptr inbounds nuw { ptr, i64 }, ptr %_11, i64 0
+  store ptr @alloc_5ee6cd0de5bab89c84438a39fb5fb08c, ptr %25, align 8
+  %26 = getelementptr inbounds i8, ptr %25, i64 8
+  store i64 221, ptr %26, align 8
+  store ptr %_11, ptr %_9, align 8
+  %27 = getelementptr inbounds i8, ptr %_9, i64 8
+  store i64 1, ptr %27, align 8
+  %28 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %29 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %30 = getelementptr inbounds i8, ptr %_9, i64 32
+  store ptr %28, ptr %30, align 8
+  %31 = getelementptr inbounds i8, ptr %30, i64 8
+  store i64 %29, ptr %31, align 8
+  %32 = getelementptr inbounds i8, ptr %_9, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %32, align 8
+  %33 = getelementptr inbounds i8, ptr %32, i64 8
+  store i64 0, ptr %33, align 8
+; call core::panicking::panic_nounwind_fmt
+  call void @_ZN4core9panicking18panic_nounwind_fmt17h6c46f1098922b4b6E(ptr align 8 %_9, i1 zeroext false, ptr align 8 %0) #17
+  unreachable
+
+terminate:                                        ; preds = %bb11, %bb18
+  %34 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_cannot_unwind
+  call void @_ZN4core9panicking19panic_cannot_unwind17h864cccdfd8b0af98E() #18
+  unreachable
+
+unreachable:                                      ; preds = %bb11, %bb18
+  unreachable
+}
+
+; core::ptr::drop_in_place<alloc::raw_vec::RawVec<u8>>
+; Function Attrs: nonlazybind uwtable
+define void @"_ZN4core3ptr53drop_in_place$LT$alloc..raw_vec..RawVec$LT$u8$GT$$GT$17h2c3d443082750af0E"(ptr align 8 %_1) unnamed_addr #3 {
+start:
+; call <alloc::raw_vec::RawVec<T,A> as core::ops::drop::Drop>::drop
+  call void @"_ZN77_$LT$alloc..raw_vec..RawVec$LT$T$C$A$GT$$u20$as$u20$core..ops..drop..Drop$GT$4drop17h039492b5be9e949bE"(ptr align 8 %_1)
+  ret void
+}
+
+; core::ptr::replace::precondition_check
+; Function Attrs: inlinehint nounwind nonlazybind uwtable
+define internal void @_ZN4core3ptr7replace18precondition_check17h4d5d4dee0bb3905cE(ptr %addr, i64 %align, i1 zeroext %is_zst, ptr align 8 %0) unnamed_addr #2 personality ptr @rust_eh_personality {
+start:
+  %1 = alloca [4 x i8], align 4
+  %_11 = alloca [48 x i8], align 8
+  %_8 = alloca [16 x i8], align 8
+  %_6 = alloca [48 x i8], align 8
+  %2 = call i64 @llvm.ctpop.i64(i64 %align)
+  %3 = trunc i64 %2 to i32
+  store i32 %3, ptr %1, align 4
+  %_15 = load i32, ptr %1, align 4
+  %4 = icmp eq i32 %_15, 1
+  br i1 %4, label %bb7, label %bb8
+
+bb7:                                              ; preds = %start
+  %_13 = ptrtoint ptr %addr to i64
+  %_14 = sub i64 %align, 1
+  %_12 = and i64 %_13, %_14
+  %5 = icmp eq i64 %_12, 0
+  br i1 %5, label %bb3, label %bb4
+
+bb8:                                              ; preds = %start
+  store ptr @alloc_e92e94d0ff530782b571cfd99ec66aef, ptr %_11, align 8
+  %6 = getelementptr inbounds i8, ptr %_11, i64 8
+  store i64 1, ptr %6, align 8
+  %7 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %8 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %9 = getelementptr inbounds i8, ptr %_11, i64 32
+  store ptr %7, ptr %9, align 8
+  %10 = getelementptr inbounds i8, ptr %9, i64 8
+  store i64 %8, ptr %10, align 8
+  %11 = getelementptr inbounds i8, ptr %_11, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %11, align 8
+  %12 = getelementptr inbounds i8, ptr %11, i64 8
+  store i64 0, ptr %12, align 8
+; invoke core::panicking::panic_fmt
+  invoke void @_ZN4core9panicking9panic_fmt17h62f63d096dd276afE(ptr align 8 %_11, ptr align 8 @alloc_863114602ff53edf107e51a9c9035fa2) #16
+          to label %unreachable unwind label %terminate
+
+bb3:                                              ; preds = %bb7
+  br i1 %is_zst, label %bb5, label %bb6
+
+bb4:                                              ; preds = %bb7
+  br label %bb2
+
+bb6:                                              ; preds = %bb3
+  %_9 = icmp eq i64 %_13, 0
+  %_4 = xor i1 %_9, true
+  br i1 %_4, label %bb1, label %bb2
+
+bb5:                                              ; preds = %bb3
+  br label %bb1
+
+bb2:                                              ; preds = %bb4, %bb6
+  %13 = getelementptr inbounds nuw { ptr, i64 }, ptr %_8, i64 0
+  store ptr @alloc_5f856c9c5a649671acdbf03081b5c1d0, ptr %13, align 8
+  %14 = getelementptr inbounds i8, ptr %13, i64 8
+  store i64 221, ptr %14, align 8
+  store ptr %_8, ptr %_6, align 8
+  %15 = getelementptr inbounds i8, ptr %_6, i64 8
+  store i64 1, ptr %15, align 8
+  %16 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %17 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %18 = getelementptr inbounds i8, ptr %_6, i64 32
+  store ptr %16, ptr %18, align 8
+  %19 = getelementptr inbounds i8, ptr %18, i64 8
+  store i64 %17, ptr %19, align 8
+  %20 = getelementptr inbounds i8, ptr %_6, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %20, align 8
+  %21 = getelementptr inbounds i8, ptr %20, i64 8
+  store i64 0, ptr %21, align 8
+; call core::panicking::panic_nounwind_fmt
+  call void @_ZN4core9panicking18panic_nounwind_fmt17h6c46f1098922b4b6E(ptr align 8 %_6, i1 zeroext false, ptr align 8 %0) #17
+  unreachable
+
+bb1:                                              ; preds = %bb5, %bb6
+  ret void
+
+terminate:                                        ; preds = %bb8
+  %22 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_cannot_unwind
+  call void @_ZN4core9panicking19panic_cannot_unwind17h864cccdfd8b0af98E() #18
+  unreachable
+
+unreachable:                                      ; preds = %bb8
+  unreachable
+}
+
+; core::ptr::non_null::NonNull<T>::new_unchecked::precondition_check
+; Function Attrs: inlinehint nounwind nonlazybind uwtable
+define internal void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17h5242ed08614aeceaE"(ptr %ptr, ptr align 8 %0) unnamed_addr #2 {
+start:
+  %_5 = alloca [16 x i8], align 8
+  %_3 = alloca [48 x i8], align 8
+  %_6 = ptrtoint ptr %ptr to i64
+  %1 = icmp eq i64 %_6, 0
+  br i1 %1, label %bb1, label %bb2
+
+bb1:                                              ; preds = %start
+  %2 = getelementptr inbounds nuw { ptr, i64 }, ptr %_5, i64 0
+  store ptr @alloc_560a59ed819b9d9a5841f6e731c4c8e5, ptr %2, align 8
+  %3 = getelementptr inbounds i8, ptr %2, i64 8
+  store i64 210, ptr %3, align 8
+  store ptr %_5, ptr %_3, align 8
+  %4 = getelementptr inbounds i8, ptr %_3, i64 8
+  store i64 1, ptr %4, align 8
+  %5 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %6 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %7 = getelementptr inbounds i8, ptr %_3, i64 32
+  store ptr %5, ptr %7, align 8
+  %8 = getelementptr inbounds i8, ptr %7, i64 8
+  store i64 %6, ptr %8, align 8
+  %9 = getelementptr inbounds i8, ptr %_3, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %9, align 8
+  %10 = getelementptr inbounds i8, ptr %9, i64 8
+  store i64 0, ptr %10, align 8
+; call core::panicking::panic_nounwind_fmt
+  call void @_ZN4core9panicking18panic_nounwind_fmt17h6c46f1098922b4b6E(ptr align 8 %_3, i1 zeroext false, ptr align 8 %0) #17
+  unreachable
+
+bb2:                                              ; preds = %start
+  ret void
+}
+
+; core::hint::assert_unchecked::precondition_check
+; Function Attrs: inlinehint nounwind nonlazybind uwtable
+define internal void @_ZN4core4hint16assert_unchecked18precondition_check17hbb8f7e8afb1eaaeeE(i1 zeroext %cond, ptr align 8 %0) unnamed_addr #2 {
+start:
+  %_5 = alloca [16 x i8], align 8
+  %_3 = alloca [48 x i8], align 8
+  br i1 %cond, label %bb2, label %bb1
+
+bb1:                                              ; preds = %start
+  %1 = getelementptr inbounds nuw { ptr, i64 }, ptr %_5, i64 0
+  store ptr @alloc_64e308ef4babfeb8b6220184de794a17, ptr %1, align 8
+  %2 = getelementptr inbounds i8, ptr %1, i64 8
+  store i64 221, ptr %2, align 8
+  store ptr %_5, ptr %_3, align 8
+  %3 = getelementptr inbounds i8, ptr %_3, i64 8
+  store i64 1, ptr %3, align 8
+  %4 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %5 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %6 = getelementptr inbounds i8, ptr %_3, i64 32
+  store ptr %4, ptr %6, align 8
+  %7 = getelementptr inbounds i8, ptr %6, i64 8
+  store i64 %5, ptr %7, align 8
+  %8 = getelementptr inbounds i8, ptr %_3, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %8, align 8
+  %9 = getelementptr inbounds i8, ptr %8, i64 8
+  store i64 0, ptr %9, align 8
+; call core::panicking::panic_nounwind_fmt
+  call void @_ZN4core9panicking18panic_nounwind_fmt17h6c46f1098922b4b6E(ptr align 8 %_3, i1 zeroext false, ptr align 8 %0) #17
+  unreachable
+
+bb2:                                              ; preds = %start
+  ret void
+}
+
+; core::alloc::layout::Layout::from_size_align_unchecked::precondition_check
+; Function Attrs: inlinehint nounwind nonlazybind uwtable
+define internal void @_ZN4core5alloc6layout6Layout25from_size_align_unchecked18precondition_check17hfd638b3dc72497b2E(i64 %size, i64 %align, ptr align 8 %0) unnamed_addr #2 personality ptr @rust_eh_personality {
+start:
+  %_7 = alloca [16 x i8], align 8
+  %_5 = alloca [48 x i8], align 8
+; invoke core::alloc::layout::Layout::is_size_align_valid
+  %_3 = invoke zeroext i1 @_ZN4core5alloc6layout6Layout19is_size_align_valid17h30b5efdcd11c8b50E(i64 %size, i64 %align)
+          to label %bb1 unwind label %terminate
+
+terminate:                                        ; preds = %start
+  %1 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_cannot_unwind
+  call void @_ZN4core9panicking19panic_cannot_unwind17h864cccdfd8b0af98E() #18
+  unreachable
+
+bb1:                                              ; preds = %start
+  br i1 %_3, label %bb2, label %bb3
+
+bb3:                                              ; preds = %bb1
+  %2 = getelementptr inbounds nuw { ptr, i64 }, ptr %_7, i64 0
+  store ptr @alloc_1be5ea12ba708d9a11b6e93a7d387a75, ptr %2, align 8
+  %3 = getelementptr inbounds i8, ptr %2, i64 8
+  store i64 281, ptr %3, align 8
+  store ptr %_7, ptr %_5, align 8
+  %4 = getelementptr inbounds i8, ptr %_5, i64 8
+  store i64 1, ptr %4, align 8
+  %5 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %6 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %7 = getelementptr inbounds i8, ptr %_5, i64 32
+  store ptr %5, ptr %7, align 8
+  %8 = getelementptr inbounds i8, ptr %7, i64 8
+  store i64 %6, ptr %8, align 8
+  %9 = getelementptr inbounds i8, ptr %_5, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %9, align 8
+  %10 = getelementptr inbounds i8, ptr %9, i64 8
+  store i64 0, ptr %10, align 8
+; call core::panicking::panic_nounwind_fmt
+  call void @_ZN4core9panicking18panic_nounwind_fmt17h6c46f1098922b4b6E(ptr align 8 %_5, i1 zeroext false, ptr align 8 %0) #17
+  unreachable
+
+bb2:                                              ; preds = %bb1
+  ret void
+}
+
+; core::alloc::layout::Layout::repeat
+; Function Attrs: inlinehint nonlazybind uwtable
+define internal void @_ZN4core5alloc6layout6Layout6repeat17h8901b3e3c949e74cE(ptr sret([24 x i8]) align 8 %_0, ptr align 8 %self, i64 %n) unnamed_addr #0 {
+start:
+  %_7 = alloca [24 x i8], align 8
+  %_4 = alloca [16 x i8], align 8
+  %padded = alloca [16 x i8], align 8
+  %align = load i64, ptr %self, align 8
+  %_10 = sub nuw i64 %align, 1
+  %0 = getelementptr inbounds i8, ptr %self, i64 8
+  %_13 = load i64, ptr %0, align 8
+  %_12 = add nuw i64 %_13, %_10
+  %_14 = xor i64 %_10, -1
+  %new_size = and i64 %_12, %_14
+  br label %bb3
+
+bb3:                                              ; preds = %start
+; call core::alloc::layout::Layout::from_size_align_unchecked::precondition_check
+  call void @_ZN4core5alloc6layout6Layout25from_size_align_unchecked18precondition_check17hfd638b3dc72497b2E(i64 %new_size, i64 %align, ptr align 8 @alloc_6cbafdbbc16bd54f947f743d383ddf32) #19
+  br label %bb4
+
+bb4:                                              ; preds = %bb3
+  %1 = getelementptr inbounds i8, ptr %padded, i64 8
+  store i64 %new_size, ptr %1, align 8
+  store i64 %align, ptr %padded, align 8
+  %2 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %new_size, i64 %n)
+  %_22.0 = extractvalue { i64, i1 } %2, 0
+  %_22.1 = extractvalue { i64, i1 } %2, 1
+  br i1 %_22.1, label %bb5, label %bb7
+
+bb7:                                              ; preds = %bb4
+  %_28 = sub nuw i64 -9223372036854775808, %align
+  %_27 = icmp ugt i64 %_22.0, %_28
+  br i1 %_27, label %bb8, label %bb9
+
+bb5:                                              ; preds = %bb4
+  br label %bb1
+
+bb9:                                              ; preds = %bb7
+  store i64 %align, ptr %_4, align 8
+  %3 = getelementptr inbounds i8, ptr %_4, i64 8
+  store i64 %_22.0, ptr %3, align 8
+  %repeated.0 = load i64, ptr %_4, align 8
+  %4 = getelementptr inbounds i8, ptr %_4, i64 8
+  %repeated.1 = load i64, ptr %4, align 8
+  store i64 %repeated.0, ptr %_7, align 8
+  %5 = getelementptr inbounds i8, ptr %_7, i64 8
+  store i64 %repeated.1, ptr %5, align 8
+  %6 = getelementptr inbounds i8, ptr %_7, i64 16
+  store i64 %new_size, ptr %6, align 8
+  call void @llvm.memcpy.p0.p0.i64(ptr align 8 %_0, ptr align 8 %_7, i64 24, i1 false)
+  br label %bb2
+
+bb8:                                              ; preds = %bb7
+  br label %bb1
+
+bb2:                                              ; preds = %bb1, %bb9
+  ret void
+
+bb1:                                              ; preds = %bb5, %bb8
+  store i64 0, ptr %_0, align 8
+  br label %bb2
+}
+
+; core::slice::<impl [T]>::copy_within
+; Function Attrs: nonlazybind uwtable
+define void @"_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$11copy_within17h7f975dfb6386111dE"(ptr align 1 %self.0, i64 %self.1, i64 %src.0, i64 %src.1, i64 %dest, ptr align 8 %0) unnamed_addr #3 {
+start:
+  %_26 = alloca [1 x i8], align 1
+  %_13 = alloca [48 x i8], align 8
+; call core::slice::index::range
+  %1 = call { i64, i64 } @_ZN4core5slice5index5range17hbecf2d89c84764daE(i64 %src.0, i64 %src.1, i64 %self.1, ptr align 8 %0)
+  %_6.0 = extractvalue { i64, i64 } %1, 0
+  %_6.1 = extractvalue { i64, i64 } %1, 1
+  %count = sub i64 %_6.1, %_6.0
+  %_11 = sub i64 %self.1, %count
+  %_10 = icmp ule i64 %dest, %_11
+  br i1 %_10, label %bb2, label %bb3
+
+bb3:                                              ; preds = %start
+  store ptr @alloc_28a99374df9f6a24257b657befd73a1e, ptr %_13, align 8
+  %2 = getelementptr inbounds i8, ptr %_13, i64 8
+  store i64 1, ptr %2, align 8
+  %3 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %4 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %5 = getelementptr inbounds i8, ptr %_13, i64 32
+  store ptr %3, ptr %5, align 8
+  %6 = getelementptr inbounds i8, ptr %5, i64 8
+  store i64 %4, ptr %6, align 8
+  %7 = getelementptr inbounds i8, ptr %_13, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %7, align 8
+  %8 = getelementptr inbounds i8, ptr %7, i64 8
+  store i64 0, ptr %8, align 8
+; call core::panicking::panic_fmt
+  call void @_ZN4core9panicking9panic_fmt17h62f63d096dd276afE(ptr align 8 %_13, ptr align 8 %0) #16
+  unreachable
+
+bb2:                                              ; preds = %start
+  %src_ptr = getelementptr inbounds nuw i8, ptr %self.0, i64 %_6.0
+  %dest_ptr = getelementptr inbounds nuw i8, ptr %self.0, i64 %dest
+  br label %bb5
+
+bb5:                                              ; preds = %bb2
+  br label %bb7
+
+bb7:                                              ; preds = %bb5
+  %9 = icmp eq i64 %count, 0
+  %10 = zext i1 %9 to i8
+  store i8 %10, ptr %_26, align 1
+  br label %bb8
+
+bb8:                                              ; preds = %bb7
+  %11 = load i8, ptr %_26, align 1
+  %12 = trunc nuw i8 %11 to i1
+; call core::ptr::copy::precondition_check
+  call void @_ZN4core3ptr4copy18precondition_check17hc0db865546abed67E(ptr %src_ptr, ptr %dest_ptr, i64 1, i1 zeroext %12, ptr align 8 @alloc_e950d2cbe5a1f3be947ddf29520cc447) #19
+  br label %bb10
+
+bb10:                                             ; preds = %bb8
+  %13 = mul i64 1, %count
+  call void @llvm.memmove.p0.p0.i64(ptr align 1 %dest_ptr, ptr align 1 %src_ptr, i64 %13, i1 false)
+  ret void
+
+bb6:                                              ; No predecessors!
+  unreachable
+}
+
+; core::slice::<impl [T]>::rotate_right
+; Function Attrs: nonlazybind uwtable
+define void @"_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$12rotate_right17h8ece3391f5cc3770E"(ptr align 1 %self.0, i64 %self.1, i64 %k) unnamed_addr #3 {
+start:
+  %_3 = icmp ule i64 %k, %self.1
+  br i1 %_3, label %bb1, label %bb2
+
+bb2:                                              ; preds = %start
+; call core::panicking::panic
+  call void @_ZN4core9panicking5panic17h89a5f2df32b0508aE(ptr align 1 @alloc_8ea069ad6adec5a06a2a02df3a9e63e3, i64 33, ptr align 8 @alloc_ee03dea50baa6bbd4fcd9295607ecf8e) #16
+  unreachable
+
+bb1:                                              ; preds = %start
+  %mid = sub i64 %self.1, %k
+  %_9 = getelementptr inbounds nuw i8, ptr %self.0, i64 %mid
+; call core::slice::rotate::ptr_rotate
+  call void @_ZN4core5slice6rotate10ptr_rotate17h5f9785605f0ef837E(i64 %mid, ptr %_9, i64 %k)
+  ret void
+}
+
+; core::slice::<impl [T]>::split_at_mut
+; Function Attrs: inlinehint nonlazybind uwtable
+define void @"_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$12split_at_mut17hd07b5995665a322aE"(ptr sret([32 x i8]) align 8 %pair, ptr align 1 %self.0, i64 %self.1, i64 %mid, ptr align 8 %0) unnamed_addr #0 {
+start:
+  %_8 = alloca [32 x i8], align 8
+  %_5 = alloca [48 x i8], align 8
+  %_3 = alloca [32 x i8], align 8
+  %_6 = icmp ule i64 %mid, %self.1
+  br i1 %_6, label %bb1, label %bb3
+
+bb3:                                              ; preds = %start
+  store ptr @alloc_716ff0773fff869d3b6edfdef8f974a4, ptr %_5, align 8
+  %1 = getelementptr inbounds i8, ptr %_5, i64 8
+  store i64 1, ptr %1, align 8
+  %2 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %3 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %4 = getelementptr inbounds i8, ptr %_5, i64 32
+  store ptr %2, ptr %4, align 8
+  %5 = getelementptr inbounds i8, ptr %4, i64 8
+  store i64 %3, ptr %5, align 8
+  %6 = getelementptr inbounds i8, ptr %_5, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %6, align 8
+  %7 = getelementptr inbounds i8, ptr %6, i64 8
+  store i64 0, ptr %7, align 8
+; call core::panicking::panic_fmt
+  call void @_ZN4core9panicking9panic_fmt17h62f63d096dd276afE(ptr align 8 %_5, ptr align 8 %0) #16
+  unreachable
+
+bb1:                                              ; preds = %start
+; call core::slice::<impl [T]>::split_at_mut_unchecked
+  call void @"_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$22split_at_mut_unchecked17h4985565c3c5263e7E"(ptr sret([32 x i8]) align 8 %_8, ptr align 1 %self.0, i64 %self.1, i64 %mid, ptr align 8 @alloc_3bcb7a2d1936a26846ce8b498dc9c73b)
+  call void @llvm.memcpy.p0.p0.i64(ptr align 8 %_3, ptr align 8 %_8, i64 32, i1 false)
+  call void @llvm.memcpy.p0.p0.i64(ptr align 8 %pair, ptr align 8 %_3, i64 32, i1 false)
+  ret void
+}
+
+; core::slice::<impl [T]>::swap_with_slice
+; Function Attrs: nonlazybind uwtable
+define void @"_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$15swap_with_slice17h0103e88d6eb8d228E"(ptr align 1 %self.0, i64 %self.1, ptr align 1 %other.0, i64 %other.1, ptr align 8 %0) unnamed_addr #3 {
+start:
+  %_7 = alloca [48 x i8], align 8
+  %_3 = icmp eq i64 %self.1, %other.1
+  br i1 %_3, label %bb1, label %bb2
+
+bb2:                                              ; preds = %start
+  store ptr @alloc_940028eef1a3be8e8d7847074d3f96b9, ptr %_7, align 8
+  %1 = getelementptr inbounds i8, ptr %_7, i64 8
+  store i64 1, ptr %1, align 8
+  %2 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %3 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %4 = getelementptr inbounds i8, ptr %_7, i64 32
+  store ptr %2, ptr %4, align 8
+  %5 = getelementptr inbounds i8, ptr %4, i64 8
+  store i64 %3, ptr %5, align 8
+  %6 = getelementptr inbounds i8, ptr %_7, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %6, align 8
+  %7 = getelementptr inbounds i8, ptr %6, i64 8
+  store i64 0, ptr %7, align 8
+; call core::panicking::panic_fmt
+  call void @_ZN4core9panicking9panic_fmt17h62f63d096dd276afE(ptr align 8 %_7, ptr align 8 %0) #16
+  unreachable
+
+bb1:                                              ; preds = %start
+; call core::ptr::swap_nonoverlapping
+  call void @_ZN4core3ptr19swap_nonoverlapping17h228a7dc258276ec8E(ptr %self.0, ptr %other.0, i64 %self.1, ptr align 8 %0)
+  ret void
+}
+
+; core::slice::<impl [T]>::split_at_mut_unchecked
+; Function Attrs: inlinehint nonlazybind uwtable
+define void @"_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$22split_at_mut_unchecked17h4985565c3c5263e7E"(ptr sret([32 x i8]) align 8 %_0, ptr align 1 %self.0, i64 %self.1, i64 %mid, ptr align 8 %0) unnamed_addr #0 {
+start:
+  %len = alloca [8 x i8], align 8
+  %data = alloca [8 x i8], align 8
+  %_7 = alloca [16 x i8], align 8
+  br label %bb1
+
+bb1:                                              ; preds = %start
+; call core::slice::<impl [T]>::split_at_mut_unchecked::precondition_check
+  call void @"_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$22split_at_mut_unchecked18precondition_check17hbb9af70469e79bd9E"(i64 %mid, i64 %self.1, ptr align 8 %0) #19
+  br label %bb3
+
+bb3:                                              ; preds = %bb1
+; call core::slice::raw::from_raw_parts_mut::precondition_check
+  call void @_ZN4core5slice3raw18from_raw_parts_mut18precondition_check17h72d64701713fcaf0E(ptr %self.0, i64 1, i64 1, i64 %mid, ptr align 8 %0) #19
+  store ptr %self.0, ptr %_7, align 8
+  %1 = getelementptr inbounds i8, ptr %_7, i64 8
+  store i64 %mid, ptr %1, align 8
+  %2 = getelementptr inbounds nuw i8, ptr %self.0, i64 %mid
+  store ptr %2, ptr %data, align 8
+  %3 = sub nuw i64 %self.1, %mid
+  store i64 %3, ptr %len, align 8
+  br label %bb6
+
+bb6:                                              ; preds = %bb3
+  %_22 = load ptr, ptr %data, align 8
+  %4 = load i64, ptr %len, align 8
+; call core::slice::raw::from_raw_parts_mut::precondition_check
+  call void @_ZN4core5slice3raw18from_raw_parts_mut18precondition_check17h72d64701713fcaf0E(ptr %_22, i64 1, i64 1, i64 %4, ptr align 8 %0) #19
+  br label %bb8
+
+bb8:                                              ; preds = %bb6
+  %_25.0 = load ptr, ptr %data, align 8
+  %_25.1 = load i64, ptr %len, align 8
+  %5 = load ptr, ptr %_7, align 8
+  %6 = getelementptr inbounds i8, ptr %_7, i64 8
+  %7 = load i64, ptr %6, align 8
+  store ptr %5, ptr %_0, align 8
+  %8 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %7, ptr %8, align 8
+  %9 = getelementptr inbounds i8, ptr %_0, i64 16
+  store ptr %_25.0, ptr %9, align 8
+  %10 = getelementptr inbounds i8, ptr %9, i64 8
+  store i64 %_25.1, ptr %10, align 8
+  ret void
+
+bb2:                                              ; No predecessors!
+  unreachable
+
+bb5:                                              ; No predecessors!
+  unreachable
+}
+
+; core::slice::<impl [T]>::split_at_mut_unchecked::precondition_check
+; Function Attrs: inlinehint nounwind nonlazybind uwtable
+define internal void @"_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$22split_at_mut_unchecked18precondition_check17hbb9af70469e79bd9E"(i64 %mid, i64 %len, ptr align 8 %0) unnamed_addr #2 {
+start:
+  %_7 = alloca [16 x i8], align 8
+  %_5 = alloca [48 x i8], align 8
+  %_3 = icmp ule i64 %mid, %len
+  br i1 %_3, label %bb1, label %bb2
+
+bb2:                                              ; preds = %start
+  %1 = getelementptr inbounds nuw { ptr, i64 }, ptr %_7, i64 0
+  store ptr @alloc_6b0b11c9e93314b588b613b55005cf18, ptr %1, align 8
+  %2 = getelementptr inbounds i8, ptr %1, i64 8
+  store i64 221, ptr %2, align 8
+  store ptr %_7, ptr %_5, align 8
+  %3 = getelementptr inbounds i8, ptr %_5, i64 8
+  store i64 1, ptr %3, align 8
+  %4 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %5 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %6 = getelementptr inbounds i8, ptr %_5, i64 32
+  store ptr %4, ptr %6, align 8
+  %7 = getelementptr inbounds i8, ptr %6, i64 8
+  store i64 %5, ptr %7, align 8
+  %8 = getelementptr inbounds i8, ptr %_5, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %8, align 8
+  %9 = getelementptr inbounds i8, ptr %8, i64 8
+  store i64 0, ptr %9, align 8
+; call core::panicking::panic_nounwind_fmt
+  call void @_ZN4core9panicking18panic_nounwind_fmt17h6c46f1098922b4b6E(ptr align 8 %_5, i1 zeroext false, ptr align 8 %0) #17
+  unreachable
+
+bb1:                                              ; preds = %start
+  ret void
+}
+
+; core::slice::raw::from_raw_parts_mut::precondition_check
+; Function Attrs: inlinehint nounwind nonlazybind uwtable
+define internal void @_ZN4core5slice3raw18from_raw_parts_mut18precondition_check17h72d64701713fcaf0E(ptr %data, i64 %size, i64 %align, i64 %len, ptr align 8 %0) unnamed_addr #2 personality ptr @rust_eh_personality {
+start:
+  %1 = alloca [4 x i8], align 4
+  %max_len = alloca [8 x i8], align 8
+  %_14 = alloca [48 x i8], align 8
+  %_11 = alloca [16 x i8], align 8
+  %_9 = alloca [48 x i8], align 8
+  %2 = call i64 @llvm.ctpop.i64(i64 %align)
+  %3 = trunc i64 %2 to i32
+  store i32 %3, ptr %1, align 4
+  %_18 = load i32, ptr %1, align 4
+  %4 = icmp eq i32 %_18, 1
+  br i1 %4, label %bb8, label %bb9
+
+bb8:                                              ; preds = %start
+  %_16 = ptrtoint ptr %data to i64
+  %_17 = sub i64 %align, 1
+  %_15 = and i64 %_16, %_17
+  %5 = icmp eq i64 %_15, 0
+  br i1 %5, label %bb6, label %bb7
+
+bb9:                                              ; preds = %start
+  store ptr @alloc_e92e94d0ff530782b571cfd99ec66aef, ptr %_14, align 8
+  %6 = getelementptr inbounds i8, ptr %_14, i64 8
+  store i64 1, ptr %6, align 8
+  %7 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %8 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %9 = getelementptr inbounds i8, ptr %_14, i64 32
+  store ptr %7, ptr %9, align 8
+  %10 = getelementptr inbounds i8, ptr %9, i64 8
+  store i64 %8, ptr %10, align 8
+  %11 = getelementptr inbounds i8, ptr %_14, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %11, align 8
+  %12 = getelementptr inbounds i8, ptr %11, i64 8
+  store i64 0, ptr %12, align 8
+; invoke core::panicking::panic_fmt
+  invoke void @_ZN4core9panicking9panic_fmt17h62f63d096dd276afE(ptr align 8 %_14, ptr align 8 @alloc_863114602ff53edf107e51a9c9035fa2) #16
+          to label %unreachable unwind label %terminate
+
+bb6:                                              ; preds = %bb8
+  %_12 = icmp eq i64 %_16, 0
+  %_5 = xor i1 %_12, true
+  br i1 %_5, label %bb1, label %bb4
+
+bb7:                                              ; preds = %bb8
+  br label %bb4
+
+bb4:                                              ; preds = %bb7, %bb6
+  br label %bb5
+
+bb1:                                              ; preds = %bb6
+  %_22 = icmp eq i64 %size, 0
+  %13 = icmp eq i64 %size, 0
+  br i1 %13, label %bb11, label %bb12
+
+bb11:                                             ; preds = %bb1
+  store i64 -1, ptr %max_len, align 8
+  br label %bb14
+
+bb12:                                             ; preds = %bb1
+  br i1 %_22, label %panic, label %bb13
+
+bb14:                                             ; preds = %bb13, %bb11
+  %_23 = load i64, ptr %max_len, align 8
+  %_7 = icmp ule i64 %len, %_23
+  br i1 %_7, label %bb2, label %bb3
+
+bb13:                                             ; preds = %bb12
+  %14 = udiv i64 9223372036854775807, %size
+  store i64 %14, ptr %max_len, align 8
+  br label %bb14
+
+panic:                                            ; preds = %bb12
+; invoke core::panicking::panic_const::panic_const_div_by_zero
+  invoke void @_ZN4core9panicking11panic_const23panic_const_div_by_zero17hfcc582669e57e229E(ptr align 8 @alloc_c546c23a9ba92cfed6659b88891d1475) #16
+          to label %unreachable unwind label %terminate
+
+terminate:                                        ; preds = %bb9, %panic
+  %15 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_cannot_unwind
+  call void @_ZN4core9panicking19panic_cannot_unwind17h864cccdfd8b0af98E() #18
+  unreachable
+
+unreachable:                                      ; preds = %bb9, %panic
+  unreachable
+
+bb3:                                              ; preds = %bb14
+  br label %bb5
+
+bb2:                                              ; preds = %bb14
+  ret void
+
+bb5:                                              ; preds = %bb4, %bb3
+  %16 = getelementptr inbounds nuw { ptr, i64 }, ptr %_11, i64 0
+  store ptr @alloc_5c1a2f972552229672fc942406cfc298, ptr %16, align 8
+  %17 = getelementptr inbounds i8, ptr %16, i64 8
+  store i64 283, ptr %17, align 8
+  store ptr %_11, ptr %_9, align 8
+  %18 = getelementptr inbounds i8, ptr %_9, i64 8
+  store i64 1, ptr %18, align 8
+  %19 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %20 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %21 = getelementptr inbounds i8, ptr %_9, i64 32
+  store ptr %19, ptr %21, align 8
+  %22 = getelementptr inbounds i8, ptr %21, i64 8
+  store i64 %20, ptr %22, align 8
+  %23 = getelementptr inbounds i8, ptr %_9, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %23, align 8
+  %24 = getelementptr inbounds i8, ptr %23, i64 8
+  store i64 0, ptr %24, align 8
+; call core::panicking::panic_nounwind_fmt
+  call void @_ZN4core9panicking18panic_nounwind_fmt17h6c46f1098922b4b6E(ptr align 8 %_9, i1 zeroext false, ptr align 8 %0) #17
+  unreachable
+}
+
+; core::slice::index::range
+; Function Attrs: nonlazybind uwtable
+define { i64, i64 } @_ZN4core5slice5index5range17hbecf2d89c84764daE(i64 %0, i64 %1, i64 %bounds, ptr align 8 %2) unnamed_addr #3 personality ptr @rust_eh_personality {
+start:
+  %3 = alloca [16 x i8], align 8
+  %self2 = alloca [16 x i8], align 8
+  %_13 = alloca [16 x i8], align 8
+  %end = alloca [8 x i8], align 8
+  %self = alloca [16 x i8], align 8
+  %_5 = alloca [16 x i8], align 8
+  %start1 = alloca [8 x i8], align 8
+  %range = alloca [16 x i8], align 8
+  store i64 %0, ptr %range, align 8
+  %4 = getelementptr inbounds i8, ptr %range, i64 8
+  store i64 %1, ptr %4, align 8
+; invoke <core::ops::range::Range<T> as core::ops::range::RangeBounds<T>>::start_bound
+  %5 = invoke { i64, ptr } @"_ZN91_$LT$core..ops..range..Range$LT$T$GT$$u20$as$u20$core..ops..range..RangeBounds$LT$T$GT$$GT$11start_bound17h9a5bc5ed2d0e19e7E"(ptr align 8 %range)
+          to label %bb1 unwind label %cleanup
+
+bb17:                                             ; preds = %cleanup
+  %6 = load ptr, ptr %3, align 8
+  %7 = getelementptr inbounds i8, ptr %3, i64 8
+  %8 = load i32, ptr %7, align 8
+  %9 = insertvalue { ptr, i32 } poison, ptr %6, 0
+  %10 = insertvalue { ptr, i32 } %9, i32 %8, 1
+  resume { ptr, i32 } %10
+
+cleanup:                                          ; preds = %bb12, %bb14, %bb22, %bb6, %bb19, %start
+  %11 = landingpad { ptr, i32 }
+          cleanup
+  %12 = extractvalue { ptr, i32 } %11, 0
+  %13 = extractvalue { ptr, i32 } %11, 1
+  store ptr %12, ptr %3, align 8
+  %14 = getelementptr inbounds i8, ptr %3, i64 8
+  store i32 %13, ptr %14, align 8
+  br label %bb17
+
+bb1:                                              ; preds = %start
+  %15 = extractvalue { i64, ptr } %5, 0
+  %16 = extractvalue { i64, ptr } %5, 1
+  store i64 %15, ptr %_5, align 8
+  %17 = getelementptr inbounds i8, ptr %_5, i64 8
+  store ptr %16, ptr %17, align 8
+  %_7 = load i64, ptr %_5, align 8
+  %18 = getelementptr inbounds i8, ptr %_5, i64 8
+  %19 = load ptr, ptr %18, align 8
+  switch i64 %_7, label %bb2 [
+    i64 0, label %bb5
+    i64 1, label %bb4
+    i64 2, label %bb3
+  ]
+
+bb2:                                              ; preds = %bb7, %bb1
+  unreachable
+
+bb5:                                              ; preds = %bb1
+  %20 = getelementptr inbounds i8, ptr %_5, i64 8
+  %_32 = load ptr, ptr %20, align 8
+  %start3 = load i64, ptr %_32, align 8
+  store i64 %start3, ptr %start1, align 8
+  br label %bb6
+
+bb4:                                              ; preds = %bb1
+  %21 = getelementptr inbounds i8, ptr %_5, i64 8
+  %start4 = load ptr, ptr %21, align 8
+  %self5 = load i64, ptr %start4, align 8
+  %22 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %self5, i64 1)
+  %_35.0 = extractvalue { i64, i1 } %22, 0
+  %_35.1 = extractvalue { i64, i1 } %22, 1
+  br i1 %_35.1, label %bb19, label %bb21
+
+bb3:                                              ; preds = %bb1
+  store i64 0, ptr %start1, align 8
+  br label %bb6
+
+bb6:                                              ; preds = %bb3, %bb21, %bb5
+; invoke <core::ops::range::Range<T> as core::ops::range::RangeBounds<T>>::end_bound
+  %23 = invoke { i64, ptr } @"_ZN91_$LT$core..ops..range..Range$LT$T$GT$$u20$as$u20$core..ops..range..RangeBounds$LT$T$GT$$GT$9end_bound17h19278149f7eb2306E"(ptr align 8 %range)
+          to label %bb7 unwind label %cleanup
+
+bb21:                                             ; preds = %bb4
+  %_36 = add nuw i64 %self5, 1
+  %24 = getelementptr inbounds i8, ptr %self, i64 8
+  store i64 %_36, ptr %24, align 8
+  store i64 1, ptr %self, align 8
+  %25 = getelementptr inbounds i8, ptr %self, i64 8
+  %x = load i64, ptr %25, align 8
+  store i64 %x, ptr %start1, align 8
+  br label %bb6
+
+bb19:                                             ; preds = %bb4
+  %26 = load i64, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %27 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  store i64 %26, ptr %self, align 8
+  %28 = getelementptr inbounds i8, ptr %self, i64 8
+  store i64 %27, ptr %28, align 8
+; invoke core::slice::index::slice_start_index_overflow_fail
+  invoke void @_ZN4core5slice5index31slice_start_index_overflow_fail17haf4d489fd9a37420E(ptr align 8 @alloc_fbdf8a2fe403f7a54c6f7ede5e097c6d) #16
+          to label %unreachable unwind label %cleanup
+
+unreachable:                                      ; preds = %bb12, %bb14, %bb22, %bb19
+  unreachable
+
+bb7:                                              ; preds = %bb6
+  %29 = extractvalue { i64, ptr } %23, 0
+  %30 = extractvalue { i64, ptr } %23, 1
+  store i64 %29, ptr %_13, align 8
+  %31 = getelementptr inbounds i8, ptr %_13, i64 8
+  store ptr %30, ptr %31, align 8
+  %_15 = load i64, ptr %_13, align 8
+  %32 = getelementptr inbounds i8, ptr %_13, i64 8
+  %33 = load ptr, ptr %32, align 8
+  switch i64 %_15, label %bb2 [
+    i64 0, label %bb10
+    i64 1, label %bb9
+    i64 2, label %bb8
+  ]
+
+bb10:                                             ; preds = %bb7
+  %34 = getelementptr inbounds i8, ptr %_13, i64 8
+  %end6 = load ptr, ptr %34, align 8
+  %self7 = load i64, ptr %end6, align 8
+  %35 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %self7, i64 1)
+  %_41.0 = extractvalue { i64, i1 } %35, 0
+  %_41.1 = extractvalue { i64, i1 } %35, 1
+  br i1 %_41.1, label %bb22, label %bb24
+
+bb9:                                              ; preds = %bb7
+  %36 = getelementptr inbounds i8, ptr %_13, i64 8
+  %_33 = load ptr, ptr %36, align 8
+  %end9 = load i64, ptr %_33, align 8
+  store i64 %end9, ptr %end, align 8
+  br label %bb11
+
+bb8:                                              ; preds = %bb7
+  store i64 %bounds, ptr %end, align 8
+  br label %bb11
+
+bb24:                                             ; preds = %bb10
+  %_42 = add nuw i64 %self7, 1
+  %37 = getelementptr inbounds i8, ptr %self2, i64 8
+  store i64 %_42, ptr %37, align 8
+  store i64 1, ptr %self2, align 8
+  %38 = getelementptr inbounds i8, ptr %self2, i64 8
+  %x8 = load i64, ptr %38, align 8
+  store i64 %x8, ptr %end, align 8
+  br label %bb11
+
+bb22:                                             ; preds = %bb10
+  %39 = load i64, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %40 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  store i64 %39, ptr %self2, align 8
+  %41 = getelementptr inbounds i8, ptr %self2, i64 8
+  store i64 %40, ptr %41, align 8
+; invoke core::slice::index::slice_end_index_overflow_fail
+  invoke void @_ZN4core5slice5index29slice_end_index_overflow_fail17h4617bb5754bb8991E(ptr align 8 @alloc_c7dab0e5d9681c0687828c3a3e231129) #16
+          to label %unreachable unwind label %cleanup
+
+bb11:                                             ; preds = %bb8, %bb9, %bb24
+  %_21 = load i64, ptr %start1, align 8
+  %_22 = load i64, ptr %end, align 8
+  %_20 = icmp ugt i64 %_21, %_22
+  br i1 %_20, label %bb12, label %bb13
+
+bb13:                                             ; preds = %bb11
+  %_27 = load i64, ptr %end, align 8
+  %_26 = icmp ugt i64 %_27, %bounds
+  br i1 %_26, label %bb14, label %bb15
+
+bb12:                                             ; preds = %bb11
+  %_24 = load i64, ptr %start1, align 8
+  %_25 = load i64, ptr %end, align 8
+; invoke core::slice::index::slice_index_order_fail
+  invoke void @_ZN4core5slice5index22slice_index_order_fail17heab0cef01ebb2d7fE(i64 %_24, i64 %_25, ptr align 8 %2) #16
+          to label %unreachable unwind label %cleanup
+
+bb15:                                             ; preds = %bb13
+  %_30 = load i64, ptr %start1, align 8
+  %_31 = load i64, ptr %end, align 8
+  %42 = insertvalue { i64, i64 } poison, i64 %_30, 0
+  %43 = insertvalue { i64, i64 } %42, i64 %_31, 1
+  ret { i64, i64 } %43
+
+bb14:                                             ; preds = %bb13
+  %_29 = load i64, ptr %end, align 8
+; invoke core::slice::index::slice_end_index_len_fail
+  invoke void @_ZN4core5slice5index24slice_end_index_len_fail17hb04774ae50b54dc9E(i64 %_29, i64 %bounds, ptr align 8 %2) #16
+          to label %unreachable unwind label %cleanup
+}
+
+; core::slice::rotate::ptr_rotate
+; Function Attrs: inlinehint nonlazybind uwtable
+define void @_ZN4core5slice6rotate10ptr_rotate17h5f9785605f0ef837E(i64 %left, ptr %mid, i64 %right) unnamed_addr #0 {
+start:
+  %_5 = alloca [8 x i8], align 8
+  br label %bb2
+
+bb2:                                              ; preds = %start
+  %0 = icmp eq i64 %left, 0
+  br i1 %0, label %bb5, label %bb3
+
+bb5:                                              ; preds = %bb3, %bb2
+  br label %bb16
+
+bb3:                                              ; preds = %bb2
+  %1 = icmp eq i64 %right, 0
+  br i1 %1, label %bb5, label %bb4
+
+bb4:                                              ; preds = %bb3
+  %_14 = icmp ult i64 %right, %left
+  br i1 %_14, label %bb17, label %bb18
+
+bb16:                                             ; preds = %bb15, %bb5
+  ret void
+
+bb18:                                             ; preds = %bb4
+  store i64 %left, ptr %_5, align 8
+  br label %bb19
+
+bb17:                                             ; preds = %bb4
+  store i64 %right, ptr %_5, align 8
+  br label %bb19
+
+bb19:                                             ; preds = %bb17, %bb18
+  %2 = load i64, ptr %_5, align 8
+  %_4 = icmp ule i64 %2, 256
+  br i1 %_4, label %bb7, label %bb8
+
+bb8:                                              ; preds = %bb19
+  %_11 = add i64 %left, %right
+  %_10 = icmp ult i64 %_11, 24
+  br i1 %_10, label %bb9, label %bb10
+
+bb7:                                              ; preds = %bb19
+; call core::slice::rotate::ptr_rotate_memmove
+  call void @_ZN4core5slice6rotate18ptr_rotate_memmove17hffd6e8bea99afe31E(i64 %left, ptr %mid, i64 %right)
+  br label %bb15
+
+bb10:                                             ; preds = %bb8
+  br label %bb13
+
+bb9:                                              ; preds = %bb8
+  br label %bb12
+
+bb13:                                             ; preds = %bb10
+; call core::slice::rotate::ptr_rotate_swap
+  call void @_ZN4core5slice6rotate15ptr_rotate_swap17h77a8fc174f3bf847E(i64 %left, ptr %mid, i64 %right)
+  br label %bb14
+
+bb14:                                             ; preds = %bb12, %bb13
+  br label %bb15
+
+bb11:                                             ; No predecessors!
+  br label %bb12
+
+bb12:                                             ; preds = %bb9, %bb11
+; call core::slice::rotate::ptr_rotate_gcd
+  call void @_ZN4core5slice6rotate14ptr_rotate_gcd17h7a61e8eea8b97c2fE(i64 %left, ptr %mid, i64 %right)
+  br label %bb14
+
+bb15:                                             ; preds = %bb7, %bb14
+  br label %bb16
+
+bb1:                                              ; No predecessors!
+  unreachable
+}
+
+; core::slice::rotate::ptr_rotate_gcd
+; Function Attrs: inlinehint nonlazybind uwtable
+define void @_ZN4core5slice6rotate14ptr_rotate_gcd17h7a61e8eea8b97c2fE(i64 %left, ptr %mid, i64 %right) unnamed_addr #0 {
+start:
+  %start1 = alloca [8 x i8], align 8
+  %gcd = alloca [8 x i8], align 8
+  %i = alloca [8 x i8], align 8
+  %tmp = alloca [1 x i8], align 1
+  %x = alloca [8 x i8], align 8
+  br label %bb21
+
+bb21:                                             ; preds = %start
+  %_46 = sub nsw i64 0, %left
+  %0 = getelementptr inbounds i8, ptr %mid, i64 %_46
+  store ptr %0, ptr %x, align 8
+  br label %bb19
+
+bb19:                                             ; preds = %bb21
+  %self = load ptr, ptr %x, align 8
+  %1 = load i8, ptr %self, align 1
+  store i8 %1, ptr %tmp, align 1
+  store i64 %right, ptr %i, align 8
+  store i64 %right, ptr %gcd, align 8
+  br label %bb1
+
+bb1:                                              ; preds = %bb9, %bb19
+  %self2 = load ptr, ptr %x, align 8
+  %count = load i64, ptr %i, align 8
+  %self3 = getelementptr inbounds nuw i8, ptr %self2, i64 %count
+  %src = load i8, ptr %tmp, align 1
+  br label %bb22
+
+bb22:                                             ; preds = %bb1
+; call core::ptr::replace::precondition_check
+  call void @_ZN4core3ptr7replace18precondition_check17h4d5d4dee0bb3905cE(ptr %self3, i64 1, i1 zeroext false, ptr align 8 @alloc_ccc8df90bcd31f00cc1ef6258c4f5fcb) #19
+  br label %bb24
+
+bb24:                                             ; preds = %bb22
+  %_9 = load i8, ptr %self3, align 1
+  store i8 %src, ptr %self3, align 1
+  store i8 %_9, ptr %tmp, align 1
+  %_15 = load i64, ptr %i, align 8
+  %_14 = icmp uge i64 %_15, %left
+  br i1 %_14, label %bb2, label %bb8
+
+bb8:                                              ; preds = %bb24
+  %2 = load i64, ptr %i, align 8
+  %3 = add i64 %2, %right
+  store i64 %3, ptr %i, align 8
+  br label %bb9
+
+bb2:                                              ; preds = %bb24
+  %4 = load i64, ptr %i, align 8
+  %5 = sub i64 %4, %left
+  store i64 %5, ptr %i, align 8
+  %_16 = load i64, ptr %i, align 8
+  %6 = icmp eq i64 %_16, 0
+  br i1 %6, label %bb3, label %bb4
+
+bb9:                                              ; preds = %bb7, %bb8
+  br label %bb1
+
+bb3:                                              ; preds = %bb2
+  %self4 = load ptr, ptr %x, align 8
+  %val = load i8, ptr %tmp, align 1
+  store i8 %val, ptr %self4, align 1
+  store i64 1, ptr %start1, align 8
+  br label %bb10
+
+bb4:                                              ; preds = %bb2
+  %_20 = load i64, ptr %i, align 8
+  %_21 = load i64, ptr %gcd, align 8
+  %_19 = icmp ult i64 %_20, %_21
+  br i1 %_19, label %bb5, label %bb6
+
+bb10:                                             ; preds = %bb14, %bb3
+  %_25 = load i64, ptr %start1, align 8
+  %_26 = load i64, ptr %gcd, align 8
+  %_24 = icmp ult i64 %_25, %_26
+  br i1 %_24, label %bb11, label %bb18
+
+bb18:                                             ; preds = %bb10
+  ret void
+
+bb11:                                             ; preds = %bb10
+  %self5 = load ptr, ptr %x, align 8
+  %count6 = load i64, ptr %start1, align 8
+  %self7 = getelementptr inbounds nuw i8, ptr %self5, i64 %count6
+  %_27 = load i8, ptr %self7, align 1
+  store i8 %_27, ptr %tmp, align 1
+  %_31 = load i64, ptr %start1, align 8
+  %7 = add i64 %_31, %right
+  store i64 %7, ptr %i, align 8
+  br label %bb12
+
+bb12:                                             ; preds = %bb17, %bb11
+  %self8 = load ptr, ptr %x, align 8
+  %count9 = load i64, ptr %i, align 8
+  %self10 = getelementptr inbounds nuw i8, ptr %self8, i64 %count9
+  %src11 = load i8, ptr %tmp, align 1
+  br label %bb25
+
+bb25:                                             ; preds = %bb12
+; call core::ptr::replace::precondition_check
+  call void @_ZN4core3ptr7replace18precondition_check17h4d5d4dee0bb3905cE(ptr %self10, i64 1, i1 zeroext false, ptr align 8 @alloc_ccc8df90bcd31f00cc1ef6258c4f5fcb) #19
+  br label %bb27
+
+bb27:                                             ; preds = %bb25
+  %_32 = load i8, ptr %self10, align 1
+  store i8 %src11, ptr %self10, align 1
+  store i8 %_32, ptr %tmp, align 1
+  %_38 = load i64, ptr %i, align 8
+  %_37 = icmp uge i64 %_38, %left
+  br i1 %_37, label %bb13, label %bb16
+
+bb16:                                             ; preds = %bb27
+  %8 = load i64, ptr %i, align 8
+  %9 = add i64 %8, %right
+  store i64 %9, ptr %i, align 8
+  br label %bb17
+
+bb13:                                             ; preds = %bb27
+  %10 = load i64, ptr %i, align 8
+  %11 = sub i64 %10, %left
+  store i64 %11, ptr %i, align 8
+  %_40 = load i64, ptr %i, align 8
+  %_41 = load i64, ptr %start1, align 8
+  %_39 = icmp eq i64 %_40, %_41
+  br i1 %_39, label %bb14, label %bb15
+
+bb17:                                             ; preds = %bb15, %bb16
+  br label %bb12
+
+bb15:                                             ; preds = %bb13
+  br label %bb17
+
+bb14:                                             ; preds = %bb13
+  %self12 = load ptr, ptr %x, align 8
+  %count13 = load i64, ptr %start1, align 8
+  %self14 = getelementptr inbounds nuw i8, ptr %self12, i64 %count13
+  %val15 = load i8, ptr %tmp, align 1
+  store i8 %val15, ptr %self14, align 1
+  %12 = load i64, ptr %start1, align 8
+  %13 = add i64 %12, 1
+  store i64 %13, ptr %start1, align 8
+  br label %bb10
+
+bb6:                                              ; preds = %bb4
+  br label %bb7
+
+bb5:                                              ; preds = %bb4
+  %_22 = load i64, ptr %i, align 8
+  store i64 %_22, ptr %gcd, align 8
+  br label %bb7
+
+bb7:                                              ; preds = %bb5, %bb6
+  br label %bb9
+
+bb20:                                             ; No predecessors!
+  unreachable
+}
+
+; core::slice::rotate::ptr_rotate_swap
+; Function Attrs: inlinehint nonlazybind uwtable
+define void @_ZN4core5slice6rotate15ptr_rotate_swap17h77a8fc174f3bf847E(i64 %0, ptr %1, i64 %2) unnamed_addr #0 {
+start:
+  %_21 = alloca [8 x i8], align 8
+  %_13 = alloca [8 x i8], align 8
+  %_8 = alloca [8 x i8], align 8
+  %right = alloca [8 x i8], align 8
+  %mid = alloca [8 x i8], align 8
+  %left = alloca [8 x i8], align 8
+  store i64 %0, ptr %left, align 8
+  store ptr %1, ptr %mid, align 8
+  store i64 %2, ptr %right, align 8
+  br label %bb1
+
+bb1:                                              ; preds = %bb17, %start
+  %_5 = load i64, ptr %left, align 8
+  %_6 = load i64, ptr %right, align 8
+  %_4 = icmp uge i64 %_5, %_6
+  br i1 %_4, label %bb2, label %bb7
+
+bb7:                                              ; preds = %bb1
+  br label %bb8
+
+bb2:                                              ; preds = %bb1
+  br label %bb3
+
+bb8:                                              ; preds = %bb11, %bb7
+  %self = load ptr, ptr %mid, align 8
+  %count = load i64, ptr %left, align 8
+  br label %bb26
+
+bb26:                                             ; preds = %bb8
+  %_39 = sub nsw i64 0, %count
+  %3 = getelementptr inbounds i8, ptr %self, i64 %_39
+  store ptr %3, ptr %_21, align 8
+  br label %bb24
+
+bb24:                                             ; preds = %bb26
+  %_24 = load ptr, ptr %mid, align 8
+  %_25 = load i64, ptr %left, align 8
+  %4 = load ptr, ptr %_21, align 8
+; call core::ptr::swap_nonoverlapping
+  call void @_ZN4core3ptr19swap_nonoverlapping17h228a7dc258276ec8E(ptr %4, ptr %_24, i64 %_25, ptr align 8 @alloc_75f738e45fcea5f863bbdf53853be947)
+  %self1 = load ptr, ptr %mid, align 8
+  %count2 = load i64, ptr %left, align 8
+  %_26 = getelementptr inbounds nuw i8, ptr %self1, i64 %count2
+  store ptr %_26, ptr %mid, align 8
+  %_29 = load i64, ptr %left, align 8
+  %5 = load i64, ptr %right, align 8
+  %6 = sub i64 %5, %_29
+  store i64 %6, ptr %right, align 8
+  %_31 = load i64, ptr %right, align 8
+  %_32 = load i64, ptr %left, align 8
+  %_30 = icmp ult i64 %_31, %_32
+  br i1 %_30, label %bb10, label %bb11
+
+bb11:                                             ; preds = %bb24
+  br label %bb8
+
+bb10:                                             ; preds = %bb24
+  br label %bb12
+
+bb12:                                             ; preds = %bb5, %bb10
+  %_33 = load i64, ptr %right, align 8
+  %7 = icmp eq i64 %_33, 0
+  br i1 %7, label %bb13, label %bb14
+
+bb3:                                              ; preds = %bb6, %bb2
+  %self3 = load ptr, ptr %mid, align 8
+  %count4 = load i64, ptr %right, align 8
+  br label %bb20
+
+bb20:                                             ; preds = %bb3
+  %_35 = sub nsw i64 0, %count4
+  %8 = getelementptr inbounds i8, ptr %self3, i64 %_35
+  store ptr %8, ptr %_8, align 8
+  br label %bb18
+
+bb18:                                             ; preds = %bb20
+  %_11 = load ptr, ptr %mid, align 8
+  %_12 = load i64, ptr %right, align 8
+  %9 = load ptr, ptr %_8, align 8
+; call core::ptr::swap_nonoverlapping
+  call void @_ZN4core3ptr19swap_nonoverlapping17h228a7dc258276ec8E(ptr %9, ptr %_11, i64 %_12, ptr align 8 @alloc_445d36c51cd8939727988f9e2beafd2f)
+  %self5 = load ptr, ptr %mid, align 8
+  %count6 = load i64, ptr %right, align 8
+  br label %bb23
+
+bb23:                                             ; preds = %bb18
+  %_37 = sub nsw i64 0, %count6
+  %10 = getelementptr inbounds i8, ptr %self5, i64 %_37
+  store ptr %10, ptr %_13, align 8
+  br label %bb21
+
+bb21:                                             ; preds = %bb23
+  %11 = load ptr, ptr %_13, align 8
+  store ptr %11, ptr %mid, align 8
+  %_16 = load i64, ptr %right, align 8
+  %12 = load i64, ptr %left, align 8
+  %13 = sub i64 %12, %_16
+  store i64 %13, ptr %left, align 8
+  %_18 = load i64, ptr %left, align 8
+  %_19 = load i64, ptr %right, align 8
+  %_17 = icmp ult i64 %_18, %_19
+  br i1 %_17, label %bb5, label %bb6
+
+bb6:                                              ; preds = %bb21
+  br label %bb3
+
+bb5:                                              ; preds = %bb21
+  br label %bb12
+
+bb13:                                             ; preds = %bb12
+  br label %bb16
+
+bb14:                                             ; preds = %bb12
+  %_34 = load i64, ptr %left, align 8
+  %14 = icmp eq i64 %_34, 0
+  br i1 %14, label %bb15, label %bb17
+
+bb16:                                             ; preds = %bb15, %bb13
+  ret void
+
+bb15:                                             ; preds = %bb14
+  br label %bb16
+
+bb17:                                             ; preds = %bb14
+  br label %bb1
+
+bb19:                                             ; No predecessors!
+  unreachable
+
+bb22:                                             ; No predecessors!
+  unreachable
+
+bb25:                                             ; No predecessors!
+  unreachable
+}
+
+; core::slice::rotate::ptr_rotate_memmove
+; Function Attrs: inlinehint nonlazybind uwtable
+define void @_ZN4core5slice6rotate18ptr_rotate_memmove17hffd6e8bea99afe31E(i64 %left, ptr %mid, i64 %right) unnamed_addr #0 {
+start:
+  %_64 = alloca [1 x i8], align 1
+  %_46 = alloca [1 x i8], align 1
+  %dst2 = alloca [8 x i8], align 8
+  %src1 = alloca [8 x i8], align 8
+  %dst = alloca [8 x i8], align 8
+  %src = alloca [8 x i8], align 8
+  %_11 = alloca [8 x i8], align 8
+  %self = alloca [8 x i8], align 8
+  %rawarray = alloca [256 x i8], align 8
+  br label %bb6
+
+bb6:                                              ; preds = %start
+  %_30 = sub nsw i64 0, %left
+  %0 = getelementptr inbounds i8, ptr %mid, i64 %_30
+  store ptr %0, ptr %self, align 8
+  br label %bb4
+
+bb4:                                              ; preds = %bb6
+  %1 = load ptr, ptr %self, align 8
+  %dim = getelementptr inbounds nuw i8, ptr %1, i64 %right
+  %_9 = icmp ule i64 %left, %right
+  br i1 %_9, label %bb1, label %bb2
+
+bb2:                                              ; preds = %bb4
+  br label %bb26
+
+bb1:                                              ; preds = %bb4
+  br label %bb9
+
+bb26:                                             ; preds = %bb2
+; call core::ptr::copy_nonoverlapping::precondition_check
+  call void @_ZN4core3ptr19copy_nonoverlapping18precondition_check17h16ff54272e2f8953E(ptr %mid, ptr %rawarray, i64 1, i64 1, i64 %right, ptr align 8 @alloc_5cdae0d4da70f085aa332804c095a7c9) #19
+  %2 = mul i64 %right, 1
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %rawarray, ptr align 1 %mid, i64 %2, i1 false)
+  br label %bb48
+
+bb48:                                             ; preds = %bb26
+  %_58 = sub nsw i64 0, %left
+  %_22 = getelementptr inbounds i8, ptr %mid, i64 %_58
+  store ptr %_22, ptr %src1, align 8
+  br label %bb33
+
+bb33:                                             ; preds = %bb48
+  %_61 = load ptr, ptr %src1, align 8
+  br label %bb35
+
+bb35:                                             ; preds = %bb33
+  %3 = icmp eq i64 %left, 0
+  %4 = zext i1 %3 to i8
+  store i8 %4, ptr %_64, align 1
+  br label %bb36
+
+bb36:                                             ; preds = %bb35
+  %5 = load i8, ptr %_64, align 1
+  %6 = trunc nuw i8 %5 to i1
+; call core::ptr::copy::precondition_check
+  call void @_ZN4core3ptr4copy18precondition_check17hc0db865546abed67E(ptr %_61, ptr %dim, i64 1, i1 zeroext %6, ptr align 8 @alloc_e950d2cbe5a1f3be947ddf29520cc447) #19
+  br label %bb38
+
+bb38:                                             ; preds = %bb36
+  %7 = load ptr, ptr %src1, align 8
+  %8 = mul i64 1, %left
+  call void @llvm.memmove.p0.p0.i64(ptr align 1 %dim, ptr align 1 %7, i64 %8, i1 false)
+  br label %bb41
+
+bb41:                                             ; preds = %bb38
+  %_65 = sub nsw i64 0, %left
+  %9 = getelementptr inbounds i8, ptr %mid, i64 %_65
+  store ptr %9, ptr %dst2, align 8
+  br label %bb39
+
+bb39:                                             ; preds = %bb41
+  br label %bb42
+
+bb42:                                             ; preds = %bb39
+  %_69 = load ptr, ptr %dst2, align 8
+; call core::ptr::copy_nonoverlapping::precondition_check
+  call void @_ZN4core3ptr19copy_nonoverlapping18precondition_check17h16ff54272e2f8953E(ptr %rawarray, ptr %_69, i64 1, i64 1, i64 %right, ptr align 8 @alloc_5cdae0d4da70f085aa332804c095a7c9) #19
+  br label %bb44
+
+bb44:                                             ; preds = %bb42
+  %10 = load ptr, ptr %dst2, align 8
+  %11 = mul i64 %right, 1
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %10, ptr align 1 %rawarray, i64 %11, i1 false)
+  br label %bb3
+
+bb3:                                              ; preds = %bb25, %bb44
+  ret void
+
+bb9:                                              ; preds = %bb1
+  %_32 = sub nsw i64 0, %left
+  %12 = getelementptr inbounds i8, ptr %mid, i64 %_32
+  store ptr %12, ptr %_11, align 8
+  br label %bb7
+
+bb7:                                              ; preds = %bb9
+  %src3 = load ptr, ptr %_11, align 8
+  br label %bb10
+
+bb10:                                             ; preds = %bb7
+; call core::ptr::copy_nonoverlapping::precondition_check
+  call void @_ZN4core3ptr19copy_nonoverlapping18precondition_check17h16ff54272e2f8953E(ptr %src3, ptr %rawarray, i64 1, i64 1, i64 %left, ptr align 8 @alloc_5cdae0d4da70f085aa332804c095a7c9) #19
+  %13 = mul i64 %left, 1
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %rawarray, ptr align 1 %src3, i64 %13, i1 false)
+  store ptr %mid, ptr %src, align 8
+  br label %bb46
+
+bb46:                                             ; preds = %bb10
+  %_40 = sub nsw i64 0, %left
+  %14 = getelementptr inbounds i8, ptr %mid, i64 %_40
+  store ptr %14, ptr %dst, align 8
+  br label %bb17
+
+bb17:                                             ; preds = %bb46
+  %_44 = load ptr, ptr %dst, align 8
+  br label %bb19
+
+bb19:                                             ; preds = %bb17
+  %15 = icmp eq i64 %right, 0
+  %16 = zext i1 %15 to i8
+  store i8 %16, ptr %_46, align 1
+  br label %bb20
+
+bb20:                                             ; preds = %bb19
+  %17 = load i8, ptr %_46, align 1
+  %18 = trunc nuw i8 %17 to i1
+; call core::ptr::copy::precondition_check
+  call void @_ZN4core3ptr4copy18precondition_check17hc0db865546abed67E(ptr %mid, ptr %_44, i64 1, i1 zeroext %18, ptr align 8 @alloc_e950d2cbe5a1f3be947ddf29520cc447) #19
+  br label %bb22
+
+bb22:                                             ; preds = %bb20
+  %19 = load ptr, ptr %src, align 8
+  %20 = load ptr, ptr %dst, align 8
+  %21 = mul i64 1, %right
+  call void @llvm.memmove.p0.p0.i64(ptr align 1 %20, ptr align 1 %19, i64 %21, i1 false)
+  br label %bb23
+
+bb23:                                             ; preds = %bb22
+; call core::ptr::copy_nonoverlapping::precondition_check
+  call void @_ZN4core3ptr19copy_nonoverlapping18precondition_check17h16ff54272e2f8953E(ptr %rawarray, ptr %dim, i64 1, i64 1, i64 %left, ptr align 8 @alloc_5cdae0d4da70f085aa332804c095a7c9) #19
+  br label %bb25
+
+bb25:                                             ; preds = %bb23
+  %22 = mul i64 %left, 1
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %dim, ptr align 1 %rawarray, i64 %22, i1 false)
+  br label %bb3
+
+bb5:                                              ; No predecessors!
+  unreachable
+
+bb8:                                              ; No predecessors!
+  unreachable
+
+bb12:                                             ; No predecessors!
+  unreachable
+
+bb13:                                             ; No predecessors!
+  unreachable
+
+bb14:                                             ; No predecessors!
+  unreachable
+
+bb15:                                             ; No predecessors!
+  unreachable
+
+bb18:                                             ; No predecessors!
+  unreachable
+
+bb28:                                             ; No predecessors!
+  unreachable
+
+bb29:                                             ; No predecessors!
+  unreachable
+
+bb30:                                             ; No predecessors!
+  unreachable
+
+bb31:                                             ; No predecessors!
+  unreachable
+
+bb34:                                             ; No predecessors!
+  unreachable
+
+bb40:                                             ; No predecessors!
+  unreachable
+
+bb45:                                             ; No predecessors!
+  unreachable
+
+bb47:                                             ; No predecessors!
+  unreachable
+}
+
+; core::ub_checks::maybe_is_nonoverlapping::runtime
+; Function Attrs: inlinehint nonlazybind uwtable
+define internal zeroext i1 @_ZN4core9ub_checks23maybe_is_nonoverlapping7runtime17h36d50c1458048b39E(ptr %src, ptr %dst, i64 %size, i64 %count) unnamed_addr #0 {
+start:
+  %diff = alloca [8 x i8], align 8
+  %_9 = alloca [16 x i8], align 8
+  %src_usize = ptrtoint ptr %src to i64
+  %dst_usize = ptrtoint ptr %dst to i64
+  %0 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %size, i64 %count)
+  %_14.0 = extractvalue { i64, i1 } %0, 0
+  %_14.1 = extractvalue { i64, i1 } %0, 1
+  br i1 %_14.1, label %bb1, label %bb3
+
+bb3:                                              ; preds = %start
+  %1 = getelementptr inbounds i8, ptr %_9, i64 8
+  store i64 %_14.0, ptr %1, align 8
+  store i64 1, ptr %_9, align 8
+  %2 = getelementptr inbounds i8, ptr %_9, i64 8
+  %size1 = load i64, ptr %2, align 8
+  %_22 = icmp ult i64 %src_usize, %dst_usize
+  br i1 %_22, label %bb4, label %bb5
+
+bb1:                                              ; preds = %start
+; call core::panicking::panic_nounwind
+  call void @_ZN4core9panicking14panic_nounwind17he501508d405a4565E(ptr align 1 @alloc_763310d78c99c2c1ad3f8a9821e942f3, i64 61) #17
+  unreachable
+
+bb5:                                              ; preds = %bb3
+  %3 = sub i64 %src_usize, %dst_usize
+  store i64 %3, ptr %diff, align 8
+  br label %bb6
+
+bb4:                                              ; preds = %bb3
+  %4 = sub i64 %dst_usize, %src_usize
+  store i64 %4, ptr %diff, align 8
+  br label %bb6
+
+bb6:                                              ; preds = %bb4, %bb5
+  %_11 = load i64, ptr %diff, align 8
+  %_0 = icmp uge i64 %_11, %size1
+  ret i1 %_0
+}
+
+; alloc::vec::Vec<T>::new
+; Function Attrs: inlinehint nonlazybind uwtable
+define void @"_ZN5alloc3vec12Vec$LT$T$GT$3new17hc0fb1340e1aea9e4E"(ptr sret([24 x i8]) align 8 %_0) unnamed_addr #0 {
+start:
+  store i64 0, ptr %_0, align 8
+  %0 = getelementptr inbounds i8, ptr %_0, i64 8
+  store ptr getelementptr (i8, ptr null, i64 1), ptr %0, align 8
+  %1 = getelementptr inbounds i8, ptr %_0, i64 16
+  store i64 0, ptr %1, align 8
+  ret void
+}
+
+; alloc::vec::Vec<T,A>::as_mut_slice
+; Function Attrs: inlinehint nonlazybind uwtable
+define { ptr, i64 } @"_ZN5alloc3vec16Vec$LT$T$C$A$GT$12as_mut_slice17h82d846bd84144f25E"(ptr align 8 %self) unnamed_addr #0 {
+start:
+  %0 = getelementptr inbounds i8, ptr %self, i64 8
+  %_4 = load ptr, ptr %0, align 8
+  %1 = getelementptr inbounds i8, ptr %self, i64 16
+  %len = load i64, ptr %1, align 8
+  br label %bb1
+
+bb1:                                              ; preds = %start
+; call core::slice::raw::from_raw_parts_mut::precondition_check
+  call void @_ZN4core5slice3raw18from_raw_parts_mut18precondition_check17h72d64701713fcaf0E(ptr %_4, i64 1, i64 1, i64 %len, ptr align 8 @alloc_c6bb06645422f63e5caafbecf5372290) #19
+  br label %bb3
+
+bb3:                                              ; preds = %bb1
+  %2 = insertvalue { ptr, i64 } poison, ptr %_4, 0
+  %3 = insertvalue { ptr, i64 } %2, i64 %len, 1
+  ret { ptr, i64 } %3
+}
+
+; alloc::vec::Vec<T,A>::reserve_exact
+; Function Attrs: nonlazybind uwtable
+define void @"_ZN5alloc3vec16Vec$LT$T$C$A$GT$13reserve_exact17h97ed883faec9d862E"(ptr align 8 %self, i64 %additional, ptr align 8 %0) unnamed_addr #3 {
+start:
+  %1 = getelementptr inbounds i8, ptr %self, i64 16
+  %len = load i64, ptr %1, align 8
+; call alloc::raw_vec::RawVecInner<A>::reserve_exact
+  call void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$13reserve_exact17hd79097d4dbea7c2bE"(ptr align 8 %self, i64 %len, i64 %additional, i64 1, i64 1, ptr align 8 %0)
+  ret void
+}
+
+; alloc::vec::Vec<T,A>::shrink_to_fit
+; Function Attrs: inlinehint nonlazybind uwtable
+define void @"_ZN5alloc3vec16Vec$LT$T$C$A$GT$13shrink_to_fit17hdb3c8452175021edE"(ptr align 8 %self, ptr align 8 %0) unnamed_addr #0 {
+start:
+  %_12 = alloca [16 x i8], align 8
+  %_3 = alloca [8 x i8], align 8
+  br label %bb6
+
+bb6:                                              ; preds = %start
+  %self1 = load i64, ptr %self, align 8
+  store i64 %self1, ptr %_3, align 8
+  br label %bb4
+
+bb5:                                              ; No predecessors!
+  store i64 -1, ptr %_3, align 8
+  br label %bb4
+
+bb4:                                              ; preds = %bb6, %bb5
+  %1 = getelementptr inbounds i8, ptr %self, i64 16
+  %_4 = load i64, ptr %1, align 8
+  %2 = load i64, ptr %_3, align 8
+  %_2 = icmp ugt i64 %2, %_4
+  br i1 %_2, label %bb1, label %bb2
+
+bb2:                                              ; preds = %bb4
+  br label %bb3
+
+bb1:                                              ; preds = %bb4
+  %3 = getelementptr inbounds i8, ptr %self, i64 16
+  %cap = load i64, ptr %3, align 8
+; call alloc::raw_vec::RawVecInner<A>::shrink
+  %4 = call { i64, i64 } @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$6shrink17h9f6832a33b6cb664E"(ptr align 8 %self, i64 %cap, i64 1, i64 1)
+  %5 = extractvalue { i64, i64 } %4, 0
+  %6 = extractvalue { i64, i64 } %4, 1
+  store i64 %5, ptr %_12, align 8
+  %7 = getelementptr inbounds i8, ptr %_12, i64 8
+  store i64 %6, ptr %7, align 8
+  %8 = load i64, ptr %_12, align 8
+  %9 = getelementptr inbounds i8, ptr %_12, i64 8
+  %10 = load i64, ptr %9, align 8
+  %11 = icmp eq i64 %8, -9223372036854775807
+  %_13 = select i1 %11, i64 0, i64 1
+  %12 = trunc nuw i64 %_13 to i1
+  br i1 %12, label %bb8, label %bb9
+
+bb3:                                              ; preds = %bb9, %bb2
+  ret void
+
+bb8:                                              ; preds = %bb1
+  %err.0 = load i64, ptr %_12, align 8
+  %13 = getelementptr inbounds i8, ptr %_12, i64 8
+  %err.1 = load i64, ptr %13, align 8
+; call alloc::raw_vec::handle_error
+  call void @_ZN5alloc7raw_vec12handle_error17h18ec2e4e8895cf6eE(i64 %err.0, i64 %err.1, ptr align 8 %0) #16
+  unreachable
+
+bb9:                                              ; preds = %bb1
+  br label %bb3
+
+bb10:                                             ; No predecessors!
+  unreachable
+}
+
+; alloc::vec::Vec<T,A>::capacity
+; Function Attrs: inlinehint nonlazybind uwtable
+define i64 @"_ZN5alloc3vec16Vec$LT$T$C$A$GT$8capacity17hb8c1299624751dc9E"(ptr align 8 %self) unnamed_addr #0 {
+start:
+  %_0 = alloca [8 x i8], align 8
+  br label %bb3
+
+bb3:                                              ; preds = %start
+  %self1 = load i64, ptr %self, align 8
+  store i64 %self1, ptr %_0, align 8
+  br label %bb1
+
+bb2:                                              ; No predecessors!
+  store i64 -1, ptr %_0, align 8
+  br label %bb1
+
+bb1:                                              ; preds = %bb3, %bb2
+  %0 = load i64, ptr %_0, align 8
+  ret i64 %0
+}
+
+; alloc::vec::Vec<T,A>::truncate
+; Function Attrs: nonlazybind uwtable
+define void @"_ZN5alloc3vec16Vec$LT$T$C$A$GT$8truncate17hd9e556a72f7ac565E"(ptr align 8 %self, i64 %len) unnamed_addr #3 {
+start:
+  %0 = getelementptr inbounds i8, ptr %self, i64 16
+  %_4 = load i64, ptr %0, align 8
+  %_3 = icmp ugt i64 %len, %_4
+  br i1 %_3, label %bb1, label %bb2
+
+bb2:                                              ; preds = %start
+  %1 = getelementptr inbounds i8, ptr %self, i64 16
+  %_6 = load i64, ptr %1, align 8
+  %remaining_len = sub i64 %_6, %len
+  %2 = getelementptr inbounds i8, ptr %self, i64 8
+  %_11 = load ptr, ptr %2, align 8
+  %data = getelementptr inbounds nuw i8, ptr %_11, i64 %len
+  %3 = getelementptr inbounds i8, ptr %self, i64 16
+  store i64 %len, ptr %3, align 8
+  br label %bb3
+
+bb1:                                              ; preds = %start
+  br label %bb3
+
+bb3:                                              ; preds = %bb1, %bb2
+  ret void
+}
+
+; alloc::alloc::Global::alloc_impl
+; Function Attrs: inlinehint nonlazybind uwtable
+define internal { ptr, i64 } @_ZN5alloc5alloc6Global10alloc_impl17hc248130243ecd080E(ptr align 1 %self, i64 %0, i64 %1, i1 zeroext %zeroed) unnamed_addr #0 {
+start:
+  %self4 = alloca [8 x i8], align 8
+  %self3 = alloca [8 x i8], align 8
+  %_12 = alloca [8 x i8], align 8
+  %layout2 = alloca [16 x i8], align 8
+  %layout1 = alloca [16 x i8], align 8
+  %raw_ptr = alloca [8 x i8], align 8
+  %_0 = alloca [16 x i8], align 8
+  %layout = alloca [16 x i8], align 8
+  store i64 %0, ptr %layout, align 8
+  %2 = getelementptr inbounds i8, ptr %layout, i64 8
+  store i64 %1, ptr %2, align 8
+  %3 = getelementptr inbounds i8, ptr %layout, i64 8
+  %size = load i64, ptr %3, align 8
+  %4 = icmp eq i64 %size, 0
+  br i1 %4, label %bb2, label %bb1
+
+bb2:                                              ; preds = %start
+  %_19 = load i64, ptr %layout, align 8
+  %_20 = getelementptr i8, ptr null, i64 %_19
+  %data = getelementptr i8, ptr null, i64 %_19
+  br label %bb7
+
+bb1:                                              ; preds = %start
+  br i1 %zeroed, label %bb3, label %bb4
+
+bb7:                                              ; preds = %bb2
+  %_24 = getelementptr i8, ptr null, i64 %_19
+; call core::ptr::non_null::NonNull<T>::new_unchecked::precondition_check
+  call void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17h5242ed08614aeceaE"(ptr %_24, ptr align 8 @alloc_827fc580ae74785f56b1507bfd6b2422) #19
+  br label %bb9
+
+bb9:                                              ; preds = %bb7
+  store ptr %data, ptr %_0, align 8
+  %5 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 0, ptr %5, align 8
+  br label %bb6
+
+bb6:                                              ; preds = %bb21, %bb14, %bb9
+  %6 = load ptr, ptr %_0, align 8
+  %7 = getelementptr inbounds i8, ptr %_0, i64 8
+  %8 = load i64, ptr %7, align 8
+  %9 = insertvalue { ptr, i64 } poison, ptr %6, 0
+  %10 = insertvalue { ptr, i64 } %9, i64 %8, 1
+  ret { ptr, i64 } %10
+
+bb4:                                              ; preds = %bb1
+  %11 = load i64, ptr %layout, align 8
+  %12 = getelementptr inbounds i8, ptr %layout, i64 8
+  %13 = load i64, ptr %12, align 8
+  store i64 %11, ptr %layout2, align 8
+  %14 = getelementptr inbounds i8, ptr %layout2, i64 8
+  store i64 %13, ptr %14, align 8
+; call __rustc::__rust_no_alloc_shim_is_unstable_v2
+  call void @_RNvCsj4CZ6flxxfE_7___rustc35___rust_no_alloc_shim_is_unstable_v2() #19
+  %_38 = load i64, ptr %layout, align 8
+; call __rustc::__rust_alloc
+  %15 = call ptr @_RNvCsj4CZ6flxxfE_7___rustc12___rust_alloc(i64 %size, i64 %_38) #19
+  store ptr %15, ptr %raw_ptr, align 8
+  br label %bb5
+
+bb3:                                              ; preds = %bb1
+  %16 = load i64, ptr %layout, align 8
+  %17 = getelementptr inbounds i8, ptr %layout, i64 8
+  %18 = load i64, ptr %17, align 8
+  store i64 %16, ptr %layout1, align 8
+  %19 = getelementptr inbounds i8, ptr %layout1, i64 8
+  store i64 %18, ptr %19, align 8
+; call __rustc::__rust_no_alloc_shim_is_unstable_v2
+  call void @_RNvCsj4CZ6flxxfE_7___rustc35___rust_no_alloc_shim_is_unstable_v2() #19
+  %_32 = load i64, ptr %layout, align 8
+; call __rustc::__rust_alloc_zeroed
+  %20 = call ptr @_RNvCsj4CZ6flxxfE_7___rustc19___rust_alloc_zeroed(i64 %size, i64 %_32) #19
+  store ptr %20, ptr %raw_ptr, align 8
+  br label %bb5
+
+bb5:                                              ; preds = %bb3, %bb4
+  %ptr = load ptr, ptr %raw_ptr, align 8
+  %_41 = ptrtoint ptr %ptr to i64
+  %21 = icmp eq i64 %_41, 0
+  br i1 %21, label %bb14, label %bb15
+
+bb14:                                             ; preds = %bb5
+  store ptr null, ptr %self4, align 8
+  store ptr null, ptr %self3, align 8
+  %22 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %23 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  store ptr %22, ptr %_0, align 8
+  %24 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %23, ptr %24, align 8
+  br label %bb6
+
+bb15:                                             ; preds = %bb5
+  br label %bb16
+
+bb16:                                             ; preds = %bb15
+; call core::ptr::non_null::NonNull<T>::new_unchecked::precondition_check
+  call void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17h5242ed08614aeceaE"(ptr %ptr, ptr align 8 @alloc_8e97afaeee774873d13f09bb95d8211a) #19
+  br label %bb18
+
+bb18:                                             ; preds = %bb16
+  store ptr %ptr, ptr %self4, align 8
+  %v = load ptr, ptr %self4, align 8
+  store ptr %v, ptr %self3, align 8
+  %v5 = load ptr, ptr %self3, align 8
+  store ptr %v5, ptr %_12, align 8
+  %ptr6 = load ptr, ptr %_12, align 8
+  br label %bb19
+
+bb19:                                             ; preds = %bb18
+; call core::ptr::non_null::NonNull<T>::new_unchecked::precondition_check
+  call void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17h5242ed08614aeceaE"(ptr %ptr6, ptr align 8 @alloc_827fc580ae74785f56b1507bfd6b2422) #19
+  br label %bb21
+
+bb21:                                             ; preds = %bb19
+  store ptr %ptr6, ptr %_0, align 8
+  %25 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %size, ptr %25, align 8
+  br label %bb6
+}
+
+; alloc::raw_vec::RawVecInner<A>::grow_exact
+; Function Attrs: nonlazybind uwtable
+define { i64, i64 } @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$10grow_exact17hfbeeef369ff9353eE"(ptr align 8 %self, i64 %len, i64 %additional, i64 %0, i64 %1) unnamed_addr #3 {
+start:
+  %self7 = alloca [24 x i8], align 8
+  %self6 = alloca [16 x i8], align 8
+  %_19 = alloca [24 x i8], align 8
+  %self5 = alloca [24 x i8], align 8
+  %_17 = alloca [24 x i8], align 8
+  %elem_layout4 = alloca [16 x i8], align 8
+  %self3 = alloca [24 x i8], align 8
+  %_12 = alloca [24 x i8], align 8
+  %self2 = alloca [16 x i8], align 8
+  %self1 = alloca [16 x i8], align 8
+  %_7 = alloca [16 x i8], align 8
+  %_0 = alloca [16 x i8], align 8
+  %elem_layout = alloca [16 x i8], align 8
+  store i64 %0, ptr %elem_layout, align 8
+  %2 = getelementptr inbounds i8, ptr %elem_layout, i64 8
+  store i64 %1, ptr %2, align 8
+  %3 = getelementptr inbounds i8, ptr %elem_layout, i64 8
+  %_5 = load i64, ptr %3, align 8
+  %4 = icmp eq i64 %_5, 0
+  br i1 %4, label %bb1, label %bb2
+
+bb1:                                              ; preds = %start
+  %5 = load i64, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %6 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  store i64 %5, ptr %_0, align 8
+  %7 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %6, ptr %7, align 8
+  br label %bb8
+
+bb2:                                              ; preds = %start
+  %8 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %len, i64 %additional)
+  %_25.0 = extractvalue { i64, i1 } %8, 0
+  %_25.1 = extractvalue { i64, i1 } %8, 1
+  br i1 %_25.1, label %bb9, label %bb11
+
+bb8:                                              ; preds = %bb7, %bb16, %bb1
+  %9 = load i64, ptr %_0, align 8
+  %10 = getelementptr inbounds i8, ptr %_0, i64 8
+  %11 = load i64, ptr %10, align 8
+  %12 = insertvalue { i64, i64 } poison, i64 %9, 0
+  %13 = insertvalue { i64, i64 } %12, i64 %11, 1
+  ret { i64, i64 } %13
+
+bb11:                                             ; preds = %bb2
+  %_26 = add nuw i64 %len, %additional
+  %14 = getelementptr inbounds i8, ptr %self2, i64 8
+  store i64 %_26, ptr %14, align 8
+  store i64 1, ptr %self2, align 8
+  %15 = getelementptr inbounds i8, ptr %self2, i64 8
+  %v = load i64, ptr %15, align 8
+  %16 = getelementptr inbounds i8, ptr %self1, i64 8
+  store i64 %v, ptr %16, align 8
+  store i64 -9223372036854775807, ptr %self1, align 8
+  %17 = getelementptr inbounds i8, ptr %self1, i64 8
+  %v8 = load i64, ptr %17, align 8
+  %18 = getelementptr inbounds i8, ptr %_7, i64 8
+  store i64 %v8, ptr %18, align 8
+  store i64 -9223372036854775807, ptr %_7, align 8
+  %19 = getelementptr inbounds i8, ptr %_7, i64 8
+  %cap = load i64, ptr %19, align 8
+  %20 = load i64, ptr %elem_layout, align 8
+  %21 = getelementptr inbounds i8, ptr %elem_layout, i64 8
+  %22 = load i64, ptr %21, align 8
+  store i64 %20, ptr %elem_layout4, align 8
+  %23 = getelementptr inbounds i8, ptr %elem_layout4, i64 8
+  store i64 %22, ptr %23, align 8
+; call core::alloc::layout::Layout::repeat
+  call void @_ZN4core5alloc6layout6Layout6repeat17h8901b3e3c949e74cE(ptr sret([24 x i8]) align 8 %self7, ptr align 8 %elem_layout4, i64 %cap)
+  %24 = load i64, ptr %self7, align 8
+  %25 = icmp eq i64 %24, 0
+  %_35 = select i1 %25, i64 1, i64 0
+  %26 = trunc nuw i64 %_35 to i1
+  br i1 %26, label %bb13, label %bb14
+
+bb9:                                              ; preds = %bb2
+  %27 = load i64, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %28 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  store i64 %27, ptr %self2, align 8
+  %29 = getelementptr inbounds i8, ptr %self2, i64 8
+  store i64 %28, ptr %29, align 8
+  %30 = load i64, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %31 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  store i64 %30, ptr %self1, align 8
+  %32 = getelementptr inbounds i8, ptr %self1, i64 8
+  store i64 %31, ptr %32, align 8
+  %e.017 = load i64, ptr %self1, align 8
+  %33 = getelementptr inbounds i8, ptr %self1, i64 8
+  %e.118 = load i64, ptr %33, align 8
+  store i64 %e.017, ptr %_7, align 8
+  %34 = getelementptr inbounds i8, ptr %_7, i64 8
+  store i64 %e.118, ptr %34, align 8
+  %residual.019 = load i64, ptr %_7, align 8
+  %35 = getelementptr inbounds i8, ptr %_7, i64 8
+  %residual.120 = load i64, ptr %35, align 8
+  store i64 %residual.019, ptr %_0, align 8
+  %36 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %residual.120, ptr %36, align 8
+  br label %bb7
+
+bb13:                                             ; preds = %bb11
+  %37 = load i64, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %38 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  store i64 %37, ptr %self6, align 8
+  %39 = getelementptr inbounds i8, ptr %self6, i64 8
+  store i64 %38, ptr %39, align 8
+  %40 = load i64, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %41 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %42 = getelementptr inbounds i8, ptr %self3, i64 8
+  store i64 %40, ptr %42, align 8
+  %43 = getelementptr inbounds i8, ptr %42, i64 8
+  store i64 %41, ptr %43, align 8
+  store i64 1, ptr %self3, align 8
+  %44 = getelementptr inbounds i8, ptr %self3, i64 8
+  %e.013 = load i64, ptr %44, align 8
+  %45 = getelementptr inbounds i8, ptr %44, i64 8
+  %e.114 = load i64, ptr %45, align 8
+  %46 = getelementptr inbounds i8, ptr %_12, i64 8
+  store i64 %e.013, ptr %46, align 8
+  %47 = getelementptr inbounds i8, ptr %46, i64 8
+  store i64 %e.114, ptr %47, align 8
+  store i64 1, ptr %_12, align 8
+  %48 = getelementptr inbounds i8, ptr %_12, i64 8
+  %residual.015 = load i64, ptr %48, align 8
+  %49 = getelementptr inbounds i8, ptr %48, i64 8
+  %residual.116 = load i64, ptr %49, align 8
+  store i64 %residual.015, ptr %_0, align 8
+  %50 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %residual.116, ptr %50, align 8
+  br label %bb6
+
+bb14:                                             ; preds = %bb11
+  %t.0 = load i64, ptr %self7, align 8
+  %51 = getelementptr inbounds i8, ptr %self7, i64 8
+  %t.1 = load i64, ptr %51, align 8
+  %52 = getelementptr inbounds i8, ptr %self7, i64 16
+  %t = load i64, ptr %52, align 8
+  store i64 %t.0, ptr %self6, align 8
+  %53 = getelementptr inbounds i8, ptr %self6, i64 8
+  store i64 %t.1, ptr %53, align 8
+  %t.09 = load i64, ptr %self6, align 8
+  %54 = getelementptr inbounds i8, ptr %self6, i64 8
+  %t.110 = load i64, ptr %54, align 8
+  %55 = getelementptr inbounds i8, ptr %self3, i64 8
+  store i64 %t.09, ptr %55, align 8
+  %56 = getelementptr inbounds i8, ptr %55, i64 8
+  store i64 %t.110, ptr %56, align 8
+  store i64 0, ptr %self3, align 8
+  %57 = getelementptr inbounds i8, ptr %self3, i64 8
+  %v.0 = load i64, ptr %57, align 8
+  %58 = getelementptr inbounds i8, ptr %57, i64 8
+  %v.1 = load i64, ptr %58, align 8
+  %59 = getelementptr inbounds i8, ptr %_12, i64 8
+  store i64 %v.0, ptr %59, align 8
+  %60 = getelementptr inbounds i8, ptr %59, i64 8
+  store i64 %v.1, ptr %60, align 8
+  store i64 0, ptr %_12, align 8
+  %61 = getelementptr inbounds i8, ptr %_12, i64 8
+  %new_layout.0 = load i64, ptr %61, align 8
+  %62 = getelementptr inbounds i8, ptr %61, i64 8
+  %new_layout.1 = load i64, ptr %62, align 8
+  %63 = load i64, ptr %elem_layout, align 8
+  %64 = getelementptr inbounds i8, ptr %elem_layout, i64 8
+  %65 = load i64, ptr %64, align 8
+; call alloc::raw_vec::RawVecInner<A>::current_memory
+  call void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$14current_memory17h8cccd83e5435f33aE"(ptr sret([24 x i8]) align 8 %_19, ptr align 8 %self, i64 %63, i64 %65)
+  %_21 = getelementptr inbounds i8, ptr %self, i64 16
+; call alloc::raw_vec::finish_grow
+  call void @_ZN5alloc7raw_vec11finish_grow17h52e279e4235f9f3fE(ptr sret([24 x i8]) align 8 %self5, i64 %new_layout.0, i64 %new_layout.1, ptr align 8 %_19, ptr align 1 %_21)
+  %_45 = load i64, ptr %self5, align 8
+  %66 = trunc nuw i64 %_45 to i1
+  br i1 %66, label %bb15, label %bb16
+
+bb15:                                             ; preds = %bb14
+  %67 = getelementptr inbounds i8, ptr %self5, i64 8
+  %e.0 = load i64, ptr %67, align 8
+  %68 = getelementptr inbounds i8, ptr %67, i64 8
+  %e.1 = load i64, ptr %68, align 8
+  %69 = getelementptr inbounds i8, ptr %_17, i64 8
+  store i64 %e.0, ptr %69, align 8
+  %70 = getelementptr inbounds i8, ptr %69, i64 8
+  store i64 %e.1, ptr %70, align 8
+  store i64 1, ptr %_17, align 8
+  %71 = getelementptr inbounds i8, ptr %_17, i64 8
+  %residual.0 = load i64, ptr %71, align 8
+  %72 = getelementptr inbounds i8, ptr %71, i64 8
+  %residual.1 = load i64, ptr %72, align 8
+  store i64 %residual.0, ptr %_0, align 8
+  %73 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %residual.1, ptr %73, align 8
+  br label %bb6
+
+bb16:                                             ; preds = %bb14
+  %74 = getelementptr inbounds i8, ptr %self5, i64 8
+  %v.011 = load ptr, ptr %74, align 8
+  %75 = getelementptr inbounds i8, ptr %74, i64 8
+  %v.112 = load i64, ptr %75, align 8
+  %76 = getelementptr inbounds i8, ptr %_17, i64 8
+  store ptr %v.011, ptr %76, align 8
+  %77 = getelementptr inbounds i8, ptr %76, i64 8
+  store i64 %v.112, ptr %77, align 8
+  store i64 0, ptr %_17, align 8
+  %78 = getelementptr inbounds i8, ptr %_17, i64 8
+  %ptr.0 = load ptr, ptr %78, align 8
+  %79 = getelementptr inbounds i8, ptr %78, i64 8
+  %ptr.1 = load i64, ptr %79, align 8
+  %80 = getelementptr inbounds i8, ptr %self, i64 8
+  store ptr %ptr.0, ptr %80, align 8
+  store i64 %cap, ptr %self, align 8
+  %81 = load i64, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.1, align 8
+  %82 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.1, i64 8), align 8
+  store i64 %81, ptr %_0, align 8
+  %83 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %82, ptr %83, align 8
+  br label %bb8
+
+bb6:                                              ; preds = %bb13, %bb15
+  br label %bb7
+
+bb7:                                              ; preds = %bb9, %bb6
+  br label %bb8
+
+bb3:                                              ; No predecessors!
+  unreachable
+}
+
+; alloc::raw_vec::RawVecInner<A>::reserve_exact
+; Function Attrs: nonlazybind uwtable
+define void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$13reserve_exact17hd79097d4dbea7c2bE"(ptr align 8 %self, i64 %len, i64 %additional, i64 %elem_layout.0, i64 %elem_layout.1, ptr align 8 %0) unnamed_addr #3 {
+start:
+  %_5 = alloca [16 x i8], align 8
+; call alloc::raw_vec::RawVecInner<A>::try_reserve_exact
+  %1 = call { i64, i64 } @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$17try_reserve_exact17hf25736c897c9b3bfE"(ptr align 8 %self, i64 %len, i64 %additional, i64 %elem_layout.0, i64 %elem_layout.1)
+  %2 = extractvalue { i64, i64 } %1, 0
+  %3 = extractvalue { i64, i64 } %1, 1
+  store i64 %2, ptr %_5, align 8
+  %4 = getelementptr inbounds i8, ptr %_5, i64 8
+  store i64 %3, ptr %4, align 8
+  %5 = load i64, ptr %_5, align 8
+  %6 = getelementptr inbounds i8, ptr %_5, i64 8
+  %7 = load i64, ptr %6, align 8
+  %8 = icmp eq i64 %5, -9223372036854775807
+  %_6 = select i1 %8, i64 0, i64 1
+  %9 = trunc nuw i64 %_6 to i1
+  br i1 %9, label %bb2, label %bb3
+
+bb2:                                              ; preds = %start
+  %err.0 = load i64, ptr %_5, align 8
+  %10 = getelementptr inbounds i8, ptr %_5, i64 8
+  %err.1 = load i64, ptr %10, align 8
+; call alloc::raw_vec::handle_error
+  call void @_ZN5alloc7raw_vec12handle_error17h18ec2e4e8895cf6eE(i64 %err.0, i64 %err.1, ptr align 8 %0) #16
+  unreachable
+
+bb3:                                              ; preds = %start
+  ret void
+
+bb4:                                              ; No predecessors!
+  unreachable
+}
+
+; alloc::raw_vec::RawVecInner<A>::current_memory
+; Function Attrs: inlinehint nonlazybind uwtable
+define void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$14current_memory17h8cccd83e5435f33aE"(ptr sret([24 x i8]) align 8 %_0, ptr align 8 %self, i64 %0, i64 %1) unnamed_addr #0 {
+start:
+  %_15 = alloca [24 x i8], align 8
+  %align = alloca [8 x i8], align 8
+  %alloc_size = alloca [8 x i8], align 8
+  %elem_layout = alloca [16 x i8], align 8
+  store i64 %0, ptr %elem_layout, align 8
+  %2 = getelementptr inbounds i8, ptr %elem_layout, i64 8
+  store i64 %1, ptr %2, align 8
+  %3 = getelementptr inbounds i8, ptr %elem_layout, i64 8
+  %self1 = load i64, ptr %3, align 8
+  %4 = icmp eq i64 %self1, 0
+  br i1 %4, label %bb3, label %bb1
+
+bb3:                                              ; preds = %bb2, %start
+  %5 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 0, ptr %5, align 8
+  br label %bb5
+
+bb1:                                              ; preds = %start
+  %self2 = load i64, ptr %self, align 8
+  %6 = icmp eq i64 %self2, 0
+  br i1 %6, label %bb2, label %bb4
+
+bb2:                                              ; preds = %bb1
+  br label %bb3
+
+bb4:                                              ; preds = %bb1
+  %self3 = load i64, ptr %self, align 8
+  br label %bb6
+
+bb5:                                              ; preds = %bb9, %bb3
+  ret void
+
+bb6:                                              ; preds = %bb4
+; call core::num::<impl usize>::unchecked_mul::precondition_check
+  call void @"_ZN4core3num23_$LT$impl$u20$usize$GT$13unchecked_mul18precondition_check17he8723be0d355b218E"(i64 %self1, i64 %self3, ptr align 8 @alloc_b843684ea72bd7c23df9545c2c214a39) #19
+  %7 = mul nuw i64 %self1, %self3
+  store i64 %7, ptr %alloc_size, align 8
+  %size = load i64, ptr %alloc_size, align 8
+  %_19 = load i64, ptr %elem_layout, align 8
+  store i64 %_19, ptr %align, align 8
+  br label %bb8
+
+bb8:                                              ; preds = %bb6
+  %8 = load i64, ptr %alloc_size, align 8
+  %9 = load i64, ptr %align, align 8
+; call core::alloc::layout::Layout::from_size_align_unchecked::precondition_check
+  call void @_ZN4core5alloc6layout6Layout25from_size_align_unchecked18precondition_check17hfd638b3dc72497b2E(i64 %8, i64 %9, ptr align 8 @alloc_fdb538210a3621dd812e8ce41fce3b1b) #19
+  br label %bb9
+
+bb9:                                              ; preds = %bb8
+  %_21 = load i64, ptr %align, align 8
+  %layout.1 = load i64, ptr %alloc_size, align 8
+  %10 = getelementptr inbounds i8, ptr %self, i64 8
+  %self4 = load ptr, ptr %10, align 8
+  store ptr %self4, ptr %_15, align 8
+  %11 = getelementptr inbounds i8, ptr %_15, i64 8
+  store i64 %_21, ptr %11, align 8
+  %12 = getelementptr inbounds i8, ptr %11, i64 8
+  store i64 %layout.1, ptr %12, align 8
+  call void @llvm.memcpy.p0.p0.i64(ptr align 8 %_0, ptr align 8 %_15, i64 24, i1 false)
+  br label %bb5
+
+bb7:                                              ; No predecessors!
+  unreachable
+}
+
+; alloc::raw_vec::RawVecInner<A>::shrink_unchecked
+; Function Attrs: nonlazybind uwtable
+define { i64, i64 } @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$16shrink_unchecked17h92338a753ba76ae5E"(ptr align 8 %self, i64 %cap, i64 %0, i64 %1) unnamed_addr #3 {
+start:
+  %self2 = alloca [16 x i8], align 8
+  %self1 = alloca [24 x i8], align 8
+  %_21 = alloca [24 x i8], align 8
+  %align = alloca [8 x i8], align 8
+  %new_layout = alloca [16 x i8], align 8
+  %new_size = alloca [8 x i8], align 8
+  %_5 = alloca [24 x i8], align 8
+  %layout = alloca [16 x i8], align 8
+  %_0 = alloca [16 x i8], align 8
+  %elem_layout = alloca [16 x i8], align 8
+  store i64 %0, ptr %elem_layout, align 8
+  %2 = getelementptr inbounds i8, ptr %elem_layout, i64 8
+  store i64 %1, ptr %2, align 8
+  %3 = load i64, ptr %elem_layout, align 8
+  %4 = getelementptr inbounds i8, ptr %elem_layout, i64 8
+  %5 = load i64, ptr %4, align 8
+; call alloc::raw_vec::RawVecInner<A>::current_memory
+  call void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$14current_memory17h8cccd83e5435f33aE"(ptr sret([24 x i8]) align 8 %_5, ptr align 8 %self, i64 %3, i64 %5)
+  %6 = getelementptr inbounds i8, ptr %_5, i64 8
+  %7 = load i64, ptr %6, align 8
+  %8 = icmp eq i64 %7, 0
+  %_7 = select i1 %8, i64 0, i64 1
+  %9 = trunc nuw i64 %_7 to i1
+  br i1 %9, label %bb2, label %bb3
+
+bb2:                                              ; preds = %start
+  %ptr = load ptr, ptr %_5, align 8
+  %10 = getelementptr inbounds i8, ptr %_5, i64 8
+  %mem.0 = load i64, ptr %10, align 8
+  %11 = getelementptr inbounds i8, ptr %10, i64 8
+  %mem.1 = load i64, ptr %11, align 8
+  store i64 %mem.0, ptr %layout, align 8
+  %12 = getelementptr inbounds i8, ptr %layout, i64 8
+  store i64 %mem.1, ptr %12, align 8
+  %13 = icmp eq i64 %cap, 0
+  br i1 %13, label %bb4, label %bb5
+
+bb3:                                              ; preds = %start
+  %14 = load i64, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.1, align 8
+  %15 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.1, i64 8), align 8
+  store i64 %14, ptr %_0, align 8
+  %16 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %15, ptr %16, align 8
+  br label %bb10
+
+bb4:                                              ; preds = %bb2
+  %_9 = getelementptr inbounds i8, ptr %self, i64 16
+; call <alloc::alloc::Global as core::alloc::Allocator>::deallocate
+  call void @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$10deallocate17h0257c60f2aa80291E"(ptr align 1 %_9, ptr %ptr, i64 %mem.0, i64 %mem.1)
+  %_29 = load i64, ptr %elem_layout, align 8
+  %ptr3 = getelementptr i8, ptr null, i64 %_29
+  br label %bb11
+
+bb5:                                              ; preds = %bb2
+  %17 = getelementptr inbounds i8, ptr %elem_layout, i64 8
+  %self4 = load i64, ptr %17, align 8
+  br label %bb14
+
+bb11:                                             ; preds = %bb4
+  %_32 = getelementptr i8, ptr null, i64 %_29
+; call core::ptr::non_null::NonNull<T>::new_unchecked::precondition_check
+  call void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17h5242ed08614aeceaE"(ptr %_32, ptr align 8 @alloc_bc704b58ff50e4ee5adaad05a93e255b) #19
+  br label %bb13
+
+bb13:                                             ; preds = %bb11
+  %_33 = getelementptr i8, ptr null, i64 %_29
+  %18 = getelementptr inbounds i8, ptr %self, i64 8
+  store ptr %_33, ptr %18, align 8
+  store i64 0, ptr %self, align 8
+  br label %bb9
+
+bb9:                                              ; preds = %bb19, %bb13
+  %19 = load i64, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.1, align 8
+  %20 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.1, i64 8), align 8
+  store i64 %19, ptr %_0, align 8
+  %21 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %20, ptr %21, align 8
+  br label %bb10
+
+bb14:                                             ; preds = %bb5
+; call core::num::<impl usize>::unchecked_mul::precondition_check
+  call void @"_ZN4core3num23_$LT$impl$u20$usize$GT$13unchecked_mul18precondition_check17he8723be0d355b218E"(i64 %self4, i64 %cap, ptr align 8 @alloc_b35a3211fdaebd94ee4323cc79deaead) #19
+  %22 = mul nuw i64 %self4, %cap
+  store i64 %22, ptr %new_size, align 8
+  %size = load i64, ptr %new_size, align 8
+  store i64 %mem.0, ptr %align, align 8
+  br label %bb16
+
+bb16:                                             ; preds = %bb14
+  %23 = load i64, ptr %new_size, align 8
+  %24 = load i64, ptr %align, align 8
+; call core::alloc::layout::Layout::from_size_align_unchecked::precondition_check
+  call void @_ZN4core5alloc6layout6Layout25from_size_align_unchecked18precondition_check17hfd638b3dc72497b2E(i64 %23, i64 %24, ptr align 8 @alloc_c7508afe75565ec65fb29e9c9b96c524) #19
+  br label %bb17
+
+bb17:                                             ; preds = %bb16
+  %_40 = load i64, ptr %align, align 8
+  %25 = load i64, ptr %new_size, align 8
+  %26 = getelementptr inbounds i8, ptr %new_layout, i64 8
+  store i64 %25, ptr %26, align 8
+  store i64 %_40, ptr %new_layout, align 8
+  %_24 = getelementptr inbounds i8, ptr %self, i64 16
+  %27 = load i64, ptr %new_layout, align 8
+  %28 = getelementptr inbounds i8, ptr %new_layout, i64 8
+  %29 = load i64, ptr %28, align 8
+; call <alloc::alloc::Global as core::alloc::Allocator>::shrink
+  %30 = call { ptr, i64 } @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$6shrink17h36f8d082372a7356E"(ptr align 1 %_24, ptr %ptr, i64 %mem.0, i64 %mem.1, i64 %27, i64 %29)
+  %31 = extractvalue { ptr, i64 } %30, 0
+  %32 = extractvalue { ptr, i64 } %30, 1
+  store ptr %31, ptr %self2, align 8
+  %33 = getelementptr inbounds i8, ptr %self2, i64 8
+  store i64 %32, ptr %33, align 8
+  %34 = load ptr, ptr %self2, align 8
+  %35 = getelementptr inbounds i8, ptr %self2, i64 8
+  %36 = load i64, ptr %35, align 8
+  %37 = ptrtoint ptr %34 to i64
+  %38 = icmp eq i64 %37, 0
+  %_41 = select i1 %38, i64 1, i64 0
+  %39 = trunc nuw i64 %_41 to i1
+  br i1 %39, label %bb18, label %bb19
+
+bb18:                                             ; preds = %bb17
+  %_43.0 = load i64, ptr %new_layout, align 8
+  %40 = getelementptr inbounds i8, ptr %new_layout, i64 8
+  %_43.1 = load i64, ptr %40, align 8
+  %41 = getelementptr inbounds i8, ptr %self1, i64 8
+  store i64 %_43.0, ptr %41, align 8
+  %42 = getelementptr inbounds i8, ptr %41, i64 8
+  store i64 %_43.1, ptr %42, align 8
+  store i64 1, ptr %self1, align 8
+  %43 = getelementptr inbounds i8, ptr %self1, i64 8
+  %e.0 = load i64, ptr %43, align 8
+  %44 = getelementptr inbounds i8, ptr %43, i64 8
+  %e.1 = load i64, ptr %44, align 8
+  %45 = getelementptr inbounds i8, ptr %_21, i64 8
+  store i64 %e.0, ptr %45, align 8
+  %46 = getelementptr inbounds i8, ptr %45, i64 8
+  store i64 %e.1, ptr %46, align 8
+  store i64 1, ptr %_21, align 8
+  %47 = getelementptr inbounds i8, ptr %_21, i64 8
+  %residual.0 = load i64, ptr %47, align 8
+  %48 = getelementptr inbounds i8, ptr %47, i64 8
+  %residual.1 = load i64, ptr %48, align 8
+  store i64 %residual.0, ptr %_0, align 8
+  %49 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %residual.1, ptr %49, align 8
+  br label %bb10
+
+bb19:                                             ; preds = %bb17
+  %t.0 = load ptr, ptr %self2, align 8
+  %50 = getelementptr inbounds i8, ptr %self2, i64 8
+  %t.1 = load i64, ptr %50, align 8
+  %51 = getelementptr inbounds i8, ptr %self1, i64 8
+  store ptr %t.0, ptr %51, align 8
+  %52 = getelementptr inbounds i8, ptr %51, i64 8
+  store i64 %t.1, ptr %52, align 8
+  store i64 0, ptr %self1, align 8
+  %53 = getelementptr inbounds i8, ptr %self1, i64 8
+  %v.0 = load ptr, ptr %53, align 8
+  %54 = getelementptr inbounds i8, ptr %53, i64 8
+  %v.1 = load i64, ptr %54, align 8
+  %55 = getelementptr inbounds i8, ptr %_21, i64 8
+  store ptr %v.0, ptr %55, align 8
+  %56 = getelementptr inbounds i8, ptr %55, i64 8
+  store i64 %v.1, ptr %56, align 8
+  store i64 0, ptr %_21, align 8
+  %57 = getelementptr inbounds i8, ptr %_21, i64 8
+  %ptr.0 = load ptr, ptr %57, align 8
+  %58 = getelementptr inbounds i8, ptr %57, i64 8
+  %ptr.1 = load i64, ptr %58, align 8
+  %59 = getelementptr inbounds i8, ptr %self, i64 8
+  store ptr %ptr.0, ptr %59, align 8
+  store i64 %cap, ptr %self, align 8
+  br label %bb9
+
+bb10:                                             ; preds = %bb3, %bb18, %bb9
+  %60 = load i64, ptr %_0, align 8
+  %61 = getelementptr inbounds i8, ptr %_0, i64 8
+  %62 = load i64, ptr %61, align 8
+  %63 = insertvalue { i64, i64 } poison, i64 %60, 0
+  %64 = insertvalue { i64, i64 } %63, i64 %62, 1
+  ret { i64, i64 } %64
+
+bb8:                                              ; No predecessors!
+  unreachable
+
+bb15:                                             ; No predecessors!
+  unreachable
+}
+
+; alloc::raw_vec::RawVecInner<A>::try_reserve_exact
+; Function Attrs: nonlazybind uwtable
+define { i64, i64 } @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$17try_reserve_exact17hf25736c897c9b3bfE"(ptr align 8 %self, i64 %len, i64 %additional, i64 %elem_layout.0, i64 %elem_layout.1) unnamed_addr #3 {
+start:
+  %self4 = alloca [8 x i8], align 8
+  %self3 = alloca [8 x i8], align 8
+  %elem_layout2 = alloca [16 x i8], align 8
+  %self1 = alloca [16 x i8], align 8
+  %_7 = alloca [16 x i8], align 8
+  %elem_layout = alloca [16 x i8], align 8
+  %_0 = alloca [16 x i8], align 8
+  store i64 %elem_layout.0, ptr %elem_layout, align 8
+  %0 = getelementptr inbounds i8, ptr %elem_layout, i64 8
+  store i64 %elem_layout.1, ptr %0, align 8
+  %1 = icmp eq i64 %elem_layout.1, 0
+  br i1 %1, label %bb8, label %bb9
+
+bb8:                                              ; preds = %start
+  store i64 -1, ptr %self3, align 8
+  br label %bb7
+
+bb9:                                              ; preds = %start
+  %self5 = load i64, ptr %self, align 8
+  store i64 %self5, ptr %self3, align 8
+  br label %bb7
+
+bb7:                                              ; preds = %bb9, %bb8
+  %2 = load i64, ptr %self3, align 8
+  %_13 = sub i64 %2, %len
+  %_5 = icmp ugt i64 %additional, %_13
+  br i1 %_5, label %bb1, label %bb4
+
+bb4:                                              ; preds = %bb7
+  br label %bb5
+
+bb1:                                              ; preds = %bb7
+; call alloc::raw_vec::RawVecInner<A>::grow_exact
+  %3 = call { i64, i64 } @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$10grow_exact17hfbeeef369ff9353eE"(ptr align 8 %self, i64 %len, i64 %additional, i64 %elem_layout.0, i64 %elem_layout.1)
+  %4 = extractvalue { i64, i64 } %3, 0
+  %5 = extractvalue { i64, i64 } %3, 1
+  store i64 %4, ptr %self1, align 8
+  %6 = getelementptr inbounds i8, ptr %self1, i64 8
+  store i64 %5, ptr %6, align 8
+  %7 = load i64, ptr %self1, align 8
+  %8 = getelementptr inbounds i8, ptr %self1, i64 8
+  %9 = load i64, ptr %8, align 8
+  %10 = icmp eq i64 %7, -9223372036854775807
+  %_18 = select i1 %10, i64 0, i64 1
+  %11 = trunc nuw i64 %_18 to i1
+  br i1 %11, label %bb10, label %bb11
+
+bb5:                                              ; preds = %bb11, %bb4
+  store i64 %elem_layout.0, ptr %elem_layout2, align 8
+  %12 = getelementptr inbounds i8, ptr %elem_layout2, i64 8
+  store i64 %elem_layout.1, ptr %12, align 8
+  %13 = icmp eq i64 %elem_layout.1, 0
+  br i1 %13, label %bb13, label %bb14
+
+bb10:                                             ; preds = %bb1
+  %e.0 = load i64, ptr %self1, align 8
+  %14 = getelementptr inbounds i8, ptr %self1, i64 8
+  %e.1 = load i64, ptr %14, align 8
+  store i64 %e.0, ptr %_7, align 8
+  %15 = getelementptr inbounds i8, ptr %_7, i64 8
+  store i64 %e.1, ptr %15, align 8
+  %residual.0 = load i64, ptr %_7, align 8
+  %16 = getelementptr inbounds i8, ptr %_7, i64 8
+  %residual.1 = load i64, ptr %16, align 8
+  store i64 %residual.0, ptr %_0, align 8
+  %17 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %residual.1, ptr %17, align 8
+  br label %bb6
+
+bb11:                                             ; preds = %bb1
+  br label %bb5
+
+bb13:                                             ; preds = %bb5
+  store i64 -1, ptr %self4, align 8
+  br label %bb12
+
+bb14:                                             ; preds = %bb5
+  %self6 = load i64, ptr %self, align 8
+  store i64 %self6, ptr %self4, align 8
+  br label %bb12
+
+bb12:                                             ; preds = %bb14, %bb13
+  %18 = load i64, ptr %self4, align 8
+  %_22 = sub i64 %18, %len
+  %_11 = icmp ugt i64 %additional, %_22
+  %cond = xor i1 %_11, true
+  br label %bb15
+
+bb15:                                             ; preds = %bb12
+; call core::hint::assert_unchecked::precondition_check
+  call void @_ZN4core4hint16assert_unchecked18precondition_check17hbb8f7e8afb1eaaeeE(i1 zeroext %cond, ptr align 8 @alloc_1a1d8cb79ef47a3843fada63c3e7a828) #19
+  br label %bb16
+
+bb16:                                             ; preds = %bb15
+  %19 = load i64, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.1, align 8
+  %20 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.1, i64 8), align 8
+  store i64 %19, ptr %_0, align 8
+  %21 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %20, ptr %21, align 8
+  br label %bb6
+
+bb6:                                              ; preds = %bb10, %bb16
+  %22 = load i64, ptr %_0, align 8
+  %23 = getelementptr inbounds i8, ptr %_0, i64 8
+  %24 = load i64, ptr %23, align 8
+  %25 = insertvalue { i64, i64 } poison, i64 %22, 0
+  %26 = insertvalue { i64, i64 } %25, i64 %24, 1
+  ret { i64, i64 } %26
+
+bb3:                                              ; No predecessors!
+  unreachable
+}
+
+; alloc::raw_vec::RawVecInner<A>::shrink
+; Function Attrs: inlinehint nonlazybind uwtable
+define { i64, i64 } @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$6shrink17h9f6832a33b6cb664E"(ptr align 8 %self, i64 %cap, i64 %0, i64 %1) unnamed_addr #0 {
+start:
+  %_9 = alloca [48 x i8], align 8
+  %_5 = alloca [8 x i8], align 8
+  %elem_layout = alloca [16 x i8], align 8
+  store i64 %0, ptr %elem_layout, align 8
+  %2 = getelementptr inbounds i8, ptr %elem_layout, i64 8
+  store i64 %1, ptr %2, align 8
+  %3 = getelementptr inbounds i8, ptr %elem_layout, i64 8
+  %elem_size = load i64, ptr %3, align 8
+  %4 = icmp eq i64 %elem_size, 0
+  br i1 %4, label %bb5, label %bb6
+
+bb5:                                              ; preds = %start
+  store i64 -1, ptr %_5, align 8
+  br label %bb4
+
+bb6:                                              ; preds = %start
+  %self1 = load i64, ptr %self, align 8
+  store i64 %self1, ptr %_5, align 8
+  br label %bb4
+
+bb4:                                              ; preds = %bb6, %bb5
+  %5 = load i64, ptr %_5, align 8
+  %_4 = icmp ule i64 %cap, %5
+  br i1 %_4, label %bb1, label %bb2
+
+bb2:                                              ; preds = %bb4
+  store ptr @alloc_52f548b6953b1f75b3b067c87f664dd5, ptr %_9, align 8
+  %6 = getelementptr inbounds i8, ptr %_9, i64 8
+  store i64 1, ptr %6, align 8
+  %7 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %8 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  %9 = getelementptr inbounds i8, ptr %_9, i64 32
+  store ptr %7, ptr %9, align 8
+  %10 = getelementptr inbounds i8, ptr %9, i64 8
+  store i64 %8, ptr %10, align 8
+  %11 = getelementptr inbounds i8, ptr %_9, i64 16
+  store ptr inttoptr (i64 8 to ptr), ptr %11, align 8
+  %12 = getelementptr inbounds i8, ptr %11, i64 8
+  store i64 0, ptr %12, align 8
+; call core::panicking::panic_fmt
+  call void @_ZN4core9panicking9panic_fmt17h62f63d096dd276afE(ptr align 8 %_9, ptr align 8 @alloc_8e71fe95569f166f35ae210d9d8f03fb) #16
+  unreachable
+
+bb1:                                              ; preds = %bb4
+  %13 = load i64, ptr %elem_layout, align 8
+  %14 = getelementptr inbounds i8, ptr %elem_layout, i64 8
+  %15 = load i64, ptr %14, align 8
+; call alloc::raw_vec::RawVecInner<A>::shrink_unchecked
+  %16 = call { i64, i64 } @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$16shrink_unchecked17h92338a753ba76ae5E"(ptr align 8 %self, i64 %cap, i64 %13, i64 %15)
+  %_0.0 = extractvalue { i64, i64 } %16, 0
+  %_0.1 = extractvalue { i64, i64 } %16, 1
+  %17 = insertvalue { i64, i64 } poison, i64 %_0.0, 0
+  %18 = insertvalue { i64, i64 } %17, i64 %_0.1, 1
+  ret { i64, i64 } %18
+}
+
+; <alloc::alloc::Global as core::alloc::Allocator>::deallocate
+; Function Attrs: inlinehint nonlazybind uwtable
+define internal void @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$10deallocate17h0257c60f2aa80291E"(ptr align 1 %self, ptr %ptr, i64 %0, i64 %1) unnamed_addr #0 {
+start:
+  %layout1 = alloca [16 x i8], align 8
+  %layout = alloca [16 x i8], align 8
+  store i64 %0, ptr %layout, align 8
+  %2 = getelementptr inbounds i8, ptr %layout, i64 8
+  store i64 %1, ptr %2, align 8
+  %3 = getelementptr inbounds i8, ptr %layout, i64 8
+  %_4 = load i64, ptr %3, align 8
+  %4 = icmp eq i64 %_4, 0
+  br i1 %4, label %bb2, label %bb1
+
+bb2:                                              ; preds = %bb1, %start
+  ret void
+
+bb1:                                              ; preds = %start
+  %5 = load i64, ptr %layout, align 8
+  %6 = getelementptr inbounds i8, ptr %layout, i64 8
+  %7 = load i64, ptr %6, align 8
+  store i64 %5, ptr %layout1, align 8
+  %8 = getelementptr inbounds i8, ptr %layout1, i64 8
+  store i64 %7, ptr %8, align 8
+  %_12 = load i64, ptr %layout, align 8
+; call __rustc::__rust_dealloc
+  call void @_RNvCsj4CZ6flxxfE_7___rustc14___rust_dealloc(ptr %ptr, i64 %_4, i64 %_12) #19
+  br label %bb2
+}
+
+; <alloc::alloc::Global as core::alloc::Allocator>::shrink
+; Function Attrs: inlinehint nonlazybind uwtable
+define internal { ptr, i64 } @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$6shrink17h36f8d082372a7356E"(ptr align 1 %self, ptr %ptr, i64 %0, i64 %1, i64 %2, i64 %3) unnamed_addr #0 {
+start:
+  %layout7 = alloca [16 x i8], align 8
+  %_69 = alloca [8 x i8], align 8
+  %layout6 = alloca [16 x i8], align 8
+  %layout5 = alloca [16 x i8], align 8
+  %self4 = alloca [16 x i8], align 8
+  %_34 = alloca [16 x i8], align 8
+  %self3 = alloca [8 x i8], align 8
+  %self2 = alloca [8 x i8], align 8
+  %_28 = alloca [8 x i8], align 8
+  %layout1 = alloca [16 x i8], align 8
+  %raw_ptr = alloca [8 x i8], align 8
+  %layout = alloca [16 x i8], align 8
+  %new_size = alloca [8 x i8], align 8
+  %_0 = alloca [16 x i8], align 8
+  %new_layout = alloca [16 x i8], align 8
+  %old_layout = alloca [16 x i8], align 8
+  store i64 %0, ptr %old_layout, align 8
+  %4 = getelementptr inbounds i8, ptr %old_layout, i64 8
+  store i64 %1, ptr %4, align 8
+  store i64 %2, ptr %new_layout, align 8
+  %5 = getelementptr inbounds i8, ptr %new_layout, i64 8
+  store i64 %3, ptr %5, align 8
+  %6 = getelementptr inbounds i8, ptr %new_layout, i64 8
+  %7 = load i64, ptr %6, align 8
+  store i64 %7, ptr %new_size, align 8
+  %8 = load i64, ptr %new_size, align 8
+  %9 = icmp eq i64 %8, 0
+  br i1 %9, label %bb2, label %bb1
+
+bb2:                                              ; preds = %start
+  %10 = load i64, ptr %old_layout, align 8
+  %11 = getelementptr inbounds i8, ptr %old_layout, i64 8
+  %12 = load i64, ptr %11, align 8
+  store i64 %10, ptr %layout, align 8
+  %13 = getelementptr inbounds i8, ptr %layout, i64 8
+  store i64 %12, ptr %13, align 8
+  %14 = getelementptr inbounds i8, ptr %old_layout, i64 8
+  %_44 = load i64, ptr %14, align 8
+  %15 = icmp eq i64 %_44, 0
+  br i1 %15, label %bb8, label %bb7
+
+bb1:                                              ; preds = %start
+  %_43 = load i64, ptr %old_layout, align 8
+  %_63 = load i64, ptr %new_layout, align 8
+  %_15 = icmp eq i64 %_43, %_63
+  br i1 %_15, label %bb3, label %bb4
+
+bb8:                                              ; preds = %bb7, %bb2
+  %_54 = load i64, ptr %new_layout, align 8
+  %_55 = getelementptr i8, ptr null, i64 %_54
+  %data = getelementptr i8, ptr null, i64 %_54
+  br label %bb10
+
+bb7:                                              ; preds = %bb2
+  %16 = load i64, ptr %old_layout, align 8
+  %17 = getelementptr inbounds i8, ptr %old_layout, i64 8
+  %18 = load i64, ptr %17, align 8
+  store i64 %16, ptr %layout6, align 8
+  %19 = getelementptr inbounds i8, ptr %layout6, i64 8
+  store i64 %18, ptr %19, align 8
+  %_52 = load i64, ptr %old_layout, align 8
+; call __rustc::__rust_dealloc
+  call void @_RNvCsj4CZ6flxxfE_7___rustc14___rust_dealloc(ptr %ptr, i64 %_44, i64 %_52) #19
+  br label %bb8
+
+bb10:                                             ; preds = %bb8
+  %_59 = getelementptr i8, ptr null, i64 %_54
+; call core::ptr::non_null::NonNull<T>::new_unchecked::precondition_check
+  call void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17h5242ed08614aeceaE"(ptr %_59, ptr align 8 @alloc_827fc580ae74785f56b1507bfd6b2422) #19
+  br label %bb12
+
+bb12:                                             ; preds = %bb10
+  store ptr %data, ptr %_0, align 8
+  %20 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 0, ptr %20, align 8
+  br label %bb6
+
+bb6:                                              ; preds = %bb26, %bb30, %bb31, %bb37, %bb12
+  %21 = load ptr, ptr %_0, align 8
+  %22 = getelementptr inbounds i8, ptr %_0, i64 8
+  %23 = load i64, ptr %22, align 8
+  %24 = insertvalue { ptr, i64 } poison, ptr %21, 0
+  %25 = insertvalue { ptr, i64 } %24, i64 %23, 1
+  ret { ptr, i64 } %25
+
+bb4:                                              ; preds = %bb1
+  %26 = load i64, ptr %new_layout, align 8
+  %27 = getelementptr inbounds i8, ptr %new_layout, i64 8
+  %28 = load i64, ptr %27, align 8
+; call alloc::alloc::Global::alloc_impl
+  %29 = call { ptr, i64 } @_ZN5alloc5alloc6Global10alloc_impl17hc248130243ecd080E(ptr align 1 %self, i64 %26, i64 %28, i1 zeroext false)
+  %30 = extractvalue { ptr, i64 } %29, 0
+  %31 = extractvalue { ptr, i64 } %29, 1
+  store ptr %30, ptr %self4, align 8
+  %32 = getelementptr inbounds i8, ptr %self4, i64 8
+  store i64 %31, ptr %32, align 8
+  %33 = load ptr, ptr %self4, align 8
+  %34 = getelementptr inbounds i8, ptr %self4, i64 8
+  %35 = load i64, ptr %34, align 8
+  %36 = ptrtoint ptr %33 to i64
+  %37 = icmp eq i64 %36, 0
+  %_82 = select i1 %37, i64 1, i64 0
+  %38 = trunc nuw i64 %_82 to i1
+  br i1 %38, label %bb31, label %bb32
+
+bb3:                                              ; preds = %bb1
+  %39 = getelementptr inbounds i8, ptr %old_layout, i64 8
+  %_21 = load i64, ptr %39, align 8
+  %40 = load i64, ptr %new_size, align 8
+  %cond = icmp ule i64 %40, %_21
+  br label %bb14
+
+bb31:                                             ; preds = %bb4
+  %41 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %42 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  store ptr %41, ptr %_0, align 8
+  %43 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %42, ptr %43, align 8
+  br label %bb6
+
+bb32:                                             ; preds = %bb4
+  %v.0 = load ptr, ptr %self4, align 8
+  %44 = getelementptr inbounds i8, ptr %self4, i64 8
+  %v.1 = load i64, ptr %44, align 8
+  store ptr %v.0, ptr %_34, align 8
+  %45 = getelementptr inbounds i8, ptr %_34, i64 8
+  store i64 %v.1, ptr %45, align 8
+  %new_ptr.0 = load ptr, ptr %_34, align 8
+  %46 = getelementptr inbounds i8, ptr %_34, i64 8
+  %new_ptr.1 = load i64, ptr %46, align 8
+  br label %bb33
+
+bb33:                                             ; preds = %bb32
+  %47 = load i64, ptr %new_size, align 8
+; call core::ptr::copy_nonoverlapping::precondition_check
+  call void @_ZN4core3ptr19copy_nonoverlapping18precondition_check17h16ff54272e2f8953E(ptr %ptr, ptr %new_ptr.0, i64 1, i64 1, i64 %47, ptr align 8 @alloc_5cdae0d4da70f085aa332804c095a7c9) #19
+  br label %bb35
+
+bb35:                                             ; preds = %bb33
+  %48 = load i64, ptr %new_size, align 8
+  %49 = mul i64 %48, 1
+  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %new_ptr.0, ptr align 1 %ptr, i64 %49, i1 false)
+  %50 = load i64, ptr %old_layout, align 8
+  %51 = getelementptr inbounds i8, ptr %old_layout, i64 8
+  %52 = load i64, ptr %51, align 8
+  store i64 %50, ptr %layout5, align 8
+  %53 = getelementptr inbounds i8, ptr %layout5, i64 8
+  store i64 %52, ptr %53, align 8
+  %54 = getelementptr inbounds i8, ptr %old_layout, i64 8
+  %_89 = load i64, ptr %54, align 8
+  %55 = icmp eq i64 %_89, 0
+  br i1 %55, label %bb37, label %bb36
+
+bb37:                                             ; preds = %bb36, %bb35
+  store ptr %new_ptr.0, ptr %_0, align 8
+  %56 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %new_ptr.1, ptr %56, align 8
+  br label %bb6
+
+bb36:                                             ; preds = %bb35
+  %57 = load i64, ptr %old_layout, align 8
+  %58 = getelementptr inbounds i8, ptr %old_layout, i64 8
+  %59 = load i64, ptr %58, align 8
+  store i64 %57, ptr %layout7, align 8
+  %60 = getelementptr inbounds i8, ptr %layout7, i64 8
+  store i64 %59, ptr %60, align 8
+; call __rustc::__rust_dealloc
+  call void @_RNvCsj4CZ6flxxfE_7___rustc14___rust_dealloc(ptr %ptr, i64 %_89, i64 %_43) #19
+  br label %bb37
+
+bb14:                                             ; preds = %bb3
+; call core::hint::assert_unchecked::precondition_check
+  call void @_ZN4core4hint16assert_unchecked18precondition_check17hbb8f7e8afb1eaaeeE(i1 zeroext %cond, ptr align 8 @alloc_f7e59eafaaa863f0e693d2b1e968d7c1) #19
+  %61 = load i64, ptr %old_layout, align 8
+  %62 = getelementptr inbounds i8, ptr %old_layout, i64 8
+  %63 = load i64, ptr %62, align 8
+  store i64 %61, ptr %layout1, align 8
+  %64 = getelementptr inbounds i8, ptr %layout1, i64 8
+  store i64 %63, ptr %64, align 8
+  %new_size8 = load i64, ptr %new_size, align 8
+  %65 = load i64, ptr %new_size, align 8
+; call __rustc::__rust_realloc
+  %66 = call ptr @_RNvCsj4CZ6flxxfE_7___rustc14___rust_realloc(ptr %ptr, i64 %_21, i64 %_43, i64 %65) #19
+  store ptr %66, ptr %raw_ptr, align 8
+  %ptr9 = load ptr, ptr %raw_ptr, align 8
+  %67 = load ptr, ptr %raw_ptr, align 8
+  store ptr %67, ptr %_69, align 8
+  %68 = load ptr, ptr %raw_ptr, align 8
+  %_70 = ptrtoint ptr %68 to i64
+  %69 = icmp eq i64 %_70, 0
+  br i1 %69, label %bb18, label %bb41
+
+bb18:                                             ; preds = %bb14
+  store ptr null, ptr %self3, align 8
+  br label %bb17
+
+bb41:                                             ; preds = %bb14
+  br label %bb20
+
+bb17:                                             ; preds = %bb22, %bb18
+  %70 = load ptr, ptr %self3, align 8
+  %71 = ptrtoint ptr %70 to i64
+  %72 = icmp eq i64 %71, 0
+  %_73 = select i1 %72, i64 0, i64 1
+  %73 = trunc nuw i64 %_73 to i1
+  br i1 %73, label %bb25, label %bb24
+
+bb20:                                             ; preds = %bb41
+  %_72 = load ptr, ptr %raw_ptr, align 8
+; call core::ptr::non_null::NonNull<T>::new_unchecked::precondition_check
+  call void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17h5242ed08614aeceaE"(ptr %_72, ptr align 8 @alloc_8e97afaeee774873d13f09bb95d8211a) #19
+  br label %bb22
+
+bb22:                                             ; preds = %bb20
+  %_68 = load ptr, ptr %_69, align 8
+  store ptr %_68, ptr %self3, align 8
+  br label %bb17
+
+bb25:                                             ; preds = %bb17
+  %v = load ptr, ptr %self3, align 8
+  store ptr %v, ptr %self2, align 8
+  br label %bb23
+
+bb24:                                             ; preds = %bb17
+  store ptr null, ptr %self2, align 8
+  br label %bb23
+
+bb23:                                             ; preds = %bb25, %bb24
+  %74 = load ptr, ptr %self2, align 8
+  %75 = ptrtoint ptr %74 to i64
+  %76 = icmp eq i64 %75, 0
+  %_75 = select i1 %76, i64 1, i64 0
+  %77 = trunc nuw i64 %_75 to i1
+  br i1 %77, label %bb26, label %bb27
+
+bb26:                                             ; preds = %bb23
+  %78 = load ptr, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, align 8
+  %79 = load i64, ptr getelementptr inbounds (i8, ptr @anon.b35ecc3e2bdbf80a8ac426ec47a3c2c6.0, i64 8), align 8
+  store ptr %78, ptr %_0, align 8
+  %80 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %79, ptr %80, align 8
+  br label %bb6
+
+bb27:                                             ; preds = %bb23
+  %v10 = load ptr, ptr %self2, align 8
+  store ptr %v10, ptr %_28, align 8
+  %ptr11 = load ptr, ptr %_28, align 8
+  %ptr.1 = load i64, ptr %new_size, align 8
+  br label %bb28
+
+bb28:                                             ; preds = %bb27
+; call core::ptr::non_null::NonNull<T>::new_unchecked::precondition_check
+  call void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17h5242ed08614aeceaE"(ptr %ptr11, ptr align 8 @alloc_827fc580ae74785f56b1507bfd6b2422) #19
+  br label %bb30
+
+bb30:                                             ; preds = %bb28
+  store ptr %ptr11, ptr %_0, align 8
+  %81 = getelementptr inbounds i8, ptr %_0, i64 8
+  store i64 %ptr.1, ptr %81, align 8
+  br label %bb6
+
+bb5:                                              ; No predecessors!
+  unreachable
+
+bb15:                                             ; No predecessors!
+  unreachable
+
+bb16:                                             ; No predecessors!
+  unreachable
+
+bb19:                                             ; No predecessors!
+  unreachable
+}
+
+; <alloc::vec::Vec<T,A> as core::ops::deref::DerefMut>::deref_mut
+; Function Attrs: inlinehint nonlazybind uwtable
+define { ptr, i64 } @"_ZN75_$LT$alloc..vec..Vec$LT$T$C$A$GT$$u20$as$u20$core..ops..deref..DerefMut$GT$9deref_mut17h242f0ab855559780E"(ptr align 8 %self) unnamed_addr #0 {
+start:
+; call alloc::vec::Vec<T,A>::as_mut_slice
+  %0 = call { ptr, i64 } @"_ZN5alloc3vec16Vec$LT$T$C$A$GT$12as_mut_slice17h82d846bd84144f25E"(ptr align 8 %self)
+  %_0.0 = extractvalue { ptr, i64 } %0, 0
+  %_0.1 = extractvalue { ptr, i64 } %0, 1
+  %1 = insertvalue { ptr, i64 } poison, ptr %_0.0, 0
+  %2 = insertvalue { ptr, i64 } %1, i64 %_0.1, 1
+  ret { ptr, i64 } %2
+}
+
+; <core::result::Result<T,E> as core::ops::try_trait::Try>::branch
+; Function Attrs: inlinehint nonlazybind uwtable
+define zeroext i1 @"_ZN79_$LT$core..result..Result$LT$T$C$E$GT$$u20$as$u20$core..ops..try_trait..Try$GT$6branch17h666b80c699e4b049E"(i1 zeroext %0) unnamed_addr #0 {
+start:
+  %_0 = alloca [1 x i8], align 1
+  %self = alloca [1 x i8], align 1
+  %1 = zext i1 %0 to i8
+  store i8 %1, ptr %self, align 1
+  %2 = load i8, ptr %self, align 1
+  %3 = trunc nuw i8 %2 to i1
+  %_2 = zext i1 %3 to i64
+  %4 = trunc nuw i64 %_2 to i1
+  br i1 %4, label %bb2, label %bb3
+
+bb2:                                              ; preds = %start
+  store i8 1, ptr %_0, align 1
+  br label %bb4
+
+bb3:                                              ; preds = %start
+  store i8 0, ptr %_0, align 1
+  br label %bb4
+
+bb4:                                              ; preds = %bb2, %bb3
+  %5 = load i8, ptr %_0, align 1
+  %6 = trunc nuw i8 %5 to i1
+  ret i1 %6
+
+bb1:                                              ; No predecessors!
+  unreachable
+}
+
+; <alloc::vec::Vec<T,A> as core::ops::index::IndexMut<I>>::index_mut
+; Function Attrs: inlinehint nonlazybind uwtable
+define { ptr, i64 } @"_ZN84_$LT$alloc..vec..Vec$LT$T$C$A$GT$$u20$as$u20$core..ops..index..IndexMut$LT$I$GT$$GT$9index_mut17he7cd2e7be8157bd4E"(ptr align 8 %self, i64 %index.0, i64 %index.1, ptr align 8 %0) unnamed_addr #0 {
+start:
+  %1 = getelementptr inbounds i8, ptr %self, i64 8
+  %_6 = load ptr, ptr %1, align 8
+  %2 = getelementptr inbounds i8, ptr %self, i64 16
+  %len = load i64, ptr %2, align 8
+  br label %bb1
+
+bb1:                                              ; preds = %start
+; call core::slice::raw::from_raw_parts_mut::precondition_check
+  call void @_ZN4core5slice3raw18from_raw_parts_mut18precondition_check17h72d64701713fcaf0E(ptr %_6, i64 1, i64 1, i64 %len, ptr align 8 @alloc_c6bb06645422f63e5caafbecf5372290) #19
+  br label %bb3
+
+bb3:                                              ; preds = %bb1
+; call <core::ops::range::Range<usize> as core::slice::index::SliceIndex<[T]>>::index_mut
+  %3 = call { ptr, i64 } @"_ZN106_$LT$core..ops..range..Range$LT$usize$GT$$u20$as$u20$core..slice..index..SliceIndex$LT$$u5b$T$u5d$$GT$$GT$9index_mut17h56d09af24db3f151E"(i64 %index.0, i64 %index.1, ptr align 1 %_6, i64 %len, ptr align 8 %0)
+  %_0.0 = extractvalue { ptr, i64 } %3, 0
+  %_0.1 = extractvalue { ptr, i64 } %3, 1
+  %4 = insertvalue { ptr, i64 } poison, ptr %_0.0, 0
+  %5 = insertvalue { ptr, i64 } %4, i64 %_0.1, 1
+  ret { ptr, i64 } %5
+}
+
+; <core::ops::range::Range<T> as core::ops::range::RangeBounds<T>>::start_bound
+; Function Attrs: nonlazybind uwtable
+define { i64, ptr } @"_ZN91_$LT$core..ops..range..Range$LT$T$GT$$u20$as$u20$core..ops..range..RangeBounds$LT$T$GT$$GT$11start_bound17h9a5bc5ed2d0e19e7E"(ptr align 8 %self) unnamed_addr #3 {
+start:
+  %0 = insertvalue { i64, ptr } { i64 0, ptr poison }, ptr %self, 1
+  ret { i64, ptr } %0
+}
+
+; <core::ops::range::Range<T> as core::ops::range::RangeBounds<T>>::end_bound
+; Function Attrs: nonlazybind uwtable
+define { i64, ptr } @"_ZN91_$LT$core..ops..range..Range$LT$T$GT$$u20$as$u20$core..ops..range..RangeBounds$LT$T$GT$$GT$9end_bound17h19278149f7eb2306E"(ptr align 8 %self) unnamed_addr #3 {
+start:
+  %_2 = getelementptr inbounds i8, ptr %self, i64 8
+  %0 = insertvalue { i64, ptr } { i64 1, ptr poison }, ptr %_2, 1
+  ret { i64, ptr } %0
+}
+
+; vec::RawVec::new
+; Function Attrs: nonlazybind uwtable
+define void @_ZN3vec6RawVec3new17hb409e6be73292ee9E(ptr sret([32 x i8]) align 8 %_0) unnamed_addr #3 {
+start:
+  %_1 = alloca [24 x i8], align 8
+; call alloc::vec::Vec<T>::new
+  call void @"_ZN5alloc3vec12Vec$LT$T$GT$3new17hc0fb1340e1aea9e4E"(ptr sret([24 x i8]) align 8 %_1)
+  call void @llvm.memcpy.p0.p0.i64(ptr align 8 %_0, ptr align 8 %_1, i64 24, i1 false)
+  %0 = getelementptr inbounds i8, ptr %_0, i64 24
+  store i64 0, ptr %0, align 8
+  ret void
+}
+
+; vec::RawVec::expand
+; Function Attrs: nonlazybind uwtable
+define zeroext i1 @_ZN3vec6RawVec6expand17he2f91ecb62e14060E(ptr align 8 %self, i64 %memsz) unnamed_addr #3 {
+start:
+  %new_cap = alloca [8 x i8], align 8
+; call alloc::vec::Vec<T,A>::capacity
+  %_4 = call i64 @"_ZN5alloc3vec16Vec$LT$T$C$A$GT$8capacity17hb8c1299624751dc9E"(ptr align 8 %self)
+; call core::cmp::Ord::max
+  %_6 = call i64 @_ZN4core3cmp3Ord3max17hb75eb9ad28594c42E(i64 %memsz, i64 1)
+  %_7 = icmp eq i64 %_6, 0
+  br i1 %_7, label %panic, label %bb3
+
+bb3:                                              ; preds = %start
+  %capacity = udiv i64 %_4, %_6
+  %0 = getelementptr inbounds i8, ptr %self, i64 24
+  %_10 = load i64, ptr %0, align 8
+  %1 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %_10, i64 1)
+  %_11.0 = extractvalue { i64, i1 } %1, 0
+  %_11.1 = extractvalue { i64, i1 } %1, 1
+  br i1 %_11.1, label %panic1, label %bb4
+
+panic:                                            ; preds = %start
+; call core::panicking::panic_const::panic_const_div_by_zero
+  call void @_ZN4core9panicking11panic_const23panic_const_div_by_zero17hfcc582669e57e229E(ptr align 8 @alloc_0fd2452616de0877d1117a43dc5d90ce) #16
+  unreachable
+
+bb4:                                              ; preds = %bb3
+  %_8 = icmp ugt i64 %_11.0, %capacity
+  br i1 %_8, label %bb5, label %bb13
+
+panic1:                                           ; preds = %bb3
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_add_overflow17h3253708af8a8c611E(ptr align 8 @alloc_81e7f85290d411817b909193b324fe5d) #16
+  unreachable
+
+bb13:                                             ; preds = %bb12, %bb4
+  ret i1 false
+
+bb5:                                              ; preds = %bb4
+  %2 = icmp eq i64 %capacity, 0
+  br i1 %2, label %bb6, label %bb7
+
+bb6:                                              ; preds = %bb5
+  store i64 1, ptr %new_cap, align 8
+  br label %bb9
+
+bb7:                                              ; preds = %bb5
+  %3 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %capacity, i64 2)
+  %_13.0 = extractvalue { i64, i1 } %3, 0
+  %_13.1 = extractvalue { i64, i1 } %3, 1
+  br i1 %_13.1, label %panic2, label %bb8
+
+bb9:                                              ; preds = %bb8, %bb6
+  %_18 = load i64, ptr %new_cap, align 8
+  %4 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %_18, i64 %memsz)
+  %_19.0 = extractvalue { i64, i1 } %4, 0
+  %_19.1 = extractvalue { i64, i1 } %4, 1
+  br i1 %_19.1, label %panic3, label %bb10
+
+bb8:                                              ; preds = %bb7
+  store i64 %_13.0, ptr %new_cap, align 8
+  br label %bb9
+
+panic2:                                           ; preds = %bb7
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_mul_overflow17h80bac1314a91ed35E(ptr align 8 @alloc_c3dfcf74be379622f6656e59538804de) #16
+  unreachable
+
+bb10:                                             ; preds = %bb9
+; call alloc::vec::Vec<T,A>::capacity
+  %_20 = call i64 @"_ZN5alloc3vec16Vec$LT$T$C$A$GT$8capacity17hb8c1299624751dc9E"(ptr align 8 %self)
+  %_22.0 = sub i64 %_19.0, %_20
+  %_22.1 = icmp ult i64 %_19.0, %_20
+  br i1 %_22.1, label %panic4, label %bb12
+
+panic3:                                           ; preds = %bb9
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_mul_overflow17h80bac1314a91ed35E(ptr align 8 @alloc_48020fe56060af98110b606585944509) #16
+  unreachable
+
+bb12:                                             ; preds = %bb10
+; call alloc::vec::Vec<T,A>::reserve_exact
+  call void @"_ZN5alloc3vec16Vec$LT$T$C$A$GT$13reserve_exact17h97ed883faec9d862E"(ptr align 8 %self, i64 %_22.0, ptr align 8 @alloc_7f6166f516c439965104e4812b22b89a)
+  br label %bb13
+
+panic4:                                           ; preds = %bb10
+; call core::panicking::panic_const::panic_const_sub_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_sub_overflow17h4b52efde242bf2e9E(ptr align 8 @alloc_48020fe56060af98110b606585944509) #16
+  unreachable
+}
+
+; vec::RawVec::reserve
+; Function Attrs: nonlazybind uwtable
+define zeroext i1 @_ZN3vec6RawVec7reserve17h7478e8f97f14f4bbE(ptr align 8 %self, i64 %memsz, i64 %n) unnamed_addr #3 {
+start:
+; call alloc::vec::Vec<T,A>::capacity
+  %_5 = call i64 @"_ZN5alloc3vec16Vec$LT$T$C$A$GT$8capacity17hb8c1299624751dc9E"(ptr align 8 %self)
+; call core::cmp::Ord::max
+  %_7 = call i64 @_ZN4core3cmp3Ord3max17hb75eb9ad28594c42E(i64 %memsz, i64 1)
+  %_8 = icmp eq i64 %_7, 0
+  br i1 %_8, label %panic, label %bb3
+
+bb3:                                              ; preds = %start
+  %capacity = udiv i64 %_5, %_7
+  %_9 = icmp ugt i64 %n, %capacity
+  br i1 %_9, label %bb4, label %bb8
+
+panic:                                            ; preds = %start
+; call core::panicking::panic_const::panic_const_div_by_zero
+  call void @_ZN4core9panicking11panic_const23panic_const_div_by_zero17hfcc582669e57e229E(ptr align 8 @alloc_4fb11a6b2e2b1cc5c5bf132426b6c7dc) #16
+  unreachable
+
+bb8:                                              ; preds = %bb7, %bb3
+  ret i1 false
+
+bb4:                                              ; preds = %bb3
+  %0 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %n, i64 %memsz)
+  %_12.0 = extractvalue { i64, i1 } %0, 0
+  %_12.1 = extractvalue { i64, i1 } %0, 1
+  br i1 %_12.1, label %panic1, label %bb5
+
+bb5:                                              ; preds = %bb4
+; call alloc::vec::Vec<T,A>::capacity
+  %_13 = call i64 @"_ZN5alloc3vec16Vec$LT$T$C$A$GT$8capacity17hb8c1299624751dc9E"(ptr align 8 %self)
+  %_15.0 = sub i64 %_12.0, %_13
+  %_15.1 = icmp ult i64 %_12.0, %_13
+  br i1 %_15.1, label %panic2, label %bb7
+
+panic1:                                           ; preds = %bb4
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_mul_overflow17h80bac1314a91ed35E(ptr align 8 @alloc_d48f4f53c2314360e939512a99eeb9b9) #16
+  unreachable
+
+bb7:                                              ; preds = %bb5
+; call alloc::vec::Vec<T,A>::reserve_exact
+  call void @"_ZN5alloc3vec16Vec$LT$T$C$A$GT$13reserve_exact17h97ed883faec9d862E"(ptr align 8 %self, i64 %_15.0, ptr align 8 @alloc_60e4055e631b7e6fdef72936ed35c959)
+  br label %bb8
+
+panic2:                                           ; preds = %bb5
+; call core::panicking::panic_const::panic_const_sub_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_sub_overflow17h4b52efde242bf2e9E(ptr align 8 @alloc_d48f4f53c2314360e939512a99eeb9b9) #16
+  unreachable
+}
+
+; vec::RawVec::reserve_po2
+; Function Attrs: nonlazybind uwtable
+define zeroext i1 @_ZN3vec6RawVec11reserve_po217hf9145ed1b4cb295aE(ptr align 8 %self, i64 %memsz, i64 %n) unnamed_addr #3 {
+start:
+  %_0 = alloca [1 x i8], align 1
+  %0 = icmp eq i64 %n, 0
+  br i1 %0, label %bb1, label %bb2
+
+bb1:                                              ; preds = %start
+  store i8 0, ptr %_0, align 1
+  br label %bb4
+
+bb2:                                              ; preds = %start
+; call core::num::<impl usize>::next_power_of_two
+  %n2 = call i64 @"_ZN4core3num23_$LT$impl$u20$usize$GT$17next_power_of_two17h628b989f8c72cddfE"(i64 %n)
+; call vec::RawVec::reserve
+  %1 = call zeroext i1 @_ZN3vec6RawVec7reserve17h7478e8f97f14f4bbE(ptr align 8 %self, i64 %memsz, i64 %n2)
+  %2 = zext i1 %1 to i8
+  store i8 %2, ptr %_0, align 1
+  br label %bb4
+
+bb4:                                              ; preds = %bb2, %bb1
+  %3 = load i8, ptr %_0, align 1
+  %4 = trunc nuw i8 %3 to i1
+  ret i1 %4
+}
+
+; vec::RawVec::compact
+; Function Attrs: nonlazybind uwtable
+define zeroext i1 @_ZN3vec6RawVec7compact17h7009418e99867d2cE(ptr align 8 %self, i64 %memsz) unnamed_addr #3 personality ptr @rust_eh_personality {
+start:
+  %0 = alloca [16 x i8], align 8
+  %_4 = alloca [24 x i8], align 8
+  %1 = getelementptr inbounds i8, ptr %self, i64 24
+  %_3 = load i64, ptr %1, align 8
+  %2 = icmp eq i64 %_3, 0
+  br i1 %2, label %bb1, label %bb5
+
+bb1:                                              ; preds = %start
+; call alloc::vec::Vec<T>::new
+  call void @"_ZN5alloc3vec12Vec$LT$T$GT$3new17hc0fb1340e1aea9e4E"(ptr sret([24 x i8]) align 8 %_4)
+; invoke core::ptr::drop_in_place<alloc::vec::Vec<u8>>
+  invoke void @"_ZN4core3ptr46drop_in_place$LT$alloc..vec..Vec$LT$u8$GT$$GT$17hc7e67fbd50bb3196E"(ptr align 8 %self)
+          to label %bb3 unwind label %cleanup
+
+bb5:                                              ; preds = %start
+  %3 = getelementptr inbounds i8, ptr %self, i64 24
+  %_6 = load i64, ptr %3, align 8
+  %4 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %_6, i64 %memsz)
+  %_7.0 = extractvalue { i64, i1 } %4, 0
+  %_7.1 = extractvalue { i64, i1 } %4, 1
+  br i1 %_7.1, label %panic, label %bb6
+
+bb4:                                              ; preds = %cleanup
+  call void @llvm.memcpy.p0.p0.i64(ptr align 8 %self, ptr align 8 %_4, i64 24, i1 false)
+  %5 = load ptr, ptr %0, align 8
+  %6 = getelementptr inbounds i8, ptr %0, i64 8
+  %7 = load i32, ptr %6, align 8
+  %8 = insertvalue { ptr, i32 } poison, ptr %5, 0
+  %9 = insertvalue { ptr, i32 } %8, i32 %7, 1
+  resume { ptr, i32 } %9
+
+cleanup:                                          ; preds = %bb1
+  %10 = landingpad { ptr, i32 }
+          cleanup
+  %11 = extractvalue { ptr, i32 } %10, 0
+  %12 = extractvalue { ptr, i32 } %10, 1
+  store ptr %11, ptr %0, align 8
+  %13 = getelementptr inbounds i8, ptr %0, i64 8
+  store i32 %12, ptr %13, align 8
+  br label %bb4
+
+bb3:                                              ; preds = %bb1
+  call void @llvm.memcpy.p0.p0.i64(ptr align 8 %self, ptr align 8 %_4, i64 24, i1 false)
+  br label %bb8
+
+bb8:                                              ; preds = %bb6, %bb3
+  ret i1 false
+
+bb6:                                              ; preds = %bb5
+; call alloc::vec::Vec<T,A>::truncate
+  call void @"_ZN5alloc3vec16Vec$LT$T$C$A$GT$8truncate17hd9e556a72f7ac565E"(ptr align 8 %self, i64 %_7.0)
+; call alloc::vec::Vec<T,A>::shrink_to_fit
+  call void @"_ZN5alloc3vec16Vec$LT$T$C$A$GT$13shrink_to_fit17hdb3c8452175021edE"(ptr align 8 %self, ptr align 8 @alloc_d5a50a0e50e6f3d28f5df43600647d90)
+  br label %bb8
+
+panic:                                            ; preds = %bb5
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_mul_overflow17h80bac1314a91ed35E(ptr align 8 @alloc_6c6f5722775aa1550adc0149477f711a) #16
+  unreachable
+}
+
+; vec::RawVec::insert
+; Function Attrs: nonlazybind uwtable
+define zeroext i1 @_ZN3vec6RawVec6insert17hdeb057ff361b3c20E(ptr align 8 %self, i64 %memsz, i64 %idx) unnamed_addr #3 {
+start:
+  %_0 = alloca [1 x i8], align 1
+; call vec::RawVec::expand
+  %_5 = call zeroext i1 @_ZN3vec6RawVec6expand17he2f91ecb62e14060E(ptr align 8 %self, i64 %memsz)
+; call <core::result::Result<T,E> as core::ops::try_trait::Try>::branch
+  %_4 = call zeroext i1 @"_ZN79_$LT$core..result..Result$LT$T$C$E$GT$$u20$as$u20$core..ops..try_trait..Try$GT$6branch17h666b80c699e4b049E"(i1 zeroext %_5)
+  %_6 = zext i1 %_4 to i64
+  %0 = trunc nuw i64 %_6 to i1
+  br i1 %0, label %bb5, label %bb4
+
+bb5:                                              ; preds = %start
+; call <core::result::Result<T,F> as core::ops::try_trait::FromResidual<core::result::Result<core::convert::Infallible,E>>>::from_residual
+  %1 = call zeroext i1 @"_ZN153_$LT$core..result..Result$LT$T$C$F$GT$$u20$as$u20$core..ops..try_trait..FromResidual$LT$core..result..Result$LT$core..convert..Infallible$C$E$GT$$GT$$GT$13from_residual17h8416fd7878346931E"(ptr align 8 @alloc_b90abfee72441a25947009aeed475893)
+  %2 = zext i1 %1 to i8
+  store i8 %2, ptr %_0, align 1
+  br label %bb11
+
+bb4:                                              ; preds = %start
+  %3 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %idx, i64 %memsz)
+  %_8.0 = extractvalue { i64, i1 } %3, 0
+  %_8.1 = extractvalue { i64, i1 } %3, 1
+  br i1 %_8.1, label %panic, label %bb6
+
+bb6:                                              ; preds = %bb4
+  %4 = getelementptr inbounds i8, ptr %self, i64 24
+  %_10 = load i64, ptr %4, align 8
+  %5 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %_10, i64 %memsz)
+  %_11.0 = extractvalue { i64, i1 } %5, 0
+  %_11.1 = extractvalue { i64, i1 } %5, 1
+  br i1 %_11.1, label %panic1, label %bb7
+
+panic:                                            ; preds = %bb4
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_mul_overflow17h80bac1314a91ed35E(ptr align 8 @alloc_8b19964faed6a0bf339c3406354f1692) #16
+  unreachable
+
+bb7:                                              ; preds = %bb6
+  %6 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %_11.0, i64 %memsz)
+  %_17.0 = extractvalue { i64, i1 } %6, 0
+  %_17.1 = extractvalue { i64, i1 } %6, 1
+  br i1 %_17.1, label %panic2, label %bb8
+
+panic1:                                           ; preds = %bb6
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_mul_overflow17h80bac1314a91ed35E(ptr align 8 @alloc_ab8963c2cef9e24181a675e1b33dde7b) #16
+  unreachable
+
+bb8:                                              ; preds = %bb7
+; call <alloc::vec::Vec<T,A> as core::ops::index::IndexMut<I>>::index_mut
+  %7 = call { ptr, i64 } @"_ZN84_$LT$alloc..vec..Vec$LT$T$C$A$GT$$u20$as$u20$core..ops..index..IndexMut$LT$I$GT$$GT$9index_mut17he7cd2e7be8157bd4E"(ptr align 8 %self, i64 %_8.0, i64 %_17.0, ptr align 8 @alloc_031271eb85ad69ec9bab72a4bddd6e96)
+  %_13.0 = extractvalue { ptr, i64 } %7, 0
+  %_13.1 = extractvalue { ptr, i64 } %7, 1
+; call core::slice::<impl [T]>::rotate_right
+  call void @"_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$12rotate_right17h8ece3391f5cc3770E"(ptr align 1 %_13.0, i64 %_13.1, i64 %memsz)
+  store i8 0, ptr %_0, align 1
+  br label %bb11
+
+panic2:                                           ; preds = %bb7
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_add_overflow17h3253708af8a8c611E(ptr align 8 @alloc_0867b3dfc5d2c228c11bd476dab4a4fd) #16
+  unreachable
+
+bb11:                                             ; preds = %bb5, %bb8
+  %8 = load i8, ptr %_0, align 1
+  %9 = trunc nuw i8 %8 to i1
+  ret i1 %9
+
+bb3:                                              ; No predecessors!
+  unreachable
+}
+
+; vec::RawVec::splice
+; Function Attrs: nonlazybind uwtable
+define void @_ZN3vec6RawVec6splice17h953786206b96c388E(ptr align 8 %self, i64 %memsz, i64 %start1, i64 %count) unnamed_addr #3 {
+start:
+  %0 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %start1, i64 %count)
+  %_7.0 = extractvalue { i64, i1 } %0, 0
+  %_7.1 = extractvalue { i64, i1 } %0, 1
+  br i1 %_7.1, label %panic, label %bb1
+
+bb1:                                              ; preds = %start
+  %1 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %_7.0, i64 %memsz)
+  %_8.0 = extractvalue { i64, i1 } %1, 0
+  %_8.1 = extractvalue { i64, i1 } %1, 1
+  br i1 %_8.1, label %panic2, label %bb2
+
+panic:                                            ; preds = %start
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_add_overflow17h3253708af8a8c611E(ptr align 8 @alloc_4f9c4013f3ce07e74df828db080ca103) #16
+  unreachable
+
+bb2:                                              ; preds = %bb1
+  %2 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %start1, i64 %memsz)
+  %_10.0 = extractvalue { i64, i1 } %2, 0
+  %_10.1 = extractvalue { i64, i1 } %2, 1
+  br i1 %_10.1, label %panic3, label %bb3
+
+panic2:                                           ; preds = %bb1
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_mul_overflow17h80bac1314a91ed35E(ptr align 8 @alloc_4f9c4013f3ce07e74df828db080ca103) #16
+  unreachable
+
+bb3:                                              ; preds = %bb2
+  %3 = getelementptr inbounds i8, ptr %self, i64 24
+  %_14 = load i64, ptr %3, align 8
+  %_15.0 = sub i64 %_14, %start1
+  %_15.1 = icmp ult i64 %_14, %start1
+  br i1 %_15.1, label %panic4, label %bb4
+
+panic3:                                           ; preds = %bb2
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_mul_overflow17h80bac1314a91ed35E(ptr align 8 @alloc_96905ba5ea007b95c0d3337af17b9829) #16
+  unreachable
+
+bb4:                                              ; preds = %bb3
+  %_16.0 = sub i64 %_15.0, %count
+  %_16.1 = icmp ult i64 %_15.0, %count
+  br i1 %_16.1, label %panic5, label %bb5
+
+panic4:                                           ; preds = %bb3
+; call core::panicking::panic_const::panic_const_sub_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_sub_overflow17h4b52efde242bf2e9E(ptr align 8 @alloc_70677258a21939ac134a5a1c8915b783) #16
+  unreachable
+
+bb5:                                              ; preds = %bb4
+  %4 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %_16.0, i64 %memsz)
+  %_17.0 = extractvalue { i64, i1 } %4, 0
+  %_17.1 = extractvalue { i64, i1 } %4, 1
+  br i1 %_17.1, label %panic6, label %bb6
+
+panic5:                                           ; preds = %bb4
+; call core::panicking::panic_const::panic_const_sub_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_sub_overflow17h4b52efde242bf2e9E(ptr align 8 @alloc_3d594e81a1363d6a6bd4716680c97d7e) #16
+  unreachable
+
+bb6:                                              ; preds = %bb5
+; call <alloc::vec::Vec<T,A> as core::ops::deref::DerefMut>::deref_mut
+  %5 = call { ptr, i64 } @"_ZN75_$LT$alloc..vec..Vec$LT$T$C$A$GT$$u20$as$u20$core..ops..deref..DerefMut$GT$9deref_mut17h242f0ab855559780E"(ptr align 8 %self)
+  %_19.0 = extractvalue { ptr, i64 } %5, 0
+  %_19.1 = extractvalue { ptr, i64 } %5, 1
+  %6 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %_8.0, i64 %_17.0)
+  %_23.0 = extractvalue { i64, i1 } %6, 0
+  %_23.1 = extractvalue { i64, i1 } %6, 1
+  br i1 %_23.1, label %panic7, label %bb8
+
+panic6:                                           ; preds = %bb5
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_mul_overflow17h80bac1314a91ed35E(ptr align 8 @alloc_3d594e81a1363d6a6bd4716680c97d7e) #16
+  unreachable
+
+bb8:                                              ; preds = %bb6
+; call core::slice::<impl [T]>::copy_within
+  call void @"_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$11copy_within17h7f975dfb6386111dE"(ptr align 1 %_19.0, i64 %_19.1, i64 %_8.0, i64 %_23.0, i64 %_10.0, ptr align 8 @alloc_7be8bde8e8708be578012ca37fe26d6b)
+  ret void
+
+panic7:                                           ; preds = %bb6
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_add_overflow17h3253708af8a8c611E(ptr align 8 @alloc_2ea7acb71b32918bb458705e164f64f0) #16
+  unreachable
+}
+
+; vec::RawVec::swap_splice
+; Function Attrs: nonlazybind uwtable
+define void @_ZN3vec6RawVec11swap_splice17hb25bc5da55afe0e2E(ptr align 8 %self, i64 %memsz, i64 %start1, i64 %count) unnamed_addr #3 {
+start:
+  %0 = getelementptr inbounds i8, ptr %self, i64 24
+  %_7 = load i64, ptr %0, align 8
+  %_8.0 = sub i64 %_7, %count
+  %_8.1 = icmp ult i64 %_7, %count
+  br i1 %_8.1, label %panic, label %bb1
+
+bb1:                                              ; preds = %start
+  %1 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %_8.0, i64 %memsz)
+  %_9.0 = extractvalue { i64, i1 } %1, 0
+  %_9.1 = extractvalue { i64, i1 } %1, 1
+  br i1 %_9.1, label %panic2, label %bb2
+
+panic:                                            ; preds = %start
+; call core::panicking::panic_const::panic_const_sub_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_sub_overflow17h4b52efde242bf2e9E(ptr align 8 @alloc_9369aa85704a28572c5b936847f3197e) #16
+  unreachable
+
+bb2:                                              ; preds = %bb1
+  %2 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %start1, i64 %memsz)
+  %_11.0 = extractvalue { i64, i1 } %2, 0
+  %_11.1 = extractvalue { i64, i1 } %2, 1
+  br i1 %_11.1, label %panic3, label %bb3
+
+panic2:                                           ; preds = %bb1
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_mul_overflow17h80bac1314a91ed35E(ptr align 8 @alloc_9369aa85704a28572c5b936847f3197e) #16
+  unreachable
+
+bb3:                                              ; preds = %bb2
+; call <alloc::vec::Vec<T,A> as core::ops::deref::DerefMut>::deref_mut
+  %3 = call { ptr, i64 } @"_ZN75_$LT$alloc..vec..Vec$LT$T$C$A$GT$$u20$as$u20$core..ops..deref..DerefMut$GT$9deref_mut17h242f0ab855559780E"(ptr align 8 %self)
+  %_13.0 = extractvalue { ptr, i64 } %3, 0
+  %_13.1 = extractvalue { ptr, i64 } %3, 1
+  %4 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %count, i64 %memsz)
+  %_18.0 = extractvalue { i64, i1 } %4, 0
+  %_18.1 = extractvalue { i64, i1 } %4, 1
+  br i1 %_18.1, label %panic4, label %bb5
+
+panic3:                                           ; preds = %bb2
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_mul_overflow17h80bac1314a91ed35E(ptr align 8 @alloc_c6d9a57eb8d0938bcca9809dcb429aa8) #16
+  unreachable
+
+bb5:                                              ; preds = %bb3
+  %5 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %_9.0, i64 %_18.0)
+  %_19.0 = extractvalue { i64, i1 } %5, 0
+  %_19.1 = extractvalue { i64, i1 } %5, 1
+  br i1 %_19.1, label %panic5, label %bb6
+
+panic4:                                           ; preds = %bb3
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_mul_overflow17h80bac1314a91ed35E(ptr align 8 @alloc_a2b3454adb2a7bf29b4472c98c78af1b) #16
+  unreachable
+
+bb6:                                              ; preds = %bb5
+; call core::slice::<impl [T]>::copy_within
+  call void @"_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$11copy_within17h7f975dfb6386111dE"(ptr align 1 %_13.0, i64 %_13.1, i64 %_9.0, i64 %_19.0, i64 %_11.0, ptr align 8 @alloc_c4ac4437505554b8bf89bf7f1fc0b779)
+  ret void
+
+panic5:                                           ; preds = %bb5
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_add_overflow17h3253708af8a8c611E(ptr align 8 @alloc_deca47cbd3f13c6854948efe099d2191) #16
+  unreachable
+}
+
+; vec::RawVec::swap_elements
+; Function Attrs: nonlazybind uwtable
+define void @_ZN3vec6RawVec13swap_elements17hec3da96e640b1041E(ptr align 8 %self, i64 %memsz, i64 %idx1, i64 %idx2) unnamed_addr #3 {
+start:
+  %_27 = alloca [32 x i8], align 8
+  %_16 = alloca [32 x i8], align 8
+  %_12 = alloca [32 x i8], align 8
+  %_5 = icmp eq i64 %idx1, %idx2
+  br i1 %_5, label %bb17, label %bb1
+
+bb1:                                              ; preds = %start
+  %0 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %idx1, i64 %memsz)
+  %_7.0 = extractvalue { i64, i1 } %0, 0
+  %_7.1 = extractvalue { i64, i1 } %0, 1
+  br i1 %_7.1, label %panic, label %bb2
+
+bb17:                                             ; preds = %bb16, %start
+  ret void
+
+bb2:                                              ; preds = %bb1
+  %1 = call { i64, i1 } @llvm.umul.with.overflow.i64(i64 %idx2, i64 %memsz)
+  %_9.0 = extractvalue { i64, i1 } %1, 0
+  %_9.1 = extractvalue { i64, i1 } %1, 1
+  br i1 %_9.1, label %panic1, label %bb3
+
+panic:                                            ; preds = %bb1
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_mul_overflow17h80bac1314a91ed35E(ptr align 8 @alloc_179d133c0ee58b7f135c2827fdfdb37d) #16
+  unreachable
+
+bb3:                                              ; preds = %bb2
+  %_13 = icmp ult i64 %_7.0, %_9.0
+  br i1 %_13, label %bb4, label %bb10
+
+panic1:                                           ; preds = %bb2
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_mul_overflow17h80bac1314a91ed35E(ptr align 8 @alloc_a59ce246985cc3a75f04dbe8cc62b18b) #16
+  unreachable
+
+bb10:                                             ; preds = %bb3
+; call <alloc::vec::Vec<T,A> as core::ops::deref::DerefMut>::deref_mut
+  %2 = call { ptr, i64 } @"_ZN75_$LT$alloc..vec..Vec$LT$T$C$A$GT$$u20$as$u20$core..ops..deref..DerefMut$GT$9deref_mut17h242f0ab855559780E"(ptr align 8 %self)
+  %_28.0 = extractvalue { ptr, i64 } %2, 0
+  %_28.1 = extractvalue { ptr, i64 } %2, 1
+; call core::slice::<impl [T]>::split_at_mut
+  call void @"_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$12split_at_mut17hd07b5995665a322aE"(ptr sret([32 x i8]) align 8 %_27, ptr align 1 %_28.0, i64 %_28.1, i64 %_7.0, ptr align 8 @alloc_19e7fed5e75ce30512ee7c9aa7382bd5)
+  %left.0 = load ptr, ptr %_27, align 8
+  %3 = getelementptr inbounds i8, ptr %_27, i64 8
+  %left.1 = load i64, ptr %3, align 8
+  %4 = getelementptr inbounds i8, ptr %_27, i64 16
+  %right.0 = load ptr, ptr %4, align 8
+  %5 = getelementptr inbounds i8, ptr %4, i64 8
+  %right.1 = load i64, ptr %5, align 8
+; call <core::ops::range::RangeTo<usize> as core::slice::index::SliceIndex<[T]>>::index_mut
+  %6 = call { ptr, i64 } @"_ZN108_$LT$core..ops..range..RangeTo$LT$usize$GT$$u20$as$u20$core..slice..index..SliceIndex$LT$$u5b$T$u5d$$GT$$GT$9index_mut17hde09201e7972c57fE"(i64 %memsz, ptr align 1 %right.0, i64 %right.1, ptr align 8 @alloc_6c1e05324ee4fe5ef4bbd1d370bd1877)
+  %_0.0.i12 = extractvalue { ptr, i64 } %6, 0
+  %_0.1.i13 = extractvalue { ptr, i64 } %6, 1
+  %_30.0 = extractvalue { ptr, i64 } %6, 0
+  %_30.1 = extractvalue { ptr, i64 } %6, 1
+  %7 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %_9.0, i64 %memsz)
+  %_35.0 = extractvalue { i64, i1 } %7, 0
+  %_35.1 = extractvalue { i64, i1 } %7, 1
+  br i1 %_35.1, label %panic2, label %bb14
+
+bb4:                                              ; preds = %bb3
+; call <alloc::vec::Vec<T,A> as core::ops::deref::DerefMut>::deref_mut
+  %8 = call { ptr, i64 } @"_ZN75_$LT$alloc..vec..Vec$LT$T$C$A$GT$$u20$as$u20$core..ops..deref..DerefMut$GT$9deref_mut17h242f0ab855559780E"(ptr align 8 %self)
+  %_17.0 = extractvalue { ptr, i64 } %8, 0
+  %_17.1 = extractvalue { ptr, i64 } %8, 1
+; call core::slice::<impl [T]>::split_at_mut
+  call void @"_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$12split_at_mut17hd07b5995665a322aE"(ptr sret([32 x i8]) align 8 %_16, ptr align 1 %_17.0, i64 %_17.1, i64 %_9.0, ptr align 8 @alloc_96aaf5ba9a27534a6929858745f659a5)
+  %left.03 = load ptr, ptr %_16, align 8
+  %9 = getelementptr inbounds i8, ptr %_16, i64 8
+  %left.14 = load i64, ptr %9, align 8
+  %10 = getelementptr inbounds i8, ptr %_16, i64 16
+  %right.05 = load ptr, ptr %10, align 8
+  %11 = getelementptr inbounds i8, ptr %10, i64 8
+  %right.16 = load i64, ptr %11, align 8
+  %12 = call { i64, i1 } @llvm.uadd.with.overflow.i64(i64 %_7.0, i64 %memsz)
+  %_22.0 = extractvalue { i64, i1 } %12, 0
+  %_22.1 = extractvalue { i64, i1 } %12, 1
+  br i1 %_22.1, label %panic7, label %bb7
+
+bb14:                                             ; preds = %bb10
+; call <core::ops::range::Range<usize> as core::slice::index::SliceIndex<[T]>>::index_mut
+  %13 = call { ptr, i64 } @"_ZN106_$LT$core..ops..range..Range$LT$usize$GT$$u20$as$u20$core..slice..index..SliceIndex$LT$$u5b$T$u5d$$GT$$GT$9index_mut17h56d09af24db3f151E"(i64 %_9.0, i64 %_35.0, ptr align 1 %left.0, i64 %left.1, ptr align 8 @alloc_922b4aca0ef064364eb888ea581266b9)
+  %_0.0.i8 = extractvalue { ptr, i64 } %13, 0
+  %_0.1.i9 = extractvalue { ptr, i64 } %13, 1
+  %_32.0 = extractvalue { ptr, i64 } %13, 0
+  %_32.1 = extractvalue { ptr, i64 } %13, 1
+  store ptr %_30.0, ptr %_12, align 8
+  %14 = getelementptr inbounds i8, ptr %_12, i64 8
+  store i64 %_30.1, ptr %14, align 8
+  %15 = getelementptr inbounds i8, ptr %_12, i64 16
+  store ptr %_32.0, ptr %15, align 8
+  %16 = getelementptr inbounds i8, ptr %15, i64 8
+  store i64 %_32.1, ptr %16, align 8
+  br label %bb16
+
+panic2:                                           ; preds = %bb10
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_add_overflow17h3253708af8a8c611E(ptr align 8 @alloc_5830960b4db6c988bdabc8ebe648910c) #16
+  unreachable
+
+bb16:                                             ; preds = %bb7, %bb14
+  %lo.0 = load ptr, ptr %_12, align 8
+  %17 = getelementptr inbounds i8, ptr %_12, i64 8
+  %lo.1 = load i64, ptr %17, align 8
+  %18 = getelementptr inbounds i8, ptr %_12, i64 16
+  %hi.0 = load ptr, ptr %18, align 8
+  %19 = getelementptr inbounds i8, ptr %18, i64 8
+  %hi.1 = load i64, ptr %19, align 8
+; call core::slice::<impl [T]>::swap_with_slice
+  call void @"_ZN4core5slice29_$LT$impl$u20$$u5b$T$u5d$$GT$15swap_with_slice17h0103e88d6eb8d228E"(ptr align 1 %lo.0, i64 %lo.1, ptr align 1 %hi.0, i64 %hi.1, ptr align 8 @alloc_6880694d80016c83f67e68b81ceb4690)
+  br label %bb17
+
+bb7:                                              ; preds = %bb4
+; call <core::ops::range::Range<usize> as core::slice::index::SliceIndex<[T]>>::index_mut
+  %20 = call { ptr, i64 } @"_ZN106_$LT$core..ops..range..Range$LT$usize$GT$$u20$as$u20$core..slice..index..SliceIndex$LT$$u5b$T$u5d$$GT$$GT$9index_mut17h56d09af24db3f151E"(i64 %_7.0, i64 %_22.0, ptr align 1 %left.03, i64 %left.14, ptr align 8 @alloc_ac41f8096d09932a5dec227074c53ff8)
+  %_0.0.i = extractvalue { ptr, i64 } %20, 0
+  %_0.1.i = extractvalue { ptr, i64 } %20, 1
+  %_19.0 = extractvalue { ptr, i64 } %20, 0
+  %_19.1 = extractvalue { ptr, i64 } %20, 1
+; call <core::ops::range::RangeTo<usize> as core::slice::index::SliceIndex<[T]>>::index_mut
+  %21 = call { ptr, i64 } @"_ZN108_$LT$core..ops..range..RangeTo$LT$usize$GT$$u20$as$u20$core..slice..index..SliceIndex$LT$$u5b$T$u5d$$GT$$GT$9index_mut17hde09201e7972c57fE"(i64 %memsz, ptr align 1 %right.05, i64 %right.16, ptr align 8 @alloc_1cfb1b388cf58eae86712e64bbc28d42)
+  %_0.0.i10 = extractvalue { ptr, i64 } %21, 0
+  %_0.1.i11 = extractvalue { ptr, i64 } %21, 1
+  %_23.0 = extractvalue { ptr, i64 } %21, 0
+  %_23.1 = extractvalue { ptr, i64 } %21, 1
+  store ptr %_19.0, ptr %_12, align 8
+  %22 = getelementptr inbounds i8, ptr %_12, i64 8
+  store i64 %_19.1, ptr %22, align 8
+  %23 = getelementptr inbounds i8, ptr %_12, i64 16
+  store ptr %_23.0, ptr %23, align 8
+  %24 = getelementptr inbounds i8, ptr %23, i64 8
+  store i64 %_23.1, ptr %24, align 8
+  br label %bb16
+
+panic7:                                           ; preds = %bb4
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_ZN4core9panicking11panic_const24panic_const_add_overflow17h3253708af8a8c611E(ptr align 8 @alloc_568ba8636d3ed3cbb687b50001cf3a8f) #16
+  unreachable
+}
+
+; core::slice::index::slice_end_index_len_fail
+; Function Attrs: cold noinline noreturn nonlazybind uwtable
+declare void @_ZN4core5slice5index24slice_end_index_len_fail17hb04774ae50b54dc9E(i64, i64, ptr align 8) unnamed_addr #4
+
+; core::slice::index::slice_index_order_fail
+; Function Attrs: cold noinline noreturn nonlazybind uwtable
+declare void @_ZN4core5slice5index22slice_index_order_fail17heab0cef01ebb2d7fE(i64, i64, ptr align 8) unnamed_addr #4
+
+; Function Attrs: nounwind nonlazybind uwtable
+declare i32 @rust_eh_personality(i32, i32, i64, ptr, ptr) unnamed_addr #5
+
+; Function Attrs: nocallback nofree nosync nounwind speculatable willreturn memory(none)
+declare { i64, i1 } @llvm.uadd.with.overflow.i64(i64, i64) #6
+
+; core::panicking::panic_nounwind_fmt
+; Function Attrs: cold noinline noreturn nounwind nonlazybind uwtable
+declare void @_ZN4core9panicking18panic_nounwind_fmt17h6c46f1098922b4b6E(ptr align 8, i1 zeroext, ptr align 8) unnamed_addr #7
+
+; Function Attrs: nocallback nofree nosync nounwind speculatable willreturn memory(none)
+declare { i64, i1 } @llvm.umul.with.overflow.i64(i64, i64) #6
+
+; Function Attrs: nocallback nofree nosync nounwind speculatable willreturn memory(none)
+declare i64 @llvm.ctlz.i64(i64, i1 immarg) #6
+
+; core::panicking::panic_const::panic_const_add_overflow
+; Function Attrs: cold noinline noreturn nonlazybind uwtable
+declare void @_ZN4core9panicking11panic_const24panic_const_add_overflow17h3253708af8a8c611E(ptr align 8) unnamed_addr #4
+
+; Function Attrs: nocallback nofree nounwind willreturn memory(argmem: readwrite)
+declare void @llvm.memcpy.p0.p0.i64(ptr noalias nocapture writeonly, ptr noalias nocapture readonly, i64, i1 immarg) #8
+
+; Function Attrs: nocallback nofree nosync nounwind speculatable willreturn memory(none)
+declare i64 @llvm.ctpop.i64(i64) #6
+
+; core::panicking::panic_cannot_unwind
+; Function Attrs: cold minsize noinline noreturn nounwind nonlazybind optsize uwtable
+declare void @_ZN4core9panicking19panic_cannot_unwind17h864cccdfd8b0af98E() unnamed_addr #9
+
+; core::panicking::panic_fmt
+; Function Attrs: cold noinline noreturn nonlazybind uwtable
+declare void @_ZN4core9panicking9panic_fmt17h62f63d096dd276afE(ptr align 8, ptr align 8) unnamed_addr #4
+
+; <alloc::vec::Vec<T,A> as core::ops::drop::Drop>::drop
+; Function Attrs: nonlazybind uwtable
+declare void @"_ZN70_$LT$alloc..vec..Vec$LT$T$C$A$GT$$u20$as$u20$core..ops..drop..Drop$GT$4drop17hf91aa7a484ae3ad4E"(ptr align 8) unnamed_addr #3
+
+; core::panicking::panic_in_cleanup
+; Function Attrs: cold minsize noinline noreturn nounwind nonlazybind optsize uwtable
+declare void @_ZN4core9panicking16panic_in_cleanup17hb509fce69c32fbdaE() unnamed_addr #9
+
+; <alloc::raw_vec::RawVec<T,A> as core::ops::drop::Drop>::drop
+; Function Attrs: nonlazybind uwtable
+declare void @"_ZN77_$LT$alloc..raw_vec..RawVec$LT$T$C$A$GT$$u20$as$u20$core..ops..drop..Drop$GT$4drop17h039492b5be9e949bE"(ptr align 8) unnamed_addr #3
+
+; core::alloc::layout::Layout::is_size_align_valid
+; Function Attrs: nonlazybind uwtable
+declare zeroext i1 @_ZN4core5alloc6layout6Layout19is_size_align_valid17h30b5efdcd11c8b50E(i64, i64) unnamed_addr #3
+
+; Function Attrs: nocallback nofree nounwind willreturn memory(argmem: readwrite)
+declare void @llvm.memmove.p0.p0.i64(ptr nocapture writeonly, ptr nocapture readonly, i64, i1 immarg) #8
+
+; core::panicking::panic
+; Function Attrs: cold noinline noreturn nonlazybind uwtable
+declare void @_ZN4core9panicking5panic17h89a5f2df32b0508aE(ptr align 1, i64, ptr align 8) unnamed_addr #4
+
+; core::panicking::panic_const::panic_const_div_by_zero
+; Function Attrs: cold noinline noreturn nonlazybind uwtable
+declare void @_ZN4core9panicking11panic_const23panic_const_div_by_zero17hfcc582669e57e229E(ptr align 8) unnamed_addr #4
+
+; core::slice::index::slice_start_index_overflow_fail
+; Function Attrs: cold noinline noreturn nonlazybind uwtable
+declare void @_ZN4core5slice5index31slice_start_index_overflow_fail17haf4d489fd9a37420E(ptr align 8) unnamed_addr #4
+
+; core::slice::index::slice_end_index_overflow_fail
+; Function Attrs: cold noinline noreturn nonlazybind uwtable
+declare void @_ZN4core5slice5index29slice_end_index_overflow_fail17h4617bb5754bb8991E(ptr align 8) unnamed_addr #4
+
+; core::panicking::panic_nounwind
+; Function Attrs: cold noinline noreturn nounwind nonlazybind uwtable
+declare void @_ZN4core9panicking14panic_nounwind17he501508d405a4565E(ptr align 1, i64) unnamed_addr #7
+
+; alloc::raw_vec::handle_error
+; Function Attrs: cold minsize noreturn nonlazybind optsize uwtable
+declare void @_ZN5alloc7raw_vec12handle_error17h18ec2e4e8895cf6eE(i64, i64, ptr align 8) unnamed_addr #10
+
+; __rustc::__rust_no_alloc_shim_is_unstable_v2
+; Function Attrs: nounwind nonlazybind uwtable
+declare void @_RNvCsj4CZ6flxxfE_7___rustc35___rust_no_alloc_shim_is_unstable_v2() unnamed_addr #5
+
+; __rustc::__rust_alloc
+; Function Attrs: nounwind nonlazybind allockind("alloc,uninitialized,aligned") allocsize(0) uwtable
+declare noalias ptr @_RNvCsj4CZ6flxxfE_7___rustc12___rust_alloc(i64, i64 allocalign) unnamed_addr #11
+
+; __rustc::__rust_alloc_zeroed
+; Function Attrs: nounwind nonlazybind allockind("alloc,zeroed,aligned") allocsize(0) uwtable
+declare noalias ptr @_RNvCsj4CZ6flxxfE_7___rustc19___rust_alloc_zeroed(i64, i64 allocalign) unnamed_addr #12
+
+; alloc::raw_vec::finish_grow
+; Function Attrs: cold nonlazybind uwtable
+declare void @_ZN5alloc7raw_vec11finish_grow17h52e279e4235f9f3fE(ptr sret([24 x i8]) align 8, i64, i64, ptr align 8, ptr align 1) unnamed_addr #13
+
+; __rustc::__rust_dealloc
+; Function Attrs: nounwind nonlazybind allockind("free") uwtable
+declare void @_RNvCsj4CZ6flxxfE_7___rustc14___rust_dealloc(ptr allocptr, i64, i64) unnamed_addr #14
+
+; __rustc::__rust_realloc
+; Function Attrs: nounwind nonlazybind allockind("realloc,aligned") allocsize(3) uwtable
+declare noalias ptr @_RNvCsj4CZ6flxxfE_7___rustc14___rust_realloc(ptr allocptr, i64, i64 allocalign, i64) unnamed_addr #15
+
+; core::panicking::panic_const::panic_const_mul_overflow
+; Function Attrs: cold noinline noreturn nonlazybind uwtable
+declare void @_ZN4core9panicking11panic_const24panic_const_mul_overflow17h80bac1314a91ed35E(ptr align 8) unnamed_addr #4
+
+; core::panicking::panic_const::panic_const_sub_overflow
+; Function Attrs: cold noinline noreturn nonlazybind uwtable
+declare void @_ZN4core9panicking11panic_const24panic_const_sub_overflow17h4b52efde242bf2e9E(ptr align 8) unnamed_addr #4
+
+attributes #0 = { inlinehint nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #1 = { cold nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #2 = { inlinehint nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #3 = { nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #4 = { cold noinline noreturn nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #5 = { nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #6 = { nocallback nofree nosync nounwind speculatable willreturn memory(none) }
+attributes #7 = { cold noinline noreturn nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #8 = { nocallback nofree nounwind willreturn memory(argmem: readwrite) }
+attributes #9 = { cold minsize noinline noreturn nounwind nonlazybind optsize uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #10 = { cold minsize noreturn nonlazybind optsize uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #11 = { nounwind nonlazybind allockind("alloc,uninitialized,aligned") allocsize(0) uwtable "alloc-family"="__rust_alloc" "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #12 = { nounwind nonlazybind allockind("alloc,zeroed,aligned") allocsize(0) uwtable "alloc-family"="__rust_alloc" "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #13 = { cold nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #14 = { nounwind nonlazybind allockind("free") uwtable "alloc-family"="__rust_alloc" "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #15 = { nounwind nonlazybind allockind("realloc,aligned") allocsize(3) uwtable "alloc-family"="__rust_alloc" "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #16 = { noreturn }
+attributes #17 = { noreturn nounwind }
+attributes #18 = { cold noreturn nounwind }
+attributes #19 = { nounwind }
+attributes #20 = { cold }
+
+!llvm.module.flags = !{!0, !1}
+!llvm.ident = !{!2}
+
+!0 = !{i32 8, !"PIC Level", i32 2}
+!1 = !{i32 2, !"RtLibUseGOT", i32 1}
+!2 = !{!"rustc version 1.90.0 (1159e78c4 2025-09-14)"}

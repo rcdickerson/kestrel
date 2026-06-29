@@ -19,3 +19,4 @@ pub mod to_dafny;
 pub mod to_eggroll;
 pub mod unaligned;
 pub mod visitor;
+pub mod llvm_parser;

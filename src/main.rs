@@ -157,6 +157,15 @@ fn setup_working_dir() -> Result<(), std::io::Error> {
 /// non-relational and relational programs, and 2) packaging programs
 /// into an Egg-compatible language definition.
 fn kestrel_workflow(args: Args) {
+
+  // --- LLVM-IR Pre-Processing ---
+  if args.input.ends_with(".ll") {
+    kestrel::crel::llvm_to_c::process_llvm_file(&args.input);
+    println!("Exiting early: LLVM pipeline is not yet fully connected.");
+    return;
+  }
+
+
   let mut raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
   if args.extractor == ExtractorArg::Unaligned {
     // Annotated invariants are relational.

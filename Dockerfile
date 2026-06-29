@@ -29,9 +29,9 @@ RUN apt-get install -yqq python3 pip
 
 # Daikon
 RUN apt-get install -y autotools-dev automake binutils-dev zlib1g-dev
-RUN wget http://plse.cs.washington.edu/daikon/download/daikon-5.8.18.tar.gz
-RUN tar zxf daikon-5.8.18.tar.gz
-ENV DAIKONDIR="/daikon-5.8.18"
+RUN wget http://plse.cs.washington.edu/daikon/download/daikon-5.8.24.tar.gz
+RUN tar zxf daikon-5.8.24.tar.gz
+ENV DAIKONDIR="/daikon-5.8.24"
 RUN source $DAIKONDIR/scripts/daikon.bashrc
 RUN make -C $DAIKONDIR kvasir
 ENV PATH="$PATH:$DAIKONDIR/scripts"

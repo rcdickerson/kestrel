@@ -40,6 +40,10 @@ struct Args {
   #[arg(long, value_enum, default_value_t = OutputMode::Dafny)]
   output_mode: OutputMode,
 
+  /// Input mode.
+  #[arg(long, value_enum, default_value_t = InputMode::C)]
+  input_mode: InputMode,
+
   /// Append verification summary data as a comma-separated value line
   /// in the given file. Useful for collecting results over batches of
   /// verification tasks.
@@ -90,6 +94,15 @@ struct Args {
   /// Disable runoff loop iteration counting in the cost function.
   #[arg(long)]
   af_runoffs: bool,
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+enum InputMode {
+  /// C source file.
+  C,
+
+  /// LLVM IR file.
+  LlvmIr,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
@@ -159,8 +172,8 @@ fn setup_working_dir() -> Result<(), std::io::Error> {
 fn kestrel_workflow(args: Args) {
 
   // --- LLVM-IR Pre-Processing ---
-  if args.input.ends_with(".ll") {
-    kestrel::crel::llvm_to_c::process_llvm_file(&args.input);
+  if args.input_mode == InputMode::LlvmIr {
+    kestrel::llvm::llvm_to_c::process_llvm_file(&args.input);
     println!("Exiting early: LLVM pipeline is not yet fully connected.");
     return;
   }

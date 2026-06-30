@@ -99,9 +99,19 @@ RUN cmake .. -GNinja \
 ENV PATH="/seahorn/build/run/bin:$PATH"
 # -----------------------------------------
 
+# Rellic
+WORKDIR /
+RUN apt-get update && apt-get install -yqq git python3 wget unzip pixz xz-utils cmake curl build-essential lsb-release zlib1g-dev libomp-dev doctest-dev
+RUN git clone --recurse-submodules https://github.com/lifting-bits/rellic.git
+WORKDIR /rellic
+RUN sed -i 's/OS_VERSION=ubuntu-24.04/OS_VERSION=ubuntu-22.04/g' scripts/build.sh
+RUN sed -i 's/-Werror//g' CMakeLists.txt
+RUN ./scripts/build.sh --llvm-version 16
+RUN dpkg -i rellic-build/*.deb
+
 # Fetch and build KestRel.
 WORKDIR /
-RUN apt install python3-tqdm # Needed for experiment scripts.
+RUN apt install -yqq python3-tqdm # Needed for experiment scripts.
 RUN git clone https://github.com/rcdickerson/kestrel.git --depth 1
 WORKDIR /kestrel
 RUN cargo build --release

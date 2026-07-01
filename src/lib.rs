@@ -19,3 +19,4 @@ pub mod shanty;
 pub mod spec;
 pub mod syrtos;
 pub mod workflow;
+pub mod llvm;

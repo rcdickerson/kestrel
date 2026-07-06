@@ -32,6 +32,10 @@ struct Args {
   #[arg(long)]
   llvm_input: Option<String>,
 
+  /// If set, the llvm_input file is treated as Rust source code and compiled to LLVM IR first.
+  #[arg(long)]
+  is_rust: bool,
+
   /// Specification format.
   #[arg(long, value_enum, default_value_t = SpecFormat::Kestrel)]
   spec_format: SpecFormat,
@@ -161,22 +165,18 @@ fn setup_working_dir() -> Result<(), std::io::Error> {
 /// non-relational and relational programs, and 2) packaging programs
 /// into an Egg-compatible language definition.
 fn kestrel_workflow(args: Args) {
-
   // --- LLVM-IR Pre-Processing ---
   if let Some(llvm_input) = args.llvm_input {
     let mut target_file = llvm_input.clone();
-    if target_file.ends_with(".rs") {
+    if args.is_rust {
       target_file = kestrel::llvm::rust_to_llvm::compile_rust_to_llvm(&target_file);
     }
-
     let llvm_crel = kestrel::llvm::llvm_to_c::process_llvm_file(&target_file);
     let raw_c_crel = kestrel::crel::parser::parse_c_file(&args.input);
-    
     // TODO: Convert the two CRels into one and verify
     println!("Exiting early: LLVM pipeline is not yet fully connected. Need to merge CRels.");
     return;
   }
-
 
   let mut raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
   if args.extractor == ExtractorArg::Unaligned {

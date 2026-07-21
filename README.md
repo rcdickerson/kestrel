@@ -69,6 +69,23 @@ Note you can also invoke the binary directly once it has been built by cargo:
 target/debug/kestrel --help
 ```
 
+## Multi-file Validation
+
+KestRel also supports running extraction on a pair of distinct programs, permitting both cross-language (C and Rust) and C-to-C relational verification. Because the input programs are maintained in separate files—and may utilize differing syntaxes—this pipeline requires isolating the KestRel specification block into a dedicated text file.
+
+You can execute this pipeline by providing the left C file with `--input`, the right file (C or Rust) with `--second-input`, and the specification file with `--spec-input`.
+
+For example, to run loop counting extraction and invariant inference comparing a C benchmark against a Rust implementation:
+
+``` bash
+cargo run -- --input llvm-examples/double-square/left.c \
+             --second-input llvm-examples/double-square/right.rs \
+             --spec-input llvm-examples/double-square/spec.txt \
+             count-loops --infer-invariants --is-rust-input
+```
+
+Note: The `--is-rust-input` flag is strictly required when the second input is a Rust file.
+
 ## Running Experiments
 
 The `experiments` directory contains various scripts for running KestRel

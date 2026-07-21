@@ -9,6 +9,7 @@ pub fn compile_rust_to_llvm(input_file: &String) -> String {
   let out_file = format!("{}_rust.ll", base_name);
   let output = Command::new("rustc")
       .arg("--crate-type=lib")
+      .arg("-g")
       .arg("-C")             
       .arg("panic=abort")
       // TODO: Re-enable overflow checks once the pipeline handles Rust's overflow

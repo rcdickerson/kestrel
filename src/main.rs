@@ -184,7 +184,6 @@ fn kestrel_workflow(args: Args) {
     raw_crel.clear_invariants();
   }
 
-  let spec = parse_kestrel_spec(&args.input).unwrap();
   let unaligned_crel = UnalignedCRel::from_kestrel_spec(&raw_crel, &spec);
   let unaligned_eggroll = unaligned_crel.unaligned_main.to_eggroll();
 

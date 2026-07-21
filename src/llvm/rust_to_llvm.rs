@@ -16,6 +16,8 @@ pub fn compile_rust_to_llvm(input_file: &String) -> String {
       // differences will be a key part of Rust vs C verification.
       .arg("-C")
       .arg("overflow-checks=false")
+      .arg("-C")
+      .arg("opt-level=0")
       .arg("-Awarnings")
       .arg("--emit=llvm-ir") 
       .arg(input_file)

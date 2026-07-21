@@ -1,0 +1,4 @@
+cargo run -- --input llvm-examples/double-square/left.c \
+             --second-input llvm-examples/double-square/right.rs \
+             --spec-input llvm-examples/double-square/spec.txt \
+             count-loops --infer-invariants --is-rust-input

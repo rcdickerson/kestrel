@@ -1,0 +1,6 @@
+/* @KESTREL
+ * pre: left.n == right.n;
+ * left: left;
+ * right: right;
+ * post: left.sum == right.sum;
+ */

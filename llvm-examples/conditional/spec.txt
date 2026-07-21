@@ -1,0 +1,6 @@
+/* @KESTREL
+ * pre: left.age == right.age;
+ * left: left;
+ * right: right;
+ * post: left.ret_val == right.ret_val;
+ */

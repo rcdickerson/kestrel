@@ -169,15 +169,29 @@ fn setup_working_dir() -> Result<(), std::io::Error> {
 /// non-relational and relational programs, and 2) packaging programs
 /// into an Egg-compatible language definition.
 fn kestrel_workflow(args: Args) {
-  let mut raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
+  // initialize raw crel from a single c file
+  // or from two c files or a c file and a rust file
+let mut raw_crel = if let Some(ref second_input) = args.second_input {
+        let first_input_raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
+        
+        let second_input_raw_crel = if args.is_rust_input { 
+            let llvm = kestrel::llvm::rust_to_llvm::compile_rust_to_llvm(second_input);
+            let rellic_c = kestrel::llvm::llvm_to_c::process_llvm_file(&llvm);
+            kestrel::crel::parser::parse_c_file(&rellic_c)
+        } else {
+            kestrel::crel::parser::parse_c_file(second_input)
+        };
+        
+        kestrel::crel::ast::CRel::Seq(vec![first_input_raw_crel, second_input_raw_crel])
+    } else {
+        kestrel::crel::parser::parse_c_file(&args.input)
+    };
 
-  // --- LLVM-IR Pre-Processing ---
-  if let Some(llvm_input) = args.llvm_input {
-    let mut target_file = llvm_input.clone();
-    if args.is_rust {target_file = kestrel::llvm::rust_to_llvm::compile_rust_to_llvm(&target_file);}
-    let llvm_crel = kestrel::llvm::llvm_to_c::process_llvm_file(&target_file);
-    raw_crel = kestrel::crel::ast::CRel::Seq(vec![llvm_crel, raw_crel]);
-  }
+  let spec = if let Some(spec_input) = args.spec_input {
+    parse_kestrel_spec(&spec_input).unwrap()
+  } else { 
+    parse_kestrel_spec(&args.input).unwrap()
+  };
 
   if args.extractor == ExtractorArg::Unaligned {
     // Annotated invariants are relational.

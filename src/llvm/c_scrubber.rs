@@ -2,27 +2,79 @@ use std::fs;
 use regex::Regex;
 
 /// Scrubs Rellic-lifted C source to remove constructs unsupported by the CRel parser.
+/// Returns the path to the newly created scrubbed C file.
 pub fn scrub_rellic_c(lifted_c_file: &String) -> String {
-  let mut code = fs::read_to_string(lifted_c_file).expect("Failed to read lifted C file");
+    let mut code = fs::read_to_string(lifted_c_file).expect("Failed to read lifted C file");
 
-  let forward_declarations   = Regex::new(r"(?m)^\s*(?:unsigned\s+)?\w+\s+\w+\([^)]*\)\s*;\s*\n?").unwrap();
-  let char_array_to_int      = Regex::new(r"char\s+([a-zA-Z0-9_]+)\[\d+\];").unwrap();
-  let pointer_cast_deref     = Regex::new(r"\*\s*\(\s*(?:unsigned\s+)?int\s*\*\s*\)\s*\(\s*&\s*([a-zA-Z0-9_]+)\s*\)").unwrap();
-  let unsigned_literal_suffix = Regex::new(r"\b([0-9]+)U\b").unwrap();
-  let int_cast               = Regex::new(r"\(\s*int\s*\)\s*").unwrap();
-  let unsigned_int_cast      = Regex::new(r"\(\s*unsigned\s+int\s*\)\s*").unwrap();
+    code = remove_declarations_and_casts(&code);
+    code = remove_rust_artifacts(&code);
+    code = remove_unused_parameters(&code);
+    code = remove_fat_pointer_artifacts(&code);
+    code = fix_formatting(&code);
 
-  code = forward_declarations.replace_all(&code, "").to_string();
-  code = char_array_to_int.replace_all(&code, "int $1;").to_string();
-  code = pointer_cast_deref.replace_all(&code, "$1").to_string();
-  code = unsigned_literal_suffix.replace_all(&code, "$1").to_string();
-  code = int_cast.replace_all(&code, "").to_string();
-  code = unsigned_int_cast.replace_all(&code, "").to_string();
-  code = code.replace("unsigned ", "");
+    let base_name = lifted_c_file.strip_suffix(".c").unwrap_or(lifted_c_file);
+    let scrubbed_c_file = format!("{}_scrubbed.c", base_name);
+    fs::write(&scrubbed_c_file, &code).expect("Failed to write scrubbed C file");
 
-  let base_name = lifted_c_file.strip_suffix(".c").unwrap_or(lifted_c_file);
-  let scrubbed_c_file = format!("{}_scrubbed.c", base_name);
-  fs::write(&scrubbed_c_file, &code).expect("Failed to write scrubbed C file");
+    scrubbed_c_file
+}
 
-  scrubbed_c_file
+/// Removes standard C forward declarations, type casts, and return statements.
+fn remove_declarations_and_casts(code: &str) -> String {
+    let mut c = code.to_string();
+    c = Regex::new(r"(?m)^\s*(?:unsigned\s+)?\w+\s+\w+\([^)]*\)\s*;\s*\n?").unwrap().replace_all(&c, "").into_owned();
+    c = Regex::new(r"char\s+([a-zA-Z0-9_]+)\[\d+\];").unwrap().replace_all(&c, "int $1;").into_owned();
+    c = Regex::new(r"\*\s*\(\s*(?:unsigned\s+)?int\s*\*\s*\)\s*\(\s*&\s*([a-zA-Z0-9_]+)\s*\)").unwrap().replace_all(&c, "$1").into_owned();
+    c = Regex::new(r"\b([0-9]+)U\b").unwrap().replace_all(&c, "$1").into_owned();
+    c = Regex::new(r"\(\s*int\s*\)\s*").unwrap().replace_all(&c, "").into_owned();
+    c = Regex::new(r"\(\s*unsigned\s+int\s*\)\s*").unwrap().replace_all(&c, "").into_owned();
+    c = c.replace("unsigned ", "");
+    Regex::new(r"(?m)^\s*return\s*;\s*\n?").unwrap().replace_all(&c, "").into_owned()
+}
+
+/// Removes Rellic-specific artifacts, struct definitions, and unsigned type suffixes.
+fn remove_rust_artifacts(code: &str) -> String {
+    let mut c = code.to_string();
+    c = Regex::new(r"(?ms)^struct\s+[a-zA-Z0-9_]+\s*\{.*?\}\s*;").unwrap().replace_all(&c, "").into_owned();
+    c = Regex::new(r"(?ms)^struct\s+[a-zA-Z0-9_]+\s+[a-zA-Z0-9_]+\s*=\s*\{.*?\}\s*;").unwrap().replace_all(&c, "").into_owned();
+    c = Regex::new(r"(?m)^char\s+[a-zA-Z0-9_]+\[\d+\]\s*=\s*.*?;").unwrap().replace_all(&c, "").into_owned();
+    c = Regex::new(r"\*\s*\(\s*[a-zA-Z0-9_\s\*]+\s*\*\s*\)\s*\(\s*&\s*([a-zA-Z0-9_]+)\s*\)").unwrap().replace_all(&c, "$1").into_owned();
+    c = Regex::new(r"\b([0-9]+)UL\b").unwrap().replace_all(&c, "$1").into_owned();
+    Regex::new(r"\(\s*(?:unsigned\s+)?(?:long|char|void\s*\*|float|double)\s*\)\s*").unwrap().replace_all(&c, "").into_owned()
+}
+
+/// Cleans up unused parameter declarations and assignments injected by Rellic.
+fn remove_unused_parameters(code: &str) -> String {
+    let mut c = code.to_string();
+    c = Regex::new(r"(?m)^\s*int\s+([a-zA-Z0-9_]+)_var0\s*;\s*\n?").unwrap().replace_all(&c, "").into_owned();
+    Regex::new(r"(?m)^\s*[a-zA-Z0-9_]+_var0\s*=\s*[^;]+\s*;\s*\n?").unwrap().replace_all(&c, "").into_owned()
+}
+
+/// Removes artifacts created by Rust fat pointer string representations.
+fn remove_fat_pointer_artifacts(code: &str) -> String {
+    let mut c = code.to_string();
+    c = Regex::new(r#"(?m)^\s*[a-zA-Z0-9_]+\s*=\s*"[^"]*"\s*;\s*\n?"#).unwrap().replace_all(&c, "").into_owned();
+    Regex::new(r"(?m)^\s*\*\s*\(\s*long\s*\*\s*\)\s*\(\s*&\s*\(\s*\(\s*char\s*\*\s*\)\s*\(\s*&[a-zA-Z0-9_]+\s*\)\s*\)\s*\[\d+\]\s*\)\s*=\s*\d+\s*;\s*\n?").unwrap().replace_all(&c, "").into_owned()
+}
+
+/// Dynamically adjusts indentation and removes extra blank lines based on brace depth.
+fn fix_formatting(code: &str) -> String {
+    let mut formatted = String::new();
+    let mut level: usize = 0; // Explicitly define level as usize
+
+    for line in code.lines() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() { continue; }
+
+        if trimmed.starts_with('}') {
+            level = level.saturating_sub(1);
+        }
+
+        formatted.push_str(&format!("{}{}\n", "    ".repeat(level), trimmed));
+
+        if trimmed.contains('{') {
+            level += 1;
+        }
+    }
+    formatted
 }

@@ -28,13 +28,17 @@ struct Args {
   #[arg(short, long)]
   input: String,
 
-  /// LLVM Input file
+  /// Second Input file
   #[arg(long)]
-  llvm_input: Option<String>,
+  second_input: Option<String>,
 
-  /// If set, the llvm_input file is treated as Rust source code and compiled to LLVM IR first.
+  /// Spec for Rust + C Input files
   #[arg(long)]
-  is_rust: bool,
+  spec_input: Option<String>,
+
+  /// include if second file is rust code
+  #[arg(long)]
+  is_rust_input: bool,
 
   /// Specification format.
   #[arg(long, value_enum, default_value_t = SpecFormat::Kestrel)]

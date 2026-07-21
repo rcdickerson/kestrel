@@ -11,6 +11,12 @@ pub fn compile_rust_to_llvm(input_file: &String) -> String {
       .arg("--crate-type=lib")
       .arg("-C")             
       .arg("panic=abort")
+      // TODO: Re-enable overflow checks once the pipeline handles Rust's overflow
+      // behavior. Disabling them for now to get clean LLVM IR, but overflow
+      // differences will be a key part of Rust vs C verification.
+      .arg("-C")
+      .arg("overflow-checks=false")
+      .arg("-Awarnings")
       .arg("--emit=llvm-ir") 
       .arg(input_file)
       .arg("-o")

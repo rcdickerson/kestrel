@@ -165,20 +165,16 @@ fn setup_working_dir() -> Result<(), std::io::Error> {
 /// non-relational and relational programs, and 2) packaging programs
 /// into an Egg-compatible language definition.
 fn kestrel_workflow(args: Args) {
+  let mut raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
+
   // --- LLVM-IR Pre-Processing ---
   if let Some(llvm_input) = args.llvm_input {
     let mut target_file = llvm_input.clone();
-    if args.is_rust {
-      target_file = kestrel::llvm::rust_to_llvm::compile_rust_to_llvm(&target_file);
-    }
+    if args.is_rust {target_file = kestrel::llvm::rust_to_llvm::compile_rust_to_llvm(&target_file);}
     let llvm_crel = kestrel::llvm::llvm_to_c::process_llvm_file(&target_file);
-    let raw_c_crel = kestrel::crel::parser::parse_c_file(&args.input);
-    // TODO: Convert the two CRels into one and verify
-    println!("Exiting early: LLVM pipeline is not yet fully connected. Need to merge CRels.");
-    return;
+    raw_crel = kestrel::crel::ast::CRel::Seq(vec![llvm_crel, raw_crel]);
   }
 
-  let mut raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
   if args.extractor == ExtractorArg::Unaligned {
     // Annotated invariants are relational.
     raw_crel.clear_invariants();

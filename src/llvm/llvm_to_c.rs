@@ -24,13 +24,12 @@ pub fn run_rellic(clean_ll_file: &String) -> String {
 }
 
 /// Processes an LLVM IR file.
-pub fn process_llvm_file(input_file: &String) -> CRel {
+pub fn process_llvm_file(input_file: &String) -> String {
     if !Path::new(input_file).exists() {
         panic!("File not found: {}", input_file);
     }
     let clean_ll_file = crate::llvm::llvm_scrubber::scrub_llvm_attributes(input_file);
     let lifted_c_file = run_rellic(&clean_ll_file);
     let scrubbed_c_file = crate::llvm::c_scrubber::scrub_rellic_c(&lifted_c_file);
-    let parsed_crel = crate::crel::parser::parse_c_file(&scrubbed_c_file);
-    parsed_crel
+    scrubbed_c_file
 }

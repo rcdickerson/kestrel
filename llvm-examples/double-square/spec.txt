@@ -1,0 +1,6 @@
+/* @KESTREL
+ * pre: left.x == right.x;
+ * left: left;
+ * right: right;
+ * post: left.y == right.y;
+ */

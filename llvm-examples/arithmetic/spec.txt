@@ -1,0 +1,6 @@
+/* @KESTREL
+ * pre: left.a == right.a && left.b == right.b && left.c == right.c;
+ * left: left;
+ * right: right;
+ * post: left.prod == right.prod;
+ */

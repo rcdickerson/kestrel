@@ -138,7 +138,7 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
     Expression::Unop{ expr, op } => {
       let expr = Box::new(expression_to_daf(expr));
       let op = match op {
-        UnaryOp::Address => "&".to_string(),
+        UnaryOp::Address => panic!("Dafny does not support address references."),
         UnaryOp::Minus => "-".to_string(),
         UnaryOp::Not   => "!".to_string(),
       };

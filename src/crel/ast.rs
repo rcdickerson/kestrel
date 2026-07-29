@@ -228,9 +228,9 @@ impl Expression {
   }
 }
 
-
 #[derive(Clone, Debug, PartialEq)]
 pub enum UnaryOp {
+  Address,
   Minus,
   Not,
 }

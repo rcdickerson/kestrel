@@ -276,6 +276,7 @@ fn trans_unary_operator(unop: &c::UnaryOperator) -> UnaryOp {
   match unop {
     c::UnaryOperator::Minus => UnaryOp::Minus,
     c::UnaryOperator::Negate => UnaryOp::Not,
+    c::UnaryOperator::Address => UnaryOp::Address,
     _ => panic!("Unsupported unary operator: {:?}", unop),
   }
 }

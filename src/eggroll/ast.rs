@@ -39,6 +39,7 @@ define_language! {
     "skip"          = Skip,
     "sketch-hole"   = SketchHole,
     "ternary"       = Ternary([Id; 3]),
+    "addr"          = Address(Id),
 
     // An abbreviated form of :
     //   while c1 && c2 { b1; b2 };

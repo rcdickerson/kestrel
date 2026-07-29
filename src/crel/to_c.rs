@@ -124,6 +124,7 @@ fn expression_to_c(expr: &Expression, output_asserts: bool, output_assumes: bool
     Expression::Unop{ expr, op } => {
       let expr = Box::new(expression_to_c(expr, output_asserts, output_assumes));
       let op = match op {
+        UnaryOp::Address => "&".to_string(),
         UnaryOp::Minus => "-".to_string(),
         UnaryOp::Not   => "!".to_string(),
       };

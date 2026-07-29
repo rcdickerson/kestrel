@@ -192,6 +192,7 @@ fn eval_unop(expr: &Expression, op: &UnaryOp, exec: &mut Execution) {
   eval_expression(expr, exec);
   if exec.ended() { return; }
   match op {
+    UnaryOp::Address => panic!("Address references unsupported."),
     UnaryOp::Minus => exec.negate_value(),
     UnaryOp::Not => {
       if exec.value_is_true() {

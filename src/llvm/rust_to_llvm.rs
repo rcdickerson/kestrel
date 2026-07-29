@@ -1,6 +1,5 @@
 use std::path::Path;
 use std::process::Command;
-use std::fs;
 
 pub fn compile_rust_to_llvm(input_file: &String) -> String {
   if !Path::new(input_file).exists() {
@@ -15,7 +14,7 @@ pub fn compile_rust_to_llvm(input_file: &String) -> String {
   let output = Command::new("rustc")
       .arg("--crate-type=lib")
       .arg("-g")
-      .arg("-C")             
+      .arg("-C")
       .arg("panic=abort")
       // TODO: Re-enable overflow checks once the pipeline handles Rust's overflow
       // behavior. Disabling them for now to get clean LLVM IR, but overflow
@@ -25,7 +24,7 @@ pub fn compile_rust_to_llvm(input_file: &String) -> String {
       .arg("-C")
       .arg("opt-level=0")
       .arg("-Awarnings")
-      .arg("--emit=llvm-ir") 
+      .arg("--emit=llvm-ir")
       .arg(input_file)
       .arg("-o")
       .arg(&out_file)

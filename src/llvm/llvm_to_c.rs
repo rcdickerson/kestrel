@@ -1,6 +1,4 @@
-use crate::crel::ast::CRel;
 use std::path::Path;
-use std::fs;
 use std::process::Command;
 
 /// Rellic-decomp on the provided LLVM IR file and returns the path to the lifted C file

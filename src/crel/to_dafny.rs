@@ -138,6 +138,7 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
     Expression::Unop{ expr, op } => {
       let expr = Box::new(expression_to_daf(expr));
       let op = match op {
+        UnaryOp::Address => panic!("Address references unsupported."),
         UnaryOp::Minus => "-".to_string(),
         UnaryOp::Not   => "!".to_string(),
       };
@@ -293,7 +294,7 @@ fn statement_to_daf(stmt: &Statement) -> Daf::Statement {
       None => { Daf::Statement::Return(None) },
       Some(ret) => { Daf::Statement::Return(Some(Box::new(expression_to_daf(ret)))) },
     },
-    Statement::While{id, invariants, condition, body, is_merged, ..} => {
+    Statement::While{id, invariants, condition, body, ..} => {
       let condition = Box::new(expression_to_daf(condition));
       let invariants = invariants.iter().map(|invar| expression_to_daf(invar)).collect();
       let body = body.as_ref().map(|stmt| Box::new(statement_to_daf(stmt)));

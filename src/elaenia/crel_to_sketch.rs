@@ -125,6 +125,7 @@ fn expression_to_sketch(expr: &Expression) -> Sk::Expression {
     Expression::Unop{ expr, op } => {
       let expr = Box::new(expression_to_sketch(expr));
       let op = match op {
+        UnaryOp::Address => "&".to_string(),
         UnaryOp::Minus => "-".to_string(),
         UnaryOp::Not   => "!".to_string(),
       };

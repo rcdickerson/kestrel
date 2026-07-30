@@ -60,6 +60,7 @@ fn expression_to_eggroll(expr: &Expression) -> String {
       format!("(choice-call {} (args {}))", callee_egg, args_egg)
     },
     Expression::Unop{expr, op} => match op {
+      UnaryOp::Address => format!("(addr {})", expression_to_eggroll(expr)),
       UnaryOp::Minus => format!("(neg {})", expression_to_eggroll(expr)),
       UnaryOp::Not => format!("(not {})", expression_to_eggroll(expr)),
     },

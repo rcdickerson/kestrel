@@ -119,6 +119,10 @@ fn expect_expression(sexp: &Sexp, ctx: &Context) -> Expression {
           _ => panic!("Cannot convert to integer from {:?}", sexps[1]),
         }
       },
+      Sexp::Atom(Atom::S(s)) if s == "addr" => {
+        let expr = Box::new(expect_expression(&sexps[1], ctx));
+        Expression::Unop{ expr, op: UnaryOp::Address }
+      },
       Sexp::Atom(Atom::S(s)) if s == "neg" => {
         let expr = Box::new(expect_expression(&sexps[1], ctx));
         Expression::Unop{ expr, op: UnaryOp::Minus }

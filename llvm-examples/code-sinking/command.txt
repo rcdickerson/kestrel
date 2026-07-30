@@ -1,0 +1,4 @@
+cargo run -- --input llvm-examples/code-sinking/left.c \
+             --second-input llvm-examples/code-sinking/right.rs \
+             --spec-input llvm-examples/code-sinking/spec.txt \
+             count-loops --infer-invariants --is-rust-input

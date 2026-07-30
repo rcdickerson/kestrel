@@ -1,0 +1,4 @@
+cargo run -- --input llvm-examples/strength-reduction/left.c \
+             --second-input llvm-examples/strength-reduction/right.rs \
+             --spec-input llvm-examples/strength-reduction/spec.txt \
+             count-loops --infer-invariants --is-rust-input

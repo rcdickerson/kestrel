@@ -1,0 +1,4 @@
+cargo run -- --input llvm-examples/data-alignment/left.c \
+             --second-input llvm-examples/data-alignment/right.rs \
+             --spec-input llvm-examples/data-alignment/spec.txt \
+             count-loops --infer-invariants --is-rust-input

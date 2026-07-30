@@ -1,0 +1,8 @@
+/* @KESTREL
+ * pre:   left.low == right.low
+       && left.low  > left.h  && left.h  > 0
+       && right.low > right.h && right.h > 0;
+ * left:  left;
+ * right: right;
+ * post:  left.y == right.y;
+ */

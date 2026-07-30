@@ -1,0 +1,4 @@
+cargo run -- --input llvm-examples/array-insert/left.c \
+             --second-input llvm-examples/array-insert/right.rs \
+             --spec-input llvm-examples/array-insert/spec.txt \
+             count-loops --infer-invariants --is-rust-input

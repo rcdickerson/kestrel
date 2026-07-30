@@ -1,0 +1,4 @@
+cargo run -- --input llvm-examples/unroll/left.c \
+             --second-input llvm-examples/unroll/right.rs \
+             --spec-input llvm-examples/unroll/spec.txt \
+             count-loops --infer-invariants --is-rust-input

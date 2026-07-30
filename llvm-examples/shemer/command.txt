@@ -1,0 +1,4 @@
+cargo run -- --input llvm-examples/shemer/left.c \
+             --second-input llvm-examples/shemer/right.rs \
+             --spec-input llvm-examples/shemer/spec.txt \
+             count-loops --infer-invariants --is-rust-input

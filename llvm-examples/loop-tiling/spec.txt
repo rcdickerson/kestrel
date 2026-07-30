@@ -1,0 +1,10 @@
+/* @KESTREL
+ * pre:   true;
+ * left:  left;
+ * right: right;
+ * post:  for i in (0..10) {
+            for j in (0..10) {
+              left.a[(i * 10) + j] == right.a[i][j]
+            }
+          };
+ */

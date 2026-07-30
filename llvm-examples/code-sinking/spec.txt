@@ -1,0 +1,6 @@
+/* @KESTREL
+ * pre: for _i in (0..11) { left.a[_i] == right.a[_i] };
+ * left: left;
+ * right: right;
+ * post: for _j in (0..11) { left.a[_j] == right.a[_j] };
+ */

@@ -48,9 +48,9 @@ attributes #0 = { nounwind nonlazybind uwtable "probe-stack"="inline-asm" "targe
 !3 = !{i32 2, !"Debug Info Version", i32 3}
 !4 = !{!"rustc version 1.97.0 (2d8144b78 2026-07-07)"}
 !5 = distinct !DICompileUnit(language: DW_LANG_Rust, file: !6, producer: "clang LLVM (rustc version 1.97.0 (2d8144b78 2026-07-07))", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, splitDebugInlining: false, nameTableKind: None)
-!6 = !DIFile(filename: "llvm-examples/verified/loop/right.rs/@/right.59b4154acb9ecd45-cgu.0", directory: "/kestrel")
+!6 = !DIFile(filename: "llvm-examples/loop/right.rs/@/right.59b4154acb9ecd45-cgu.0", directory: "/kestrel")
 !7 = distinct !DISubprogram(name: "right", scope: !9, file: !8, line: 1, type: !10, scopeLine: 1, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !5, templateParams: !19, retainedNodes: !13)
-!8 = !DIFile(filename: "llvm-examples/verified/loop/right.rs", directory: "/kestrel", checksumkind: CSK_MD5, checksum: "46a3e53296eec80054acf024c33394a4")
+!8 = !DIFile(filename: "llvm-examples/loop/right.rs", directory: "/kestrel", checksumkind: CSK_MD5, checksum: "46a3e53296eec80054acf024c33394a4")
 !9 = !DINamespace(name: "right", scope: null)
 !10 = !DISubroutineType(types: !11)
 !11 = !{null, !12}

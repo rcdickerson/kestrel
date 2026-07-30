@@ -1,0 +1,4 @@
+overflow saftey in rust cannot be disabled for division so this code caused the line
+ _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_rem_overflow(&alloc_6f6e251c8165b2b3ad25bd67f27acacb);
+which isnt scrubbed or parsed.
+

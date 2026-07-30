@@ -1,0 +1,4 @@
+cargo run -- --input llvm-examples/byte-pack/left.c \
+             --second-input llvm-examples/byte-pack/right.rs \
+             --spec-input llvm-examples/byte-pack/spec.txt \
+             count-loops --infer-invariants --is-rust-input

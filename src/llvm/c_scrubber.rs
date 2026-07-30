@@ -23,8 +23,8 @@ pub fn scrub_rellic_c(lifted_c_file: &String) -> String {
 fn remove_declarations_and_casts(code: &str) -> String {
     let mut c = code.to_string();
     c = Regex::new(r"(?m)^\s*(?:unsigned\s+)?\w+\s+\w+\([^)]*\)\s*;\s*\n?").unwrap().replace_all(&c, "").into_owned();
-    c = Regex::new(r"char\s+([a-zA-Z0-9_]+)\[\d+\];").unwrap().replace_all(&c, "int $1;").into_owned();
-    c = Regex::new(r"\*\s*\(\s*(?:unsigned\s+)?int\s*\*\s*\)\s*\(\s*&\s*([a-zA-Z0-9_]+)\s*\)").unwrap().replace_all(&c, "$1").into_owned();
+    // c = Regex::new(r"char\s+([a-zA-Z0-9_]+)\[\d+\];").unwrap().replace_all(&c, "int $1;").into_owned();
+    // c = Regex::new(r"\*\s*\(\s*(?:unsigned\s+)?int\s*\*\s*\)\s*\(\s*&\s*([a-zA-Z0-9_]+)\s*\)").unwrap().replace_all(&c, "$1").into_owned();
     c = Regex::new(r"\b([0-9]+)U\b").unwrap().replace_all(&c, "$1").into_owned();
     c = Regex::new(r"\(\s*int\s*\)\s*").unwrap().replace_all(&c, "").into_owned();
     c = Regex::new(r"\(\s*unsigned\s+int\s*\)\s*").unwrap().replace_all(&c, "").into_owned();
@@ -38,7 +38,7 @@ fn remove_rust_artifacts(code: &str) -> String {
     c = Regex::new(r"(?ms)^struct\s+[a-zA-Z0-9_]+\s*\{.*?\}\s*;").unwrap().replace_all(&c, "").into_owned();
     c = Regex::new(r"(?ms)^struct\s+[a-zA-Z0-9_]+\s+[a-zA-Z0-9_]+\s*=\s*\{.*?\}\s*;").unwrap().replace_all(&c, "").into_owned();
     c = Regex::new(r"(?m)^char\s+[a-zA-Z0-9_]+\[\d+\]\s*=\s*.*?;").unwrap().replace_all(&c, "").into_owned();
-    c = Regex::new(r"\*\s*\(\s*[a-zA-Z0-9_\s\*]+\s*\*\s*\)\s*\(\s*&\s*([a-zA-Z0-9_]+)\s*\)").unwrap().replace_all(&c, "$1").into_owned();
+    // c = Regex::new(r"\*\s*\(\s*[a-zA-Z0-9_\s\*]+\s*\*\s*\)\s*\(\s*&\s*([a-zA-Z0-9_]+)\s*\)").unwrap().replace_all(&c, "$1").into_owned();
     c = Regex::new(r"\b([0-9]+)UL\b").unwrap().replace_all(&c, "$1").into_owned();
     Regex::new(r"\(\s*(?:unsigned\s+)?(?:long|char|void\s*\*|float|double)\s*\)\s*").unwrap().replace_all(&c, "").into_owned()
 }

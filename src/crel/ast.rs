@@ -166,6 +166,8 @@ pub enum Type {
   Double,
   Float,
   Int,
+  Signed,
+  Unsigned,
   Void,
 }
 

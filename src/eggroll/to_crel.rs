@@ -625,11 +625,13 @@ fn expect_declaration_specifier(sexp: &Sexp) -> DeclarationSpecifier {
 fn expect_type(sexp: &Sexp) -> Type {
   match &sexp {
     Sexp::Atom(Atom::S(ty)) => match ty.as_str() {
-      "bool" => Type::Bool,
-      "double" => Type::Double,
-      "float" => Type::Float,
-      "int" => Type::Int,
-      "void" => Type::Void,
+      "bool"     => Type::Bool,
+      "double"   => Type::Double,
+      "float"    => Type::Float,
+      "int"      => Type::Int,
+      "signed"   => Type::Signed,
+      "unsigned" => Type::Unsigned,
+      "void"     => Type::Void,
       _ => panic!("Unknown type: {}", ty),
     },
     _ => panic!("Expected type, got: {}", sexp)

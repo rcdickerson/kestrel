@@ -189,11 +189,13 @@ fn trans_initializer(initializer: &Node<c::Initializer>) -> Initializer {
 
 fn trans_type_specifier(type_spec: c::TypeSpecifier) -> Type {
   match type_spec {
-    c::TypeSpecifier::Bool   => Type::Bool,
-    c::TypeSpecifier::Double => Type::Double,
-    c::TypeSpecifier::Float  => Type::Float,
-    c::TypeSpecifier::Int    => Type::Int,
-    c::TypeSpecifier::Void   => Type::Void,
+    c::TypeSpecifier::Bool     => Type::Bool,
+    c::TypeSpecifier::Double   => Type::Double,
+    c::TypeSpecifier::Float    => Type::Float,
+    c::TypeSpecifier::Int      => Type::Int,
+    c::TypeSpecifier::Signed   => Type::Signed,
+    c::TypeSpecifier::Unsigned => Type::Unsigned,
+    c::TypeSpecifier::Void     => Type::Void,
     _ => panic!("Unsupported type specifier: {:?}", type_spec),
   }
 }

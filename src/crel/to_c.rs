@@ -282,11 +282,13 @@ fn block_item_to_c(item: &BlockItem, output_asserts: bool, output_assumes: bool)
 
 fn type_to_c(ty: &Type) -> C::Type {
   match ty {
-    Type::Bool   => C::Type::Bool,
-    Type::Double => C::Type::Double,
-    Type::Float  => C::Type::Float,
-    Type::Int    => C::Type::Int,
-    Type::Void   => C::Type::Void,
+    Type::Bool     => C::Type::Bool,
+    Type::Double   => C::Type::Double,
+    Type::Float    => C::Type::Float,
+    Type::Int      => C::Type::Int,
+    Type::Signed   => C::Type::Signed,
+    Type::Unsigned => C::Type::Unsigned,
+    Type::Void     => C::Type::Void,
   }
 }
 

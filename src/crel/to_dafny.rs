@@ -343,11 +343,13 @@ fn block_item_to_daf(item: &BlockItem) -> Daf::Statement {
 
 fn type_to_daf(ty: &Type) -> Option<Daf::Type> {
   match ty {
-    Type::Bool   => Some(Daf::Type::Bool),
-    Type::Double => Some(Daf::Type::Real),
-    Type::Float  => Some(Daf::Type::Real),
-    Type::Int    => Some(Daf::Type::Int),
-    Type::Void   => None,
+    Type::Bool     => Some(Daf::Type::Bool),
+    Type::Double   => Some(Daf::Type::Real),
+    Type::Float    => Some(Daf::Type::Real),
+    Type::Int      => Some(Daf::Type::Int),
+    Type::Signed   => panic!("signed keyword unsupported in Dafny"),
+    Type::Unsigned => panic!("unsigned keyword unsupported in Dafny"),
+    Type::Void     => None,
   }
 }
 

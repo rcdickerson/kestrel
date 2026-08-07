@@ -393,11 +393,13 @@ fn block_item_to_sketch(item: &BlockItem) -> Sk::Statement {
 
 fn type_to_sketch(ty: &Type) -> Sk::Type {
   match ty {
-    Type::Bool   => Sk::Type::Bit,
-    Type::Double => Sk::Type::Double,
-    Type::Float  => Sk::Type::Float,
-    Type::Int    => Sk::Type::Int,
-    Type::Void   => Sk::Type::Void,
+    Type::Bool     => Sk::Type::Bit,
+    Type::Double   => Sk::Type::Double,
+    Type::Float    => Sk::Type::Float,
+    Type::Int      => Sk::Type::Int,
+    Type::Signed   => panic!("signed keyword unsupported in Sketch"),
+    Type::Unsigned => panic!("unsigned keyword unsupported in Sketch"),
+    Type::Void     => Sk::Type::Void,
   }
 }
 

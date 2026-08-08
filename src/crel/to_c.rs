@@ -124,9 +124,10 @@ fn expression_to_c(expr: &Expression, output_asserts: bool, output_assumes: bool
     Expression::Unop{ expr, op } => {
       let expr = Box::new(expression_to_c(expr, output_asserts, output_assumes));
       let op = match op {
-        UnaryOp::Address => "&".to_string(),
-        UnaryOp::Minus => "-".to_string(),
-        UnaryOp::Not   => "!".to_string(),
+        UnaryOp::Address  => "&".to_string(),
+        UnaryOp::Deref    => "*".to_string(),
+        UnaryOp::Minus    => "-".to_string(),
+        UnaryOp::Not      => "!".to_string(),
       };
       C::Expression::UnOp{expr, op}
     },
@@ -150,7 +151,24 @@ fn expression_to_c(expr: &Expression, output_asserts: bool, output_assumes: bool
         BinaryOp::Mul       => C::Expression::BinOp{lhs, rhs, op: "*".to_string()},
         BinaryOp::NotEquals => C::Expression::BinOp{lhs, rhs, op: "!=".to_string()},
         BinaryOp::Or        => C::Expression::BinOp{lhs, rhs, op: "||".to_string()},
+        BinaryOp::BitAnd    => C::Expression::BinOp{lhs, rhs, op: "&".to_string()},
+        BinaryOp::BitOr     => C::Expression::BinOp{lhs, rhs, op: "|".to_string()},
+        BinaryOp::BitXor    => C::Expression::BinOp{lhs, rhs, op: "^".to_string()},
+        BinaryOp::Shl       => C::Expression::BinOp{lhs, rhs, op: "<<".to_string()},
+        BinaryOp::Shr       => C::Expression::BinOp{lhs, rhs, op: ">>".to_string()},
       }
+    },
+    Expression::Cast{ ty, ptr_depth, expr } => {
+      let inner = Box::new(expression_to_c(expr, output_asserts, output_assumes));
+      let mut ty_str = match ty {
+        Type::Bool    => "bool",    Type::Char      => "char", 
+        Type::Double  => "double",  Type::Float     => "float",
+        Type::Int     => "int",     Type::Void      => "void",
+        Type::Long    => "long",    Type::Short     => "short",
+        Type::Signed  => "signed",  Type::Unsigned  => "unsigned",
+      }.to_string();
+      for _ in 0..*ptr_depth { ty_str.push('*'); }
+      C::Expression::UnOp{ expr: inner, op: format!("({})", ty_str) }
     },
     Expression::Ternary { condition, then, els } => {
       C::Expression::Statement(Box::new(C::Statement::If {
@@ -283,9 +301,12 @@ fn block_item_to_c(item: &BlockItem, output_asserts: bool, output_assumes: bool)
 fn type_to_c(ty: &Type) -> C::Type {
   match ty {
     Type::Bool     => C::Type::Bool,
+    Type::Char     => C::Type::Char,
     Type::Double   => C::Type::Double,
     Type::Float    => C::Type::Float,
     Type::Int      => C::Type::Int,
+    Type::Long     => C::Type::Long,
+    Type::Short    => C::Type::Short,
     Type::Signed   => C::Type::Signed,
     Type::Unsigned => C::Type::Unsigned,
     Type::Void     => C::Type::Void,

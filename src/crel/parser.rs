@@ -190,9 +190,12 @@ fn trans_initializer(initializer: &Node<c::Initializer>) -> Initializer {
 fn trans_type_specifier(type_spec: c::TypeSpecifier) -> Type {
   match type_spec {
     c::TypeSpecifier::Bool     => Type::Bool,
+    c::TypeSpecifier::Char     => Type::Char,
     c::TypeSpecifier::Double   => Type::Double,
     c::TypeSpecifier::Float    => Type::Float,
     c::TypeSpecifier::Int      => Type::Int,
+    c::TypeSpecifier::Long     => Type::Long,
+    c::TypeSpecifier::Short    => Type::Short,
     c::TypeSpecifier::Signed   => Type::Signed,
     c::TypeSpecifier::Unsigned => Type::Unsigned,
     c::TypeSpecifier::Void     => Type::Void,
@@ -270,36 +273,71 @@ fn trans_expression(expr: &Node<c::Expression>) -> ExprWithInvars {
     c::Expression::Constant(cnst) => (trans_constant(cnst), Vec::new()),
     c::Expression::Identifier(id) =>
       (Expression::Identifier{ name: id.node.name.clone() }, Vec::new()),
+    c::Expression::Cast(cast) => {
+      let (inner, invars) = trans_expression(&cast.node.expression);
+      let type_name = &cast.node.type_name.node;
+      let ty = type_name.specifiers.iter()
+        .find_map(|s| match &s.node {
+          c::SpecifierQualifier::TypeSpecifier(ts) =>
+            Some(trans_type_specifier(ts.node.clone())),
+          _ => None,
+        })
+        .expect("Cast with no type specifier");
+      let ptr_depth = type_name.declarator.as_ref()
+        .map(|d| d.node.derived.iter()
+          .filter(|dd| matches!(dd.node, c::DerivedDeclarator::Pointer(_)))
+          .count())
+        .unwrap_or(0);
+      (Expression::Cast{ ty, ptr_depth, expr: Box::new(inner) }, invars)
+    },
+    c::Expression::Conditional(cond) => {
+      let (condition, mut invars) = trans_expression(&cond.node.condition);
+      let (then, mut then_invars)  = trans_expression(&cond.node.then_expression);
+      let (els,  mut else_invars)  = trans_expression(&cond.node.else_expression);
+      invars.append(&mut then_invars);
+      invars.append(&mut else_invars);
+      (Expression::Ternary {
+        condition: Box::new(condition),
+        then: Box::new(then),
+        els: Box::new(els),
+      }, invars)
+    },
     _ => panic!("Unsupported expression: {:?}", expr),
   }
 }
 
 fn trans_unary_operator(unop: &c::UnaryOperator) -> UnaryOp {
   match unop {
-    c::UnaryOperator::Minus => UnaryOp::Minus,
-    c::UnaryOperator::Negate => UnaryOp::Not,
-    c::UnaryOperator::Address => UnaryOp::Address,
+    c::UnaryOperator::Minus       => UnaryOp::Minus,
+    c::UnaryOperator::Negate      => UnaryOp::Not,
+    c::UnaryOperator::Address     => UnaryOp::Address,
+    c::UnaryOperator::Indirection => UnaryOp::Deref,
     _ => panic!("Unsupported unary operator: {:?}", unop),
   }
 }
 
 fn trans_binary_operator(binop: &c::BinaryOperator) -> BinaryOp {
   match binop {
-    c::BinaryOperator::Assign => BinaryOp::Assign,
-    c::BinaryOperator::Equals => BinaryOp::Equals,
-    c::BinaryOperator::Index => BinaryOp::Index,
-    c::BinaryOperator::Greater => BinaryOp::Gt,
+    c::BinaryOperator::Assign         => BinaryOp::Assign,
+    c::BinaryOperator::Equals         => BinaryOp::Equals,
+    c::BinaryOperator::Index          => BinaryOp::Index,
+    c::BinaryOperator::Greater        => BinaryOp::Gt,
     c::BinaryOperator::GreaterOrEqual => BinaryOp::Gte,
-    c::BinaryOperator::Less => BinaryOp::Lt,
-    c::BinaryOperator::LessOrEqual => BinaryOp::Lte,
-    c::BinaryOperator::LogicalAnd => BinaryOp::And,
-    c::BinaryOperator::LogicalOr => BinaryOp::Or,
-    c::BinaryOperator::Plus => BinaryOp::Add,
-    c::BinaryOperator::Minus => BinaryOp::Sub,
-    c::BinaryOperator::Multiply => BinaryOp::Mul,
-    c::BinaryOperator::Divide => BinaryOp::Div,
-    c::BinaryOperator::Modulo => BinaryOp::Mod,
-    c::BinaryOperator::NotEquals => BinaryOp::NotEquals,
+    c::BinaryOperator::Less           => BinaryOp::Lt,
+    c::BinaryOperator::LessOrEqual    => BinaryOp::Lte,
+    c::BinaryOperator::LogicalAnd     => BinaryOp::And,
+    c::BinaryOperator::LogicalOr      => BinaryOp::Or,
+    c::BinaryOperator::Plus           => BinaryOp::Add,
+    c::BinaryOperator::Minus          => BinaryOp::Sub,
+    c::BinaryOperator::Multiply       => BinaryOp::Mul,
+    c::BinaryOperator::Divide         => BinaryOp::Div,
+    c::BinaryOperator::Modulo         => BinaryOp::Mod,
+    c::BinaryOperator::NotEquals      => BinaryOp::NotEquals,
+    c::BinaryOperator::BitwiseAnd     => BinaryOp::BitAnd,
+    c::BinaryOperator::BitwiseOr      => BinaryOp::BitOr,
+    c::BinaryOperator::BitwiseXor     => BinaryOp::BitXor,
+    c::BinaryOperator::ShiftLeft      => BinaryOp::Shl,
+    c::BinaryOperator::ShiftRight     => BinaryOp::Shr,
     _ => panic!("Unsupported binary operator: {:?}", binop),
   }
 }

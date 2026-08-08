@@ -138,9 +138,10 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
     Expression::Unop{ expr, op } => {
       let expr = Box::new(expression_to_daf(expr));
       let op = match op {
-        UnaryOp::Address => panic!("Dafny does not support address references."),
-        UnaryOp::Minus => "-".to_string(),
-        UnaryOp::Not   => "!".to_string(),
+        UnaryOp::Address  => panic!("Dafny does not support address references."),
+        UnaryOp::Deref    => panic!("Dafny does not support dereferences."),
+        UnaryOp::Minus    => "-".to_string(),
+        UnaryOp::Not      => "!".to_string(),
       };
       Daf::Expression::UnOp{expr, op}
     },
@@ -163,6 +164,26 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
         BinaryOp::Mul       => Daf::Expression::BinOp{lhs, rhs, op: "*".to_string()},
         BinaryOp::NotEquals => Daf::Expression::BinOp{lhs, rhs, op: "!=".to_string()},
         BinaryOp::Or        => Daf::Expression::BinOp{lhs, rhs, op: "||".to_string()},
+        BinaryOp::Shl       => match *rhs {
+          Daf::Expression::ConstInt(k) if k >= 0 && k < 31 =>
+            Daf::Expression::BinOp{ lhs, rhs: Box::new(Daf::Expression::ConstInt(1 << k)),
+                                    op: "*".to_string() },
+          _ => panic!("Dafny encoding of << requires a constant shift amount."),
+        },
+        BinaryOp::Shr       => match *rhs {
+          Daf::Expression::ConstInt(k) if k >= 0 && k < 31 =>
+            Daf::Expression::BinOp{ lhs, rhs: Box::new(Daf::Expression::ConstInt(1 << k)),
+                                    op: "/".to_string() },
+          _ => panic!("Dafny encoding of >> requires a constant shift amount."),
+        },
+        BinaryOp::BitAnd    => match *rhs {
+          Daf::Expression::ConstInt(m) if m > 0 && (m & (m + 1)) == 0 =>
+            Daf::Expression::BinOp{ lhs, rhs: Box::new(Daf::Expression::ConstInt(m + 1)),
+                                    op: "%".to_string() },
+          _ => panic!("Dafny encoding of & requires a constant 2^n-1 mask."),
+        },
+        BinaryOp::BitOr     => Daf::Expression::BinOp{lhs, rhs, op: "+".to_string()},
+        BinaryOp::BitXor    => panic!("Dafny encoding of ^ not yet implemented."),
         BinaryOp::ArrayEq   => {
           let index_var = "arr_eq_n".to_string();
           let lt_left_len = Daf::Expression::BinOp {
@@ -220,6 +241,7 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
         }
       }
     },
+    Expression::Cast{..} => panic!("Casts must be normalized before Dafny."),
     Expression::Forall { bindings, condition } => {
       Daf::Expression::Forall {
         bindings: bindings.iter().map(|(v, t)| (v.clone(), type_to_daf(t).unwrap())).collect(),
@@ -344,9 +366,12 @@ fn block_item_to_daf(item: &BlockItem) -> Daf::Statement {
 fn type_to_daf(ty: &Type) -> Option<Daf::Type> {
   match ty {
     Type::Bool     => Some(Daf::Type::Bool),
+    Type::Char     => panic!("Dafny does not support char."),
     Type::Double   => Some(Daf::Type::Real),
     Type::Float    => Some(Daf::Type::Real),
     Type::Int      => Some(Daf::Type::Int),
+    Type::Long     => panic!("long keyword unsupported in Dafny"),
+    Type::Short    => panic!("short keyword unsupported in Dafny"),
     Type::Signed   => panic!("signed keyword unsupported in Dafny"),
     Type::Unsigned => panic!("unsigned keyword unsupported in Dafny"),
     Type::Void     => None,

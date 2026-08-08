@@ -163,9 +163,12 @@ pub enum DeclarationSpecifier {
 #[derive(Clone, Debug, PartialEq)]
 pub enum Type {
   Bool,
+  Char,
   Double,
   Float,
   Int,
+  Long,
+  Short,
   Signed,
   Unsigned,
   Void,
@@ -208,6 +211,11 @@ pub enum Expression {
     rhs: Box<Expression>,
     op: BinaryOp,
   },
+  Cast {
+    ty: Type,
+    ptr_depth: usize,
+    expr: Box<Expression>,
+  },
   Forall {
     bindings: Vec<(String, Type)>,
     condition: Box<Expression>,
@@ -233,6 +241,7 @@ impl Expression {
 #[derive(Clone, Debug, PartialEq)]
 pub enum UnaryOp {
   Address,
+  Deref,
   Minus,
   Not,
 }
@@ -243,6 +252,9 @@ pub enum BinaryOp {
   And,
   ArrayEq,
   Assign,
+  BitAnd,
+  BitOr,
+  BitXor,
   Sub,
   Div,
   Equals,
@@ -255,6 +267,8 @@ pub enum BinaryOp {
   Mul,
   NotEquals,
   Or,
+  Shl,
+  Shr,
 }
 
 

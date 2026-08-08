@@ -24,21 +24,25 @@ const WORKING_DIR: &str = "./.kestrel-work";
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-  /// Input file.
+  /// Main Input file. Not needed when --left and --right are given.
   #[arg(short, long)]
-  input: String,
+  input: Option<String>,
 
-  /// Second Input file
+  /// Left Input file.
+  #[arg(short, long)]
+  left: Option<String>,
+
+  /// Right Input file
   #[arg(long)]
-  second_input: Option<String>,
+  right: Option<String>,
 
   /// Spec for Rust + C Input files
   #[arg(long)]
-  spec_input: Option<String>,
+  spec: Option<String>,
 
-  /// include if second file is rust code
+  /// include if right file is rust code
   #[arg(long)]
-  is_rust_input: bool,
+  is_rust: bool,
 
   /// Specification format.
   #[arg(long, value_enum, default_value_t = SpecFormat::Kestrel)]
@@ -171,26 +175,30 @@ fn setup_working_dir() -> Result<(), std::io::Error> {
 fn kestrel_workflow(args: Args) {
   // initialize raw crel from a single c file
   // or from two c files or a c file and a rust file
-let mut raw_crel = if let Some(ref second_input) = args.second_input {
-        let first_input_raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
+  let mut raw_crel = if let (Some(right), Some(left)) = (args.right.as_ref(), args.left.as_ref()) {
+        let left_raw_crel = kestrel::crel::parser::parse_c_file(left);
         
-        let second_input_raw_crel = if args.is_rust_input { 
-            let llvm = kestrel::llvm::rust_to_llvm::compile_rust_to_llvm(second_input);
+        let right_raw_crel = if args.is_rust { 
+            let llvm = kestrel::llvm::rust_to_llvm::compile_rust_to_llvm(right);
             let rellic_c = kestrel::llvm::llvm_to_c::process_llvm_file(&llvm);
             kestrel::crel::parser::parse_c_file(&rellic_c)
         } else {
-            kestrel::crel::parser::parse_c_file(second_input)
+            kestrel::crel::parser::parse_c_file(right)
         };
         
-        kestrel::crel::ast::CRel::Seq(vec![first_input_raw_crel, second_input_raw_crel])
+        kestrel::crel::ast::CRel::Seq(vec![left_raw_crel, right_raw_crel])
+    } else if let Some(ref input) = args.input {
+        kestrel::crel::parser::parse_c_file(&input)
     } else {
-        kestrel::crel::parser::parse_c_file(&args.input)
+      panic!("No input file provided.")
     };
 
-  let spec = if let Some(spec_input) = args.spec_input {
-    parse_kestrel_spec(&spec_input).unwrap()
-  } else { 
-    parse_kestrel_spec(&args.input).unwrap()
+  let spec = if let Some(spec) = args.spec {
+    parse_kestrel_spec(&spec).unwrap()
+  } else if let Some(ref input) = args.input {
+    parse_kestrel_spec(&input).unwrap()
+  } else {
+    panic!("No specification provided.")
   };
 
   if args.extractor == ExtractorArg::Unaligned {
@@ -201,7 +209,12 @@ let mut raw_crel = if let Some(ref second_input) = args.second_input {
   let unaligned_crel = UnalignedCRel::from_kestrel_spec(&raw_crel, &spec);
   let unaligned_eggroll = unaligned_crel.unaligned_main.to_eggroll();
 
-  let mut context = KestrelContext::new(args.input.clone(), spec);
+  let mut context = if let Some(left) = args.left.clone() {
+    KestrelContext::new(left, spec)
+  } else {
+    KestrelContext::new(args.input.clone().expect("No input file provided."), spec)
+  };
+
   context.set_working_dir(WORKING_DIR.to_string());
   context.accept_unaligned_crel(unaligned_crel);
   context.accept_unaligned_eggroll(unaligned_eggroll);
@@ -271,17 +284,23 @@ let mut raw_crel = if let Some(ref second_input) = args.second_input {
 }
 
 fn elaenia_workflow(args: Args) {
-  let mut raw_crel = kestrel::crel::parser::parse_c_file(&args.input);
+  let input = if let Some(input) = args.input {
+    input
+  } else {
+    panic!("No input file provided.")
+  };
+
+  let mut raw_crel = kestrel::crel::parser::parse_c_file(&input);
   if args.extractor == ExtractorArg::Unaligned {
     // Annotated invariants are relational.
     raw_crel.clear_invariants();
   }
 
-  let spec = parse_elaenia_spec(&args.input).unwrap();
+  let spec = parse_elaenia_spec(&input).unwrap();
   let unaligned_crel = UnalignedCRel::from_elaenia_spec(&raw_crel, &spec);
   let unaligned_eggroll = unaligned_crel.unaligned_main.to_eggroll();
 
-  let mut context = ElaeniaContext::new(args.input.clone(), spec);
+  let mut context = ElaeniaContext::new(input.clone(), spec);
   context.set_working_dir(WORKING_DIR.to_string());
   context.set_verbose(args.verbose);
   context.accept_unaligned_crel(unaligned_crel);

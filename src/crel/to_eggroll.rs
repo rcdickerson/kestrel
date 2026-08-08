@@ -60,9 +60,10 @@ fn expression_to_eggroll(expr: &Expression) -> String {
       format!("(choice-call {} (args {}))", callee_egg, args_egg)
     },
     Expression::Unop{expr, op} => match op {
-      UnaryOp::Address => format!("(addr {})", expression_to_eggroll(expr)),
-      UnaryOp::Minus => format!("(neg {})", expression_to_eggroll(expr)),
-      UnaryOp::Not => format!("(not {})", expression_to_eggroll(expr)),
+      UnaryOp::Address  => format!("(addr {})", expression_to_eggroll(expr)),
+      UnaryOp::Deref    => format!("(deref {})", expression_to_eggroll(expr)),
+      UnaryOp::Minus    => format!("(neg {})", expression_to_eggroll(expr)),
+      UnaryOp::Not      => format!("(not {})", expression_to_eggroll(expr)),
     },
     Expression::Binop{lhs, rhs, op} => {
       let lhs_egg = expression_to_eggroll(lhs);
@@ -84,9 +85,17 @@ fn expression_to_eggroll(expr: &Expression) -> String {
         BinaryOp::Mul       => "*",
         BinaryOp::NotEquals => "!=",
         BinaryOp::Or        => "||",
+        BinaryOp::BitAnd    => "bitand",
+        BinaryOp::BitOr     => "bitor",
+        BinaryOp::BitXor    => "bitxor",
+        BinaryOp::Shl       => "shl",
+        BinaryOp::Shr       => "shr",
       };
       format!("({} {} {})", op_egg, lhs_egg, rhs_egg)
     },
+    Expression::Cast{ ty, ptr_depth, expr } =>
+      format!("(cast {} {} {})", type_to_eggroll(ty), ptr_depth,
+              expression_to_eggroll(expr)),
     Expression::Forall{bindings, condition} => {
       let bindings = bindings.iter()
         .map(|(name, ty)| format!("(binding {} {})", name, type_to_eggroll(ty)))
@@ -259,9 +268,12 @@ fn initializer_to_eggroll(init: &Initializer) -> String {
 fn type_to_eggroll(ty: &Type) -> String {
   match ty {
     Type::Bool     => "bool".to_string(),
+    Type::Char     => "char".to_string(),
     Type::Double   => "double".to_string(),
     Type::Float    => "float".to_string(),
     Type::Int      => "int".to_string(),
+    Type::Long     => "long".to_string(),
+    Type::Short    => "short".to_string(),
     Type::Signed   => "signed".to_string(),
     Type::Unsigned => "unsigned".to_string(),
     Type::Void     => "void".to_string(),

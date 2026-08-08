@@ -123,6 +123,19 @@ fn expect_expression(sexp: &Sexp, ctx: &Context) -> Expression {
         let expr = Box::new(expect_expression(&sexps[1], ctx));
         Expression::Unop{ expr, op: UnaryOp::Address }
       },
+      Sexp::Atom(Atom::S(s)) if s == "deref" => {
+        let expr = Box::new(expect_expression(&sexps[1], ctx));
+        Expression::Unop{ expr, op: UnaryOp::Deref }
+      },
+      Sexp::Atom(Atom::S(s)) if s == "cast" => {
+        let ty = expect_type(&sexps[1]);
+        let ptr_depth = match &sexps[2] {
+          Sexp::Atom(Atom::I(i)) => *i as usize,
+          _ => panic!("Expected pointer depth, got: {:?}", sexps[2]),
+        };
+        let expr = Box::new(expect_expression(&sexps[3], ctx));
+        Expression::Cast{ ty, ptr_depth, expr }
+      },
       Sexp::Atom(Atom::S(s)) if s == "neg" => {
         let expr = Box::new(expect_expression(&sexps[1], ctx));
         Expression::Unop{ expr, op: UnaryOp::Minus }
@@ -215,6 +228,31 @@ fn expect_expression(sexp: &Sexp, ctx: &Context) -> Expression {
         let lhs = Box::new(expect_expression(&sexps[1], ctx));
         let rhs = Box::new(expect_expression(&sexps[2], ctx));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Mod }
+      },
+      Sexp::Atom(Atom::S(s)) if s == "bitand" => {
+        let lhs = Box::new(expect_expression(&sexps[1], ctx));
+        let rhs = Box::new(expect_expression(&sexps[2], ctx));
+        Expression::Binop{ lhs, rhs, op: BinaryOp::BitAnd }
+      },
+      Sexp::Atom(Atom::S(s)) if s == "bitor" => {
+        let lhs = Box::new(expect_expression(&sexps[1], ctx));
+        let rhs = Box::new(expect_expression(&sexps[2], ctx));
+        Expression::Binop{ lhs, rhs, op: BinaryOp::BitOr }
+      },
+      Sexp::Atom(Atom::S(s)) if s == "bitxor" => {
+        let lhs = Box::new(expect_expression(&sexps[1], ctx));
+        let rhs = Box::new(expect_expression(&sexps[2], ctx));
+        Expression::Binop{ lhs, rhs, op: BinaryOp::BitXor }
+      },
+      Sexp::Atom(Atom::S(s)) if s == "shl" => {
+        let lhs = Box::new(expect_expression(&sexps[1], ctx));
+        let rhs = Box::new(expect_expression(&sexps[2], ctx));
+        Expression::Binop{ lhs, rhs, op: BinaryOp::Shl }
+      },
+      Sexp::Atom(Atom::S(s)) if s == "shr" => {
+        let lhs = Box::new(expect_expression(&sexps[1], ctx));
+        let rhs = Box::new(expect_expression(&sexps[2], ctx));
+        Expression::Binop{ lhs, rhs, op: BinaryOp::Shr }
       },
       Sexp::Atom(Atom::S(s)) if s == "*" => {
         let lhs = Box::new(expect_expression(&sexps[1], ctx));
@@ -626,9 +664,12 @@ fn expect_type(sexp: &Sexp) -> Type {
   match &sexp {
     Sexp::Atom(Atom::S(ty)) => match ty.as_str() {
       "bool"     => Type::Bool,
+      "char"     => Type::Char,
       "double"   => Type::Double,
       "float"    => Type::Float,
       "int"      => Type::Int,
+      "long"     => Type::Long,
+      "short"    => Type::Short,
       "signed"   => Type::Signed,
       "unsigned" => Type::Unsigned,
       "void"     => Type::Void,

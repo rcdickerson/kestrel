@@ -125,9 +125,10 @@ fn expression_to_sketch(expr: &Expression) -> Sk::Expression {
     Expression::Unop{ expr, op } => {
       let expr = Box::new(expression_to_sketch(expr));
       let op = match op {
-        UnaryOp::Address => "&".to_string(),
-        UnaryOp::Minus => "-".to_string(),
-        UnaryOp::Not   => "!".to_string(),
+        UnaryOp::Address  => "&".to_string(),
+        UnaryOp::Deref    => "*".to_string(),
+        UnaryOp::Minus    => "-".to_string(),
+        UnaryOp::Not      => "!".to_string(),
       };
       Sk::Expression::UnOp{expr, op}
     },
@@ -151,9 +152,15 @@ fn expression_to_sketch(expr: &Expression) -> Sk::Expression {
         BinaryOp::Mul       => Sk::Expression::BinOp{lhs, rhs, op: "*".to_string()},
         BinaryOp::NotEquals => Sk::Expression::BinOp{lhs, rhs, op: "!=".to_string()},
         BinaryOp::Or        => Sk::Expression::BinOp{lhs, rhs, op: "||".to_string()},
+        BinaryOp::BitAnd    => Sk::Expression::BinOp{lhs, rhs, op: "&".to_string()},
+        BinaryOp::BitOr     => Sk::Expression::BinOp{lhs, rhs, op: "|".to_string()},
+        BinaryOp::BitXor    => Sk::Expression::BinOp{lhs, rhs, op: "^".to_string()},
+        BinaryOp::Shl       => Sk::Expression::BinOp{lhs, rhs, op: "<<".to_string()},
+        BinaryOp::Shr       => Sk::Expression::BinOp{lhs, rhs, op: ">>".to_string()},
       }
     },
-    Expression::Forall{..} => {
+    Expression::Cast{..}    => panic!("Casts must be normalized before Sketch."),
+    Expression::Forall{..}  => {
       println!("WARNING: Foralls are unsupported! Treating as true.");
       Sk::Expression::ConstInt(1)
     },
@@ -394,9 +401,12 @@ fn block_item_to_sketch(item: &BlockItem) -> Sk::Statement {
 fn type_to_sketch(ty: &Type) -> Sk::Type {
   match ty {
     Type::Bool     => Sk::Type::Bit,
+    Type::Char     => Sk::Type::Char,
     Type::Double   => Sk::Type::Double,
     Type::Float    => Sk::Type::Float,
     Type::Int      => Sk::Type::Int,
+    Type::Long     => panic!("long keyword unsupported in Sketch"),
+    Type::Short    => panic!("short keyword unsupported in Sketch"),
     Type::Signed   => panic!("signed keyword unsupported in Sketch"),
     Type::Unsigned => panic!("unsigned keyword unsupported in Sketch"),
     Type::Void     => Sk::Type::Void,

@@ -137,6 +137,7 @@ fn eval_expression(expr: &Expression, exec: &mut Execution) {
     Expression::ChoiceCall{callee, args} => handle_call(&callee, &args, exec),
     Expression::Unop{expr, op} => eval_unop(expr, op, exec),
     Expression::Binop{lhs, rhs, op} => eval_binop(lhs, rhs, op, exec),
+    Expression::Cast{..} => panic!("Casts must be normalized before evaluation."),
     Expression::Forall{..} => {
       //panic!("Forall unimplemented")
     },
@@ -193,6 +194,7 @@ fn eval_unop(expr: &Expression, op: &UnaryOp, exec: &mut Execution) {
   if exec.ended() { return; }
   match op {
     UnaryOp::Address => panic!("Address references unsupported."),
+    UnaryOp::Deref => panic!("Dereferences unsupported."),
     UnaryOp::Minus => exec.negate_value(),
     UnaryOp::Not => {
       if exec.value_is_true() {
@@ -275,7 +277,7 @@ fn eval_binop(lhs: &Expression, rhs: &Expression, op: &BinaryOp, exec: &mut Exec
       exec.set_location(indexed_loc.clone());
       exec.set_value(exec.current_state.read_loc(&indexed_loc));
     }
-    BinaryOp::Lt => bool_binop(exec, |i1, i2| i1 < i2, |f1, f2| f1 < f2),
+    BinaryOp::Lt  => bool_binop(exec, |i1, i2| i1 < i2, |f1, f2| f1 < f2),
     BinaryOp::Lte => bool_binop(exec, |i1, i2| i1 <= i2, |f1, f2| f1 <= f2),
     BinaryOp::Mod => arith_binop(exec, |i1, i2| i1 % i2, |f1, f2| f1 % f2),
     BinaryOp::Mul => arith_binop(exec, |i1, i2| i1.wrapping_mul(i2), |f1, f2| f1 * f2),
@@ -292,6 +294,16 @@ fn eval_binop(lhs: &Expression, rhs: &Expression, op: &BinaryOp, exec: &mut Exec
         }
       }
     },
+    BinaryOp::BitAnd => arith_binop(exec, |i1, i2| i1 & i2,
+                          |_, _| panic!("Bitwise and is not defined on floats")),
+    BinaryOp::BitOr  => arith_binop(exec, |i1, i2| i1 | i2,
+                          |_, _| panic!("Bitwise or is not defined on floats")),
+    BinaryOp::BitXor => arith_binop(exec, |i1, i2| i1 ^ i2,
+                          |_, _| panic!("Bitwise xor is not defined on floats")),
+    BinaryOp::Shl    => arith_binop(exec, |i1, i2| i1.wrapping_shl(i2 as u32),
+                          |_, _| panic!("Shift left is not defined on floats")),
+    BinaryOp::Shr    => arith_binop(exec, |i1, i2| i1.wrapping_shr(i2 as u32),
+                          |_, _| panic!("Shift right is not defined on floats")),
   }
 }
 

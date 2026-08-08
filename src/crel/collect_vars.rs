@@ -49,6 +49,7 @@ impl CollectVars for Expression {
       Expression::Binop{lhs, rhs, op: _} => {
         union_all(vec!(lhs.vars(), rhs.vars()))
       },
+      Expression::Cast{expr, ..} => expr.vars(),
       Expression::Forall{condition, ..} => condition.vars(),
       Expression::SketchHole => HashSet::new(),
       Expression::Statement(stmt) => stmt.vars(),

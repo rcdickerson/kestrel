@@ -277,6 +277,14 @@ impl Expression {
           op: op.clone(),
         })
       },
+      Expression::Cast{ty, ptr_depth, expr} => {
+        let mapped_expr = expr.map(mapper);
+        mapper.map_expression(&Expression::Cast {
+          ty: ty.clone(),
+          ptr_depth: *ptr_depth,
+          expr: Box::new(mapped_expr),
+        })
+      },
       Expression::Forall{bindings, condition} => {
         let mapped_bindings = bindings.iter().map(|(v, t)| (mapper.map_name(v), t.clone())).collect();
         let mapped_condition = condition.map(mapper);

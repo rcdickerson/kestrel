@@ -1,11 +1,14 @@
-void right(int arg0, int b) {
-    int c;
-    int a;
-    a = arg0;
-    c = 0;
-    while ((a) < b)
+void right(unsigned int arg0, unsigned int b) {
+    char b_var0[4];
+    char c[4];
+    char a[4];
+    *(unsigned int *)(&a) = arg0;
+    *(unsigned int *)(&b_var0) = b;
+    *(unsigned int *)(&c) = 0;
+    while ((int)(*(unsigned int *)(&a)) < (int)b)
     {
-        c = c + a * a;
-        a = a + 1;
+        *(unsigned int *)(&c) = *(unsigned int *)(&c) + *(unsigned int *)(&a) * *(unsigned int *)(&a);
+        *(unsigned int *)(&a) = *(unsigned int *)(&a) + 1;
     }
+    return;
 }

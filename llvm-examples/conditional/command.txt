@@ -1,4 +1,5 @@
-cargo run -- --input llvm-examples/conditional/left.c \
-             --second-input llvm-examples/conditional/right.rs \
-             --spec-input llvm-examples/conditional/spec.txt \
-             count-loops --infer-invariants --is-rust-input
+cargo run -- --left llvm-examples/conditional/left.c \
+             --right llvm-examples/conditional/right.rs \
+             --spec llvm-examples/conditional/spec.txt \
+             count-loops --output-mode seahorn \
+             --is-rust --verbose

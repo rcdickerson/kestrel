@@ -1,11 +1,14 @@
-void right(int n) {
-    int i;
-    int sum;
-    sum = 0;
-    i = 1;
-    while ((i) <= n)
+void right(unsigned int n) {
+    char n_var0[4];
+    char i[4];
+    char sum[4];
+    *(unsigned int *)(&n_var0) = n;
+    *(unsigned int *)(&sum) = 0;
+    *(unsigned int *)(&i) = 1;
+    while ((int)(*(unsigned int *)(&i)) <= (int)n)
     {
-        sum = sum + i;
-        i = i + 1;
+        *(unsigned int *)(&sum) = *(unsigned int *)(&sum) + *(unsigned int *)(&i);
+        *(unsigned int *)(&i) = *(unsigned int *)(&i) + 1;
     }
+    return;
 }

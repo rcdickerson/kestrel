@@ -1,4 +1,5 @@
-void right(int n) {
+void right(unsigned int n) {
     char prod[4];
-    *(int *)(&prod) = n;
+    *(unsigned int *)(&prod) = n;
+    return;
 }

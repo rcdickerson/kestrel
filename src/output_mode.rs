@@ -109,10 +109,16 @@ impl OutputMode {
              .map(|_| match param.get_type() {
                None => panic!("Parameter without type in main function."),
                Some(ty) => match ty {
-                 Type::Bool => Expression::ConstInt(rng.gen_range(0..1)),
-                 Type::Int => Expression::ConstInt(rng.gen()),
-                 Type::Float => Expression::ConstFloat(rng.gen()),
-                 _ => panic!("Unsupported: randomly generated {:?}", ty),
+                 Type::Bool     => Expression::ConstInt(rng.gen_range(0..2)),
+                 Type::Char     => Expression::ConstInt(rng.gen_range(0..256)),
+                 Type::Double   => Expression::ConstFloat(rng.gen()),
+                 Type::Float    => Expression::ConstFloat(rng.gen()),
+                 Type::Int      => Expression::ConstInt(rng.gen()),
+                 Type::Long     => Expression::ConstInt(rng.gen()),
+                 Type::Short    => Expression::ConstInt(rng.gen_range(-32768..32768)),
+                 Type::Signed   => Expression::ConstInt(rng.gen()),
+                 Type::Unsigned => Expression::ConstInt(rng.gen_range(0..i32::MAX)),
+                 Type::Void     => panic!("Cannot generate a value of type void."),
                }
              }).collect::<Vec<_>>())
         .collect::<Vec<_>>();

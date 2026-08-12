@@ -128,13 +128,9 @@ fn expect_expression(sexp: &Sexp, ctx: &Context) -> Expression {
         Expression::Unop{ expr, op: UnaryOp::Deref }
       },
       Sexp::Atom(Atom::S(s)) if s == "cast" => {
-        let ty = expect_type(&sexps[1]);
-        let ptr_depth = match &sexps[2] {
-          Sexp::Atom(Atom::I(i)) => *i as usize,
-          _ => panic!("Expected pointer depth, got: {:?}", sexps[2]),
-        };
-        let expr = Box::new(expect_expression(&sexps[3], ctx));
-        Expression::Cast{ ty, ptr_depth, expr }
+        let ty = expect_type_name(&sexps[1]);
+        let expr = Box::new(expect_expression(&sexps[2], ctx));
+        Expression::Cast{ ty, expr }
       },
       Sexp::Atom(Atom::S(s)) if s == "neg" => {
         let expr = Box::new(expect_expression(&sexps[1], ctx));
@@ -676,6 +672,19 @@ fn expect_type(sexp: &Sexp) -> Type {
       _ => panic!("Unknown type: {}", ty),
     },
     _ => panic!("Expected type, got: {}", sexp)
+  }
+}
+
+fn expect_type_name(sexp: &Sexp) -> TypeName {
+  match &sexp {
+    Sexp::List(sexps) => match &sexps[0] {
+      Sexp::Atom(Atom::S(s)) if s == "type-name" =>
+        TypeName::Base(sexps[1..].iter().map(expect_type).collect()),
+      Sexp::Atom(Atom::S(s)) if s == "pointer-type" =>
+        TypeName::Pointer(Box::new(expect_type_name(&sexps[1]))),
+      _ => panic!("Expected type name, got: {}", sexp),
+    },
+    _ => panic!("Expected type name, got: {}", sexp),
   }
 }
 

@@ -175,6 +175,12 @@ pub enum Type {
 }
 
 #[derive(Clone, Debug, PartialEq)]
+pub enum TypeName {
+  Base(Vec<Type>),
+  Pointer(Box<TypeName>),
+}
+
+#[derive(Clone, Debug, PartialEq)]
 pub enum TypeQualifier {
   Const,
 }
@@ -212,8 +218,7 @@ pub enum Expression {
     op: BinaryOp,
   },
   Cast {
-    ty: Type,
-    ptr_depth: usize,
+    ty: TypeName,
     expr: Box<Expression>,
   },
   Forall {

@@ -137,7 +137,7 @@ fn eval_expression(expr: &Expression, exec: &mut Execution) {
     Expression::ChoiceCall{callee, args} => handle_call(&callee, &args, exec),
     Expression::Unop{expr, op} => eval_unop(expr, op, exec),
     Expression::Binop{lhs, rhs, op} => eval_binop(lhs, rhs, op, exec),
-    Expression::Cast{..} => panic!("Cast expressions are currently unsupported."),
+    Expression::Cast{expr, ..} => eval_expression(expr, exec),
     Expression::Forall{..} => {
       //panic!("Forall unimplemented")
     },

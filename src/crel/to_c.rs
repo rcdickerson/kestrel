@@ -158,17 +158,9 @@ fn expression_to_c(expr: &Expression, output_asserts: bool, output_assumes: bool
         BinaryOp::Shr       => C::Expression::BinOp{lhs, rhs, op: ">>".to_string()},
       }
     },
-    Expression::Cast{ ty, ptr_depth, expr } => {
+    Expression::Cast{ ty, expr } => {
       let inner = Box::new(expression_to_c(expr, output_asserts, output_assumes));
-      let mut ty_str = match ty {
-        Type::Bool    => "bool",    Type::Char      => "char", 
-        Type::Double  => "double",  Type::Float     => "float",
-        Type::Int     => "int",     Type::Void      => "void",
-        Type::Long    => "long",    Type::Short     => "short",
-        Type::Signed  => "signed",  Type::Unsigned  => "unsigned",
-      }.to_string();
-      for _ in 0..*ptr_depth { ty_str.push('*'); }
-      C::Expression::UnOp{ expr: inner, op: format!("({})", ty_str) }
+      C::Expression::UnOp{ expr: inner, op: format!("({})", type_name_to_string(ty)) }
     },
     Expression::Ternary { condition, then, els } => {
       C::Expression::Statement(Box::new(C::Statement::If {
@@ -429,3 +421,28 @@ impl DeclarationBuilder {
     param
   }
 }
+
+fn type_name_to_string(ty: &TypeName) -> String {
+  match ty {
+    TypeName::Base(specifiers) => specifiers.iter()
+      .map(type_to_string)
+      .collect::<Vec<String>>()
+      .join(" "),
+    TypeName::Pointer(inner) => format!("{}*", type_name_to_string(inner)),
+  }
+}
+
+fn type_to_string(ty: &Type) -> String {
+  match ty {
+    Type::Bool     => "bool".to_string(),
+    Type::Char     => "char".to_string(),
+    Type::Double   => "double".to_string(),
+    Type::Float    => "float".to_string(),
+    Type::Int      => "int".to_string(),
+    Type::Long     => "long".to_string(),
+    Type::Short    => "short".to_string(),
+    Type::Signed   => "signed".to_string(),
+    Type::Unsigned => "unsigned".to_string(),
+    Type::Void     => "void".to_string(),
+  }
+} 

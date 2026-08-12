@@ -277,11 +277,10 @@ impl Expression {
           op: op.clone(),
         })
       },
-      Expression::Cast{ty, ptr_depth, expr} => {
+      Expression::Cast{ty, expr} => {
         let mapped_expr = expr.map(mapper);
         mapper.map_expression(&Expression::Cast {
           ty: ty.clone(),
-          ptr_depth: *ptr_depth,
           expr: Box::new(mapped_expr),
         })
       },

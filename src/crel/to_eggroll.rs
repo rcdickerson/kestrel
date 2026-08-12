@@ -93,9 +93,11 @@ fn expression_to_eggroll(expr: &Expression) -> String {
       };
       format!("({} {} {})", op_egg, lhs_egg, rhs_egg)
     },
-    Expression::Cast{ ty, ptr_depth, expr } =>
-      format!("(cast {} {} {})", type_to_eggroll(ty), ptr_depth,
-              expression_to_eggroll(expr)),
+    Expression::Cast{ty, expr} => 
+      format!("(cast {} {})", 
+              type_name_to_eggroll(ty), 
+              expression_to_eggroll(expr)
+    ),
     Expression::Forall{bindings, condition} => {
       let bindings = bindings.iter()
         .map(|(name, ty)| format!("(binding {} {})", name, type_to_eggroll(ty)))
@@ -280,6 +282,19 @@ fn type_to_eggroll(ty: &Type) -> String {
   }
 }
 
+fn type_name_to_eggroll(type_name: &TypeName) -> String {
+  match type_name {
+    TypeName::Base(specifiers) => {
+      let specifiers_egg = specifiers.iter()
+        .map(type_to_eggroll)
+        .collect::<Vec<String>>()
+        .join(" ");
+      format!("(type-name {})", specifiers_egg)
+    },
+    TypeName::Pointer(inner) => format!("(pointer-type {})", type_name_to_eggroll(inner)),
+  }
+}
+  
 fn type_qualifier_to_eggroll(tq: &TypeQualifier) -> String {
   match tq {
     TypeQualifier::Const => "const".to_string(),

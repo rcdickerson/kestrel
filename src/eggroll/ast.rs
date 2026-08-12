@@ -46,7 +46,9 @@ define_language! {
     "ternary"       = Ternary([Id; 3]),
     "addr"          = Address(Id),
     "deref"         = Deref(Id),
-    "cast"          = Cast([Id; 3]),
+    "cast"          = Cast([Id; 2]),
+    "type-name"     = TypeName(Box<[Id]>),
+    "pointer-type"  = PointerType(Id),
 
     // An abbreviated form of :
     //   while c1 && c2 { b1; b2 };

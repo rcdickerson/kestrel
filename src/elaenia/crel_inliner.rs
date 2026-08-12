@@ -184,9 +184,8 @@ impl CRelInliner {
         rhs: Box::new(self.inline_expression(rhs)),
         op: op.clone(),
       },
-      Expression::Cast{ ty, ptr_depth, expr } => Expression::Cast {
+      Expression::Cast{ ty, expr } => Expression::Cast {
         ty: ty.clone(),
-        ptr_depth: *ptr_depth,
         expr: Box::new(self.inline_expression(expr)),
       },
       Expression::Forall{ bindings, condition } => Expression::Forall {

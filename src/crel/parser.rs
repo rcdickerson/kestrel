@@ -210,6 +210,16 @@ fn trans_type_qualifier(type_qual: c::TypeQualifier) -> TypeQualifier {
   }
 }
 
+fn trans_abstract_declarator(ty : TypeName, declarator: Option<&Node<c::Declarator>>) -> TypeName {
+  match declarator {
+    None => ty,
+    Some(declarator) => declarator.node.derived.iter().fold(ty, |ty, derived| match &derived.node {
+      c::DerivedDeclarator::Pointer(_) => TypeName::Pointer(Box::new(ty)),
+      _ => panic!("Unsupported abstract declarator in type name: {:?}", derived.node),
+    }),
+  }
+}
+
 fn trans_statement(stmt: &Node<c::Statement>) -> StmtWithInvars {
   match &stmt.node {
     c::Statement::Break => (Statement::Break, Vec::new()),
@@ -276,19 +286,18 @@ fn trans_expression(expr: &Node<c::Expression>) -> ExprWithInvars {
     c::Expression::Cast(cast) => {
       let (inner, invars) = trans_expression(&cast.node.expression);
       let type_name = &cast.node.type_name.node;
-      let ty = type_name.specifiers.iter()
-        .find_map(|s| match &s.node {
+      let specifiers: Vec<Type> = type_name.specifiers.iter()
+        .filter_map(|s| match &s.node {
           c::SpecifierQualifier::TypeSpecifier(ts) =>
             Some(trans_type_specifier(ts.node.clone())),
           _ => None,
         })
-        .expect("Cast with no type specifier");
-      let ptr_depth = type_name.declarator.as_ref()
-        .map(|d| d.node.derived.iter()
-          .filter(|dd| matches!(dd.node, c::DerivedDeclarator::Pointer(_)))
-          .count())
-        .unwrap_or(0);
-      (Expression::Cast{ ty, ptr_depth, expr: Box::new(inner) }, invars)
+        .collect();
+      if specifiers.is_empty() {
+        panic!("Cast with no type specifier");
+      }
+      let ty = trans_abstract_declarator(TypeName::Base(specifiers), type_name.declarator.as_ref());
+      (Expression::Cast { ty, expr: Box::new(inner) }, invars)
     },
     c::Expression::Conditional(cond) => {
       let (condition, mut invars) = trans_expression(&cond.node.condition);

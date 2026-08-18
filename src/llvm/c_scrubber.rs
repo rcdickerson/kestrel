@@ -24,6 +24,7 @@ fn remove_declarations_and_suffixes(code: &str) -> String {
     let mut c = code.to_string();
     c = Regex::new(r"(?m)^\s*(?:unsigned\s+)?\w+\s+\w+\([^)]*\)\s*;\s*\n?").unwrap().replace_all(&c, "").into_owned();
     c = Regex::new(r"\b([0-9]+)U\b").unwrap().replace_all(&c, "$1").into_owned();
+    c = Regex::new(r"(?m)^\s*return\s*;\s*\n?").unwrap().replace_all(&c, "").into_owned();    
     c
 }
 

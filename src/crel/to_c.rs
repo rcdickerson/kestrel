@@ -183,7 +183,7 @@ fn statement_to_c(stmt: &Statement, output_asserts: bool, output_assumes: bool)
   match stmt {
     Statement::Assert(expr) if output_asserts => {
       C::Statement::Expression(Box::new(C::Expression::FnCall{
-        name: Box::new(C::Expression::Identifier{name: "assert".to_string()}),
+        name: Box::new(C::Expression::Identifier{name: "sassert".to_string()}),
         args: vec!(expression_to_c(expr, output_asserts, output_assumes)),
       }))
     },

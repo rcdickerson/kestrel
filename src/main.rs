@@ -173,25 +173,29 @@ fn setup_working_dir() -> Result<(), std::io::Error> {
 /// non-relational and relational programs, and 2) packaging programs
 /// into an Egg-compatible language definition.
 fn kestrel_workflow(args: Args) {
+  // initialize output directory 
+  let input_file = args.left.as_ref().or(args.input.as_ref()).expect("No input file provided.");
+  let path = std::path::Path::new(input_file);
+  let out_dir = path.parent().unwrap_or(std::path::Path::new(".")).join("output");
+  std::fs::create_dir_all(&out_dir).expect("Failed to create output directory");
+
   // initialize raw crel from a single c file
   // or from two c files or a c file and a rust file
   let mut raw_crel = if let (Some(right), Some(left)) = (args.right.as_ref(), args.left.as_ref()) {
-        let left_raw_crel = kestrel::crel::parser::parse_c_file(left);
-        
-        let right_raw_crel = if args.is_rust { 
-            let llvm = kestrel::llvm::rust_to_llvm::compile_rust_to_llvm(right);
-            let rellic_c = kestrel::llvm::llvm_to_c::process_llvm_file(&llvm);
-            kestrel::crel::parser::parse_c_file(&rellic_c)
-        } else {
-            kestrel::crel::parser::parse_c_file(right)
-        };
-        
-        kestrel::crel::ast::CRel::Seq(vec![left_raw_crel, right_raw_crel])
-    } else if let Some(ref input) = args.input {
-        kestrel::crel::parser::parse_c_file(&input)
+    let left_raw_crel = kestrel::crel::parser::parse_c_file(left);
+    let right_raw_crel = if args.is_rust { 
+      let llvm = kestrel::llvm::rust_to_llvm::compile_rust_to_llvm(right, &out_dir);
+      let rellic_c = kestrel::llvm::llvm_to_c::process_llvm_file(&llvm);
+        kestrel::crel::parser::parse_c_file(&rellic_c)
     } else {
-      panic!("No input file provided.")
+        kestrel::crel::parser::parse_c_file(right)
     };
+    kestrel::crel::ast::CRel::Seq(vec![left_raw_crel, right_raw_crel])
+  } else if let Some(ref input) = args.input {
+    kestrel::crel::parser::parse_c_file(&input)
+  } else {
+    panic!("No input file provided.")
+  };
 
   let spec = if let Some(spec) = args.spec {
     parse_kestrel_spec(&spec).unwrap()
@@ -208,6 +212,11 @@ fn kestrel_workflow(args: Args) {
 
   let unaligned_crel = UnalignedCRel::from_kestrel_spec(&raw_crel, &spec);
   let unaligned_eggroll = unaligned_crel.unaligned_main.to_eggroll();
+
+  let unaligned_path = out_dir.join("unaligned_product.c");
+  println!("Writing {}...", unaligned_path.display());
+  std::fs::write(&unaligned_path, unaligned_crel.unaligned_main.to_c(false, false))
+    .unwrap_or_else(|err| panic!("Error writing {}: {}", unaligned_path.display(), err));
 
   let mut context = if let Some(left) = args.left.clone() {
     KestrelContext::new(left, spec)
@@ -258,8 +267,9 @@ fn kestrel_workflow(args: Args) {
     workflow.add_task_unless_verifed(Houdafny::new(None));
   }
   workflow.add_task(AlignedOutput::new(args.output_mode));
+  workflow.add_task(WriteProduct::new(args.output_mode, out_dir.join("aligned_product.c")));
   match args.output {
-    Some(_) => workflow.add_task(WriteProduct::new(args.output_mode)),
+    Some(path) => workflow.add_task(WriteProduct::new(args.output_mode, std::path::PathBuf::from(path))),
     None => workflow.add_task(PrintInfo::with_header("Aligned Product Program",
         &|ctx: &KestrelContext| {
           ctx.aligned_output().as_ref().expect("Missing aligned output").clone()

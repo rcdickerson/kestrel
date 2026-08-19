@@ -18,7 +18,7 @@ impl Expression {
   pub fn emit(&self, writer: &mut Writer, subexp: bool) {
     match self {
       Expression::ArrayIndex{expr, index} => {
-        expr.emit(writer, false);
+        expr.emit(writer, true);
         writer.write("[");
         index.emit(writer, false);
         writer.write("]");

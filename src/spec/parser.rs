@@ -1,4 +1,5 @@
 use crate::spec::{KestrelSpec, condition::*};
+use crate::crel::ast::{Type, TypeName};
 use nom::{
   branch::alt,
   bytes::complete::tag,
@@ -112,7 +113,8 @@ fn aexp_index(i: &str) -> IResult<&str, CondAExpr> {
   let (i, _)       = multispace0(i)?;
   let (i, id)      = alt((aexp_qualified_var,
                           aexp_return_value,
-                          aexp_var))(i)?;
+                          aexp_var,
+                          delimited(tag("("), aexpr, tag(")"))))(i)?;
   let (i, _)       = multispace0(i)?;
   let (i, indices) = many1(delimited(tag("["), aexpr_no_float, tag("]")))(i)?;
   let mut aexpr = CondAExpr::Binop {
@@ -136,6 +138,7 @@ fn aexpr_binop(op_str: &str, op: CondABinop) -> impl Fn(&str) -> IResult<&str, C
     let (i, lhs) = aexpr_lhs(i)?;
     let (i, _)   = multispace0(i)?;
     let (i, _)   = tag(op_str)(i)?;
+    if i.starts_with(op_str) {return Err(Err::Error(Error{input: i, code: ErrorKind::Not}));}
     let (i, _)   = multispace0(i)?;
     let (i, rhs) = aexpr(i)?;
     Ok((i, CondAExpr::Binop {
@@ -165,6 +168,9 @@ fn aexpr_lhs(i: &str) -> IResult<&str, CondAExpr> {
     aexp_index,
     aexp_qualified_var,
     aexp_var,
+    aexp_cast,
+    aexp_unop("&", CondAUnop::Address),
+    aexp_unop("*", CondAUnop::Deref),
     delimited(tag("("), aexpr, tag(")")),
   ))(i)
 }
@@ -189,6 +195,9 @@ pub fn aexpr(i: &str) -> IResult<&str, CondAExpr> {
     aexp_return_value,
     aexp_qualified_var,
     aexp_var,
+    aexp_cast,
+    aexp_unop("&", CondAUnop::Address),
+    aexp_unop("*", CondAUnop::Deref),
     delimited(tag("("), aexpr, tag(")")),
   ))(i)
 }
@@ -211,10 +220,69 @@ fn aexpr_no_float(i: &str) -> IResult<&str, CondAExpr> {
     aexp_funcall,
     aexp_qualified_var,
     aexp_var,
+    aexp_cast,
+    aexp_unop("&", CondAUnop::Address),
+    aexp_unop("*", CondAUnop::Deref),
     delimited(tag("("), aexpr_no_float, tag(")")),
   ))(i)
 }
 
+fn aexp_unop(op_str: &str, op: CondAUnop) -> impl Fn(&str) -> IResult<&str, CondAExpr> + '_ {
+  move |i: &str| {
+    let (i, _)    = multispace0(i)?;
+    let (i, _)    = tag(op_str)(i)?;
+    if i.starts_with(op_str) {return Err(Err::Error(Error{input: i, code: ErrorKind::Not}));}
+    let (i, aexp) = aexpr_lhs(i)?;
+    Ok((i, CondAExpr::Unop{aexp: Box::new(aexp), op: op.clone()}))
+  }
+}
+
+fn aexp_cast(i: &str) -> IResult<&str, CondAExpr> {
+  let (i, _)    = multispace0(i)?;
+  let (i,ty)    = delimited(tag("("), type_name, tag(")"))(i)?;
+  let (i, aexp) = aexpr_lhs(i)?;
+  Ok((i, CondAExpr::Cast{ty, aexp : Box::new(aexp)}))
+}
+
+/* Type Names */
+
+fn type_spec(i: &str) -> IResult<&str, Type> {
+  let (i, _) = multispace0(i)?;
+  let (i,kw) = alt((
+    tag("unsigned"),
+    tag("signed"),
+    tag("double"),
+    tag("float"),
+    tag("short"),
+    tag("char"),
+    tag("long"),
+    tag("void"),
+    tag("bool"),
+    tag("int"),
+  )) (i)?;
+  Ok((i, match kw {
+    "unsigned" => Type::Unsigned,
+    "signed"   => Type::Signed,
+    "double"   => Type::Double,
+    "float"    => Type::Float,
+    "short"    => Type::Short,
+    "char"     => Type::Char,
+    "long"     => Type::Long,
+    "void"     => Type::Void,
+    "bool"     => Type::Bool,
+    "int"      => Type::Int,
+    _          => unreachable!("type_spec: unknown alt found {:?}", kw),
+  }))
+}
+
+fn type_name(i : &str) -> IResult<&str, TypeName> {
+  let (i, specs)  = many1(type_spec)(i)?;
+  let (i,_)       = multispace0(i)?;
+  let (i, stars)  = many0_count(tag("*"))(i)?;
+  let mut ty      = TypeName::Base(specs);
+  for _ in 0..stars { ty = TypeName::Pointer(Box::new(ty)); }
+  Ok((i, ty))
+}
 
 /* BExprs */
 

@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 
 use crate::names::union_all;
+use crate::crel::ast::TypeName;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum KestrelCond {
@@ -60,6 +61,7 @@ impl CondAExpr {
         lhs.state_vars().union(&rhs.state_vars()).cloned()
           .collect()
       },
+      CondAExpr::Cast{ty, aexp} => aexp.state_vars(),
       CondAExpr::FunCall {name, args} => {
         let mut vars = union_all(args.iter()
           .map(|arg| arg.state_vars())
@@ -81,6 +83,7 @@ impl CondAExpr {
       CondAExpr::Binop{lhs, rhs, op} => {
         op == binop || lhs.contains_binop_a(binop) || rhs.contains_binop_a(binop)
       },
+      CondAExpr::Cast{aexp, ..} => aexp.contains_binop_a(binop),
       CondAExpr::FunCall{args, ..} => args.iter().any(|arg| arg.contains_binop_a(binop))
     }
   }
@@ -98,6 +101,8 @@ pub fn qualified_state_var(exec: &String, name: &String) -> String {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum CondAUnop {
+  Address,
+  Deref,
   Neg,
 }
 

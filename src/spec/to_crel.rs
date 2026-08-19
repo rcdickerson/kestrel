@@ -90,12 +90,17 @@ impl CondToCRel for CondAExpr {
       CondAExpr::Float(f) => {
         crel::Expression::ConstFloat(*f)
       },
+      CondAExpr::Cast{ty, aexp} => { 
+        crel::Expression::Cast { ty : ty.clone(), expr: Box::new(aexp.to_crel()) }
+      },
       CondAExpr::Unop{aexp, op} => {
-        match op {
-          CondAUnop::Neg => crel::Expression::Unop {
-            expr: Box::new(aexp.to_crel()),
-            op: crel::UnaryOp::Minus,
-          },
+        crel::Expression::Unop {
+          expr: Box::new(aexp.to_crel()),
+          op: match op {
+            CondAUnop::Address => crel::UnaryOp::Address,
+            CondAUnop::Deref => crel::UnaryOp::Deref,
+            CondAUnop::Neg => crel::UnaryOp::Minus,
+          }
         }
       },
       CondAExpr::Binop{lhs, rhs, op} => {

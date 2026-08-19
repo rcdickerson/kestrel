@@ -217,6 +217,8 @@ impl State {
           VarRead::Value(HeapValue::Float(f)) => VarRead::Value(HeapValue::Float(-f)),
           _ => panic!("Cannot lookup value for {:?}", aexp),
         },
+        CondAUnop::Address => panic!("Cannot take address in state lookup: {:?}", aexp),
+        CondAUnop::Deref => panic!("Cannot take dereference in state lookup: {:?}", aexp),
       },
       CondAExpr::Binop{lhs, rhs, op: CondABinop::Index} => {
         let var = match lhs.as_ref() {

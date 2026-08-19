@@ -157,6 +157,20 @@ fn setup_working_dir() -> Result<(), std::io::Error> {
   Ok(())
 }
 
+fn add_verification(workflow: &mut Workflow<KestrelContext>, output_mode: OutputMode) {
+  match output_mode {
+    OutputMode::Daikon  => panic!("No verifier is setup for output mode Daikon."),
+    OutputMode::Dafny   => {
+      workflow.add_task_unless_verifed(InvarsDaikon::new(None));
+      workflow.add_task_unless_verifed(Houdafny::new(None));
+    },
+    OutputMode::Icra    => panic!("No verifier is setup for output mode Icra."),
+    OutputMode::Seahorn => workflow.add_task_unless_verifed(Seahorn::new(None)),
+    OutputMode::SvComp  => panic!("No verifier is setup for output mode SvComp."),
+  };
+}
+
+
 /// The high-level KestRel workflow is:
 ///   1. Read in a C file and parse its @KESTREL spec.
 ///   2. Convert the C into CRel. CRel is a C-like IR which can represent
@@ -251,8 +265,8 @@ fn kestrel_workflow(args: Args) {
         workflow.add_task(AlignCountLoops::new());
         workflow.add_task(AlignedCRel::new());
         if args.infer_invariants {
-          workflow.add_task(InvarsDaikon::new(None));
-          workflow.add_task(Houdafny::new(None));
+          workflow.add_task(AlignedOutput::new(args.output_mode));
+          add_verification(&mut workflow, args.output_mode);
         }
       }
       let mut align_sa_task = AlignSa::new(args.sa_start_random, args.sa_max_iterations);
@@ -262,12 +276,9 @@ fn kestrel_workflow(args: Args) {
     },
   }
   workflow.add_task_unless_verifed(AlignedCRel::new());
-  if args.infer_invariants {
-    workflow.add_task_unless_verifed(InvarsDaikon::new(None));
-    workflow.add_task_unless_verifed(Houdafny::new(None));
-  }
   workflow.add_task(AlignedOutput::new(args.output_mode));
   workflow.add_task(WriteProduct::new(args.output_mode, out_dir.join("aligned_product.c")));
+  if args.infer_invariants { add_verification(&mut workflow, args.output_mode); }
   match args.output {
     Some(path) => workflow.add_task(WriteProduct::new(args.output_mode, std::path::PathBuf::from(path))),
     None => workflow.add_task(PrintInfo::with_header("Aligned Product Program",

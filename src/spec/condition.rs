@@ -41,6 +41,7 @@ pub enum CondAExpr {
   QualifiedVar{exec: String, name: String},
   Int(i32),
   Float(f32),
+  Cast{ty: TypeName, aexp: Box<CondAExpr>},
   Unop{aexp: Box<CondAExpr>, op: CondAUnop},
   Binop{lhs: Box<CondAExpr>, rhs: Box<CondAExpr>, op: CondABinop},
   FunCall{name: String, args: Vec<CondAExpr>},

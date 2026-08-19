@@ -6,12 +6,17 @@ use egg::*;
 define_language! {
   pub enum Eggroll {
     // Arithmetic Expressions
-    "+"   = Add([Id; 2]),
-    "-"   = Sub([Id; 2]),
-    "*"   = Mul([Id; 2]),
-    "/"   = Div([Id; 2]),
-    "mod" = Mod([Id; 2]),
-    "neg" = Neg(Id),
+    "+"       = Add([Id; 2]),
+    "-"       = Sub([Id; 2]),
+    "*"       = Mul([Id; 2]),
+    "/"       = Div([Id; 2]),
+    "mod"     = Mod([Id; 2]),
+    "bitand"  = BitAnd([Id; 2]),
+    "bitor"   = BitOr([Id; 2]),
+    "bitxor"  = BitXor([Id; 2]),
+    "shl"     = Shl([Id; 2]),
+    "shr"     = Shr([Id; 2]),
+    "neg"     = Neg(Id),
 
     // Boolean Expressions
     "<"   = Lt([Id; 2]),
@@ -40,6 +45,10 @@ define_language! {
     "sketch-hole"   = SketchHole,
     "ternary"       = Ternary([Id; 3]),
     "addr"          = Address(Id),
+    "deref"         = Deref(Id),
+    "cast"          = Cast([Id; 2]),
+    "type-name"     = TypeName(Box<[Id]>),
+    "pointer-type"  = PointerType(Id),
 
     // An abbreviated form of :
     //   while c1 && c2 { b1; b2 };

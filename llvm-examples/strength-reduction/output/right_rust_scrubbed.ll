@@ -62,7 +62,7 @@ attributes #0 = { nounwind nonlazybind uwtable "probe-stack"="inline-asm" "targe
 !5 = distinct !DICompileUnit(language: DW_LANG_Rust, file: !6, producer: "clang LLVM (rustc version 1.97.0 (2d8144b78 2026-07-07))", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, splitDebugInlining: false, nameTableKind: None)
 !6 = !DIFile(filename: "llvm-examples/strength-reduction/right.rs/@/right.59b4154acb9ecd45-cgu.0", directory: "/kestrel")
 !7 = distinct !DISubprogram(name: "right", scope: !9, file: !8, line: 2, type: !10, scopeLine: 2, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !5, templateParams: !22, retainedNodes: !13)
-!8 = !DIFile(filename: "llvm-examples/strength-reduction/right.rs", directory: "/kestrel", checksumkind: CSK_MD5, checksum: "0d004b90d103e995ac48e7d1ad8e774f")
+!8 = !DIFile(filename: "llvm-examples/strength-reduction/right.rs", directory: "/kestrel", checksumkind: CSK_MD5, checksum: "bcba7024a7bb173f407fa938c52ca036")
 !9 = !DINamespace(name: "right", scope: null)
 !10 = !DISubroutineType(types: !11)
 !11 = !{null, !12, !12, !12, !12}

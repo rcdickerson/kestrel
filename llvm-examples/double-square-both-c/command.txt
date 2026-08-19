@@ -1,4 +1,5 @@
-cargo run -- --input llvm-examples/double-square-both-c/left.c \
-             --second-input llvm-examples/double-square-both-c/right.c \
-             --spec-input llvm-examples/double-square-both-c/spec.txt \
-             count-loops --infer-invariants
+cargo run -- --left llvm-examples/double-square-both-c/left.c \
+             --right llvm-examples/double-square-both-c/right.c \
+             --spec llvm-examples/double-square-both-c/spec.txt \
+             count-loops --output-mode seahorn \
+             --verbose

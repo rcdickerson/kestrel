@@ -25,21 +25,21 @@ void right(void *a, unsigned int val) {
     if (*(unsigned long *)(&j) < 10UL && val6 >= 11UL) {
         _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(val6, 11UL, &alloc_1b6aad345a552ecadc4ef2f80a0f897d);
     }
-    if (!(val6 >= 11UL || (int)(((unsigned int *)a)[val6]) < (int)val || *(unsigned long *)(&j) >= 10UL) || *(unsigned long *)(&j) >= 10UL) {
+    if (*(unsigned long *)(&j) >= 10UL || !(val6 >= 11UL || (int)(((unsigned int *)a)[val6]) < (int)val || *(unsigned long *)(&j) >= 10UL)) {
         *(unsigned long *)(&len) = 11UL;
         val5 = *(unsigned long *)(&j);
     }
-    if (val5 >= 11UL && (!(val6 >= 11UL || (int)(((unsigned int *)a)[val6]) < (int)val || *(unsigned long *)(&j) >= 10UL) || *(unsigned long *)(&j) >= 10UL)) {
+    if (val5 >= 11UL && (*(unsigned long *)(&j) >= 10UL || !(val6 >= 11UL || (int)(((unsigned int *)a)[val6]) < (int)val || *(unsigned long *)(&j) >= 10UL))) {
         _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(val5, 11UL, &alloc_a74a36876f5d89ac1dedf5b0e55c3dda);
     }
-    if ((!(val6 >= 11UL || (int)(((unsigned int *)a)[val6]) < (int)val || *(unsigned long *)(&j) >= 10UL) || *(unsigned long *)(&j) >= 10UL) && val5 < 11UL) {
+    if (val5 < 11UL && (*(unsigned long *)(&j) >= 10UL || !(val6 >= 11UL || (int)(((unsigned int *)a)[val6]) < (int)val || *(unsigned long *)(&j) >= 10UL))) {
         ((unsigned int *)a)[val5] = val;
         while (*(unsigned long *)(&j) < 11UL)
             {
                 *(unsigned long *)(&j) = *(unsigned long *)(&j) + 1UL;
             }
     }
-    if ((!(val6 >= 11UL || (int)(((unsigned int *)a)[val6]) < (int)val || *(unsigned long *)(&j) >= 10UL) || *(unsigned long *)(&j) >= 10UL) && val5 < 11UL && *(unsigned long *)(&j) >= 11UL) {
+    if (*(unsigned long *)(&j) >= 11UL && val5 < 11UL && (*(unsigned long *)(&j) >= 10UL || !(val6 >= 11UL || (int)(((unsigned int *)a)[val6]) < (int)val || *(unsigned long *)(&j) >= 10UL))) {
         return;
     }
     if (*(unsigned long *)(&j) < 10UL && val6 < 11UL && (int)(((unsigned int *)a)[val6]) < (int)val) {

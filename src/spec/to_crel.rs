@@ -103,12 +103,17 @@ impl CondToCRel for CondAExpr {
           lhs: Box::new(lhs.to_crel()),
           rhs: Box::new(rhs.to_crel()),
           op: match op {
-            CondABinop::Add   => crel::BinaryOp::Add,
-            CondABinop::Sub   => crel::BinaryOp::Sub,
-            CondABinop::Mul   => crel::BinaryOp::Mul,
-            CondABinop::Div   => crel::BinaryOp::Div,
-            CondABinop::Mod   => crel::BinaryOp::Mod,
-            CondABinop::Index => crel::BinaryOp::Index,
+            CondABinop::Add     => crel::BinaryOp::Add,
+            CondABinop::Sub     => crel::BinaryOp::Sub,
+            CondABinop::Mul     => crel::BinaryOp::Mul,
+            CondABinop::Div     => crel::BinaryOp::Div,
+            CondABinop::Mod     => crel::BinaryOp::Mod,
+            CondABinop::Index   => crel::BinaryOp::Index,
+            CondABinop::BitAnd  => crel::BinaryOp::BitAnd,
+            CondABinop::BitOr   => crel::BinaryOp::BitOr,
+            CondABinop::BitXor  => crel::BinaryOp::BitXor,
+            CondABinop::Shl     => crel::BinaryOp::Shl,
+            CondABinop::Shr     => crel::BinaryOp::Shr,
           }
         }
       },

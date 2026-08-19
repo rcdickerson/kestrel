@@ -109,6 +109,11 @@ pub enum CondABinop {
   Div,
   Mod,
   Index,
+  BitAnd,
+  BitOr,
+  BitXor,
+  Shl,
+  Shr,
 }
 
 #[derive(Clone, Debug, PartialEq)]

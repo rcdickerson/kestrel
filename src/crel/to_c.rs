@@ -163,11 +163,11 @@ fn expression_to_c(expr: &Expression, output_asserts: bool, output_assumes: bool
       C::Expression::UnOp{ expr: inner, op: format!("({})", type_name_to_string(ty)) }
     },
     Expression::Ternary { condition, then, els } => {
-      C::Expression::Statement(Box::new(C::Statement::If {
-        condition: Box::new(expression_to_c(condition, output_asserts, output_assumes)),
-        then: Box::new(C::Statement::Expression(Box::new(expression_to_c(then, output_asserts, output_assumes)))),
-        els: Some(Box::new(C::Statement::Expression(Box::new(expression_to_c(els, output_asserts, output_assumes))))),
-      }))
+      C::Expression::Ternary {
+        condition:  Box::new(expression_to_c(condition, output_asserts, output_assumes)),
+        then:       Box::new(expression_to_c(then, output_asserts, output_assumes)),
+        els:        Box::new(expression_to_c(els, output_asserts, output_assumes)),
+      }
     },
     Expression::Forall{..} => panic!("Cannot convert forall expressions to C"),
     Expression::SketchHole => panic!("Cannot convert sketch holes to C"),

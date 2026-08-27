@@ -10,5 +10,4 @@ void right(unsigned int n) {
         *(unsigned int *)(&sum) = *(unsigned int *)(&sum) + *(unsigned int *)(&i);
         *(unsigned int *)(&i) = *(unsigned int *)(&i) + 1;
     }
-    return;
 }

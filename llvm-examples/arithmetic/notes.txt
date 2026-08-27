@@ -1,19 +1,12 @@
 Original spec.txt
-  /* @KESTREL
-   * pre: left.a == right.a && left.b == right.b && left.c == right.c;
-   * left: left;
-   * right: right;
-   * post: l_prod == r_prod;
-   */
+  post: l_prod == r_prod;
 
 Updated spec.txt
-  /* @KESTREL
-   * pre: left.a == right.a && left.b == right.b && left.c == right.c
-   * left: left;
-   * right: right;
-   * post: left.prod == (int)(*((unsigned int*)(&right.prod)));
-   */
+  post: left.prod == (int)(*((unsigned int*)(&right.prod)));
 
+
+Per-Task Times (ms)
+-------------------
 print-info: 0
 align-count-loops: 15
 aligned-crel: 2

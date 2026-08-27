@@ -2,4 +2,4 @@ cargo run -- --left llvm-examples/double-square-both-c/left.c \
              --right llvm-examples/double-square-both-c/right.c \
              --spec llvm-examples/double-square-both-c/spec.txt \
              count-loops --output-mode seahorn \
-             --verbose
+             --verbose --infer-invariants

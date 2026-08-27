@@ -2,5 +2,5 @@
  * pre: left.n == right.n;
  * left: left;
  * right: right;
- * post: left.sum == right.sum;
+ * post: left.sum == (int)(*((unsigned int*)(&right.sum)));
  */

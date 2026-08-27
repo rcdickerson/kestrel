@@ -11,5 +11,4 @@ void right(unsigned int x) {
         *(unsigned int *)(&i) = *(unsigned int *)(&i) + 1;
     }
     *(unsigned int *)(&y) = *(unsigned int *)(&y) * 2;
-    return;
 }

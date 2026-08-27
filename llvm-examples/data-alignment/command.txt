@@ -2,4 +2,4 @@ cargo run -- --left llvm-examples/data-alignment/left.c \
              --right llvm-examples/data-alignment/right.rs \
              --spec llvm-examples/data-alignment/spec.txt \
              count-loops --output-mode seahorn \
-             --is-rust --verbose
+             --is-rust --verbose --infer-invariants

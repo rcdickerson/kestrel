@@ -2,4 +2,4 @@ cargo run -- --left llvm-examples/array-insert/left.c \
              --right llvm-examples/array-insert/right.rs \
              --spec llvm-examples/array-insert/spec.txt \
              count-loops --output-mode seahorn \
-             --is-rust --verbose
+             --is-rust --verbose --infer-invariants

@@ -10,20 +10,21 @@ use std::path::PathBuf;
 
 pub struct WriteProduct {
   output_mode: OutputMode,
+  path: PathBuf,
 }
 
 impl WriteProduct {
-  pub fn new(output_mode: OutputMode) -> Self {
-    WriteProduct { output_mode }
+  pub fn new(output_mode: OutputMode, path: PathBuf) -> Self {
+    WriteProduct { output_mode, path }
   }
 }
 
 impl <Ctx: OutputsAlignment> Task<Ctx> for WriteProduct {
   fn name(&self) -> String { "write-product".to_string() }
   fn run(&self, context: &mut Ctx) {
-    let output_path = context.output_path().as_ref().expect("Missing output path");
+    let output_path = self.path.display().to_string();
     println!("Writing output to {}...", output_path);
-    let mut file = File::create(output_path)
+    let mut file = File::create(&self.path)
       .unwrap_or_else(|_| panic!("Error creating file: {}", output_path));
     match file.write_all(context.aligned_output().as_ref()
                          .expect("Missing aligned output")
@@ -32,13 +33,13 @@ impl <Ctx: OutputsAlignment> Task<Ctx> for WriteProduct {
       Err(err) => panic!("Error writing output file: {}", err),
     }
     if self.output_mode == OutputMode::SvComp {
-      let mut yaml_pathbuf = PathBuf::from(output_path.clone());
+      let mut yaml_pathbuf = self.path.clone();
       yaml_pathbuf.set_extension("yml");
       let yaml_path = yaml_pathbuf.to_str().unwrap();
       println!("Writing yaml to {}...", yaml_path);
       let mut file = File::create(yaml_path)
         .unwrap_or_else(|_| panic!("Error creating file: {}", yaml_path));
-      let filename = context.output_filename().as_ref().expect("Missing output filename");
+      let filename = self.path.file_name().unwrap().to_str().unwrap().to_string();
       match file.write_all(svcomp_yaml(&filename).as_bytes()) {
         Ok(_) => println!("Done"),
         Err(err) => panic!("Error writing output file: {}", err),

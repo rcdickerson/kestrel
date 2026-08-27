@@ -45,16 +45,16 @@ void right(void *a, void *b) {
         ((unsigned int *)b)[val6] = ((unsigned int *)a)[val5];
         val7 = *(unsigned long *)(&j);
     }
-    if (*(unsigned long *)(&j) <= 19UL && val5 < 21UL && val7 >= 21UL && val6 < 21UL) {
+    if (*(unsigned long *)(&j) <= 19UL && val5 < 21UL && val6 < 21UL && val7 >= 21UL) {
         _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(val7, 21UL, &alloc_cc41d17d5a9f127d988c0a9be0945e9f);
     }
-    if (*(unsigned long *)(&j) <= 19UL && val5 < 21UL && val6 < 21UL && val7 < 21UL) {
+    if (*(unsigned long *)(&j) <= 19UL && val7 < 21UL && val5 < 21UL && val6 < 21UL) {
         val8 = *(unsigned long *)(&j) + 1UL;
     }
-    if (*(unsigned long *)(&j) <= 19UL && val5 < 21UL && val8 >= 21UL && val6 < 21UL && val7 < 21UL) {
+    if (*(unsigned long *)(&j) <= 19UL && val7 < 21UL && val5 < 21UL && val8 >= 21UL && val6 < 21UL) {
         _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(val8, 21UL, &alloc_2a88a997bb9f1e7a11884c35234a2edc);
     }
-    if (*(unsigned long *)(&j) <= 19UL && val8 < 21UL && val5 < 21UL && val6 < 21UL && val7 < 21UL) {
+    if (*(unsigned long *)(&j) <= 19UL && val7 < 21UL && val8 < 21UL && val5 < 21UL && val6 < 21UL) {
         ((unsigned int *)(&d))[val8] = ((unsigned int *)b)[val7];
         *(unsigned long *)(&j) = *(unsigned long *)(&j) + 1UL;
     }

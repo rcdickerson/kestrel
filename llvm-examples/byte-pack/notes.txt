@@ -1,0 +1,19 @@
+Original spec.txt
+  post:  left.prod == right.prod;
+
+Updated spec.txt
+  post:  left.prod == (int)(*((unsigned int*)(&right.prod)));
+
+
+Per-Task Times (ms)
+-------------------
+print-info: 0
+align-count-loops: 20
+aligned-crel: 3
+aligned-output: 0
+write-product: 8
+seahorn: 957
+print-info: 0
+
+KestRel completed in 990ms
+Verified: true

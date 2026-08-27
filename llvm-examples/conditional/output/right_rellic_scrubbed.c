@@ -10,5 +10,4 @@ void right(unsigned int age) {
     } else {
         *(unsigned int *)(&ret_val) = 20;
     }
-    return;
 }

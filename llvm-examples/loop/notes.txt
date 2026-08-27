@@ -1,0 +1,18 @@
+Original spec.txt
+  post: left.sum == right.sum;
+
+Updated spec.txt
+  post: left.sum == (int)(*((unsigned int*)(&right.sum)));
+
+Per-Task Times (ms)
+-------------------
+print-info: 0
+align-count-loops: 49
+aligned-crel: 2
+aligned-output: 0
+write-product: 6
+seahorn: 451
+print-info: 0
+
+KestRel completed in 511ms
+Verified: true

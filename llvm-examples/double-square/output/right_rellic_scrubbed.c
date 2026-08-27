@@ -10,5 +10,4 @@ void right(unsigned int x) {
         *(unsigned int *)(&z) = *(unsigned int *)(&z) - 1;
         *(unsigned int *)(&y) = *(unsigned int *)(&y) + x;
     }
-    return;
 }

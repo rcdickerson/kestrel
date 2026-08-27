@@ -2,4 +2,4 @@ cargo run -- --left llvm-examples/bubblesort/left.c \
              --right llvm-examples/bubblesort/right.rs \
              --spec llvm-examples/bubblesort/spec.txt \
              count-loops --output-mode seahorn \
-             --is-rust --verbose
+             --is-rust --verbose --infer-invariants

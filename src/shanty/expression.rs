@@ -11,6 +11,7 @@ pub enum Expression {
   StringLiteral(String),
   UnOp{expr: Box<Expression>, op: String},
   BinOp{lhs: Box<Expression>, rhs: Box<Expression>, op: String},
+  Ternary{condition: Box<Expression>, then: Box<Expression>, els: Box<Expression>},
   Statement(Box<Statement>),
 }
 
@@ -18,7 +19,7 @@ impl Expression {
   pub fn emit(&self, writer: &mut Writer, subexp: bool) {
     match self {
       Expression::ArrayIndex{expr, index} => {
-        expr.emit(writer, false);
+        expr.emit(writer, true);
         writer.write("[");
         index.emit(writer, false);
         writer.write("]");
@@ -59,6 +60,15 @@ impl Expression {
         lhs.emit(writer, true);
         writer.write(" ").write(op).write(" ");
         rhs.emit(writer, true);
+        if subexp { writer.write(")"); }
+      },
+      Expression::Ternary{condition, then, els} => {
+        if subexp { writer.write("("); }
+        condition.emit(writer, true);
+        writer.write(" ? ");
+        then.emit(writer, true);
+        writer.write(" : ");
+        els.emit(writer, true);
         if subexp { writer.write(")"); }
       },
       Expression::Statement(stmt) => {

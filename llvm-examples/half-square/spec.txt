@@ -4,5 +4,5 @@
        && right.low > right.h && right.h > 0;
  * left:  left;
  * right: right;
- * post:  left.y == right.y;
+ * post:  left.y == (int)(*((unsigned int*)(&right.y)));
  */

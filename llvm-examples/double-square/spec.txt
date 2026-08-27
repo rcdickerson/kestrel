@@ -2,5 +2,5 @@
  * pre: left.x == right.x;
  * left: left;
  * right: right;
- * post: left.y == right.y;
+ * post: left.y == (int)(*((unsigned int*)(&right.y)));
  */

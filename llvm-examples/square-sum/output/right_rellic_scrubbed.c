@@ -10,5 +10,4 @@ void right(unsigned int arg0, unsigned int b) {
         *(unsigned int *)(&c) = *(unsigned int *)(&c) + *(unsigned int *)(&a) * *(unsigned int *)(&a);
         *(unsigned int *)(&a) = *(unsigned int *)(&a) + 1;
     }
-    return;
 }

@@ -1,6 +1,6 @@
 /* @KESTREL
- * pre:   left.x == right.x;
+ * pre:   left.x == right.x && left.x > -2 && left.x < 2;
  * left:  left;
  * right: right;
- * post:  left.y == right.y;
+ * post:  left.y == (int)(*((unsigned int*)(&right.y)));
  */

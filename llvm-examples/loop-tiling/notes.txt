@@ -1,17 +1,4 @@
-Un handled/ scrubbed functions
-        _RNvNvMNtNtCscI6d9CVNmLh_4core3ptr7mut_ptrOp6offset18precondition_checkCs7Hul5VkTjfJ_5right(a, val10, 4, &alloc_2f7d188d887abf5498b6a312298c5ff3);
-        _RNvNtCscI6d9CVNmLh_4core9panicking36panic_misaligned_pointer_dereference(4, val12, &alloc_dad866affc51c6a11cc22d96a0bd7a9d);
-        _RNvNtCscI6d9CVNmLh_4core9panicking30panic_null_pointer_dereference(&alloc_dad866affc51c6a11cc22d96a0bd7a9d);
-        _RNvNtCscI6d9CVNmLh_4core9panicking18panic_nounwind_fmt(&alloc_0ed0763d8bf93ac79247e07858374e35, 421, 0, arg3);
-    call9 = llvm_smul_with_overflow_i64(count, size);
+No result.
 
-
-and when running the code i got this output
-
-
-thread 'main' (185) panicked at src/crel/parser.rs:197:10:
-Unsupported type specifier: Struct(Node { node: StructType { kind: Node { node: Struct, span: 229…235 }, identifier: Some(Node { node: Identifier { name: "literal_struct_0" }, span: 236…252 }), declarations: None }, span: 229…253 })
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-root@811a34bdd535:/kestrel# 
-
-So structs once again need handled. 
+thread 'main' panicked at src/crel/parser.rs:218:12:
+Unsupported abstract declarator in type name: Array(Node { node: ArrayDeclarator { qualifiers: [], size: VariableExpression(Node { node: Constant(Node { node: Integer(Integer { base: Decimal, number: "10", suffix: IntegerSuffix { size: Int, unsigned: false, imaginary: false } }), span: 1817…1819 }), span: 1817…1819 }) }, span: 1817…1820 })

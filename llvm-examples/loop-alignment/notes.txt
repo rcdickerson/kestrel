@@ -1,0 +1,23 @@
+No result.
+
+I tried fixing just the spec, which compiles, but the product program
+hits clang errors on the third argument to each panic_bounds_check call, 
+which the scrubber strips the declaration of but leaves referenced:
+
+    error: use of undeclared identifier 'r_alloc_2a88a997bb9f1e7a11884c35234a2edc'
+        r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val8, 21, &r_alloc_2a88a997bb9f1e7a11884c35234a2edc);
+
+I made a copy of the aligned product and repaired it to test my spec rewrite 
+using SeaHorn directly. SeaHorn output Unsat, proving my repair. 
+The only repair was replacing every panic_bounds_check call with sassert(0)
+
+To call SeaHorn:
+    sea pf -m64 --horn-strictly-la=false llvm-examples/loop-alignment/repaired_product.c
+
+Original spec.txt
+  pre: for _i in (0..20) { left.a[_i] == right.a[_i] && left.b[0] == right.b[0] };
+  post: for _j in (1..20) { left.d[_j] == right.d[_j] };
+
+Updated spec.txt
+  pre: for _i in (0..20) { left.a[_i] == ((unsigned int*)right.a)[_i] && left.b[0] == ((unsigned int*)right.b)[0] };
+  post: for _j in (1..20) { left.d[_j] == (int)((unsigned int*)&right.d)[_j] };

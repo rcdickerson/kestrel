@@ -1,0 +1,3969 @@
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+input-language C/C++
+decl-version 2.0
+var-comparability implicit
+
+ppt ..main():::ENTER
+  ppt-type enter
+
+ppt ..main():::EXIT0
+  ppt-type subexit
+  variable return
+    var-kind variable
+    rep-type int
+    dec-type int
+    comparability 1
+
+ppt .._run_test():::ENTER
+  ppt-type enter
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._run_test():::EXIT0
+  ppt-type subexit
+  variable _input_0
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::ENTER
+  ppt-type enter
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt ..timeout_handler():::EXIT0
+  ppt-type subexit
+  variable signum
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::ENTER
+  ppt-type enter
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._test_gen():::EXIT0
+  ppt-type subexit
+  variable x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+
+ppt .._main():::ENTER
+  ppt-type enter
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._main():::EXIT0
+  ppt-type subexit
+  variable l_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable r_x
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_b3f861e256cd469894557636a578317a():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_8fc0b47f009443c78526fa835044c411():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::ENTER
+  ppt-type enter
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+
+ppt .._loop_head_5a66702fa37645d1817b69d886a74958():::EXIT0
+  ppt-type subexit
+  variable l_y
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 1
+  variable l_z
+    var-kind variable
+    rep-type int
+    dec-type int
+    flags is_param 
+    comparability 2
+

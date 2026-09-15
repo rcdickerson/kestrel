@@ -165,7 +165,10 @@ fn add_verification(workflow: &mut Workflow<KestrelContext>, output_mode: Output
       workflow.add_task_unless_verifed(Houdafny::new(None));
     },
     OutputMode::Icra    => panic!("No verifier is setup for output mode Icra."),
-    OutputMode::Seahorn => workflow.add_task_unless_verifed(Seahorn::new(None)),
+    OutputMode::Seahorn => {
+      workflow.add_task_unless_verifed(InvarsDaikon::new(None));
+      workflow.add_task_unless_verifed(Seahorn::new(None));
+    }
     OutputMode::SvComp  => panic!("No verifier is setup for output mode SvComp."),
   };
 }

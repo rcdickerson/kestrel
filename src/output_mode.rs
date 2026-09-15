@@ -376,7 +376,7 @@ impl OutputMode {
       .map(|decl| CRel::Declaration(decl.clone()))
       .collect();
     new_seq.push(new_main);
-    format!("{}\n{}", self.top(filename), CRel::Seq(new_seq).to_c(false, false))
+    format!("{}\n{}", self.top(filename), CRel::Seq(new_seq).to_c(true, true))
   }
 
   fn top(&self, filename: &Option<String>) -> String {

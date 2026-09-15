@@ -1,0 +1,7 @@
+No result.
+
+seahorn.c:12:21: error: invalid operands to binary expression ('int' and 'void')
+    assume((l_a[_i] == r_a[_i]) && ((l_b[_i] == r_b[_i]) && (l_c[_i] == r_c[_i])));
+
+seahorn.c:56:76: error: use of undeclared identifier 'r_alloc_2eb431f63ae4896b066f944852c62b63'
+    r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val5, 10, &r_alloc_2eb431f63ae4896b066f944852c62b63);

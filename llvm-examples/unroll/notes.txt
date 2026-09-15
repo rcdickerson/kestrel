@@ -1,0 +1,18 @@
+Original spec.txt
+  post: left.x == right.x;
+
+Updated spec.txt
+  post: left.x == (int)(*((unsigned int*)(&right.x)));
+
+Per-Task Times (ms)
+-------------------
+print-info: 0
+align-count-loops: 59
+aligned-crel: 3
+aligned-output: 0
+write-product: 6
+seahorn: 508
+print-info: 0
+
+KestRel completed in 579ms
+Verified: true

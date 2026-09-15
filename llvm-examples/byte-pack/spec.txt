@@ -2,5 +2,5 @@
  * pre:   left.n == right.n;
  * left:  left;
  * right: right;
- * post:  left.prod == ((right.prod[0] << 24) | (right.prod[1] << 16) | (right.prod[2] << 8) | right.prod[3]);
+ * post:  left.prod == (int)(*((unsigned int*)(&right.prod)));
  */

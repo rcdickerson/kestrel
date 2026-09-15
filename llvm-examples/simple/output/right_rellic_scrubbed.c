@@ -3,5 +3,4 @@ void right(unsigned int x) {
     char x_var1[4];
     *(unsigned int *)(&x_var1) = x;
     *(unsigned int *)(&ret_val) = x + 1;
-    return;
 }

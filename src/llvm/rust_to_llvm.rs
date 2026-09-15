@@ -1,14 +1,12 @@
 use std::path::Path;
 use std::process::Command;
 
-pub fn compile_rust_to_llvm(input_file: &String) -> String {
+pub fn compile_rust_to_llvm(input_file: &String, out_dir: &Path) -> String {
   if !Path::new(input_file).exists() {
       panic!("File not found: {}", input_file);
   }
 
   let path = std::path::Path::new(input_file);
-  let out_dir = path.parent().unwrap_or(std::path::Path::new(".")).join("output");
-  std::fs::create_dir_all(&out_dir).expect("Failed to create output directory");
   let out_file = out_dir.join(format!("{}_rust.ll", path.file_stem().unwrap().to_str().unwrap())).to_str().unwrap().to_string();
 
   let output = Command::new("rustc")

@@ -655,6 +655,10 @@ fn replace_ret_val_aexpr(aexpr: CondAExpr, replacement: &CondAExpr) -> CondAExpr
       rhs: Box::new(replace_ret_val_aexpr(*rhs, replacement)),
       op,
     },
+    CondAExpr::Cast{ty, aexp} => CondAExpr::Cast {
+      ty,
+      aexp: Box::new(replace_ret_val_aexpr(*aexp, replacement)),
+    },     
     CondAExpr::FunCall{name, args} => CondAExpr::FunCall {
       name,
       args: args.iter()

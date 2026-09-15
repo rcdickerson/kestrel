@@ -2,4 +2,4 @@ cargo run -- --left llvm-examples/conditional/left.c \
              --right llvm-examples/conditional/right.rs \
              --spec llvm-examples/conditional/spec.txt \
              count-loops --output-mode seahorn \
-             --is-rust --verbose
+             --is-rust --verbose --infer-invariants

@@ -9,7 +9,6 @@ void right(unsigned int x) {
     *(unsigned int *)(&z) = 16;
     *(unsigned int *)(&w) = 0;
     if ((int)(*(unsigned int *)(&y)) <= 4) {
-        return;
     } else {
         val4 = *(unsigned int *)(&w);
     }

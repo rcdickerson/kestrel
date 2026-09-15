@@ -1,6 +1,6 @@
 /* @KESTREL
- * pre:   left.a == right.a && left.b == right.b;
+ * pre:   left.a == right.arg0 && left.b == right.b;
  * left:  left;
  * right: right;
- * post:  left.c == right.c;
+ * post:  left.c == (int)(*((unsigned int*)(&right.c)));
  */

@@ -17,5 +17,4 @@ void right(unsigned int B, unsigned int C, unsigned int N, unsigned int arg3) {
         *(unsigned int *)(&j) = *(unsigned int *)(&j) + B;
         *(unsigned int *)(&i) = *(unsigned int *)(&i) + 1;
     }
-    return;
 }

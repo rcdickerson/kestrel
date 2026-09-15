@@ -11,5 +11,4 @@ void right(unsigned int a, unsigned int b, unsigned int c) {
     val5 = a + b;
     *(unsigned int *)(&sum) = val5;
     *(unsigned int *)(&prod) = val5 * c;
-    return;
 }

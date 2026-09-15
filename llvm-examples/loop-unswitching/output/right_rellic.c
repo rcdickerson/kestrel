@@ -62,19 +62,19 @@ void right(void *a, void *b, void *c, unsigned int k, unsigned int x) {
     if ((int)x >= 7 && *(unsigned long *)(&j) < 10UL && val10 >= 10UL && val8 < 10UL && val9 < 10UL) {
         _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(val10, 10UL, &alloc_e3f13fad5a0fb42e992397669711c193);
     }
-    if ((int)x >= 7 && *(unsigned long *)(&j) < 10UL && val10 < 10UL && val8 < 10UL && val9 < 10UL) {
+    if ((int)x >= 7 && *(unsigned long *)(&j) < 10UL && val8 < 10UL && val9 < 10UL && val10 < 10UL) {
         val11 = *(unsigned long *)(&j) - 1UL;
     }
-    if ((int)x >= 7 && *(unsigned long *)(&j) < 10UL && val10 < 10UL && val8 < 10UL && val9 < 10UL && val11 >= 10UL) {
+    if ((int)x >= 7 && *(unsigned long *)(&j) < 10UL && val8 < 10UL && val9 < 10UL && val10 < 10UL && val11 >= 10UL) {
         _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(val11, 10UL, &alloc_bb2f62fcbec2afd6481e273b7e37fcc1);
     }
-    if ((int)x >= 7 && *(unsigned long *)(&j) < 10UL && val10 < 10UL && val8 < 10UL && val9 < 10UL && val11 < 10UL) {
+    if ((int)x >= 7 && *(unsigned long *)(&j) < 10UL && val11 < 10UL && val8 < 10UL && val9 < 10UL && val10 < 10UL) {
         val12 = *(unsigned long *)(&j);
     }
-    if ((int)x >= 7 && *(unsigned long *)(&j) < 10UL && val10 < 10UL && val8 < 10UL && val9 < 10UL && val11 < 10UL && val12 >= 10UL) {
+    if ((int)x >= 7 && *(unsigned long *)(&j) < 10UL && val11 < 10UL && val8 < 10UL && val9 < 10UL && val10 < 10UL && val12 >= 10UL) {
         _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(val12, 10UL, &alloc_31ffd0f23462b2f4117f2c5301d8027b);
     }
-    if ((int)x >= 7 && *(unsigned long *)(&j) < 10UL && val10 < 10UL && val12 < 10UL && val8 < 10UL && val9 < 10UL && val11 < 10UL) {
+    if ((int)x >= 7 && *(unsigned long *)(&j) < 10UL && val11 < 10UL && val12 < 10UL && val8 < 10UL && val9 < 10UL && val10 < 10UL) {
         ((unsigned int *)b)[val12] = ((unsigned int *)a)[val10] * ((unsigned int *)b)[val11];
         *(unsigned long *)(&j) = *(unsigned long *)(&j) + 1UL;
     }
@@ -87,35 +87,35 @@ void right(void *a, void *b, void *c, unsigned int k, unsigned int x) {
     if ((int)x < 7 && *(unsigned long *)(&j_var7) < 10UL) {
         val13 = *(unsigned long *)(&j_var7);
     }
-    if ((int)x < 7 && *(unsigned long *)(&j_var7) < 10UL && val13 >= 10UL) {
+    if ((int)x < 7 && val13 >= 10UL && *(unsigned long *)(&j_var7) < 10UL) {
         _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(val13, 10UL, &alloc_a431e0af1f0a773d7894a8f7648fcbbb);
     }
-    if ((int)x < 7 && *(unsigned long *)(&j_var7) < 10UL && val13 < 10UL) {
+    if ((int)x < 7 && val13 < 10UL && *(unsigned long *)(&j_var7) < 10UL) {
         val14 = *(unsigned long *)(&j_var7);
     }
-    if ((int)x < 7 && *(unsigned long *)(&j_var7) < 10UL && val14 >= 10UL && val13 < 10UL) {
+    if ((int)x < 7 && val13 < 10UL && *(unsigned long *)(&j_var7) < 10UL && val14 >= 10UL) {
         _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(val14, 10UL, &alloc_86a95f0408d87e2b4012bd6715ad108d);
     }
-    if ((int)x < 7 && *(unsigned long *)(&j_var7) < 10UL && val14 < 10UL && val13 < 10UL) {
+    if ((int)x < 7 && val13 < 10UL && *(unsigned long *)(&j_var7) < 10UL && val14 < 10UL) {
         ((unsigned int *)a)[val14] = ((unsigned int *)a)[val13] + k;
         val15 = *(unsigned long *)(&j_var7);
     }
-    if ((int)x < 7 && *(unsigned long *)(&j_var7) < 10UL && val14 < 10UL && val13 < 10UL && val15 >= 10UL) {
+    if ((int)x < 7 && val13 < 10UL && *(unsigned long *)(&j_var7) < 10UL && val15 >= 10UL && val14 < 10UL) {
         _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(val15, 10UL, &alloc_72db5233068273f5dabaebf836ed1389);
     }
-    if ((int)x < 7 && *(unsigned long *)(&j_var7) < 10UL && val14 < 10UL && val15 < 10UL && val13 < 10UL) {
+    if ((int)x < 7 && val13 < 10UL && *(unsigned long *)(&j_var7) < 10UL && val15 < 10UL && val14 < 10UL) {
         val16 = *(unsigned long *)(&j_var7);
     }
-    if ((int)x < 7 && val16 >= 10UL && *(unsigned long *)(&j_var7) < 10UL && val14 < 10UL && val15 < 10UL && val13 < 10UL) {
+    if ((int)x < 7 && val13 < 10UL && *(unsigned long *)(&j_var7) < 10UL && val15 < 10UL && val16 >= 10UL && val14 < 10UL) {
         _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(val16, 10UL, &alloc_40b9f4e097b3d8001419ebb57560c155);
     }
-    if ((int)x < 7 && *(unsigned long *)(&j_var7) < 10UL && val14 < 10UL && val15 < 10UL && val13 < 10UL && val16 < 10UL) {
+    if ((int)x < 7 && val13 < 10UL && val16 < 10UL && *(unsigned long *)(&j_var7) < 10UL && val15 < 10UL && val14 < 10UL) {
         val17 = *(unsigned long *)(&j_var7);
     }
-    if ((int)x < 7 && *(unsigned long *)(&j_var7) < 10UL && val14 < 10UL && val17 >= 10UL && val15 < 10UL && val13 < 10UL && val16 < 10UL) {
+    if ((int)x < 7 && val13 < 10UL && val16 < 10UL && *(unsigned long *)(&j_var7) < 10UL && val15 < 10UL && val17 >= 10UL && val14 < 10UL) {
         _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(val17, 10UL, &alloc_6ccfbbdd552b4c0101c2de9d1f6e9ee2);
     }
-    if ((int)x < 7 && *(unsigned long *)(&j_var7) < 10UL && val14 < 10UL && val15 < 10UL && val13 < 10UL && val16 < 10UL && val17 < 10UL) {
+    if ((int)x < 7 && val13 < 10UL && val16 < 10UL && *(unsigned long *)(&j_var7) < 10UL && val15 < 10UL && val17 < 10UL && val14 < 10UL) {
         ((unsigned int *)b)[val17] = ((unsigned int *)a)[val15] * ((unsigned int *)c)[val16];
         *(unsigned long *)(&j_var7) = *(unsigned long *)(&j_var7) + 1UL;
     }

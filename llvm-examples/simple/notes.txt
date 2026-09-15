@@ -1,0 +1,18 @@
+Original spec.txt
+  post: left.ret_val == right.ret_val;
+
+Updated spec.txt
+  post: left.ret_val == (int)(*((unsigned int*)(&right.ret_val)));
+
+Per-Task Times (ms)
+-------------------
+print-info: 0
+align-count-loops: 16
+aligned-crel: 2
+aligned-output: 0
+write-product: 7
+seahorn: 308
+print-info: 0
+
+KestRel completed in 335ms
+Verified: true

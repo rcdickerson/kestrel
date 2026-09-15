@@ -2,4 +2,4 @@ cargo run -- --left llvm-examples/loop-tiling/left.c \
              --right llvm-examples/loop-tiling/right.rs \
              --spec llvm-examples/loop-tiling/spec.txt \
              count-loops --output-mode seahorn \
-             --is-rust --verbose
+             --is-rust --verbose --infer-invariants

@@ -1,0 +1,81 @@
+Original spec.txt
+  pre:   left.x == right.x;
+  post:  left.y == right.y;
+
+Updated spec.txt
+  pre:   left.x == right.x && left.x > -2 && left.x < 2;
+  post:  left.y == (int)(*((unsigned int*)(&right.y)));
+
+With the post change alone it ran endlessly so i 
+added left.x > -2 && left.x < 2 to get it to finish.
+Below are the results of increasing the bounds.
+
+WITH 0 < x < 2 (x = 1)
+    Per-Task Times (ms)
+    -------------------
+    print-info: 0
+    align-count-loops: 88
+    aligned-crel: 2
+    aligned-output: 0
+    write-product: 6
+    seahorn: 2036
+    print-info: 0
+
+    KestRel completed in 2135ms
+    Verified: true
+
+WITH 0 < x < 3 (x = 1 or x = 2)
+    Per-Task Times (ms)
+    -------------------
+    print-info: 0
+    align-count-loops: 108
+    aligned-crel: 2
+    aligned-output: 0
+    write-product: 6
+    seahorn: 359
+    print-info: 0
+
+    KestRel completed in 477ms
+    Verified: true
+
+WITH 0 < x < 4 (x = 1 or x = 2 or x = 3)
+    Per-Task Times (ms)
+    -------------------
+    print-info: 0
+    align-count-loops: 87
+    aligned-crel: 2
+    aligned-output: 0
+    write-product: 6
+    seahorn: 12340
+    print-info: 0
+
+    KestRel completed in 12438ms
+    Verified: true
+
+WITH -1 < x < 1 (x = 0)
+    Per-Task Times (ms)
+    -------------------
+    print-info: 0
+    align-count-loops: 97
+    aligned-crel: 2
+    aligned-output: 0
+    write-product: 10
+    seahorn: 314
+    print-info: 0
+
+    KestRel completed in 426ms
+    Verified: true
+
+WITH -2 < x < 2 (x = -1 or x = 0 or x = 1)
+    Per-Task Times (ms)
+    -------------------
+    print-info: 0
+    align-count-loops: 92
+    aligned-crel: 2
+    aligned-output: 0
+    write-product: 6
+    seahorn: 429
+    print-info: 0
+
+    KestRel completed in 532ms
+    Verified: true

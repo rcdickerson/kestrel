@@ -73,18 +73,18 @@ target/debug/kestrel --help
 
 KestRel also supports running extraction on a pair of distinct programs, permitting both cross-language (C and Rust) and C-to-C relational verification. Because the input programs are maintained in separate files—and may utilize differing syntaxes—this pipeline requires isolating the KestRel specification block into a dedicated text file.
 
-You can execute this pipeline by providing the left C file with `--input`, the right file (C or Rust) with `--second-input`, and the specification file with `--spec-input`.
+You can execute this pipeline by providing the left C file with `--left`, the right file (C or Rust) with `--right`, and the specification file with `--spec`.
 
 For example, to run loop counting extraction and invariant inference comparing a C benchmark against a Rust implementation:
 
 ``` bash
-cargo run -- --input llvm-examples/double-square/left.c \
-             --second-input llvm-examples/double-square/right.rs \
-             --spec-input llvm-examples/double-square/spec.txt \
-             count-loops --infer-invariants --is-rust-input
+cargo run -- --left llvm-examples/double-square/left.c \
+             --right llvm-examples/double-square/right.rs \
+             --spec llvm-examples/double-square/spec.txt \
+             count-loops --output-mode seahorn --infer-invariants --is-rust
 ```
 
-Note: The `--is-rust-input` flag is strictly required when the second input is a Rust file.
+Note: The `--is-rust` and `--output-mode seahorn` flags are strictly required when the second input is a Rust file.
 
 ## Running Experiments
 

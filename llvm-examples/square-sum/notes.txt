@@ -1,0 +1,23 @@
+Original spec.txt
+  pre:   left.a == right.a && left.b == right.b;
+  post:  left.c == right.c;
+
+Updated spec.txt
+  pre:   left.a == right.arg0 && left.b == right.b;
+  post:  left.c == (int)(*((unsigned int*)(&right.c)));
+
+right.a is mutable in the Rust signature, and so it lost its name.
+Used right.arg0 in the pre condition instead.
+
+Per-Task Times (ms)
+-------------------
+print-info: 0
+align-count-loops: 53
+aligned-crel: 6
+aligned-output: 1
+write-product: 6
+seahorn: 4403
+print-info: 0
+
+KestRel completed in 4471ms
+Verified: true

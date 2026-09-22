@@ -229,6 +229,8 @@ fn kestrel_workflow(args: Args) {
 
   let unaligned_crel = UnalignedCRel::from_kestrel_spec(&raw_crel, &spec);
   let unaligned_eggroll = unaligned_crel.unaligned_main.to_eggroll();
+  //Hand Unaligned and spec to spec repair
+  let spec = kestrel::spec::repair::repair_spec(&spec, &unaligned_crel);
 
   let unaligned_path = out_dir.join("unaligned_product.c");
   println!("Writing {}...", unaligned_path.display());

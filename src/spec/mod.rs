@@ -3,6 +3,7 @@
 pub mod condition;
 pub mod parser;
 pub mod to_crel;
+pub mod repair;
 
 use crate::spec::condition::*;
 

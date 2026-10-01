@@ -49,6 +49,7 @@ define_language! {
     "cast"          = Cast([Id; 2]),
     "type-name"     = TypeName(Box<[Id]>),
     "pointer-type"  = PointerType(Id),
+    "array-type"    = ArrayType([Id; 2]),
 
     // An abbreviated form of :
     //   while c1 && c2 { b1; b2 };

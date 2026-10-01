@@ -429,6 +429,7 @@ fn type_name_to_string(ty: &TypeName) -> String {
       .collect::<Vec<String>>()
       .join(" "),
     TypeName::Pointer(inner) => format!("{}*", type_name_to_string(inner)),
+    TypeName::Array(inner, size) => format!("{}[{}]", type_name_to_string(inner), size),
   }
 }
 

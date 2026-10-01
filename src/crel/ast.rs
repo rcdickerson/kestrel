@@ -178,6 +178,7 @@ pub enum Type {
 pub enum TypeName {
   Base(Vec<Type>),
   Pointer(Box<TypeName>),
+  Array(Box<TypeName>, usize),
 }
 
 #[derive(Clone, Debug, PartialEq)]

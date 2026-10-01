@@ -682,6 +682,8 @@ fn expect_type_name(sexp: &Sexp) -> TypeName {
         TypeName::Base(sexps[1..].iter().map(expect_type).collect()),
       Sexp::Atom(Atom::S(s)) if s == "pointer-type" =>
         TypeName::Pointer(Box::new(expect_type_name(&sexps[1]))),
+      Sexp::Atom(Atom::S(s)) if s == "array-type" =>
+        TypeName::Array(Box::new(expect_type_name(&sexps[1])), expect_usize(&sexps[2])),
       _ => panic!("Expected type name, got: {}", sexp),
     },
     _ => panic!("Expected type name, got: {}", sexp),
@@ -850,5 +852,12 @@ fn expect_string(sexp: &Sexp) -> String {
   match &sexp {
     Sexp::Atom(Atom::S(s)) => s.clone(),
     _ => panic!("Expected string literal, got: {}", sexp)
+  }
+}
+
+fn expect_usize(sexp: &Sexp) -> usize {
+  match &sexp {
+    Sexp::Atom(Atom::I(i)) => usize::try_from(*i).unwrap(),
+    _ => panic!("Expected usize literal, got: {}", sexp)
   }
 }

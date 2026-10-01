@@ -292,6 +292,7 @@ fn type_name_to_eggroll(type_name: &TypeName) -> String {
       format!("(type-name {})", specifiers_egg)
     },
     TypeName::Pointer(inner) => format!("(pointer-type {})", type_name_to_eggroll(inner)),
+    TypeName::Array(inner, size) => format!("(array-type {} {})", type_name_to_eggroll(inner), size),
   }
 }
   

@@ -1,5 +1,6 @@
 use crate::names::{CollectVars, all_vars, union_all, singleton};
 use crate::names::{CollectVarTypes, all_var_types, union_all_types};
+use crate::names::{CollectVarAccessTypes, all_var_access_types, union_all_access_types};
 use crate::crel::ast::*;
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -362,6 +363,188 @@ fn declarator_type(ty: TypeName, declarator: &Declarator) -> TypeName {
     }),
     _ => ty,
   }
+}
+
+impl CollectVarAccessTypes for CRel {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match self {
+      CRel::Declaration(decl) => decl.var_access_types(),
+      CRel::FunctionDefinition{specifiers:_, name:_, params, body} => {
+        union_all_access_types(vec!(
+          all_var_access_types(params.clone()),
+          body.var_access_types(),
+        ))
+      },
+      CRel::Seq(crels) => all_var_access_types(crels.clone()),
+    }
+  }
+}
+
+impl CollectVarAccessTypes for Expression {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match self {
+      Expression::Identifier{..} => HashMap::new(),
+      Expression::ConstBool(_) => HashMap::new(),
+      Expression::ConstInt(_) => HashMap::new(),
+      Expression::ConstFloat(_) => HashMap::new(),
+      Expression::StringLiteral(_) => HashMap::new(),
+      Expression::Call{callee, args} => {
+        union_all_access_types(vec!(
+          callee.var_access_types(),
+          all_var_access_types(args.clone()),
+        ))
+      },
+      Expression::ChoiceCall{callee, args} => {
+        union_all_access_types(vec!(
+          callee.var_access_types(),
+          all_var_access_types(args.clone()),
+        ))
+      },
+      Expression::Ternary { condition, then, els } => {
+        union_all_access_types(vec!(
+          condition.var_access_types(),
+          then.var_access_types(),
+          els.var_access_types(),
+        ))
+      },
+      Expression::Unop{expr, op: _} => match punned_access(self) {
+        Some((name, ty)) => HashMap::from([(name, vec!(ty))]),
+        None => expr.var_access_types(),
+      },
+      Expression::Binop{lhs, rhs, op: _} => {
+        union_all_access_types(vec!(lhs.var_access_types(), rhs.var_access_types()))
+      },
+      Expression::Cast{expr, ..} => expr.var_access_types(),
+      Expression::Forall{condition, ..} => condition.var_access_types(),
+      Expression::SketchHole => HashMap::new(),
+      Expression::Statement(stmt) => stmt.var_access_types(),
+    }
+  }
+}
+
+impl CollectVarAccessTypes for Statement {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match self {
+      Statement::Assert(expr) => expr.var_access_types(),
+      Statement::Assume(expr) => expr.var_access_types(),
+      Statement::BasicBlock(items) => all_var_access_types(items.clone()),
+      Statement::Break => HashMap::new(),
+      Statement::Compound(items) => all_var_access_types(items.clone()),
+      Statement::Expression(expr) => expr.var_access_types(),
+      Statement::GuardedRepeat{condition, body, ..} => {
+        union_all_access_types(vec!(condition.var_access_types(), body.var_access_types()))
+      }
+      Statement::If{condition, then, els} => {
+        union_all_access_types(vec!(
+          condition.var_access_types(),
+          then.var_access_types(),
+          match els {
+            None => HashMap::new(),
+            Some(stmt) => stmt.var_access_types(),
+          },
+        ))
+      },
+      Statement::None => HashMap::new(),
+      Statement::Relation{lhs, rhs} => {
+        union_all_access_types(vec!(lhs.var_access_types(), rhs.var_access_types()))
+      },
+      Statement::Return(expr) => {
+        match expr {
+          None => HashMap::new(),
+          Some(expr) => expr.var_access_types(),
+        }
+      },
+      Statement::While{condition, body, ..} => {
+        match body {
+          None => condition.var_access_types(),
+          Some(body) => union_all_access_types(vec!(condition.var_access_types(), body.var_access_types()))
+        }
+      },
+      Statement::WhileRel{condition_left, condition_right, body_left, body_right, body_merged, ..} => {
+        let mut types = vec! [condition_left.var_access_types(), condition_right.var_access_types()];
+        body_left.as_ref().map(|body| types.push(body.var_access_types()));
+        body_right.as_ref().map(|body| types.push(body.var_access_types()));
+        body_merged.as_ref().map(|body| types.push(body.var_access_types()));
+        union_all_access_types(types)
+      },
+    }
+  }
+}
+
+impl CollectVarAccessTypes for Declaration {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match &self.initializer {
+      None => self.declarator.var_access_types(),
+      Some(expr) => union_all_access_types(vec!(
+        self.declarator.var_access_types(),
+        expr.var_access_types()))
+    }
+  }
+}
+
+impl CollectVarAccessTypes for Declarator {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match self {
+      Declarator::Identifier{..} => HashMap::new(),
+      Declarator::Array{sizes, ..} => {
+        let types = sizes.iter()
+          .map(|expr| expr.var_access_types())
+          .collect::<Vec<HashMap<String, Vec<TypeName>>>>();
+        union_all_access_types(types)
+      },
+      Declarator::Function{params, ..} => {
+        let types : Vec<HashMap<String, Vec<TypeName>>> = params.iter()
+          .map(|p| p.var_access_types())
+          .collect();
+        union_all_access_types(types)
+      },
+      Declarator::Pointer(decl) => {
+        decl.var_access_types()
+      }
+    }
+  }
+}
+
+impl CollectVarAccessTypes for Initializer {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match self {
+      Initializer::Expression(expr) => expr.var_access_types(),
+      Initializer::List(exprs) => union_all_access_types(exprs.into_iter()
+          .map(|expr| expr.var_access_types())
+          .collect::<Vec<_>>()),
+    }
+  }
+}
+
+impl CollectVarAccessTypes for ParameterDeclaration {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match &self.declarator {
+      None => HashMap::new(),
+      Some(decl) => decl.var_access_types(),
+    }
+  }
+}
+
+impl CollectVarAccessTypes for BlockItem {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match self {
+      BlockItem::Declaration(decl) => decl.var_access_types(),
+      BlockItem::Statement(stmt) => stmt.var_access_types(),
+    }
+  }
+}
+
+fn punned_access(expr: &Expression) -> Option<(String, TypeName)> {
+  if let Expression::Unop{expr: cast, op: UnaryOp::Deref} = expr {
+    if let Expression::Cast{ty: TypeName::Pointer(ty), expr: addr} = cast.as_ref() {
+      if let Expression::Unop{expr: var, op: UnaryOp::Address} = addr.as_ref() {
+        if let Expression::Identifier{name} = var.as_ref() {
+          return Some((name.clone(), (**ty).clone()));
+        }
+      }
+    }
+  }
+  None
 }
 
 #[cfg(test)]

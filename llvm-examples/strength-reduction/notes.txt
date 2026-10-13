@@ -1,12 +1,8 @@
-No result.
-
-Original spec.txt
-  pre: left.B == right.B && left.C == right.C && left.N == right.N && left.x == right.x;
-  post: left.x == right.x;
-
-Updated spec.txt
+Status: Not verified, SeaHorn timed out after 300 s (spec repaired automatically)
+Manual spec edits still needed:
   pre: left.B == right.B && left.C == right.C && left.N == right.N && left.x == right.arg3;
-  post: left.x == (int)(*((unsigned int*)(&right.x)));
+  (original pre was ... && left.x == right.x)
+Repaired post: sassert(l_x == (*((unsigned int*)(&r_x))));
 
 right.x is mutable in the Rust signature, and so it lost its name.
 Used right.arg3 in the pre condition instead.

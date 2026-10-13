@@ -1,4 +1,8 @@
-No result.
+Status: Failed, panics while parsing the C (before alignment)
+Manual spec edits: none
 
 thread 'main' panicked at src/crel/parser.rs:218:12:
-Unsupported abstract declarator in type name: Array(Node { node: ArrayDeclarator { qualifiers: [], size: VariableExpression(Node { node: Constant(Node { node: Integer(Integer { base: Decimal, number: "10", suffix: IntegerSuffix { size: Int, unsigned: false, imaginary: false } }), span: 1817…1819 }), span: 1817…1819 }) }, span: 1817…1820 })
+Unsupported abstract declarator in type name: Array(Node { node: ArrayDeclarator { qualifiers: [], size: VariableExpress
+
+Cause: the cast (unsigned int (*)[10])a uses an array type. TypeName now has
+an Array variant, but the parser's trans_abstract_declarator doesn't produce it.

@@ -25,20 +25,20 @@ void main(int l_A[A_SIZE], int l_val, void* r_a, int r_val) {
   if (((*((unsigned long*)(&r_j))) < 10) && (r_val6 >= 11)) {
     r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val6, 11, &r_alloc_1b6aad345a552ecadc4ef2f80a0f897d);
   }
-  if ((!(((r_val6 >= 11) || (((int)((unsigned int*)r_a)[r_val6]) < ((int)r_val))) || ((*((unsigned long*)(&r_j))) >= 10))) || ((*((unsigned long*)(&r_j))) >= 10)) {
+  if (((*((unsigned long*)(&r_j))) >= 10) || (!(((r_val6 >= 11) || (((int)((unsigned int*)r_a)[r_val6]) < ((int)r_val))) || ((*((unsigned long*)(&r_j))) >= 10)))) {
     (*((unsigned long*)(&r_len))) = 11;
     r_val5 = (*((unsigned long*)(&r_j)));
   }
-  if (((!(((r_val6 >= 11) || (((int)((unsigned int*)r_a)[r_val6]) < ((int)r_val))) || ((*((unsigned long*)(&r_j))) >= 10))) || ((*((unsigned long*)(&r_j))) >= 10)) && (r_val5 >= 11)) {
+  if ((r_val5 >= 11) && (((*((unsigned long*)(&r_j))) >= 10) || (!(((r_val6 >= 11) || (((int)((unsigned int*)r_a)[r_val6]) < ((int)r_val))) || ((*((unsigned long*)(&r_j))) >= 10))))) {
     r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val5, 11, &r_alloc_a74a36876f5d89ac1dedf5b0e55c3dda);
   }
-  if ((r_val5 < 11) && ((!(((r_val6 >= 11) || (((int)((unsigned int*)r_a)[r_val6]) < ((int)r_val))) || ((*((unsigned long*)(&r_j))) >= 10))) || ((*((unsigned long*)(&r_j))) >= 10))) {
+  if ((((*((unsigned long*)(&r_j))) >= 10) || (!(((r_val6 >= 11) || (((int)((unsigned int*)r_a)[r_val6]) < ((int)r_val))) || ((*((unsigned long*)(&r_j))) >= 10)))) && (r_val5 < 11)) {
     ((unsigned int*)r_a)[r_val5] = r_val;
     while ((*((unsigned long*)(&r_j))) < 11) {
       (*((unsigned long*)(&r_j))) = ((*((unsigned long*)(&r_j))) + 1);
     }
   }
-  if (((r_val5 < 11) && ((*((unsigned long*)(&r_j))) >= 11)) && ((!(((r_val6 >= 11) || (((int)((unsigned int*)r_a)[r_val6]) < ((int)r_val))) || ((*((unsigned long*)(&r_j))) >= 10))) || ((*((unsigned long*)(&r_j))) >= 10))) {
+  if ((((*((unsigned long*)(&r_j))) >= 11) && (((*((unsigned long*)(&r_j))) >= 10) || (!(((r_val6 >= 11) || (((int)((unsigned int*)r_a)[r_val6]) < ((int)r_val))) || ((*((unsigned long*)(&r_j))) >= 10))))) && (r_val5 < 11)) {
   }
   if ((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && (((int)((unsigned int*)r_a)[r_val6]) < ((int)r_val))) {
     (*((unsigned long*)(&r_j))) = ((*((unsigned long*)(&r_j))) + 1);

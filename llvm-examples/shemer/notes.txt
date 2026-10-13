@@ -1,14 +1,26 @@
-Original spec.txt
-  pre:   left.x == right.x;
-  post:  left.y == right.y;
-
-Updated spec.txt
+Status: Verified (translation workflow, spec repaired automatically)
+Manual spec edits still needed:
   pre:   left.x == right.x && left.x > -2 && left.x < 2;
-  post:  left.y == (int)(*((unsigned int*)(&right.y)));
+  (original pre was left.x == right.x)
+Repaired post: sassert(l_y == (*((unsigned int*)(&r_y))));
 
-With the post change alone it ran endlessly so i 
+Per-Task Times (ms)
+-------------------
+print-info: 0
+align-count-loops: 111
+aligned-crel: 2
+aligned-output: 0
+write-product: 5
+seahorn: 381
+print-info: 0
+
+KestRel completed in 502ms
+Verified: true
+
+With the post change alone it ran endlessly so i
 added left.x > -2 && left.x < 2 to get it to finish.
-Below are the results of increasing the bounds.
+Below are the results of increasing the bounds (measured before spec
+repair was automatic, with the hand-written cast).
 
 WITH 0 < x < 2 (x = 1)
     Per-Task Times (ms)

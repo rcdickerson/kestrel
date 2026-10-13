@@ -58,16 +58,16 @@ void main(int l_a[10], int l_b[10], int l_c[10], int l_k, int l_x, void* r_a, vo
   if (((((((int)r_x) >= 7) && ((*((unsigned long*)(&r_j))) < 10)) && (r_val8 < 10)) && (r_val9 < 10)) && (r_val10 < 10)) {
     r_val11 = ((*((unsigned long*)(&r_j))) - 1);
   }
-  if ((((((((int)r_x) >= 7) && ((*((unsigned long*)(&r_j))) < 10)) && (r_val8 < 10)) && (r_val9 < 10)) && (r_val10 < 10)) && (r_val11 >= 10)) {
+  if ((((((((int)r_x) >= 7) && ((*((unsigned long*)(&r_j))) < 10)) && (r_val11 >= 10)) && (r_val8 < 10)) && (r_val9 < 10)) && (r_val10 < 10)) {
     r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val11, 10, &r_alloc_bb2f62fcbec2afd6481e273b7e37fcc1);
   }
-  if ((((((((int)r_x) >= 7) && ((*((unsigned long*)(&r_j))) < 10)) && (r_val11 < 10)) && (r_val8 < 10)) && (r_val9 < 10)) && (r_val10 < 10)) {
+  if ((((((((int)r_x) >= 7) && ((*((unsigned long*)(&r_j))) < 10)) && (r_val8 < 10)) && (r_val9 < 10)) && (r_val10 < 10)) && (r_val11 < 10)) {
     r_val12 = (*((unsigned long*)(&r_j)));
   }
-  if (((((((((int)r_x) >= 7) && ((*((unsigned long*)(&r_j))) < 10)) && (r_val11 < 10)) && (r_val8 < 10)) && (r_val9 < 10)) && (r_val10 < 10)) && (r_val12 >= 10)) {
+  if (((((((((int)r_x) >= 7) && ((*((unsigned long*)(&r_j))) < 10)) && (r_val8 < 10)) && (r_val9 < 10)) && (r_val10 < 10)) && (r_val12 >= 10)) && (r_val11 < 10)) {
     r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val12, 10, &r_alloc_31ffd0f23462b2f4117f2c5301d8027b);
   }
-  if (((((((((int)r_x) >= 7) && ((*((unsigned long*)(&r_j))) < 10)) && (r_val11 < 10)) && (r_val12 < 10)) && (r_val8 < 10)) && (r_val9 < 10)) && (r_val10 < 10)) {
+  if (((((((((int)r_x) >= 7) && ((*((unsigned long*)(&r_j))) < 10)) && (r_val12 < 10)) && (r_val8 < 10)) && (r_val9 < 10)) && (r_val10 < 10)) && (r_val11 < 10)) {
     ((unsigned int*)r_b)[r_val12] = (((unsigned int*)r_a)[r_val10] * ((unsigned int*)r_b)[r_val11]);
     (*((unsigned long*)(&r_j))) = ((*((unsigned long*)(&r_j))) + 1);
   }
@@ -79,35 +79,35 @@ void main(int l_a[10], int l_b[10], int l_c[10], int l_k, int l_x, void* r_a, vo
   if ((((int)r_x) < 7) && ((*((unsigned long*)(&r_j_var7))) < 10)) {
     r_val13 = (*((unsigned long*)(&r_j_var7)));
   }
-  if (((((int)r_x) < 7) && (r_val13 >= 10)) && ((*((unsigned long*)(&r_j_var7))) < 10)) {
+  if (((((int)r_x) < 7) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val13 >= 10)) {
     r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val13, 10, &r_alloc_a431e0af1f0a773d7894a8f7648fcbbb);
   }
-  if (((((int)r_x) < 7) && (r_val13 < 10)) && ((*((unsigned long*)(&r_j_var7))) < 10)) {
+  if (((((int)r_x) < 7) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val13 < 10)) {
     r_val14 = (*((unsigned long*)(&r_j_var7)));
   }
-  if ((((((int)r_x) < 7) && (r_val13 < 10)) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val14 >= 10)) {
+  if ((((((int)r_x) < 7) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val14 >= 10)) && (r_val13 < 10)) {
     r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val14, 10, &r_alloc_86a95f0408d87e2b4012bd6715ad108d);
   }
-  if ((((((int)r_x) < 7) && (r_val13 < 10)) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val14 < 10)) {
+  if ((((((int)r_x) < 7) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val14 < 10)) && (r_val13 < 10)) {
     ((unsigned int*)r_a)[r_val14] = (((unsigned int*)r_a)[r_val13] + r_k);
     r_val15 = (*((unsigned long*)(&r_j_var7)));
   }
-  if (((((((int)r_x) < 7) && (r_val13 < 10)) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val15 >= 10)) && (r_val14 < 10)) {
+  if (((((((int)r_x) < 7) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val15 >= 10)) && (r_val14 < 10)) && (r_val13 < 10)) {
     r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val15, 10, &r_alloc_72db5233068273f5dabaebf836ed1389);
   }
-  if (((((((int)r_x) < 7) && (r_val13 < 10)) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val15 < 10)) && (r_val14 < 10)) {
+  if (((((((int)r_x) < 7) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val15 < 10)) && (r_val14 < 10)) && (r_val13 < 10)) {
     r_val16 = (*((unsigned long*)(&r_j_var7)));
   }
-  if ((((((((int)r_x) < 7) && (r_val13 < 10)) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val15 < 10)) && (r_val16 >= 10)) && (r_val14 < 10)) {
+  if ((((((((int)r_x) < 7) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val16 >= 10)) && (r_val15 < 10)) && (r_val14 < 10)) && (r_val13 < 10)) {
     r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val16, 10, &r_alloc_40b9f4e097b3d8001419ebb57560c155);
   }
-  if ((((((((int)r_x) < 7) && (r_val13 < 10)) && (r_val16 < 10)) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val15 < 10)) && (r_val14 < 10)) {
+  if ((((((((int)r_x) < 7) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val16 < 10)) && (r_val15 < 10)) && (r_val14 < 10)) && (r_val13 < 10)) {
     r_val17 = (*((unsigned long*)(&r_j_var7)));
   }
-  if (((((((((int)r_x) < 7) && (r_val13 < 10)) && (r_val16 < 10)) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val15 < 10)) && (r_val17 >= 10)) && (r_val14 < 10)) {
+  if (((((((((int)r_x) < 7) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val16 < 10)) && (r_val15 < 10)) && (r_val17 >= 10)) && (r_val14 < 10)) && (r_val13 < 10)) {
     r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val17, 10, &r_alloc_6ccfbbdd552b4c0101c2de9d1f6e9ee2);
   }
-  if (((((((((int)r_x) < 7) && (r_val13 < 10)) && (r_val16 < 10)) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val15 < 10)) && (r_val17 < 10)) && (r_val14 < 10)) {
+  if (((((((((int)r_x) < 7) && ((*((unsigned long*)(&r_j_var7))) < 10)) && (r_val17 < 10)) && (r_val16 < 10)) && (r_val15 < 10)) && (r_val14 < 10)) && (r_val13 < 10)) {
     ((unsigned int*)r_b)[r_val17] = (((unsigned int*)r_a)[r_val15] * ((unsigned int*)r_c)[r_val16]);
     (*((unsigned long*)(&r_j_var7))) = ((*((unsigned long*)(&r_j_var7))) + 1);
   }

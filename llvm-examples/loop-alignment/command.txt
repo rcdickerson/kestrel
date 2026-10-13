@@ -1,5 +1,5 @@
-cargo run -- --left llvm-examples/loop-alignment/left.c \
+cargo run -- --spec-format translation \
+             --left llvm-examples/loop-alignment/left.c \
              --right llvm-examples/loop-alignment/right.rs \
              --spec llvm-examples/loop-alignment/spec.txt \
-             count-loops --output-mode seahorn \
-             --is-rust --verbose --infer-invariants
+             count-loops --is-rust --verbose

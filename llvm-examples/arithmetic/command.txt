@@ -1,5 +1,5 @@
-cargo run -- --left llvm-examples/arithmetic/left.c \
+cargo run -- --spec-format translation \
+             --left llvm-examples/arithmetic/left.c \
              --right llvm-examples/arithmetic/right.rs \
              --spec llvm-examples/arithmetic/spec.txt \
-             count-loops --output-mode seahorn \
-             --is-rust --verbose --infer-invariants
+             count-loops --is-rust --verbose

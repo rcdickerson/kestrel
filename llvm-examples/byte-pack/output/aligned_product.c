@@ -7,5 +7,5 @@ void main() {
   int l_prod = l_n;
   char r_prod[4];
   (*((unsigned int*)(&r_prod))) = r_n;
-  sassert(l_prod == ((int)(*((unsigned int*)(&r_prod)))));
+  sassert(l_prod == (*((unsigned int*)(&r_prod))));
 }

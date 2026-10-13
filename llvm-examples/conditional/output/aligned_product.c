@@ -41,5 +41,5 @@ void main() {
       }
     }
   }
-  sassert(l_ret_val == ((int)(*((unsigned int*)(&r_ret_val)))));
+  sassert(l_ret_val == (*((unsigned int*)(&r_ret_val))));
 }

@@ -9,7 +9,7 @@ void main() {
   int r_C = arb_int();
   int r_N = arb_int();
   int r_arg3 = arb_int();
-  assume((l_B == r_B) && ((l_C == r_C) && ((l_N == r_N) && ((l_x == r_arg3) && ((l_N == 1) && ((l_B == 1) && (l_C == 1)))))));
+  assume((l_B == r_B) && ((l_C == r_C) && ((l_N == r_N) && (l_x == r_arg3))));
   int l_i = 0;
   int l_j = 0;
   char r_N_var0[4];
@@ -48,5 +48,5 @@ void main() {
       (*((unsigned int*)(&r_i))) = ((*((unsigned int*)(&r_i))) + 1);
     }
   }
-  sassert(l_x == ((int)(*((unsigned int*)(&r_x)))));
+  sassert(l_x == (*((unsigned int*)(&r_x))));
 }

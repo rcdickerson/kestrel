@@ -35,16 +35,16 @@ void right(void *a) {
         *(unsigned int *)(&max) = ((unsigned int *)a)[val7];
         *(unsigned long *)(&maxi) = *(unsigned long *)(&j);
     }
-    if (*(unsigned long *)(&j) < 10 && val6 < 11 && (val7 < 11 || (int)(*(unsigned int *)(&max)) >= (int)(((unsigned int *)a)[val6])) && *(unsigned long *)(&j) == 10) {
+    if (*(unsigned long *)(&j) < 10 && val6 < 11 && *(unsigned long *)(&j) == 10 && (val7 < 11 || (int)(*(unsigned int *)(&max)) >= (int)(((unsigned int *)a)[val6]))) {
         val8 = ((unsigned int *)a)[10];
         *(unsigned int *)(&t) = val8;
         ((unsigned int *)a)[10] = *(unsigned int *)(&max);
         val9 = *(unsigned long *)(&maxi);
     }
-    if (*(unsigned long *)(&j) < 10 && val6 < 11 && (val7 < 11 || (int)(*(unsigned int *)(&max)) >= (int)(((unsigned int *)a)[val6])) && val9 >= 11 && *(unsigned long *)(&j) == 10) {
+    if (*(unsigned long *)(&j) < 10 && val6 < 11 && val9 >= 11 && *(unsigned long *)(&j) == 10 && (val7 < 11 || (int)(*(unsigned int *)(&max)) >= (int)(((unsigned int *)a)[val6]))) {
         _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(val9, 11, &alloc_f8b2f46ae7d9d9573fbd43ab55b46be9);
     }
-    if (*(unsigned long *)(&j) < 10 && val6 < 11 && (val7 < 11 || (int)(*(unsigned int *)(&max)) >= (int)(((unsigned int *)a)[val6])) && val9 < 11 && *(unsigned long *)(&j) == 10) {
+    if (*(unsigned long *)(&j) < 10 && val6 < 11 && val9 < 11 && *(unsigned long *)(&j) == 10 && (val7 < 11 || (int)(*(unsigned int *)(&max)) >= (int)(((unsigned int *)a)[val6]))) {
         ((unsigned int *)a)[val9] = val8;
     }
     if (*(unsigned long *)(&j) < 10 && val6 < 11 && (val7 < 11 || (int)(*(unsigned int *)(&max)) >= (int)(((unsigned int *)a)[val6])) && (*(unsigned long *)(&j) != 10 || val9 < 11)) {

@@ -41,7 +41,7 @@ void right(void *a, void *b) {
     if (*(unsigned long *)(&j) <= 19 && val7 < 21 && val5 < 21 && val8 >= 21 && val6 < 21) {
         _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(val8, 21, &alloc_2a88a997bb9f1e7a11884c35234a2edc);
     }
-    if (*(unsigned long *)(&j) <= 19 && val7 < 21 && val8 < 21 && val5 < 21 && val6 < 21) {
+    if (*(unsigned long *)(&j) <= 19 && val7 < 21 && val5 < 21 && val8 < 21 && val6 < 21) {
         ((unsigned int *)(&d))[val8] = ((unsigned int *)b)[val7];
         *(unsigned long *)(&j) = *(unsigned long *)(&j) + 1;
     }

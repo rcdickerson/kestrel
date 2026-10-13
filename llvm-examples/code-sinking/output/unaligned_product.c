@@ -48,16 +48,16 @@ void main(int l_a[10 + 1], void* r_a) {
     (*((unsigned int*)(&r_max))) = ((unsigned int*)r_a)[r_val7];
     (*((unsigned long*)(&r_maxi))) = (*((unsigned long*)(&r_j)));
   }
-  if (((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && ((*((unsigned long*)(&r_j))) == 10)) {
+  if (((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && ((*((unsigned long*)(&r_j))) == 10)) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) {
     r_val8 = ((unsigned int*)r_a)[10];
     (*((unsigned int*)(&r_t))) = r_val8;
     ((unsigned int*)r_a)[10] = (*((unsigned int*)(&r_max)));
     r_val9 = (*((unsigned long*)(&r_maxi)));
   }
-  if ((((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && (r_val9 >= 11)) && ((*((unsigned long*)(&r_j))) == 10)) {
+  if ((((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && (r_val9 >= 11)) && ((*((unsigned long*)(&r_j))) == 10)) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) {
     r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val9, 11, &r_alloc_f8b2f46ae7d9d9573fbd43ab55b46be9);
   }
-  if ((((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && (r_val9 < 11)) && ((*((unsigned long*)(&r_j))) == 10)) {
+  if ((((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && (r_val9 < 11)) && ((*((unsigned long*)(&r_j))) == 10)) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) {
     ((unsigned int*)r_a)[r_val9] = r_val8;
   }
   if (((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && (((*((unsigned long*)(&r_j))) != 10) || (r_val9 < 11))) {

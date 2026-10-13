@@ -43,7 +43,7 @@ void right(void *a) {
     if (*(unsigned long *)(&i) < 10UL && val6 < 10UL && *(unsigned long *)(&j) < 10UL) {
         val7 = *(unsigned long *)(&j);
     }
-    if (*(unsigned long *)(&i) < 10UL && val6 < 10UL && val7 >= 10UL && *(unsigned long *)(&j) < 10UL) {
+    if (*(unsigned long *)(&i) < 10UL && val6 < 10UL && *(unsigned long *)(&j) < 10UL && val7 >= 10UL) {
         _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(val7, 10UL, &alloc_a549888368d39939078ca63aa1dda3a4);
     }
     if (*(unsigned long *)(&i) < 10UL && val6 < 10UL && *(unsigned long *)(&j) < 10UL && val7 < 10UL) {

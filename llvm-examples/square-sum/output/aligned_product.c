@@ -33,5 +33,5 @@ void main() {
       (*((unsigned int*)(&r_a))) = ((*((unsigned int*)(&r_a))) + 1);
     }
   }
-  sassert(l_c == ((int)(*((unsigned int*)(&r_c)))));
+  sassert(l_c == (*((unsigned int*)(&r_c))));
 }

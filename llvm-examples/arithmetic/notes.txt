@@ -1,19 +1,16 @@
-Original spec.txt
-  post: l_prod == r_prod;
-
-Updated spec.txt
-  post: left.prod == (int)(*((unsigned int*)(&right.prod)));
-
+Status: Verified (translation workflow, spec repaired automatically)
+Manual spec edits still needed: none
+Repaired post: sassert(l_prod == (*((unsigned int*)(&r_prod))));
 
 Per-Task Times (ms)
 -------------------
 print-info: 0
-align-count-loops: 15
-aligned-crel: 2
+align-count-loops: 22
+aligned-crel: 3
 aligned-output: 0
-write-product: 5
-seahorn: 262
+write-product: 6
+seahorn: 236
 print-info: 0
 
-KestRel completed in 286ms
+KestRel completed in 268ms
 Verified: true

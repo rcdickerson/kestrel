@@ -59,7 +59,7 @@ void main() {
   if ((((((*((unsigned long*)(&r_j))) <= 19) && (r_val7 < 21)) && (r_val5 < 21)) && (r_val8 >= 21)) && (r_val6 < 21)) {
     r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val8, 21, &r_alloc_2a88a997bb9f1e7a11884c35234a2edc);
   }
-  if ((((((*((unsigned long*)(&r_j))) <= 19) && (r_val7 < 21)) && (r_val8 < 21)) && (r_val5 < 21)) && (r_val6 < 21)) {
+  if ((((((*((unsigned long*)(&r_j))) <= 19) && (r_val7 < 21)) && (r_val5 < 21)) && (r_val8 < 21)) && (r_val6 < 21)) {
     ((unsigned int*)(&r_d))[r_val8] = ((unsigned int*)r_b)[r_val7];
     (*((unsigned long*)(&r_j))) = ((*((unsigned long*)(&r_j))) + 1);
   }

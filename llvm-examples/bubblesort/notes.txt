@@ -1,4 +1,9 @@
-No result.
+Status: Failed, panics during alignment (before SeaHorn runs)
+Manual spec edits: none
 
-thread 'main' (4202) panicked at src/workflow/tasks/align_count_loops.rs:30:27:
+thread 'main' panicked at src/workflow/tasks/align_count_loops.rs:30:27:
 called `Result::unwrap()` on an `Err` value: BadOp(FromOpError { op: "if-else", children: [256, 268] })
+
+Cause (from to_eggroll.rs): an empty block in the lifted C, e.g.
+if (...) { } else { ... }, is converted to an empty string, so the
+if / if-else node ends up missing a child.

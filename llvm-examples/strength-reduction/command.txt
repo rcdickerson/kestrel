@@ -1,5 +1,5 @@
-cargo run -- --left llvm-examples/strength-reduction/left.c \
+cargo run -- --spec-format translation \
+             --left llvm-examples/strength-reduction/left.c \
              --right llvm-examples/strength-reduction/right.rs \
              --spec llvm-examples/strength-reduction/spec.txt \
-             count-loops --output-mode seahorn \
-             --is-rust --verbose --infer-invariants
+             count-loops --is-rust --verbose

@@ -1,4 +1,11 @@
-No result.
+Status: Not verified, SeaHorn fails to compile the product
+Manual spec edits still needed (void* array casts, which var mapping doesn't handle yet):
+  pre: for _i in (0..20) { left.a[_i] == ((unsigned int*)right.a)[_i] && left.b[0] == ((unsigned int*)right.b)[0] };
+  post: for _j in (1..20) { left.d[_j] == (int)((unsigned int*)&right.d)[_j] };
+  (original pre/post compared left.a[_i] == right.a[_i] and left.d[_j] == right.d[_j])
+
+  4x error: use of undeclared identifier 'r_alloc_<hash>'
+      (the panic_bounds_check calls)
 
 I tried fixing just the spec, which compiles, but the product program
 hits clang errors on the third argument to each panic_bounds_check call, 
@@ -13,11 +20,3 @@ The only repair was replacing every panic_bounds_check call with sassert(0)
 
 To call SeaHorn:
     sea pf -m64 --horn-strictly-la=false llvm-examples/loop-alignment/repaired_product.c
-
-Original spec.txt
-  pre: for _i in (0..20) { left.a[_i] == right.a[_i] && left.b[0] == right.b[0] };
-  post: for _j in (1..20) { left.d[_j] == right.d[_j] };
-
-Updated spec.txt
-  pre: for _i in (0..20) { left.a[_i] == ((unsigned int*)right.a)[_i] && left.b[0] == ((unsigned int*)right.b)[0] };
-  post: for _j in (1..20) { left.d[_j] == (int)((unsigned int*)&right.d)[_j] };

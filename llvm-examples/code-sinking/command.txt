@@ -1,5 +1,5 @@
-cargo run -- --left llvm-examples/code-sinking/left.c \
+cargo run -- --spec-format translation \
+             --left llvm-examples/code-sinking/left.c \
              --right llvm-examples/code-sinking/right.rs \
              --spec llvm-examples/code-sinking/spec.txt \
-             count-loops --output-mode seahorn \
-             --is-rust --verbose --infer-invariants
+             count-loops --is-rust --verbose

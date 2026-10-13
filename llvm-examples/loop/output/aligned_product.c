@@ -32,5 +32,5 @@ void main() {
       (*((unsigned int*)(&r_i))) = ((*((unsigned int*)(&r_i))) + 1);
     }
   }
-  sassert(l_sum == ((int)(*((unsigned int*)(&r_sum)))));
+  sassert(l_sum == (*((unsigned int*)(&r_sum))));
 }

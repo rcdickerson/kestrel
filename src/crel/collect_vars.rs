@@ -357,11 +357,27 @@ fn declared_type(specifiers: &Vec<DeclarationSpecifier>, declarator: &Declarator
 fn declarator_type(ty: TypeName, declarator: &Declarator) -> TypeName {
   match declarator {
     Declarator::Pointer(inner) => declarator_type(TypeName::Pointer(Box::new(ty)), inner),
-    Declarator::Array{sizes, ..} => sizes.iter().rev().fold(ty, |ty, size| match size {
-      Expression::ConstInt(n) => TypeName::Array(Box::new(ty), *n as usize),
-      _ => panic!("Unsupported array size: {:?}", size),
+    Declarator::Array{sizes, ..} => sizes.iter().rev().fold(ty, |ty, size| match const_size(size) {
+      Some(n) => TypeName::Array(Box::new(ty), n as usize),
+      None => ty,
     }),
     _ => ty,
+  }
+}
+
+fn const_size(size: &Expression) -> Option<i32> {
+  match size {
+    Expression::ConstInt(n) => Some(*n),
+    Expression::Binop{lhs, rhs, op} => {
+      let (l, r) = (const_size(lhs)?, const_size(rhs)?);
+      match op {
+        BinaryOp::Add => Some(l + r),
+        BinaryOp::Sub => Some(l - r),
+        BinaryOp::Mul => Some(l * r),
+        _ => None,
+      }
+    },
+    _ => None,
   }
 }
 

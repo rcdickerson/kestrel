@@ -79,6 +79,11 @@ struct Args {
   #[arg(long)]
   infer_invariants: bool,
 
+  /// If set, the translation workflow hands spec repair a dtrace of the
+  /// unaligned product.
+  #[arg(long)]
+  dtrace: bool,
+
   /// How many iterations to use when running simulated annealing.
   #[arg(long, default_value_t=3000)]
   sa_max_iterations: usize,
@@ -116,6 +121,9 @@ enum SpecFormat {
 
   /// Elaenia forall-exists specification format.
   Elaenia,
+
+  /// Two input files (--left, --right) with a separate spec file (--spec).
+  Translation,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
@@ -147,6 +155,7 @@ fn main() {
   match args.spec_format {
     SpecFormat::Kestrel => kestrel_workflow(args),
     SpecFormat::Elaenia => elaenia_workflow(args),
+    SpecFormat::Translation => translation_workflow(args),
   };
 }
 
@@ -190,37 +199,12 @@ fn add_verification(workflow: &mut Workflow<KestrelContext>, output_mode: Output
 /// non-relational and relational programs, and 2) packaging programs
 /// into an Egg-compatible language definition.
 fn kestrel_workflow(args: Args) {
-  // initialize output directory 
-  let input_file = args.left.as_ref().or(args.input.as_ref()).expect("No input file provided.");
-  let path = std::path::Path::new(input_file);
+  let input = args.input.as_ref().expect("No input file provided.");
+  let path = std::path::Path::new(input);
   let out_dir = path.parent().unwrap_or(std::path::Path::new(".")).join("output");
   std::fs::create_dir_all(&out_dir).expect("Failed to create output directory");
-
-  // initialize raw crel from a single c file
-  // or from two c files or a c file and a rust file
-  let mut raw_crel = if let (Some(right), Some(left)) = (args.right.as_ref(), args.left.as_ref()) {
-    let left_raw_crel = kestrel::crel::parser::parse_c_file(left);
-    let right_raw_crel = if args.is_rust { 
-      let llvm = kestrel::llvm::rust_to_llvm::compile_rust_to_llvm(right, &out_dir);
-      let rellic_c = kestrel::llvm::llvm_to_c::process_llvm_file(&llvm);
-        kestrel::crel::parser::parse_c_file(&rellic_c)
-    } else {
-        kestrel::crel::parser::parse_c_file(right)
-    };
-    kestrel::crel::ast::CRel::Seq(vec![left_raw_crel, right_raw_crel])
-  } else if let Some(ref input) = args.input {
-    kestrel::crel::parser::parse_c_file(&input)
-  } else {
-    panic!("No input file provided.")
-  };
-
-  let spec = if let Some(spec) = args.spec {
-    parse_kestrel_spec(&spec).unwrap()
-  } else if let Some(ref input) = args.input {
-    parse_kestrel_spec(&input).unwrap()
-  } else {
-    panic!("No specification provided.")
-  };
+  let mut raw_crel = kestrel::crel::parser::parse_c_file(input);
+  let spec = parse_kestrel_spec(input).unwrap();
 
   if args.extractor == ExtractorArg::Unaligned {
     // Annotated invariants are relational.
@@ -229,19 +213,12 @@ fn kestrel_workflow(args: Args) {
 
   let unaligned_crel = UnalignedCRel::from_kestrel_spec(&raw_crel, &spec);
   let unaligned_eggroll = unaligned_crel.unaligned_main.to_eggroll();
-  //Hand unaligned crel, spec, and trace path to spec var mapping
-  let spec = kestrel::spec::var_mapping::abduce_var_mapping(&spec, &unaligned_crel, None);
-
   let unaligned_path = out_dir.join("unaligned_product.c");
   println!("Writing {}...", unaligned_path.display());
   std::fs::write(&unaligned_path, unaligned_crel.unaligned_main.to_c(false, false))
     .unwrap_or_else(|err| panic!("Error writing {}: {}", unaligned_path.display(), err));
 
-  let mut context = if let Some(left) = args.left.clone() {
-    KestrelContext::new(left, spec)
-  } else {
-    KestrelContext::new(args.input.clone().expect("No input file provided."), spec)
-  };
+  let mut context = KestrelContext::new(input.clone(), spec);
 
   context.set_working_dir(WORKING_DIR.to_string());
   context.accept_unaligned_crel(unaligned_crel);
@@ -286,6 +263,117 @@ fn kestrel_workflow(args: Args) {
   if args.infer_invariants { add_verification(&mut workflow, args.output_mode); }
   match args.output {
     Some(path) => workflow.add_task(WriteProduct::new(args.output_mode, std::path::PathBuf::from(path))),
+    None => workflow.add_task(PrintInfo::with_header("Aligned Product Program",
+        &|ctx: &KestrelContext| {
+          ctx.aligned_output().as_ref().expect("Missing aligned output").clone()
+        })),
+  }
+  workflow.add_task(PrintInfo::with_header("Per-Task Times (ms)",
+      &|ctx: &KestrelContext| {
+        let mut lines = Vec::new();
+        for (task_name, duration) in &ctx.task_timings() {
+          lines.push(format!("{}: {}", task_name, duration.as_millis()));
+        }
+        lines.join("\n") + "\n"
+      }));
+  args.output_summary.map(|location| {
+    workflow.add_task(WriteSummary::new(location, vec!(args.extractor.tag())));
+  });
+
+  workflow.execute();
+
+  println!("KestRel completed in {}ms", workflow.context().total_elapsed_time().as_millis());
+  println!("Verified: {}", workflow.context().is_verified());
+}
+
+/// Verifies two programs from separate files (--left, --right) against a
+/// separate spec file (--spec).
+fn translation_workflow(args: Args) {
+  // Required inputs: two program files and a spec file.
+  let left = args.left.as_ref().expect("Translation needs a left file (--left).");
+  let right = args.right.as_ref().expect("Translation needs a right file (--right).");
+  let spec_path = args.spec.as_ref().expect("Translation needs a spec file (--spec).");
+
+  let out_dir = std::path::Path::new(left).parent().unwrap_or(std::path::Path::new(".")).join("output");
+  std::fs::create_dir_all(&out_dir).expect("Failed to create output directory");
+
+  let left_crel = kestrel::crel::parser::parse_c_file(left);
+  let right_crel = if args.is_rust {
+    let llvm = kestrel::llvm::rust_to_llvm::compile_rust_to_llvm(right, &out_dir);
+    let rellic_c = kestrel::llvm::llvm_to_c::process_llvm_file(&llvm);
+    kestrel::crel::parser::parse_c_file(&rellic_c)
+  } else {
+    kestrel::crel::parser::parse_c_file(right)
+  };
+  let mut raw_crel = kestrel::crel::ast::CRel::Seq(vec![left_crel, right_crel]);
+
+  let spec = parse_kestrel_spec(spec_path).unwrap();
+
+  if args.extractor == ExtractorArg::Unaligned {
+    // Annotated invariants are relational.
+    raw_crel.clear_invariants();
+  }
+
+  let unaligned_crel = UnalignedCRel::from_kestrel_spec(&raw_crel, &spec);
+  let unaligned_eggroll = unaligned_crel.unaligned_main.to_eggroll();
+
+  let dtrace_path = if args.dtrace {
+    kestrel::daikon::dtrace::generate_dtrace(&unaligned_crel, WORKING_DIR, 3600)
+  } else {
+    None
+  };
+
+  //Hand unaligned crel, spec, and trace path to spec var mapping
+  let spec = kestrel::spec::var_mapping::abduce_var_mapping(&spec, &unaligned_crel, dtrace_path.as_deref());
+
+  let unaligned_path = out_dir.join("unaligned_product.c");
+  println!("Writing {}...", unaligned_path.display());
+  std::fs::write(&unaligned_path, unaligned_crel.unaligned_main.to_c(false, false))
+    .unwrap_or_else(|err| panic!("Error writing {}: {}", unaligned_path.display(), err));
+
+  let mut context = KestrelContext::new(left.clone(), spec);
+
+  context.set_working_dir(WORKING_DIR.to_string());
+  context.accept_unaligned_crel(unaligned_crel);
+  context.accept_unaligned_eggroll(unaligned_eggroll);
+  args.output.as_ref().map(|output_path| {
+    context.accept_output_path(output_path.clone());
+  });
+
+  let mut workflow = Workflow::new(context);
+  if args.verbose {
+    workflow.add_task(PrintInfo::with_header("Unaligned Product Program",
+        &|ctx: &KestrelContext| {
+          ctx.unaligned_crel().as_ref()
+            .expect("Missing unaligned CRel")
+            .unaligned_main.to_c(false, false).to_string()
+        }));
+  }
+  if args.dot { workflow.add_task(WriteDot::new()) }
+  if args.space_size { workflow.add_task(ComputeSpace::new()) }
+
+  match args.extractor {
+    ExtractorArg::Unaligned => workflow.add_task(AlignNone::new()),
+    ExtractorArg::CountLoops => workflow.add_task(AlignCountLoops::new()),
+    ExtractorArg::SA => {
+      if !args.sa_start_random {
+        workflow.add_task(AlignCountLoops::new());
+        workflow.add_task(AlignedCRel::new());
+        workflow.add_task(AlignedOutput::new(OutputMode::Seahorn));
+        workflow.add_task_unless_verifed(Seahorn::new(Some(300)));
+      }
+      let mut align_sa_task = AlignSa::new(args.sa_start_random, args.sa_max_iterations);
+      if args.af_fusion  { align_sa_task.ablate_fusion() }
+      if args.af_runoffs { align_sa_task.ablate_runoffs() }
+      workflow.add_task_unless_verifed(align_sa_task);
+    },
+  }
+  workflow.add_task_unless_verifed(AlignedCRel::new());
+  workflow.add_task(AlignedOutput::new(OutputMode::Seahorn));
+  workflow.add_task(WriteProduct::new(OutputMode::Seahorn, out_dir.join("aligned_product.c")));
+  workflow.add_task_unless_verifed(Seahorn::new(Some(300)));
+  match args.output {
+    Some(path) => workflow.add_task(WriteProduct::new(OutputMode::Seahorn, std::path::PathBuf::from(path))),
     None => workflow.add_task(PrintInfo::with_header("Aligned Product Program",
         &|ctx: &KestrelContext| {
           ctx.aligned_output().as_ref().expect("Missing aligned output").clone()

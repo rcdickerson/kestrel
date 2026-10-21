@@ -408,6 +408,7 @@ fn type_to_sketch(ty: &Type) -> Sk::Type {
     Type::Long     => panic!("long keyword unsupported in Sketch"),
     Type::Short    => panic!("short keyword unsupported in Sketch"),
     Type::Signed   => panic!("signed keyword unsupported in Sketch"),
+    Type::Struct{..} => panic!("struct keyword unsupported in Sketch"),
     Type::Unsigned => panic!("unsigned keyword unsupported in Sketch"),
     Type::Void     => Sk::Type::Void,
   }
@@ -474,6 +475,7 @@ impl DeclarationBuilder {
 
   fn visit_declarator(&mut self, decl: &Declarator) {
     match &decl {
+      Declarator::Abstract => (),
       Declarator::Identifier{name} => {
         self.name = Some(name.clone());
       },

@@ -258,7 +258,10 @@ fn initializer_to_c(decl: &Declarator, init: &Initializer) -> C::Initializer {
     Initializer::List(inits) => {
       let name = match decl {
         Declarator::Array{name, ..} => name,
-        _ => panic!("List initializer assigned to non-array declarator."),
+        // A struct gets one initializer per field.
+        _ => return C::Initializer::List(inits.iter()
+          .map(|init| initializer_to_c(decl, init))
+          .collect()),
       };
       if inits.len() == 0 {
         panic!("Empty list initializer");
@@ -300,6 +303,10 @@ fn type_to_c(ty: &Type) -> C::Type {
     Type::Long     => C::Type::Long,
     Type::Short    => C::Type::Short,
     Type::Signed   => C::Type::Signed,
+    Type::Struct{name, fields} => C::Type::Struct {
+      name: name.clone(),
+      fields: fields.as_ref().map(|fields| fields.iter().map(declaration_to_c).collect()),
+    },
     Type::Unsigned => C::Type::Unsigned,
     Type::Void     => C::Type::Void,
   }
@@ -367,6 +374,7 @@ impl DeclarationBuilder {
 
   fn visit_declarator(&mut self, decl: &Declarator) {
     match &decl {
+      Declarator::Abstract => (),
       Declarator::Identifier{name} => {
         self.name = Some(name.clone());
       },
@@ -443,6 +451,7 @@ fn type_to_string(ty: &Type) -> String {
     Type::Long     => "long".to_string(),
     Type::Short    => "short".to_string(),
     Type::Signed   => "signed".to_string(),
+    Type::Struct{name, ..} => format!("struct {}", name),
     Type::Unsigned => "unsigned".to_string(),
     Type::Void     => "void".to_string(),
   }

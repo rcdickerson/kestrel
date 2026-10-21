@@ -53,6 +53,10 @@ fn trans_declaration(decl: &Node<c::Declaration>) -> Vec<Declaration> {
  let specifiers: Vec<DeclarationSpecifier> = decl.node.specifiers.iter()
     .map(trans_declaration_specifier)
     .collect();
+  // A struct definition declares no variable.
+  if decl.node.declarators.is_empty() {
+    return vec!(Declaration{specifiers, declarator: Declarator::Abstract, initializer: None});
+  }
   decl.node.declarators.iter()
     .map(trans_init_declarator)
     .map(|(declarator, initializer)| {
@@ -197,10 +201,44 @@ fn trans_type_specifier(type_spec: c::TypeSpecifier) -> Type {
     c::TypeSpecifier::Long     => Type::Long,
     c::TypeSpecifier::Short    => Type::Short,
     c::TypeSpecifier::Signed   => Type::Signed,
+    c::TypeSpecifier::Struct(st) => trans_struct_type(&st.node),
     c::TypeSpecifier::Unsigned => Type::Unsigned,
     c::TypeSpecifier::Void     => Type::Void,
     _ => panic!("Unsupported type specifier: {:?}", type_spec),
   }
+}
+
+fn trans_struct_type(st: &c::StructType) -> Type {
+  let name = match &st.identifier {
+    Some(id) => id.node.name.clone(),
+    None => panic!("Unsupported anonymous struct: {:?}", st),
+  };
+  let fields = st.declarations.as_ref().map(|decls| decls.iter()
+    .flat_map(|decl| match &decl.node {
+      c::StructDeclaration::Field(field) => trans_struct_field(&field.node),
+      _ => panic!("Unsupported struct declaration: {:?}", decl.node),
+    })
+    .collect());
+  Type::Struct{name, fields}
+}
+
+fn trans_struct_field(field: &c::StructField) -> Vec<Declaration> {
+  let specifiers: Vec<DeclarationSpecifier> = field.specifiers.iter()
+    .filter_map(|s| match &s.node {
+      c::SpecifierQualifier::TypeSpecifier(ts) =>
+        Some(DeclarationSpecifier::TypeSpecifier(trans_type_specifier(ts.node.clone()))),
+      c::SpecifierQualifier::TypeQualifier(tq) =>
+        Some(DeclarationSpecifier::TypeQualifier(trans_type_qualifier(tq.node.clone()))),
+      _ => None,
+    })
+    .collect();
+  field.declarators.iter()
+    .map(|decl| Declaration {
+      specifiers: specifiers.clone(),
+      declarator: trans_declarator(decl.node.declarator.as_ref().expect("Unsupported unnamed struct field")),
+      initializer: None,
+    })
+    .collect()
 }
 
 fn trans_type_qualifier(type_qual: c::TypeQualifier) -> TypeQualifier {

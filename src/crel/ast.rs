@@ -17,6 +17,7 @@ pub enum CRel {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Declarator {
+  Abstract,
   Identifier{name: String},
   Array{name: String, sizes: Vec<Expression>},
   Function{name: String, params: Vec<ParameterDeclaration>},
@@ -33,6 +34,7 @@ impl Declarator {
 
   pub fn name(&self) -> String {
     match &self {
+      Declarator::Abstract => String::new(),
       Declarator::Identifier{name} => name.clone(),
       Declarator::Array{name, ..} => name.clone(),
       Declarator::Function{name, ..} => name.clone(),
@@ -170,6 +172,7 @@ pub enum Type {
   Long,
   Short,
   Signed,
+  Struct{name: String, fields: Option<Vec<Declaration>>},
   Unsigned,
   Void,
 }

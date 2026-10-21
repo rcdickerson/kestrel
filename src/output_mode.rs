@@ -117,6 +117,7 @@ impl OutputMode {
                  Type::Long     => Expression::ConstInt(rng.gen()),
                  Type::Short    => Expression::ConstInt(rng.gen_range(-32768..32768)),
                  Type::Signed   => Expression::ConstInt(rng.gen()),
+                 Type::Struct{..} => panic!("Cannot generate a value of type struct."),
                  Type::Unsigned => Expression::ConstInt(rng.gen_range(0..i32::MAX)),
                  Type::Void     => panic!("Cannot generate a value of type void."),
                }
@@ -455,7 +456,7 @@ impl OutputMode {
       .filter(|param| param.declarator.is_some())
       .map(|param| {
         let c_param = param.to_c();
-        let is_int = c_param.ty == crate::shanty::Type::Int;
+        let is_int = match c_param.ty { crate::shanty::Type::Int => true, _ => false };
         let is_array = c_param.is_array;
         let is_ptr = c_param.is_pointer;
         let initializer = if is_int && !is_array && !is_ptr {

@@ -317,6 +317,7 @@ fn eval_block_item(item: &BlockItem, exec: &mut Execution) {
 fn eval_declaration(decl: &Declaration, exec: &mut Execution) {
   match &decl.initializer {
     None => match &decl.declarator {
+      Declarator::Abstract => (),
       Declarator::Identifier{name} => {
         exec.push_alloc(name.clone(), 1, HeapValue::Int(0));
       },
@@ -332,6 +333,9 @@ fn eval_declaration(decl: &Declaration, exec: &mut Execution) {
       Declarator::Pointer(_) => (),
     },
     Some(init) => match &decl.declarator {
+      Declarator::Abstract => {
+        panic!("Unsupported: initializer for abstract declarator.");
+      },
       Declarator::Array{name:_, sizes:_} => {
         panic!("Unsupported: initializer for array.");
       }

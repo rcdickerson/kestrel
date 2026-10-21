@@ -139,6 +139,7 @@ impl MapVars for Declarator {
     where F: Fn(String) -> String
   {
     match self {
+      Declarator::Abstract => Declarator::Abstract,
       Declarator::Identifier{name} => {
         Declarator::Identifier{name: f(name.clone())}
       },

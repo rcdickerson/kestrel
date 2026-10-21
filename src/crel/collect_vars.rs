@@ -123,6 +123,7 @@ impl CollectVars for Declaration {
 impl CollectVars for Declarator {
   fn vars(&self) -> HashSet<String> {
     match self {
+      Declarator::Abstract => HashSet::new(),
       Declarator::Identifier{name} => singleton(name.clone()),
       Declarator::Array{name, sizes} => {
         let mut vars = sizes.iter()
@@ -293,6 +294,7 @@ impl CollectVarTypes for Declaration {
 impl CollectVarTypes for Declarator {
   fn var_types(&self) -> HashMap<String, TypeName> {
     match self {
+      Declarator::Abstract => HashMap::new(),
       Declarator::Identifier{..} => HashMap::new(),
       Declarator::Array{sizes, ..} => {
         let types = sizes.iter()
@@ -501,6 +503,7 @@ impl CollectVarAccessTypes for Declaration {
 impl CollectVarAccessTypes for Declarator {
   fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
     match self {
+      Declarator::Abstract => HashMap::new(),
       Declarator::Identifier{..} => HashMap::new(),
       Declarator::Array{sizes, ..} => {
         let types = sizes.iter()

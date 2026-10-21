@@ -212,6 +212,7 @@ fn declaration_specifier_to_eggroll(spec: &DeclarationSpecifier) -> String {
 
 fn declarator_to_eggroll(dec: &Declarator) -> String {
   match dec {
+    Declarator::Abstract => panic!("Cannot convert an abstract declarator to Eggroll"),
     Declarator::Identifier{name} => name.clone(),
     Declarator::Array{name, sizes} => {
       match sizes.len() {
@@ -277,6 +278,7 @@ fn type_to_eggroll(ty: &Type) -> String {
     Type::Long     => "long".to_string(),
     Type::Short    => "short".to_string(),
     Type::Signed   => "signed".to_string(),
+    Type::Struct{..} => panic!("struct keyword unsupported in Eggroll"),
     Type::Unsigned => "unsigned".to_string(),
     Type::Void     => "void".to_string(),
   }

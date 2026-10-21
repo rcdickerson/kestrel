@@ -51,6 +51,7 @@ impl CRel {
 impl Declarator {
   pub fn map(&self, mapper: &mut dyn CRelMapper) -> Declarator {
     match &self {
+      Declarator::Abstract => mapper.map_declarator(&Declarator::Abstract),
       Declarator::Identifier{name} => {
         let mapped_name = mapper.map_name(name);
         mapper.map_declarator(&Declarator::Identifier{name: mapped_name})

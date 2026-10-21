@@ -43,6 +43,7 @@ impl CRel {
 impl Declarator {
   pub fn walk(&mut self, visitor: &mut dyn CRelVisitor) {
     match self {
+      Declarator::Abstract => (),
       Declarator::Identifier{name} => visitor.visit_name(name),
       Declarator::Array{name, sizes} => {
         visitor.visit_name(name);

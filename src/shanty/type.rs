@@ -1,6 +1,7 @@
+use crate::shanty::Variable;
 use crate::shanty::Writer;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 pub enum Type {
   Bool,
   Char,
@@ -10,6 +11,7 @@ pub enum Type {
   Long,
   Short,
   Signed,
+  Struct{name: String, fields: Option<Vec<Variable>>},
   Unsigned,
   Void,
 }
@@ -17,6 +19,19 @@ pub enum Type {
 impl Type {
   pub fn emit(&self, writer: &mut Writer) {
     let type_str = match self {
+      Type::Struct{name, fields} => {
+        writer.write("struct ").write(name);
+        if let Some(fields) = fields {
+          writer.write(" {");
+          for field in fields {
+            writer.write(" ");
+            field.emit(writer);
+            writer.write(";");
+          }
+          writer.write(" }");
+        }
+        return;
+      },
       Type::Bool     => "bool",
       Type::Char     => "char",
       Type::Double   => "double",

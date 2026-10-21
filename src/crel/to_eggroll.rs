@@ -130,7 +130,7 @@ fn statement_to_eggroll(stmt: &Statement) -> String {
     Statement::Break => "break".to_string(),
     Statement::Compound(items) => {
       match items.len() {
-        0 => "".to_string(),
+        0 => "skip".to_string(),
         1 => block_item_to_eggroll(&items[0]),
         _ => format!("(seq {} {})",
                      block_item_to_eggroll(&items[0]),

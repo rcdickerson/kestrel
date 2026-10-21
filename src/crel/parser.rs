@@ -281,6 +281,12 @@ fn trans_expression(expr: &Node<c::Expression>) -> ExprWithInvars {
     },
     c::Expression::Call(call) => trans_call_expression(call),
     c::Expression::Constant(cnst) => (trans_constant(cnst), Vec::new()),
+    c::Expression::StringLiteral(lit) => {
+      let mut chars = lit.node[0].chars();
+      chars.next();      // Remove leading and trailing
+      chars.next_back(); // quotation marks.
+      (Expression::StringLiteral(chars.as_str().to_string()), Vec::new())
+    },
     c::Expression::Identifier(id) =>
       (Expression::Identifier{ name: id.node.name.clone() }, Vec::new()),
     c::Expression::Cast(cast) => {

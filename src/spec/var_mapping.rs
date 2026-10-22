@@ -8,7 +8,7 @@ use crate::crel::ast::TypeName;
 use crate::crel::unaligned::UnalignedCRel;
 use crate::names::{CollectVarTypes, CollectVarAccessTypes};
 use crate::spec::KestrelSpec;
-use crate::spec::condition::{CondAExpr, CondAUnop, CondBExpr, KestrelCond, qualified_state_var};
+use crate::spec::condition::{CondABinop, CondAExpr, CondAUnop, CondBExpr, KestrelCond, qualified_state_var};
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
 
@@ -78,9 +78,15 @@ use std::path::Path;
 pub fn abduce_var_mapping(spec: &KestrelSpec, unaligned_crel: &UnalignedCRel, dtrace_path: Option<&Path>) -> KestrelSpec {
     let prog_vars = unaligned_crel.unaligned_main.var_types();
     let access_types = unaligned_crel.unaligned_main.var_access_types();
+    let pre_vars = spec.pre.state_vars();
     let post_vars = spec.post.state_vars();
+    let pre_mapping = perform_abduction(spec, &prog_vars, &access_types, &pre_vars, dtrace_path);
     let mapping = perform_abduction(spec, &prog_vars, &access_types, &post_vars, dtrace_path);
-    KestrelSpec { post: apply_mapping(&spec.post, &mapping), ..spec.clone() }
+    KestrelSpec {
+        pre: apply_mapping(&spec.pre, &pre_mapping),
+        post: apply_mapping(&spec.post, &mapping),
+        ..spec.clone()
+    }
 }
 
 fn perform_abduction(spec: &KestrelSpec,
@@ -93,7 +99,7 @@ fn perform_abduction(spec: &KestrelSpec,
         let types = access_types.get(post_var).cloned().unwrap_or_default();
         match types.len() {
             0 => {},
-            _ => { mapping.insert(post_var.clone(), punned_read(post_var, &types[0])); },
+            _ => { mapping.insert(post_var.clone(), cast_pointer(post_var, prog_vars.get(post_var), &types[0])); },
         }
     }
      // TODO settle ambiguous cases with the dtrace (instead of taking types[0]), 
@@ -101,17 +107,19 @@ fn perform_abduction(spec: &KestrelSpec,
     mapping
 }
 
-// Builds *((T*)(&var))
-fn punned_read(var: &String, ty: &TypeName) -> CondAExpr {
-    CondAExpr::Unop {
-        op: CondAUnop::Deref,
-        aexp: Box::new(CondAExpr::Cast {
-            ty: TypeName::Pointer(Box::new(ty.clone())),
-            aexp: Box::new(CondAExpr::Unop {
-                op: CondAUnop::Address,
-                aexp: Box::new(CondAExpr::Var(var.clone())),
-            }),
-        }),
+// Builds (T*)var for a pointer, or (T*)(&var) for anything read through its address.
+// A scalar then reads *((T*)(&var)), and an array indexes ((T*)var)[i].
+fn cast_pointer(var: &String, declared: Option<&TypeName>, ty: &TypeName) -> CondAExpr {
+    let target = match declared {
+        Some(TypeName::Pointer(_)) => CondAExpr::Var(var.clone()),
+        _ => CondAExpr::Unop {
+            op: CondAUnop::Address,
+            aexp: Box::new(CondAExpr::Var(var.clone())),
+        },
+    };
+    CondAExpr::Cast {
+        ty: TypeName::Pointer(Box::new(ty.clone())),
+        aexp: Box::new(target),
     }
 }
 
@@ -164,8 +172,22 @@ fn map_bexpr(bexpr: &CondBExpr, mapping: &HashMap<String, CondAExpr>) -> CondBEx
 fn map_aexpr(aexpr: &CondAExpr, mapping: &HashMap<String, CondAExpr>) -> CondAExpr {
     match aexpr {
         CondAExpr::QualifiedVar{exec, name} => match mapping.get(&qualified_state_var(exec, name)) {
-            Some(mapped) => mapped.clone(),
+            Some(pointer) => CondAExpr::Unop {
+                op: CondAUnop::Deref,
+                aexp: Box::new(pointer.clone()),
+            },
             None => aexpr.clone(),
+        },
+        CondAExpr::Binop{lhs, rhs, op: CondABinop::Index} => {
+            let base = match lhs.as_ref() {
+                CondAExpr::QualifiedVar{exec, name} => mapping.get(&qualified_state_var(exec, name)).cloned(),
+                _ => None,
+            };
+            CondAExpr::Binop {
+                lhs: Box::new(base.unwrap_or_else(|| map_aexpr(lhs, mapping))),
+                rhs: Box::new(map_aexpr(rhs, mapping)),
+                op: CondABinop::Index,
+            }
         },
         CondAExpr::Unop{op: CondAUnop::Address, ..} => aexpr.clone(),
         CondAExpr::Unop{aexp, op} => CondAExpr::Unop {

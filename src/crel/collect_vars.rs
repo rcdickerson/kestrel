@@ -434,7 +434,10 @@ impl CollectVarAccessTypes for Expression {
       Expression::Binop{lhs, rhs, op: _} => {
         union_all_access_types(vec!(lhs.var_access_types(), rhs.var_access_types()))
       },
-      Expression::Cast{expr, ..} => expr.var_access_types(),
+      Expression::Cast{expr, ..} => match cast_access(self) {
+        Some((name, ty)) => HashMap::from([(name, vec!(ty))]),
+        None => expr.var_access_types(),
+      },
       Expression::Member{expr, ..} => expr.var_access_types(),
       Expression::Forall{condition, ..} => condition.var_access_types(),
       Expression::SketchHole => HashMap::new(),
@@ -564,6 +567,19 @@ fn punned_access(expr: &Expression) -> Option<(String, TypeName)> {
           return Some((name.clone(), (**ty).clone()));
         }
       }
+    }
+  }
+  None
+}
+
+fn cast_access(expr: &Expression) -> Option<(String, TypeName)> {
+  if let Expression::Cast{ty: TypeName::Pointer(ty), expr: target} = expr {
+    let var = match target.as_ref() {
+      Expression::Unop{expr: var, op: UnaryOp::Address} => var.as_ref(),
+      var => var,
+    };
+    if let Expression::Identifier{name} = var {
+      return Some((name.clone(), (**ty).clone()));
     }
   }
   None

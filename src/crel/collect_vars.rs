@@ -53,6 +53,7 @@ impl CollectVars for Expression {
         union_all(vec!(lhs.vars(), rhs.vars()))
       },
       Expression::Cast{expr, ..} => expr.vars(),
+      Expression::Member{expr, ..} => expr.vars(),
       Expression::Forall{condition, ..} => condition.vars(),
       Expression::SketchHole => HashSet::new(),
       Expression::Statement(stmt) => stmt.vars(),
@@ -222,6 +223,7 @@ impl CollectVarTypes for Expression {
         union_all_types(vec!(lhs.var_types(), rhs.var_types()))
       },
       Expression::Cast{expr, ..} => expr.var_types(),
+      Expression::Member{expr, ..} => expr.var_types(),
       Expression::Forall{condition, ..} => condition.var_types(),
       Expression::SketchHole => HashMap::new(),
       Expression::Statement(stmt) => stmt.var_types(),
@@ -433,6 +435,7 @@ impl CollectVarAccessTypes for Expression {
         union_all_access_types(vec!(lhs.var_access_types(), rhs.var_access_types()))
       },
       Expression::Cast{expr, ..} => expr.var_access_types(),
+      Expression::Member{expr, ..} => expr.var_access_types(),
       Expression::Forall{condition, ..} => condition.var_access_types(),
       Expression::SketchHole => HashMap::new(),
       Expression::Statement(stmt) => stmt.var_access_types(),

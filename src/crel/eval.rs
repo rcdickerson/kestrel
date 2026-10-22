@@ -138,6 +138,7 @@ fn eval_expression(expr: &Expression, exec: &mut Execution) {
     Expression::Unop{expr, op} => eval_unop(expr, op, exec),
     Expression::Binop{lhs, rhs, op} => eval_binop(lhs, rhs, op, exec),
     Expression::Cast{expr, ..} => eval_expression(expr, exec),
+    Expression::Member{..} => panic!("Cannot evaluate struct members"),
     Expression::Forall{..} => {
       //panic!("Forall unimplemented")
     },

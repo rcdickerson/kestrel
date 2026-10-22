@@ -225,6 +225,10 @@ pub enum Expression {
     ty: TypeName,
     expr: Box<Expression>,
   },
+  Member {
+    expr: Box<Expression>,
+    field: String,
+  },
   Forall {
     bindings: Vec<(String, Type)>,
     condition: Box<Expression>,

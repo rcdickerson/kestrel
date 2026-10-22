@@ -98,6 +98,7 @@ fn expression_to_eggroll(expr: &Expression) -> String {
               type_name_to_eggroll(ty), 
               expression_to_eggroll(expr)
     ),
+    Expression::Member{expr, field} => format!("(member {} {})", expression_to_eggroll(expr), field),
     Expression::Forall{bindings, condition} => {
       let bindings = bindings.iter()
         .map(|(name, ty)| format!("(binding {} {})", name, type_to_eggroll(ty)))
@@ -278,7 +279,8 @@ fn type_to_eggroll(ty: &Type) -> String {
     Type::Long     => "long".to_string(),
     Type::Short    => "short".to_string(),
     Type::Signed   => "signed".to_string(),
-    Type::Struct{..} => panic!("struct keyword unsupported in Eggroll"),
+    Type::Struct{name, fields: None} => format!("(struct-type {})", name),
+    Type::Struct{..} => panic!("struct definitions unsupported in Eggroll"),
     Type::Unsigned => "unsigned".to_string(),
     Type::Void     => "void".to_string(),
   }

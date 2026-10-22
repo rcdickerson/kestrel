@@ -160,6 +160,7 @@ fn expression_to_sketch(expr: &Expression) -> Sk::Expression {
       }
     },
     Expression::Cast{..}    => panic!("Casts must be normalized before Sketch."),
+    Expression::Member{..}  => panic!("Struct members unsupported in Sketch."),
     Expression::Forall{..}  => {
       println!("WARNING: Foralls are unsupported! Treating as true.");
       Sk::Expression::ConstInt(1)

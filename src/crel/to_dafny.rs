@@ -242,6 +242,7 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
       }
     },
     Expression::Cast{..} => panic!("Casts must be normalized before Dafny."),
+    Expression::Member{..} => panic!("Struct members unsupported in Dafny."),
     Expression::Forall { bindings, condition } => {
       Daf::Expression::Forall {
         bindings: bindings.iter().map(|(v, t)| (v.clone(), type_to_daf(t).unwrap())).collect(),

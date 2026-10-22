@@ -343,6 +343,16 @@ fn trans_expression(expr: &Node<c::Expression>) -> ExprWithInvars {
       let ty = trans_abstract_declarator(TypeName::Base(specifiers), type_name.declarator.as_ref());
       (Expression::Cast { ty, expr: Box::new(inner) }, invars)
     },
+    c::Expression::Member(member) => {
+      let (inner, invars) = trans_expression(&member.node.expression);
+      match member.node.operator.node {
+        c::MemberOperator::Direct => {
+          let field = member.node.identifier.node.name.clone();
+          (Expression::Member { expr: Box::new(inner), field }, invars)
+        },
+        _ => panic!("Unsupported member operator: {:?}", member.node.operator),
+      }
+    },
     c::Expression::Conditional(cond) => {
       let (condition, mut invars) = trans_expression(&cond.node.condition);
       let (then, mut then_invars)  = trans_expression(&cond.node.then_expression);

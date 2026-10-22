@@ -215,6 +215,10 @@ impl Expression {
         visitor.visit_expression(expr);
         expr.walk(visitor);
       },
+      Expression::Member{expr, ..} => {
+        visitor.visit_expression(expr);
+        expr.walk(visitor);
+      },
       Expression::Forall{bindings, condition, ..} => {
         for (pred_var, _) in bindings {
           visitor.visit_name(pred_var);

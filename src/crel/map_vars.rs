@@ -52,6 +52,10 @@ impl MapVars for Expression {
         ty: ty.clone(),
         expr: Box::new(expr.map_vars(f)),
       },
+      Expression::Member{expr, field} => Expression::Member {
+        expr: Box::new(expr.map_vars(f)),
+        field: field.clone(),
+      },
       Expression::Forall{bindings, condition} => Expression::Forall {
         bindings: bindings.iter().map(|(v, t)| (f(v.clone()), t.clone())).collect(),
         condition: Box::new(condition.clone().map_vars(f)),

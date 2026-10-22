@@ -160,6 +160,11 @@ fn expect_expression(sexp: &Sexp, ctx: &Context) -> Expression {
         let rhs = Box::new(expect_expression(&sexps[2], ctx));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Index }
       },
+      Sexp::Atom(Atom::S(s)) if s == "member" => {
+        let expr = Box::new(expect_expression(&sexps[1], ctx));
+        let field = expect_string(&sexps[2]);
+        Expression::Member{ expr, field }
+      },
       Sexp::Atom(Atom::S(s)) if s == "forall" => {
         let bindings = expect_bindings(&sexps[1]);
         let condition = Box::new(expect_expression(&sexps[2], ctx));
@@ -670,6 +675,11 @@ fn expect_type(sexp: &Sexp) -> Type {
       "unsigned" => Type::Unsigned,
       "void"     => Type::Void,
       _ => panic!("Unknown type: {}", ty),
+    },
+    Sexp::List(sexps) => match &sexps[0] {
+      Sexp::Atom(Atom::S(s)) if s == "struct-type" =>
+        Type::Struct{name: expect_string(&sexps[1]), fields: None},
+      _ => panic!("Expected type, got: {}", sexp),
     },
     _ => panic!("Expected type, got: {}", sexp)
   }

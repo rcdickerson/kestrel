@@ -285,6 +285,13 @@ impl Expression {
           expr: Box::new(mapped_expr),
         })
       },
+      Expression::Member{expr, field} => {
+        let mapped_expr = expr.map(mapper);
+        mapper.map_expression(&Expression::Member {
+          expr: Box::new(mapped_expr),
+          field: field.clone(),
+        })
+      },
       Expression::Forall{bindings, condition} => {
         let mapped_bindings = bindings.iter().map(|(v, t)| (mapper.map_name(v), t.clone())).collect();
         let mapped_condition = condition.map(mapper);

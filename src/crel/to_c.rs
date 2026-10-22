@@ -162,6 +162,10 @@ fn expression_to_c(expr: &Expression, output_asserts: bool, output_assumes: bool
       let inner = Box::new(expression_to_c(expr, output_asserts, output_assumes));
       C::Expression::UnOp{ expr: inner, op: format!("({})", type_name_to_string(ty)) }
     },
+    Expression::Member{ expr, field } => {
+      let inner = Box::new(expression_to_c(expr, output_asserts, output_assumes));
+      C::Expression::Member{ expr: inner, field: field.clone() }
+    },
     Expression::Ternary { condition, then, els } => {
       C::Expression::Ternary {
         condition:  Box::new(expression_to_c(condition, output_asserts, output_assumes)),

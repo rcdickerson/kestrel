@@ -1,7 +1,6 @@
-Status: Not verified, SeaHorn fails to compile the product
+Status: Not verified (SeaHorn says sat)
 Manual spec edits: none
 
-   3x error: invalid operands to binary expression ('int' and 'void')
-      (the spec compares left.a[_i] against the void* right.a[_i])
-  16x error: use of undeclared identifier 'r_alloc_<hash>'
-      (the panic_bounds_check calls)
+    r_call5 = llvm_sadd_with_overflow_i32(*((unsigned int*)r_a), 1);
+
+No body for llvm_sadd_with_overflow_i32.

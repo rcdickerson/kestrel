@@ -1,21 +1,12 @@
-Status: Verified (translation workflow, spec repaired automatically)
+Status: Not verified (SeaHorn says sat)
 Manual spec edits still needed:
   pre:   left.a == right.arg0 && left.b == right.b;
   (original pre was left.a == right.a && left.b == right.b)
-Repaired post: sassert(l_c == (*((unsigned int*)(&r_c))));
+
+    r_call4 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_c)), r_call3.field0);
+    r_call3 = llvm_smul_with_overflow_i32(*((unsigned int*)(&r_a)), *((unsigned int*)(&r_a)));
+
+No body for llvm_sadd_with_overflow_i32 and llvm_smul_with_overflow_i32.
 
 right.a is mutable in the Rust signature, and so it lost its name.
 Used right.arg0 in the pre condition instead.
-
-Per-Task Times (ms)
--------------------
-print-info: 0
-align-count-loops: 77
-aligned-crel: 3
-aligned-output: 0
-write-product: 6
-seahorn: 5450
-print-info: 0
-
-KestRel completed in 5539ms
-Verified: true

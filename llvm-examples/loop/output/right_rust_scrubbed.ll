@@ -3,6 +3,10 @@ source_filename = "right.59b4154acb9ecd45-cgu.0"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
+@alloc_72b76b03aa3be83f823e552e2267c704 = private unnamed_addr constant [28 x i8] c"llvm-examples/loop/right.rs\00", align 1
+@alloc_cec36e1e6db6a74003dcc27714188173 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_72b76b03aa3be83f823e552e2267c704, [16 x i8] c"\1B\00\00\00\00\00\00\00\05\00\00\00\0F\00\00\00" }>, align 8
+@alloc_83591e49dc36b934441419653b8254c2 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_72b76b03aa3be83f823e552e2267c704, [16 x i8] c"\1B\00\00\00\00\00\00\00\06\00\00\00\0D\00\00\00" }>, align 8
+
 ; Function Attrs: nounwind nonlazybind uwtable
 define void @right(i32 %n) unnamed_addr #0 !dbg !7 {
 start:
@@ -17,26 +21,56 @@ start:
   store i32 1, ptr %i, align 4, !dbg !24
   br label %bb1, !dbg !25
 
-bb1:                                              ; preds = %bb2, %start
+bb1:                                              ; preds = %bb4, %start
   %_5 = load i32, ptr %i, align 4, !dbg !26
   %_4 = icmp sle i32 %_5, %n, !dbg !27
-  br i1 %_4, label %bb2, label %bb3, !dbg !27
+  br i1 %_4, label %bb2, label %bb5, !dbg !27
 
-bb3:                                              ; preds = %bb1
+bb5:                                              ; preds = %bb1
   ret void, !dbg !28
 
 bb2:                                              ; preds = %bb1
   %_6 = load i32, ptr %sum, align 4, !dbg !30
   %_7 = load i32, ptr %i, align 4, !dbg !31
-  %0 = add i32 %_6, %_7, !dbg !32
-  store i32 %0, ptr %sum, align 4, !dbg !32
-  %_8 = load i32, ptr %i, align 4, !dbg !33
-  %1 = add i32 %_8, 1, !dbg !34
-  store i32 %1, ptr %i, align 4, !dbg !34
+  %0 = call { i32, i1 } @llvm.sadd.with.overflow.i32(i32 %_6, i32 %_7), !dbg !30
+  %_8.0 = extractvalue { i32, i1 } %0, 0, !dbg !30
+  %_8.1 = extractvalue { i32, i1 } %0, 1, !dbg !30
+  br i1 %_8.1, label %panic, label %bb3, !dbg !30
+
+bb3:                                              ; preds = %bb2
+  store i32 %_8.0, ptr %sum, align 4, !dbg !32
+  %_9 = load i32, ptr %i, align 4, !dbg !33
+  %1 = call { i32, i1 } @llvm.sadd.with.overflow.i32(i32 %_9, i32 1), !dbg !33
+  %_10.0 = extractvalue { i32, i1 } %1, 0, !dbg !33
+  %_10.1 = extractvalue { i32, i1 } %1, 1, !dbg !33
+  br i1 %_10.1, label %panic1, label %bb4, !dbg !33
+
+panic:                                            ; preds = %bb2
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8 @alloc_cec36e1e6db6a74003dcc27714188173) #3, !dbg !30
+  unreachable, !dbg !30
+
+bb4:                                              ; preds = %bb3
+  store i32 %_10.0, ptr %i, align 4, !dbg !34
   br label %bb1, !dbg !25
+
+panic1:                                           ; preds = %bb3
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8 @alloc_83591e49dc36b934441419653b8254c2) #3, !dbg !33
+  unreachable, !dbg !33
 }
 
+; Function Attrs: nosync nounwind speculatable
+declare { i32, i1 } @llvm.sadd.with.overflow.i32(i32, i32) #1
+
+; core::panicking::panic_const::panic_const_add_overflow
+; Function Attrs: cold noinline noreturn nounwind nonlazybind uwtable
+declare void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8) unnamed_addr #2
+
 attributes #0 = { nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #1 = { nosync nounwind speculatable }
+attributes #2 = { cold noinline noreturn nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #3 = { noreturn nounwind }
 
 !llvm.module.flags = !{!0, !1, !2, !3}
 !llvm.ident = !{!4}

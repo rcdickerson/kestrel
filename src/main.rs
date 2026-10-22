@@ -360,7 +360,7 @@ fn translation_workflow(args: Args) {
         workflow.add_task(AlignCountLoops::new());
         workflow.add_task(AlignedCRel::new());
         workflow.add_task(AlignedOutput::new(OutputMode::Seahorn));
-        workflow.add_task_unless_verifed(Seahorn::new(Some(300)));
+        workflow.add_task_unless_verifed(Seahorn::new(Some(60)));
       }
       let mut align_sa_task = AlignSa::new(args.sa_start_random, args.sa_max_iterations);
       if args.af_fusion  { align_sa_task.ablate_fusion() }
@@ -371,7 +371,7 @@ fn translation_workflow(args: Args) {
   workflow.add_task_unless_verifed(AlignedCRel::new());
   workflow.add_task(AlignedOutput::new(OutputMode::Seahorn));
   workflow.add_task(WriteProduct::new(OutputMode::Seahorn, out_dir.join("aligned_product.c")));
-  workflow.add_task_unless_verifed(Seahorn::new(Some(300)));
+  workflow.add_task_unless_verifed(Seahorn::new(Some(60)));
   match args.output {
     Some(path) => workflow.add_task(WriteProduct::new(OutputMode::Seahorn, std::path::PathBuf::from(path))),
     None => workflow.add_task(PrintInfo::with_header("Aligned Product Program",

@@ -9,11 +9,34 @@ void main(int l_x, int r_x) {
   char r_x_var0[4];
   char r_y[4];
   char r_z[4];
+  struct literal_struct_0 r_call3;
+  struct literal_struct_0 r_call4;
+  struct literal_struct_0 r_call5;
   (*((unsigned int*)(&r_x_var0))) = r_x;
-  (*((unsigned int*)(&r_z))) = (2 * r_x);
-  (*((unsigned int*)(&r_y))) = 0;
-  while (((int)(*((unsigned int*)(&r_z)))) > 0) {
-    (*((unsigned int*)(&r_z))) = ((*((unsigned int*)(&r_z))) - 1);
-    (*((unsigned int*)(&r_y))) = ((*((unsigned int*)(&r_y))) + r_x);
+  r_call3 = llvm_smul_with_overflow_i32(2, r_x);
+  if (!r_call3.field1) {
+    (*((unsigned int*)(&r_z))) = r_call3.field0;
+    (*((unsigned int*)(&r_y))) = 0;
+  }
+  if ((!r_call3.field1) && (((int)(*((unsigned int*)(&r_z)))) <= 0)) {
+  }
+  if ((!r_call3.field1) && (((int)(*((unsigned int*)(&r_z)))) > 0)) {
+    r_call4 = llvm_ssub_with_overflow_i32(*((unsigned int*)(&r_z)), 1);
+  }
+  if (((!r_call3.field1) && (((int)(*((unsigned int*)(&r_z)))) > 0)) && (!r_call4.field1)) {
+    (*((unsigned int*)(&r_z))) = r_call4.field0;
+    r_call5 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_y)), r_x);
+  }
+  if ((((!r_call3.field1) && (((int)(*((unsigned int*)(&r_z)))) > 0)) && (!r_call4.field1)) && (!r_call5.field1)) {
+    (*((unsigned int*)(&r_y))) = r_call5.field0;
+  }
+  if ((((!r_call3.field1) && (((int)(*((unsigned int*)(&r_z)))) > 0)) && r_call5.field1) && (!r_call4.field1)) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(&alloc_23096a9f68e7ede8cb6db28b098d0be3);
+  }
+  if (((!r_call3.field1) && (((int)(*((unsigned int*)(&r_z)))) > 0)) && r_call4.field1) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_sub_overflow(&alloc_a67e29adf6a66efea0f5854ca0e759d3);
+  }
+  if (r_call3.field1) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow(&alloc_4c064889032aecdd7eb938f0d2b843a2);
   }
 }

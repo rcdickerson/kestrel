@@ -1,19 +1,9 @@
-Status: Verified (translation workflow, spec repaired automatically)
+Status: Not verified (SeaHorn says sat)
 Manual spec edits still needed: none
-Repaired post: sassert(l_y == (*((unsigned int*)(&r_y))));
+
+    r_call6 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_i)), 1);
+
+No body for llvm_sadd_with_overflow_i32.
 
 Caveat: likely vacuous. Both sides compute y = y + y starting from 0, so the
 postcondition holds no matter what the loop does.
-
-Per-Task Times (ms)
--------------------
-print-info: 0
-align-count-loops: 1114
-aligned-crel: 5
-aligned-output: 1
-write-product: 6
-seahorn: 260
-print-info: 0
-
-KestRel completed in 1389ms
-Verified: true

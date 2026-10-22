@@ -1,8 +1,5 @@
-Status: Failed, panics while parsing the C (before alignment)
+Status: Not verified (panics in the parser)
 Manual spec edits: none
 
-thread 'main' panicked at src/crel/parser.rs:218:12:
-Unsupported abstract declarator in type name: Array(Node { node: ArrayDeclarator { qualifiers: [], size: VariableExpress
-
-Cause: the cast (unsigned int (*)[10])a uses an array type. TypeName now has
-an Array variant, but the parser's trans_abstract_declarator doesn't produce it.
+    thread 'main' panicked at src/crel/parser.rs:256:12:
+    Unsupported abstract declarator in type name: Array(Node { node: ArrayDeclarator { qualifiers: [], size: Varia...

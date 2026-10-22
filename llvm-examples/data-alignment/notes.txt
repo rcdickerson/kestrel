@@ -1,9 +1,5 @@
-Status: Failed, panics while parsing the C (before alignment)
+Status: Not verified (panics in the parser)
 Manual spec edits: none
 
-thread 'main' panicked at src/crel/parser.rs:357:70:
-called `Result::unwrap()` on an `Err` value: ParseIntError { kind: PosOverflow }
-
-Cause: the literal 2147483648 doesn't fit the parser's i32 integer constants.
-Earlier notes expect the unscrubbed Rust overflow-panic intrinsic to be the
-next blocker after that.
+    thread 'main' panicked at src/crel/parser.rs:411:70:
+    called `Result::unwrap()` on an `Err` value: ParseIntError { kind: PosOverflow }

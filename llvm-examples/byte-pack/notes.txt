@@ -1,16 +1,15 @@
-Status: Verified (translation workflow, spec repaired automatically)
+Status: Verified
 Manual spec edits still needed: none
-Repaired post: sassert(l_prod == (*((unsigned int*)(&r_prod))));
 
 Per-Task Times (ms)
 -------------------
 print-info: 0
-align-count-loops: 15
-aligned-crel: 1
+align-count-loops: 10
+aligned-crel: 2
 aligned-output: 0
-write-product: 6
-seahorn: 208
+write-product: 4
+seahorn: 174
 print-info: 0
 
-KestRel completed in 232ms
+KestRel completed in 192ms
 Verified: true

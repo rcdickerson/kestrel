@@ -1,5 +1,7 @@
 #include "seahorn/seahorn.h"
 extern int arb_int();
+void right(int age);
+
 void main() {
   int l_age = arb_int();
   int r_age = arb_int();

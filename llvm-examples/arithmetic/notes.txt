@@ -1,16 +1,7 @@
-Status: Verified (translation workflow, spec repaired automatically)
+Status: Not verified (SeaHorn says sat)
 Manual spec edits still needed: none
-Repaired post: sassert(l_prod == (*((unsigned int*)(&r_prod))));
 
-Per-Task Times (ms)
--------------------
-print-info: 0
-align-count-loops: 22
-aligned-crel: 3
-aligned-output: 0
-write-product: 6
-seahorn: 236
-print-info: 0
+    r_call5 = llvm_sadd_with_overflow_i32(r_a, r_b);
+    r_call7 = llvm_smul_with_overflow_i32(r_val6, r_c);
 
-KestRel completed in 268ms
-Verified: true
+No body for llvm_sadd_with_overflow_i32 and llvm_smul_with_overflow_i32.

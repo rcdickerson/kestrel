@@ -1,17 +1,15 @@
-Status: Verified (translation workflow, right side is C, run without --is-rust)
+Status: Verified
 Manual spec edits still needed: none
-Spec repair: nothing to repair, since a C right side has no punned variables
-Post: sassert(l_y == r_y);
 
 Per-Task Times (ms)
 -------------------
 print-info: 0
-align-count-loops: 58
+align-count-loops: 47
 aligned-crel: 2
 aligned-output: 0
-write-product: 6
-seahorn: 312
+write-product: 5
+seahorn: 301
 print-info: 0
 
-KestRel completed in 381ms
+KestRel completed in 358ms
 Verified: true

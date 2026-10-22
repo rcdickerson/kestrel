@@ -1,16 +1,8 @@
-Status: Verified (translation workflow, spec repaired automatically)
+Status: Not verified (SeaHorn says sat)
 Manual spec edits still needed: none
-Repaired post: sassert(l_y == (*((unsigned int*)(&r_y))));
 
-Per-Task Times (ms)
--------------------
-print-info: 0
-align-count-loops: 65
-aligned-crel: 2
-aligned-output: 0
-write-product: 5
-seahorn: 439
-print-info: 0
+    r_call5 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_y)), r_x);
+    r_call4 = llvm_ssub_with_overflow_i32(*((unsigned int*)(&r_z)), 1);
+    r_call3 = llvm_smul_with_overflow_i32(2, r_x);
 
-KestRel completed in 513ms
-Verified: true
+No body for llvm_sadd_with_overflow_i32, llvm_ssub_with_overflow_i32, and llvm_smul_with_overflow_i32.

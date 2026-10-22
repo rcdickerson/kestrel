@@ -1,9 +1,6 @@
-Status: Failed, panics during alignment (before SeaHorn runs)
+Status: Not verified (SeaHorn says sat)
 Manual spec edits: none
 
-thread 'main' panicked at src/workflow/tasks/align_count_loops.rs:30:27:
-called `Result::unwrap()` on an `Err` value: BadOp(FromOpError { op: "if-else", children: [260, 312] })
+    void* r_a;
 
-Cause (from to_eggroll.rs): an empty block in the lifted C, e.g.
-if (...) { } else { ... }, is converted to an empty string, so the
-if / if-else node ends up missing a child.
+r_a is a void* with no memory set up.

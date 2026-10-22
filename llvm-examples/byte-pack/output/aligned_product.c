@@ -1,5 +1,7 @@
 #include "seahorn/seahorn.h"
 extern int arb_int();
+void right(int n);
+
 void main() {
   int l_n = arb_int();
   int r_n = arb_int();

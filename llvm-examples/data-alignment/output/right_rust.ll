@@ -5,6 +5,9 @@ target triple = "x86_64-unknown-linux-gnu"
 
 @alloc_9145327e5a54bbfe006b4c2d25b2b018 = private unnamed_addr constant [38 x i8] c"llvm-examples/data-alignment/right.rs\00", align 1
 @alloc_6f6e251c8165b2b3ad25bd67f27acacb = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_9145327e5a54bbfe006b4c2d25b2b018, [16 x i8] c"%\00\00\00\00\00\00\00\08\00\00\00\0C\00\00\00" }>, align 8
+@alloc_1bf2cf61defaafc9f0504ef757ac99a0 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_9145327e5a54bbfe006b4c2d25b2b018, [16 x i8] c"%\00\00\00\00\00\00\00\09\00\00\00\11\00\00\00" }>, align 8
+@alloc_da0ec900e69fa7968e3dc4ecc9ad09fe = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_9145327e5a54bbfe006b4c2d25b2b018, [16 x i8] c"%\00\00\00\00\00\00\00\0A\00\00\00\11\00\00\00" }>, align 8
+@alloc_a3a020ade956c011435281cc89003ae5 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_9145327e5a54bbfe006b4c2d25b2b018, [16 x i8] c"%\00\00\00\00\00\00\00\0C\00\00\00\0D\00\00\00" }>, align 8
 
 ; Function Attrs: nounwind nonlazybind uwtable
 define void @right(i32 %x) unnamed_addr #0 !dbg !7 {
@@ -23,12 +26,12 @@ start:
   store i32 0, ptr %w, align 4, !dbg !28
   br label %bb1, !dbg !29
 
-bb1:                                              ; preds = %bb6, %start
+bb1:                                              ; preds = %bb9, %start
   %_6 = load i32, ptr %y, align 4, !dbg !30
   %_5 = icmp sgt i32 %_6, 4, !dbg !30
-  br i1 %_5, label %bb2, label %bb7, !dbg !30
+  br i1 %_5, label %bb2, label %bb10, !dbg !30
 
-bb7:                                              ; preds = %bb1
+bb10:                                             ; preds = %bb1
   ret void, !dbg !31
 
 bb2:                                              ; preds = %bb1
@@ -40,36 +43,88 @@ bb2:                                              ; preds = %bb1
 bb4:                                              ; preds = %bb2
   %_8 = srem i32 %_9, 3, !dbg !33
   %_7 = icmp eq i32 %_8, 0, !dbg !33
-  br i1 %_7, label %bb5, label %bb6, !dbg !33
+  br i1 %_7, label %bb5, label %bb8, !dbg !33
 
 panic:                                            ; preds = %bb2
 ; call core::panicking::panic_const::panic_const_rem_overflow
-  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_rem_overflow(ptr align 8 @alloc_6f6e251c8165b2b3ad25bd67f27acacb) #2, !dbg !33
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_rem_overflow(ptr align 8 @alloc_6f6e251c8165b2b3ad25bd67f27acacb) #3, !dbg !33
   unreachable, !dbg !33
 
-bb6:                                              ; preds = %bb5, %bb4
-  %_16 = load i32, ptr %w, align 4, !dbg !34
-  %0 = add i32 %_16, 1, !dbg !35
-  store i32 %0, ptr %w, align 4, !dbg !35
-  br label %bb1, !dbg !29
+bb8:                                              ; preds = %bb7, %bb4
+  %_18 = load i32, ptr %w, align 4, !dbg !34
+  %0 = call { i32, i1 } @llvm.sadd.with.overflow.i32(i32 %_18, i32 1), !dbg !34
+  %_19.0 = extractvalue { i32, i1 } %0, 0, !dbg !34
+  %_19.1 = extractvalue { i32, i1 } %0, 1, !dbg !34
+  br i1 %_19.1, label %panic3, label %bb9, !dbg !34
 
 bb5:                                              ; preds = %bb4
-  %_14 = load i32, ptr %z, align 4, !dbg !36
-  %1 = mul i32 %_14, 2, !dbg !37
-  store i32 %1, ptr %z, align 4, !dbg !37
-  %_15 = load i32, ptr %y, align 4, !dbg !38
-  %2 = sub i32 %_15, 1, !dbg !39
-  store i32 %2, ptr %y, align 4, !dbg !39
-  br label %bb6, !dbg !40
+  %_14 = load i32, ptr %z, align 4, !dbg !35
+  %1 = call { i32, i1 } @llvm.smul.with.overflow.i32(i32 %_14, i32 2), !dbg !35
+  %_15.0 = extractvalue { i32, i1 } %1, 0, !dbg !35
+  %_15.1 = extractvalue { i32, i1 } %1, 1, !dbg !35
+  br i1 %_15.1, label %panic1, label %bb6, !dbg !35
+
+bb6:                                              ; preds = %bb5
+  store i32 %_15.0, ptr %z, align 4, !dbg !36
+  %_16 = load i32, ptr %y, align 4, !dbg !37
+  %2 = call { i32, i1 } @llvm.ssub.with.overflow.i32(i32 %_16, i32 1), !dbg !37
+  %_17.0 = extractvalue { i32, i1 } %2, 0, !dbg !37
+  %_17.1 = extractvalue { i32, i1 } %2, 1, !dbg !37
+  br i1 %_17.1, label %panic2, label %bb7, !dbg !37
+
+panic1:                                           ; preds = %bb5
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow(ptr align 8 @alloc_1bf2cf61defaafc9f0504ef757ac99a0) #3, !dbg !35
+  unreachable, !dbg !35
+
+bb7:                                              ; preds = %bb6
+  store i32 %_17.0, ptr %y, align 4, !dbg !38
+  br label %bb8, !dbg !39
+
+panic2:                                           ; preds = %bb6
+; call core::panicking::panic_const::panic_const_sub_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_sub_overflow(ptr align 8 @alloc_da0ec900e69fa7968e3dc4ecc9ad09fe) #3, !dbg !37
+  unreachable, !dbg !37
+
+bb9:                                              ; preds = %bb8
+  store i32 %_19.0, ptr %w, align 4, !dbg !40
+  br label %bb1, !dbg !29
+
+panic3:                                           ; preds = %bb8
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8 @alloc_a3a020ade956c011435281cc89003ae5) #3, !dbg !34
+  unreachable, !dbg !34
 }
 
 ; core::panicking::panic_const::panic_const_rem_overflow
 ; Function Attrs: cold noinline noreturn nounwind nonlazybind uwtable
 declare void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_rem_overflow(ptr align 8) unnamed_addr #1
 
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare { i32, i1 } @llvm.smul.with.overflow.i32(i32, i32) #2
+
+; core::panicking::panic_const::panic_const_mul_overflow
+; Function Attrs: cold noinline noreturn nounwind nonlazybind uwtable
+declare void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow(ptr align 8) unnamed_addr #1
+
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare { i32, i1 } @llvm.ssub.with.overflow.i32(i32, i32) #2
+
+; core::panicking::panic_const::panic_const_sub_overflow
+; Function Attrs: cold noinline noreturn nounwind nonlazybind uwtable
+declare void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_sub_overflow(ptr align 8) unnamed_addr #1
+
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare { i32, i1 } @llvm.sadd.with.overflow.i32(i32, i32) #2
+
+; core::panicking::panic_const::panic_const_add_overflow
+; Function Attrs: cold noinline noreturn nounwind nonlazybind uwtable
+declare void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8) unnamed_addr #1
+
 attributes #0 = { nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
 attributes #1 = { cold noinline noreturn nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
-attributes #2 = { noreturn nounwind }
+attributes #2 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
+attributes #3 = { noreturn nounwind }
 
 !llvm.module.flags = !{!0, !1, !2, !3}
 !llvm.ident = !{!4}
@@ -110,9 +165,9 @@ attributes #2 = { noreturn nounwind }
 !32 = !DILexicalBlockFile(scope: !7, file: !8, discriminator: 0)
 !33 = !DILocation(line: 8, column: 12, scope: !20)
 !34 = !DILocation(line: 12, column: 13, scope: !20)
-!35 = !DILocation(line: 12, column: 9, scope: !20)
-!36 = !DILocation(line: 9, column: 17, scope: !20)
-!37 = !DILocation(line: 9, column: 13, scope: !20)
-!38 = !DILocation(line: 10, column: 17, scope: !20)
-!39 = !DILocation(line: 10, column: 13, scope: !20)
-!40 = !DILocation(line: 8, column: 9, scope: !20)
+!35 = !DILocation(line: 9, column: 17, scope: !20)
+!36 = !DILocation(line: 9, column: 13, scope: !20)
+!37 = !DILocation(line: 10, column: 17, scope: !20)
+!38 = !DILocation(line: 10, column: 13, scope: !20)
+!39 = !DILocation(line: 8, column: 9, scope: !20)
+!40 = !DILocation(line: 12, column: 9, scope: !20)

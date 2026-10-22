@@ -1,16 +1,6 @@
-Status: Verified (translation workflow, spec repaired automatically)
+Status: Not verified (SeaHorn says sat)
 Manual spec edits still needed: none
-Repaired post: sassert(l_sum == (*((unsigned int*)(&r_sum))));
 
-Per-Task Times (ms)
--------------------
-print-info: 0
-align-count-loops: 60
-aligned-crel: 2
-aligned-output: 0
-write-product: 6
-seahorn: 432
-print-info: 0
+    r_call3 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_sum)), *((unsigned int*)(&r_i)));
 
-KestRel completed in 504ms
-Verified: true
+No body for llvm_sadd_with_overflow_i32.

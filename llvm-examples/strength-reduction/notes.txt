@@ -1,13 +1,11 @@
-Status: Not verified, SeaHorn timed out after 300 s (spec repaired automatically)
+Status: Not verified (SeaHorn says sat)
 Manual spec edits still needed:
   pre: left.B == right.B && left.C == right.C && left.N == right.N && left.x == right.arg3;
   (original pre was ... && left.x == right.x)
-Repaired post: sassert(l_x == (*((unsigned int*)(&r_x))));
+
+    r_call6 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_x)), *((unsigned int*)(&r_j)));
+
+No body for llvm_sadd_with_overflow_i32.
 
 right.x is mutable in the Rust signature, and so it lost its name.
 Used right.arg3 in the pre condition instead.
-
-This compiles and reaches SeaHorn, but never returns a result. 
-I messed around with bounding the variables in the
-pre condition, but bounding all to a smaller domains
-didnt caused it to finish.

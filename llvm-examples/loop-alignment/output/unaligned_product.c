@@ -15,11 +15,14 @@ void main(int l_a[20 + 1], int l_b[20 + 1], void* r_a, void* r_b) {
   long r_val6;
   long r_val7;
   long r_val8;
+  long r_val9;
+  long r_val10;
+  long r_val11;
   (*((void**)(&r_a_var2))) = r_a;
   (*((void**)(&r_b_var1))) = r_b;
   (*((unsigned long*)(&r_n))) = 20;
   (*((unsigned long*)(&r_j))) = 1;
-  r_llvm_memset_p0_i64(&r_d, 0, 84, 0);
+  llvm_memset_p0_i64(&r_d, 0, 84, 0);
   ((unsigned int*)(&r_d))[1] = (*((unsigned int*)r_b));
   if ((*((unsigned long*)(&r_j))) > 19) {
     ((unsigned int*)r_b)[20] = ((unsigned int*)r_a)[20];
@@ -27,29 +30,40 @@ void main(int l_a[20 + 1], int l_b[20 + 1], void* r_a, void* r_b) {
     r_val5 = (*((unsigned long*)(&r_j)));
   }
   if (((*((unsigned long*)(&r_j))) <= 19) && (r_val5 >= 21)) {
-    r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val5, 21, &r_alloc_0b8d4325adacc96c98125829e397f6bf);
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val5, 21, &alloc_0b8d4325adacc96c98125829e397f6bf);
   }
   if (((*((unsigned long*)(&r_j))) <= 19) && (r_val5 < 21)) {
     r_val6 = (*((unsigned long*)(&r_j)));
   }
   if ((((*((unsigned long*)(&r_j))) <= 19) && (r_val5 < 21)) && (r_val6 >= 21)) {
-    r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val6, 21, &r_alloc_e08b8f2b0a3e293c3668d56d940f8468);
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val6, 21, &alloc_e08b8f2b0a3e293c3668d56d940f8468);
   }
   if ((((*((unsigned long*)(&r_j))) <= 19) && (r_val5 < 21)) && (r_val6 < 21)) {
     ((unsigned int*)r_b)[r_val6] = ((unsigned int*)r_a)[r_val5];
     r_val7 = (*((unsigned long*)(&r_j)));
   }
-  if (((((*((unsigned long*)(&r_j))) <= 19) && (r_val5 < 21)) && (r_val6 < 21)) && (r_val7 >= 21)) {
-    r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val7, 21, &r_alloc_cc41d17d5a9f127d988c0a9be0945e9f);
+  if (((((*((unsigned long*)(&r_j))) <= 19) && (r_val5 < 21)) && (r_val7 >= 21)) && (r_val6 < 21)) {
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val7, 21, &alloc_cc41d17d5a9f127d988c0a9be0945e9f);
   }
   if (((((*((unsigned long*)(&r_j))) <= 19) && (r_val7 < 21)) && (r_val5 < 21)) && (r_val6 < 21)) {
-    r_val8 = ((*((unsigned long*)(&r_j))) + 1);
+    r_val8 = (*((unsigned long*)(&r_j)));
+    r_val9 = (r_val8 + 1);
   }
-  if ((((((*((unsigned long*)(&r_j))) <= 19) && (r_val7 < 21)) && (r_val5 < 21)) && (r_val8 >= 21)) && (r_val6 < 21)) {
-    r__RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val8, 21, &r_alloc_2a88a997bb9f1e7a11884c35234a2edc);
+  if (((((((*((unsigned long*)(&r_j))) <= 19) && (r_val7 < 21)) && (r_val5 < 21)) && (r_val9 >= r_val8)) && (r_val6 < 21)) && (r_val9 >= 21)) {
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val9, 21, &alloc_2a88a997bb9f1e7a11884c35234a2edc);
   }
-  if ((((((*((unsigned long*)(&r_j))) <= 19) && (r_val7 < 21)) && (r_val5 < 21)) && (r_val8 < 21)) && (r_val6 < 21)) {
-    ((unsigned int*)(&r_d))[r_val8] = ((unsigned int*)r_b)[r_val7];
-    (*((unsigned long*)(&r_j))) = ((*((unsigned long*)(&r_j))) + 1);
+  if (((((((*((unsigned long*)(&r_j))) <= 19) && (r_val7 < 21)) && (r_val5 < 21)) && (r_val9 >= r_val8)) && (r_val6 < 21)) && (r_val9 < 21)) {
+    ((unsigned int*)(&r_d))[r_val9] = ((unsigned int*)r_b)[r_val7];
+    r_val10 = (*((unsigned long*)(&r_j)));
+    r_val11 = (r_val10 + 1);
+  }
+  if ((((((((*((unsigned long*)(&r_j))) <= 19) && (r_val7 < 21)) && (r_val5 < 21)) && (r_val9 >= r_val8)) && (r_val6 < 21)) && (r_val9 < 21)) && (r_val11 >= r_val10)) {
+    (*((unsigned long*)(&r_j))) = r_val11;
+  }
+  if ((((((((*((unsigned long*)(&r_j))) <= 19) && (r_val7 < 21)) && (r_val5 < 21)) && (r_val9 >= r_val8)) && (r_val11 < r_val10)) && (r_val6 < 21)) && (r_val9 < 21)) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(&alloc_7ca5d214dc51ac013b8e907289789fb4);
+  }
+  if ((((((*((unsigned long*)(&r_j))) <= 19) && (r_val7 < 21)) && (r_val9 < r_val8)) && (r_val5 < 21)) && (r_val6 < 21)) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(&alloc_542c985c08087436c995ec63d22547ce);
   }
 }

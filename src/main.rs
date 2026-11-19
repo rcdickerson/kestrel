@@ -173,6 +173,10 @@ fn add_verification(workflow: &mut Workflow<KestrelContext>, output_mode: Output
       workflow.add_task_unless_verifed(InvarsDaikon::new(None));
       workflow.add_task_unless_verifed(Houdafny::new(None));
     },
+    OutputMode::FramaC  => {
+      workflow.add_task_unless_verifed(InvarsDaikon::new(None));
+      workflow.add_task_unless_verifed(FramaC::new(None));
+    },
     OutputMode::Icra    => panic!("No verifier is setup for output mode Icra."),
     OutputMode::Seahorn => {
       workflow.add_task_unless_verifed(InvarsDaikon::new(None));
@@ -182,6 +186,16 @@ fn add_verification(workflow: &mut Workflow<KestrelContext>, output_mode: Output
   };
 }
 
+fn add_translation_verification(workflow: &mut Workflow<KestrelContext>, output_mode: OutputMode) {
+  match output_mode {
+    OutputMode::Daikon  => panic!("No translator verifier is setup for output mode Daikon."),
+    OutputMode::Dafny   => panic!("No translator verifier is setup for output mode Dafny."),
+    OutputMode::FramaC  => workflow.add_task_unless_verifed(FramaC::new(Some(60))),
+    OutputMode::Icra    => panic!("No translator verifier is setup for output mode Icra."),
+    OutputMode::Seahorn => workflow.add_task_unless_verifed(Seahorn::new(Some(60))),
+    OutputMode::SvComp  => panic!("No translator verifier is setup for output mode SvComp."),
+  };
+}
 
 /// The high-level KestRel workflow is:
 ///   1. Read in a C file and parse its @KESTREL spec.
@@ -359,8 +373,8 @@ fn translation_workflow(args: Args) {
       if !args.sa_start_random {
         workflow.add_task(AlignCountLoops::new());
         workflow.add_task(AlignedCRel::new());
-        workflow.add_task(AlignedOutput::new(OutputMode::Seahorn));
-        workflow.add_task_unless_verifed(Seahorn::new(Some(60)));
+        workflow.add_task(AlignedOutput::new(args.output_mode));
+        add_translation_verification(&mut workflow, args.output_mode);
       }
       let mut align_sa_task = AlignSa::new(args.sa_start_random, args.sa_max_iterations);
       if args.af_fusion  { align_sa_task.ablate_fusion() }
@@ -369,11 +383,11 @@ fn translation_workflow(args: Args) {
     },
   }
   workflow.add_task_unless_verifed(AlignedCRel::new());
-  workflow.add_task(AlignedOutput::new(OutputMode::Seahorn));
-  workflow.add_task(WriteProduct::new(OutputMode::Seahorn, out_dir.join("aligned_product.c")));
-  workflow.add_task_unless_verifed(Seahorn::new(Some(60)));
+  workflow.add_task(AlignedOutput::new(args.output_mode));
+  workflow.add_task(WriteProduct::new(args.output_mode, out_dir.join("aligned_product.c")));
+  add_translation_verification(&mut workflow, args.output_mode);
   match args.output {
-    Some(path) => workflow.add_task(WriteProduct::new(OutputMode::Seahorn, std::path::PathBuf::from(path))),
+    Some(path) => workflow.add_task(WriteProduct::new(args.output_mode, std::path::PathBuf::from(path))),
     None => workflow.add_task(PrintInfo::with_header("Aligned Product Program",
         &|ctx: &KestrelContext| {
           ctx.aligned_output().as_ref().expect("Missing aligned output").clone()

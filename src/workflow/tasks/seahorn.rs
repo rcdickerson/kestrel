@@ -9,9 +9,9 @@ use std::process::Stdio;
 use std::time::Duration;
 use wait_timeout::ChildExt;
 
-/// A [Task] for performing invariant inference using the Seahorn.
-/// If Seahorn discharges the specification, it sets the verified flag in the
-/// [Context] to true.
+/// A [Task] for checking the aligned product with SeaHorn.
+/// If SeaHorn proves the product safe ("unsat"),
+/// it sets the verified flag in the [Context] to true.
 pub struct Seahorn {
   /// How long in seconds we are willing to wait for Seahorn to decide
   /// validity of the product program.

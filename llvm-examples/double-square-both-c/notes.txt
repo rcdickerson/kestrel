@@ -1,14 +1,15 @@
-No spec change needed
+Status: Verified
+Manual spec edits still needed: none
 
 Per-Task Times (ms)
 -------------------
 print-info: 0
-align-count-loops: 49
+align-count-loops: 47
 aligned-crel: 2
 aligned-output: 0
 write-product: 5
-seahorn: 494
+seahorn: 301
 print-info: 0
 
-KestRel completed in 552ms
+KestRel completed in 358ms
 Verified: true

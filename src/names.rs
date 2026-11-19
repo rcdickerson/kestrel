@@ -1,5 +1,7 @@
 //! Utilities for working with names in program syntax.
 
+use crate::crel::ast::TypeName;
+use std::collections::HashMap;
 use std::collections::HashSet;
 
 pub trait CollectVars {
@@ -29,4 +31,49 @@ pub fn singleton(s: String) -> HashSet<String> {
   let mut set = HashSet::new();
   set.insert(s);
   set
+}
+
+pub trait CollectVarTypes {
+  fn var_types(&self) -> HashMap<String, TypeName>;
+}
+
+pub fn all_var_types<I>(collectable: I) -> HashMap<String, TypeName>
+  where
+    I: IntoIterator,
+    I::Item: CollectVarTypes,
+{
+  union_all_types(collectable.into_iter().map(|c| c.var_types()))
+}
+
+pub fn union_all_types<I>(maps: I) -> HashMap<String, TypeName>
+  where I: IntoIterator<Item = HashMap<String, TypeName>>
+{
+  maps.into_iter().fold(HashMap::new(),
+        |mut m, v| { m.extend(v); m })
+}
+
+pub trait CollectVarAccessTypes {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>>;
+}
+
+pub fn all_var_access_types<I>(collectable: I) -> HashMap<String, Vec<TypeName>>
+  where
+    I: IntoIterator,
+    I::Item: CollectVarAccessTypes,
+{
+  union_all_access_types(collectable.into_iter().map(|c| c.var_access_types()))
+}
+
+pub fn union_all_access_types<I>(maps: I) -> HashMap<String, Vec<TypeName>>
+  where I: IntoIterator<Item = HashMap<String, Vec<TypeName>>>
+{
+  maps.into_iter().fold(HashMap::new(), |mut m, v| {
+    for (name, tys) in v {
+      let entry = m.entry(name).or_insert_with(Vec::new);
+      for ty in tys {
+        if !entry.contains(&ty) { entry.push(ty); }
+      }
+    }
+    m
+  })
 }

@@ -6,6 +6,8 @@ target triple = "x86_64-unknown-linux-gnu"
 @alloc_d6ea669b398674e760a68487fbb40ba5 = private unnamed_addr constant [36 x i8] c"llvm-examples/array-insert/right.rs\00", align 1
 @alloc_1b6aad345a552ecadc4ef2f80a0f897d = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_d6ea669b398674e760a68487fbb40ba5, [16 x i8] c"#\00\00\00\00\00\00\00\06\00\00\00\19\00\00\00" }>, align 8
 @alloc_a74a36876f5d89ac1dedf5b0e55c3dda = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_d6ea669b398674e760a68487fbb40ba5, [16 x i8] c"#\00\00\00\00\00\00\00\0B\00\00\00\05\00\00\00" }>, align 8
+@alloc_6a05b4f1dc13a4b1e8be83728286bf0f = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_d6ea669b398674e760a68487fbb40ba5, [16 x i8] c"#\00\00\00\00\00\00\00\0E\00\00\00\0D\00\00\00" }>, align 8
+@alloc_c6a7a81a76189b99aa0755c4e24a8496 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_d6ea669b398674e760a68487fbb40ba5, [16 x i8] c"#\00\00\00\00\00\00\00\07\00\00\00\0D\00\00\00" }>, align 8
 
 ; Function Attrs: nounwind nonlazybind uwtable
 define void @right(ptr align 4 %a, i32 %val) unnamed_addr #0 !dbg !7 {
@@ -25,17 +27,17 @@ start:
   store i64 0, ptr %j, align 8, !dbg !33
   br label %bb1, !dbg !34
 
-bb1:                                              ; preds = %bb4, %start
+bb1:                                              ; preds = %bb5, %start
   %_6 = load i64, ptr %j, align 8, !dbg !35
   %_5 = icmp ult i64 %_6, 10, !dbg !35
-  br i1 %_5, label %bb2, label %bb5, !dbg !35
+  br i1 %_5, label %bb2, label %bb6, !dbg !35
 
-bb5:                                              ; preds = %bb3, %bb1
+bb6:                                              ; preds = %bb3, %bb1
   store i64 11, ptr %len.dbg.spill, align 8, !dbg !36
   call void @llvm.dbg.declare(metadata ptr %len.dbg.spill, metadata !25, metadata !DIExpression()), !dbg !37
-  %_13 = load i64, ptr %j, align 8, !dbg !38
-  %_14 = icmp ult i64 %_13, 11, !dbg !39
-  br i1 %_14, label %bb6, label %panic1, !dbg !39
+  %_15 = load i64, ptr %j, align 8, !dbg !38
+  %_16 = icmp ult i64 %_15, 11, !dbg !39
+  br i1 %_16, label %bb8, label %panic1, !dbg !39
 
 bb2:                                              ; preds = %bb1
   %_9 = load i64, ptr %j, align 8, !dbg !40
@@ -46,51 +48,74 @@ bb3:                                              ; preds = %bb2
   %0 = getelementptr inbounds i32, ptr %a, i64 %_9, !dbg !41
   %_8 = load i32, ptr %0, align 4, !dbg !41
   %_7 = icmp slt i32 %_8, %val, !dbg !41
-  br i1 %_7, label %bb4, label %bb5, !dbg !41
+  br i1 %_7, label %bb4, label %bb6, !dbg !41
 
 panic:                                            ; preds = %bb2
 ; call core::panicking::panic_bounds_check
-  call void @_RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(i64 %_9, i64 11, ptr align 8 @alloc_1b6aad345a552ecadc4ef2f80a0f897d) #2, !dbg !41
+  call void @_RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(i64 %_9, i64 11, ptr align 8 @alloc_1b6aad345a552ecadc4ef2f80a0f897d) #3, !dbg !41
   unreachable, !dbg !41
 
 bb4:                                              ; preds = %bb3
   %_11 = load i64, ptr %j, align 8, !dbg !42
-  %1 = add i64 %_11, 1, !dbg !43
-  store i64 %1, ptr %j, align 8, !dbg !43
-  br label %bb1, !dbg !34
+  %_12.0 = add i64 %_11, 1, !dbg !42
+  %_12.1 = icmp ult i64 %_12.0, %_11, !dbg !42
+  br i1 %_12.1, label %panic3, label %bb5, !dbg !42
 
-bb6:                                              ; preds = %bb5
-  %2 = getelementptr inbounds i32, ptr %a, i64 %_13, !dbg !39
-  store i32 %val, ptr %2, align 4, !dbg !39
-  br label %bb7, !dbg !44
+bb8:                                              ; preds = %bb6
+  %1 = getelementptr inbounds i32, ptr %a, i64 %_15, !dbg !39
+  store i32 %val, ptr %1, align 4, !dbg !39
+  br label %bb9, !dbg !43
 
-panic1:                                           ; preds = %bb5
+panic1:                                           ; preds = %bb6
 ; call core::panicking::panic_bounds_check
-  call void @_RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(i64 %_13, i64 11, ptr align 8 @alloc_a74a36876f5d89ac1dedf5b0e55c3dda) #2, !dbg !39
+  call void @_RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(i64 %_15, i64 11, ptr align 8 @alloc_a74a36876f5d89ac1dedf5b0e55c3dda) #3, !dbg !39
   unreachable, !dbg !39
 
-bb7:                                              ; preds = %bb8, %bb6
-  %_16 = load i64, ptr %j, align 8, !dbg !45
-  %_15 = icmp ult i64 %_16, 11, !dbg !45
-  br i1 %_15, label %bb8, label %bb9, !dbg !45
+bb9:                                              ; preds = %bb11, %bb8
+  %_18 = load i64, ptr %j, align 8, !dbg !44
+  %_17 = icmp ult i64 %_18, 11, !dbg !44
+  br i1 %_17, label %bb10, label %bb12, !dbg !44
 
-bb9:                                              ; preds = %bb7
-  ret void, !dbg !46
+bb12:                                             ; preds = %bb9
+  ret void, !dbg !45
 
-bb8:                                              ; preds = %bb7
-  %_17 = load i64, ptr %j, align 8, !dbg !48
-  %3 = add i64 %_17, 1, !dbg !49
-  store i64 %3, ptr %j, align 8, !dbg !49
-  br label %bb7, !dbg !44
+bb10:                                             ; preds = %bb9
+  %_19 = load i64, ptr %j, align 8, !dbg !47
+  %_20.0 = add i64 %_19, 1, !dbg !47
+  %_20.1 = icmp ult i64 %_20.0, %_19, !dbg !47
+  br i1 %_20.1, label %panic2, label %bb11, !dbg !47
+
+bb11:                                             ; preds = %bb10
+  store i64 %_20.0, ptr %j, align 8, !dbg !48
+  br label %bb9, !dbg !43
+
+panic2:                                           ; preds = %bb10
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8 @alloc_6a05b4f1dc13a4b1e8be83728286bf0f) #3, !dbg !47
+  unreachable, !dbg !47
+
+bb5:                                              ; preds = %bb4
+  store i64 %_12.0, ptr %j, align 8, !dbg !49
+  br label %bb1, !dbg !34
+
+panic3:                                           ; preds = %bb4
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8 @alloc_c6a7a81a76189b99aa0755c4e24a8496) #3, !dbg !42
+  unreachable, !dbg !42
 }
 
 ; core::panicking::panic_bounds_check
 ; Function Attrs: cold minsize noinline noreturn nounwind nonlazybind optsize uwtable
 declare void @_RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(i64, i64, ptr align 8) unnamed_addr #1
 
+; core::panicking::panic_const::panic_const_add_overflow
+; Function Attrs: cold noinline noreturn nounwind nonlazybind uwtable
+declare void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8) unnamed_addr #2
+
 attributes #0 = { nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
 attributes #1 = { cold minsize noinline noreturn nounwind nonlazybind optsize uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
-attributes #2 = { noreturn nounwind }
+attributes #2 = { cold noinline noreturn nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #3 = { noreturn nounwind }
 
 !llvm.module.flags = !{!0, !1, !2, !3}
 !llvm.ident = !{!4}
@@ -139,12 +164,12 @@ attributes #2 = { noreturn nounwind }
 !40 = !DILocation(line: 6, column: 27, scope: !24)
 !41 = !DILocation(line: 6, column: 25, scope: !24)
 !42 = !DILocation(line: 7, column: 13, scope: !24)
-!43 = !DILocation(line: 7, column: 9, scope: !24)
-!44 = !DILocation(line: 13, column: 5, scope: !26)
-!45 = !DILocation(line: 13, column: 11, scope: !26)
-!46 = !DILocation(line: 16, column: 2, scope: !47)
-!47 = !DILexicalBlockFile(scope: !7, file: !8, discriminator: 0)
-!48 = !DILocation(line: 14, column: 13, scope: !26)
-!49 = !DILocation(line: 14, column: 9, scope: !26)
+!43 = !DILocation(line: 13, column: 5, scope: !26)
+!44 = !DILocation(line: 13, column: 11, scope: !26)
+!45 = !DILocation(line: 16, column: 2, scope: !46)
+!46 = !DILexicalBlockFile(scope: !7, file: !8, discriminator: 0)
+!47 = !DILocation(line: 14, column: 13, scope: !26)
+!48 = !DILocation(line: 14, column: 9, scope: !26)
+!49 = !DILocation(line: 7, column: 9, scope: !24)
 
 declare void @llvm.dbg.declare(metadata, metadata, metadata)

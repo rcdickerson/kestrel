@@ -1,5 +1,5 @@
-cargo run -- --left llvm-examples/square-sum/left.c \
+cargo run -- --spec-format translation \
+             --left llvm-examples/square-sum/left.c \
              --right llvm-examples/square-sum/right.rs \
              --spec llvm-examples/square-sum/spec.txt \
-             count-loops --output-mode seahorn \
-             --is-rust --verbose --infer-invariants
+             count-loops --is-rust --verbose

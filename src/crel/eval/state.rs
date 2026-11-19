@@ -263,6 +263,7 @@ impl State {
     }
     if initializer.is_none() { return state; }
     let lhs = match &declarator {
+      Declarator::Abstract => None,
       Declarator::Identifier{name} => Some(Expression::Identifier{name: name.clone()}),
       Declarator::Array{name, sizes:_} => Some(Expression::Identifier{name: name.clone()}),
       Declarator::Function{name:_, params:_} => None,
@@ -291,6 +292,7 @@ impl State {
       Some(_) => { self.alloc_from_decl(declarator, initializer, fuel) }
       None => {
         let alloc = match &declarator {
+          Declarator::Abstract => None,
           Declarator::Identifier{name} => Some((name.clone(), 1, self.clone())),
           Declarator::Array{name, sizes} => {
             let mut alloc_size = 1;

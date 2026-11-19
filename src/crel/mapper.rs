@@ -51,6 +51,7 @@ impl CRel {
 impl Declarator {
   pub fn map(&self, mapper: &mut dyn CRelMapper) -> Declarator {
     match &self {
+      Declarator::Abstract => mapper.map_declarator(&Declarator::Abstract),
       Declarator::Identifier{name} => {
         let mapped_name = mapper.map_name(name);
         mapper.map_declarator(&Declarator::Identifier{name: mapped_name})
@@ -282,6 +283,13 @@ impl Expression {
         mapper.map_expression(&Expression::Cast {
           ty: ty.clone(),
           expr: Box::new(mapped_expr),
+        })
+      },
+      Expression::Member{expr, field} => {
+        let mapped_expr = expr.map(mapper);
+        mapper.map_expression(&Expression::Member {
+          expr: Box::new(mapped_expr),
+          field: field.clone(),
         })
       },
       Expression::Forall{bindings, condition} => {

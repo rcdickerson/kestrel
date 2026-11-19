@@ -3,6 +3,10 @@ source_filename = "right.59b4154acb9ecd45-cgu.0"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
+@alloc_18989b541471998acea3ba6b5f4461ab = private unnamed_addr constant [30 x i8] c"llvm-examples/unroll/right.rs\00", align 1
+@alloc_008eee418d4229b5969b3d61ddac92ee = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_18989b541471998acea3ba6b5f4461ab, [16 x i8] c"\1D\00\00\00\00\00\00\00\06\00\00\00\0D\00\00\00" }>, align 8
+@alloc_f5fb85dd27a38af5b5bac898394b9cbc = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_18989b541471998acea3ba6b5f4461ab, [16 x i8] c"\1D\00\00\00\00\00\00\00\07\00\00\00\0D\00\00\00" }>, align 8
+
 ; Function Attrs: nounwind nonlazybind uwtable
 define void @right(i32 %N) unnamed_addr #0 !dbg !7 {
 start:
@@ -17,26 +21,56 @@ start:
   store i32 1, ptr %i, align 4, !dbg !24
   br label %bb1, !dbg !25
 
-bb1:                                              ; preds = %bb2, %start
+bb1:                                              ; preds = %bb4, %start
   %_5 = load i32, ptr %i, align 4, !dbg !26
   %_4 = icmp sle i32 %_5, %N, !dbg !26
-  br i1 %_4, label %bb2, label %bb3, !dbg !26
+  br i1 %_4, label %bb2, label %bb5, !dbg !26
 
-bb3:                                              ; preds = %bb1
+bb5:                                              ; preds = %bb1
   ret void, !dbg !27
 
 bb2:                                              ; preds = %bb1
   %_6 = load i32, ptr %x, align 4, !dbg !28
   %_7 = load i32, ptr %i, align 4, !dbg !29
-  %0 = add i32 %_6, %_7, !dbg !30
-  store i32 %0, ptr %x, align 4, !dbg !30
-  %_8 = load i32, ptr %i, align 4, !dbg !31
-  %1 = add i32 %_8, 1, !dbg !32
-  store i32 %1, ptr %i, align 4, !dbg !32
+  %0 = call { i32, i1 } @llvm.sadd.with.overflow.i32(i32 %_6, i32 %_7), !dbg !28
+  %_8.0 = extractvalue { i32, i1 } %0, 0, !dbg !28
+  %_8.1 = extractvalue { i32, i1 } %0, 1, !dbg !28
+  br i1 %_8.1, label %panic, label %bb3, !dbg !28
+
+bb3:                                              ; preds = %bb2
+  store i32 %_8.0, ptr %x, align 4, !dbg !30
+  %_9 = load i32, ptr %i, align 4, !dbg !31
+  %1 = call { i32, i1 } @llvm.sadd.with.overflow.i32(i32 %_9, i32 1), !dbg !31
+  %_10.0 = extractvalue { i32, i1 } %1, 0, !dbg !31
+  %_10.1 = extractvalue { i32, i1 } %1, 1, !dbg !31
+  br i1 %_10.1, label %panic1, label %bb4, !dbg !31
+
+panic:                                            ; preds = %bb2
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8 @alloc_008eee418d4229b5969b3d61ddac92ee) #3, !dbg !28
+  unreachable, !dbg !28
+
+bb4:                                              ; preds = %bb3
+  store i32 %_10.0, ptr %i, align 4, !dbg !32
   br label %bb1, !dbg !25
+
+panic1:                                           ; preds = %bb3
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8 @alloc_f5fb85dd27a38af5b5bac898394b9cbc) #3, !dbg !31
+  unreachable, !dbg !31
 }
 
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare { i32, i1 } @llvm.sadd.with.overflow.i32(i32, i32) #1
+
+; core::panicking::panic_const::panic_const_add_overflow
+; Function Attrs: cold noinline noreturn nounwind nonlazybind uwtable
+declare void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8) unnamed_addr #2
+
 attributes #0 = { nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #1 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
+attributes #2 = { cold noinline noreturn nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #3 = { noreturn nounwind }
 
 !llvm.module.flags = !{!0, !1, !2, !3}
 !llvm.ident = !{!4}

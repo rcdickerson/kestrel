@@ -3,6 +3,11 @@ source_filename = "right.59b4154acb9ecd45-cgu.0"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
+@alloc_21c7d9cbb050990055f10e0fc57d9fc2 = private unnamed_addr constant [30 x i8] c"llvm-examples/shemer/right.rs\00", align 1
+@alloc_1970e77da30022a9f7f157d5e3fa5a60 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_21c7d9cbb050990055f10e0fc57d9fc2, [16 x i8] c"\1D\00\00\00\00\00\00\00\0B\00\00\00\09\00\00\00" }>, align 8
+@alloc_1462d87ec7fbc2eb2bc1374eb756eca7 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_21c7d9cbb050990055f10e0fc57d9fc2, [16 x i8] c"\1D\00\00\00\00\00\00\00\08\00\00\00\0D\00\00\00" }>, align 8
+@alloc_b8e334f92a200664aac6dc1f0546a996 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_21c7d9cbb050990055f10e0fc57d9fc2, [16 x i8] c"\1D\00\00\00\00\00\00\00\09\00\00\00\0D\00\00\00" }>, align 8
+
 ; Function Attrs: nounwind nonlazybind uwtable
 define void @right(i32 %x) unnamed_addr #0 !dbg !7 {
 start:
@@ -18,28 +23,75 @@ start:
   store i32 0, ptr %i, align 4, !dbg !27
   br label %bb1, !dbg !28
 
-bb1:                                              ; preds = %bb2, %start
+bb1:                                              ; preds = %bb4, %start
   %_5 = load i32, ptr %i, align 4, !dbg !29
   %_4 = icmp slt i32 %_5, %x, !dbg !29
-  br i1 %_4, label %bb2, label %bb3, !dbg !29
+  br i1 %_4, label %bb2, label %bb5, !dbg !29
 
-bb3:                                              ; preds = %bb1
-  %_8 = load i32, ptr %y, align 4, !dbg !30
-  %0 = mul i32 %_8, 2, !dbg !31
-  store i32 %0, ptr %y, align 4, !dbg !31
-  ret void, !dbg !32
+bb5:                                              ; preds = %bb1
+  %_10 = load i32, ptr %y, align 4, !dbg !30
+  %0 = call { i32, i1 } @llvm.smul.with.overflow.i32(i32 %_10, i32 2), !dbg !30
+  %_11.0 = extractvalue { i32, i1 } %0, 0, !dbg !30
+  %_11.1 = extractvalue { i32, i1 } %0, 1, !dbg !30
+  br i1 %_11.1, label %panic, label %bb6, !dbg !30
 
 bb2:                                              ; preds = %bb1
-  %_6 = load i32, ptr %y, align 4, !dbg !34
-  %1 = add i32 %_6, %x, !dbg !35
-  store i32 %1, ptr %y, align 4, !dbg !35
-  %_7 = load i32, ptr %i, align 4, !dbg !36
-  %2 = add i32 %_7, 1, !dbg !37
-  store i32 %2, ptr %i, align 4, !dbg !37
+  %_6 = load i32, ptr %y, align 4, !dbg !31
+  %1 = call { i32, i1 } @llvm.sadd.with.overflow.i32(i32 %_6, i32 %x), !dbg !31
+  %_7.0 = extractvalue { i32, i1 } %1, 0, !dbg !31
+  %_7.1 = extractvalue { i32, i1 } %1, 1, !dbg !31
+  br i1 %_7.1, label %panic1, label %bb3, !dbg !31
+
+bb6:                                              ; preds = %bb5
+  store i32 %_11.0, ptr %y, align 4, !dbg !32
+  ret void, !dbg !33
+
+panic:                                            ; preds = %bb5
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow(ptr align 8 @alloc_1970e77da30022a9f7f157d5e3fa5a60) #3, !dbg !30
+  unreachable, !dbg !30
+
+bb3:                                              ; preds = %bb2
+  store i32 %_7.0, ptr %y, align 4, !dbg !35
+  %_8 = load i32, ptr %i, align 4, !dbg !36
+  %2 = call { i32, i1 } @llvm.sadd.with.overflow.i32(i32 %_8, i32 1), !dbg !36
+  %_9.0 = extractvalue { i32, i1 } %2, 0, !dbg !36
+  %_9.1 = extractvalue { i32, i1 } %2, 1, !dbg !36
+  br i1 %_9.1, label %panic2, label %bb4, !dbg !36
+
+panic1:                                           ; preds = %bb2
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8 @alloc_1462d87ec7fbc2eb2bc1374eb756eca7) #3, !dbg !31
+  unreachable, !dbg !31
+
+bb4:                                              ; preds = %bb3
+  store i32 %_9.0, ptr %i, align 4, !dbg !37
   br label %bb1, !dbg !28
+
+panic2:                                           ; preds = %bb3
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8 @alloc_b8e334f92a200664aac6dc1f0546a996) #3, !dbg !36
+  unreachable, !dbg !36
 }
 
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare { i32, i1 } @llvm.smul.with.overflow.i32(i32, i32) #1
+
+; core::panicking::panic_const::panic_const_mul_overflow
+; Function Attrs: cold noinline noreturn nounwind nonlazybind uwtable
+declare void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow(ptr align 8) unnamed_addr #2
+
+; Function Attrs: nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none)
+declare { i32, i1 } @llvm.sadd.with.overflow.i32(i32, i32) #1
+
+; core::panicking::panic_const::panic_const_add_overflow
+; Function Attrs: cold noinline noreturn nounwind nonlazybind uwtable
+declare void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8) unnamed_addr #2
+
 attributes #0 = { nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #1 = { nocallback nocreateundeforpoison nofree nosync nounwind speculatable willreturn memory(none) }
+attributes #2 = { cold noinline noreturn nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #3 = { noreturn nounwind }
 
 !llvm.module.flags = !{!0, !1, !2, !3}
 !llvm.ident = !{!4}
@@ -76,10 +128,10 @@ attributes #0 = { nounwind nonlazybind uwtable "probe-stack"="inline-asm" "targe
 !28 = !DILocation(line: 7, column: 5, scope: !20)
 !29 = !DILocation(line: 7, column: 11, scope: !20)
 !30 = !DILocation(line: 11, column: 9, scope: !20)
-!31 = !DILocation(line: 11, column: 5, scope: !20)
-!32 = !DILocation(line: 12, column: 2, scope: !33)
-!33 = !DILexicalBlockFile(scope: !7, file: !8, discriminator: 0)
-!34 = !DILocation(line: 8, column: 13, scope: !20)
+!31 = !DILocation(line: 8, column: 13, scope: !20)
+!32 = !DILocation(line: 11, column: 5, scope: !20)
+!33 = !DILocation(line: 12, column: 2, scope: !34)
+!34 = !DILexicalBlockFile(scope: !7, file: !8, discriminator: 0)
 !35 = !DILocation(line: 8, column: 9, scope: !20)
 !36 = !DILocation(line: 9, column: 13, scope: !20)
 !37 = !DILocation(line: 9, column: 9, scope: !20)

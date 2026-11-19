@@ -98,6 +98,7 @@ fn expression_to_eggroll(expr: &Expression) -> String {
               type_name_to_eggroll(ty), 
               expression_to_eggroll(expr)
     ),
+    Expression::Member{expr, field} => format!("(member {} {})", expression_to_eggroll(expr), field),
     Expression::Forall{bindings, condition} => {
       let bindings = bindings.iter()
         .map(|(name, ty)| format!("(binding {} {})", name, type_to_eggroll(ty)))
@@ -130,7 +131,7 @@ fn statement_to_eggroll(stmt: &Statement) -> String {
     Statement::Break => "break".to_string(),
     Statement::Compound(items) => {
       match items.len() {
-        0 => "".to_string(),
+        0 => "skip".to_string(),
         1 => block_item_to_eggroll(&items[0]),
         _ => format!("(seq {} {})",
                      block_item_to_eggroll(&items[0]),
@@ -212,6 +213,7 @@ fn declaration_specifier_to_eggroll(spec: &DeclarationSpecifier) -> String {
 
 fn declarator_to_eggroll(dec: &Declarator) -> String {
   match dec {
+    Declarator::Abstract => panic!("Cannot convert an abstract declarator to Eggroll"),
     Declarator::Identifier{name} => name.clone(),
     Declarator::Array{name, sizes} => {
       match sizes.len() {
@@ -277,6 +279,8 @@ fn type_to_eggroll(ty: &Type) -> String {
     Type::Long     => "long".to_string(),
     Type::Short    => "short".to_string(),
     Type::Signed   => "signed".to_string(),
+    Type::Struct{name, fields: None} => format!("(struct-type {})", name),
+    Type::Struct{..} => panic!("struct definitions unsupported in Eggroll"),
     Type::Unsigned => "unsigned".to_string(),
     Type::Void     => "void".to_string(),
   }
@@ -292,6 +296,7 @@ fn type_name_to_eggroll(type_name: &TypeName) -> String {
       format!("(type-name {})", specifiers_egg)
     },
     TypeName::Pointer(inner) => format!("(pointer-type {})", type_name_to_eggroll(inner)),
+    TypeName::Array(inner, size) => format!("(array-type {} {})", type_name_to_eggroll(inner), size),
   }
 }
   

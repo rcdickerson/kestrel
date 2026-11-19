@@ -3,6 +3,10 @@ source_filename = "right.59b4154acb9ecd45-cgu.0"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
+@alloc_28b8e771a7726746841cf729893543f2 = private unnamed_addr constant [34 x i8] c"llvm-examples/arithmetic/right.rs\00", align 1
+@alloc_ddd654ef6743487b57c8fe6f246f34b4 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_28b8e771a7726746841cf729893543f2, [16 x i8] c"!\00\00\00\00\00\00\00\02\00\00\00\0F\00\00\00" }>, align 8
+@alloc_d514bf3b79539a2c02294e96e23f2c88 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_28b8e771a7726746841cf729893543f2, [16 x i8] c"!\00\00\00\00\00\00\00\03\00\00\00\10\00\00\00" }>, align 8
+
 ; Function Attrs: nounwind nonlazybind uwtable
 define void @right(i32 %a, i32 %b, i32 %c) unnamed_addr #0 !dbg !7 {
 start:
@@ -17,16 +21,53 @@ start:
   call void @llvm.dbg.declare(metadata ptr %b.dbg.spill, metadata !15, metadata !DIExpression()), !dbg !23
   store i32 %c, ptr %c.dbg.spill, align 4
   call void @llvm.dbg.declare(metadata ptr %c.dbg.spill, metadata !16, metadata !DIExpression()), !dbg !24
-  %sum = add i32 %a, %b, !dbg !25
-  store i32 %sum, ptr %sum.dbg.spill, align 4, !dbg !25
+  %0 = call { i32, i1 } @llvm.sadd.with.overflow.i32(i32 %a, i32 %b), !dbg !25
+  %_5.0 = extractvalue { i32, i1 } %0, 0, !dbg !25
+  %_5.1 = extractvalue { i32, i1 } %0, 1, !dbg !25
+  br i1 %_5.1, label %panic, label %bb1, !dbg !25
+
+bb1:                                              ; preds = %start
+  store i32 %_5.0, ptr %sum.dbg.spill, align 4, !dbg !25
   call void @llvm.dbg.declare(metadata ptr %sum.dbg.spill, metadata !17, metadata !DIExpression()), !dbg !26
-  %prod = mul i32 %sum, %c, !dbg !27
-  store i32 %prod, ptr %prod.dbg.spill, align 4, !dbg !27
+  %1 = call { i32, i1 } @llvm.smul.with.overflow.i32(i32 %_5.0, i32 %c), !dbg !27
+  %_7.0 = extractvalue { i32, i1 } %1, 0, !dbg !27
+  %_7.1 = extractvalue { i32, i1 } %1, 1, !dbg !27
+  br i1 %_7.1, label %panic1, label %bb2, !dbg !27
+
+panic:                                            ; preds = %start
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8 @alloc_ddd654ef6743487b57c8fe6f246f34b4) #3, !dbg !25
+  unreachable, !dbg !25
+
+bb2:                                              ; preds = %bb1
+  store i32 %_7.0, ptr %prod.dbg.spill, align 4, !dbg !27
   call void @llvm.dbg.declare(metadata ptr %prod.dbg.spill, metadata !19, metadata !DIExpression()), !dbg !28
   ret void, !dbg !29
+
+panic1:                                           ; preds = %bb1
+; call core::panicking::panic_const::panic_const_mul_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow(ptr align 8 @alloc_d514bf3b79539a2c02294e96e23f2c88) #3, !dbg !27
+  unreachable, !dbg !27
 }
 
+; Function Attrs: nosync nounwind speculatable
+declare { i32, i1 } @llvm.sadd.with.overflow.i32(i32, i32) #1
+
+; core::panicking::panic_const::panic_const_add_overflow
+; Function Attrs: cold noinline noreturn nounwind nonlazybind uwtable
+declare void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8) unnamed_addr #2
+
+; Function Attrs: nosync nounwind speculatable
+declare { i32, i1 } @llvm.smul.with.overflow.i32(i32, i32) #1
+
+; core::panicking::panic_const::panic_const_mul_overflow
+; Function Attrs: cold noinline noreturn nounwind nonlazybind uwtable
+declare void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow(ptr align 8) unnamed_addr #2
+
 attributes #0 = { nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #1 = { nosync nounwind speculatable }
+attributes #2 = { cold noinline noreturn nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #3 = { noreturn nounwind }
 
 !llvm.module.flags = !{!0, !1, !2, !3}
 !llvm.ident = !{!4}

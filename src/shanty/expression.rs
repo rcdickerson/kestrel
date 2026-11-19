@@ -8,6 +8,7 @@ pub enum Expression {
   ConstFloat(f32),
   Identifier{name: String},
   FnCall{name: Box<Expression>, args: Vec<Expression>},
+  Member{expr: Box<Expression>, field: String},
   StringLiteral(String),
   UnOp{expr: Box<Expression>, op: String},
   BinOp{lhs: Box<Expression>, rhs: Box<Expression>, op: String},
@@ -43,6 +44,11 @@ impl Expression {
           comma = true;
         }
         writer.write(")");
+      },
+      Expression::Member{expr, field} => {
+        expr.emit(writer, true);
+        writer.write(".");
+        writer.write(field);
       },
       Expression::StringLiteral(s) => {
         writer.write("\"");

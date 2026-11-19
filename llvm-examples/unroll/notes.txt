@@ -1,18 +1,6 @@
-Original spec.txt
-  post: left.x == right.x;
+Status: Not verified (SeaHorn says sat)
+Manual spec edits still needed: none
 
-Updated spec.txt
-  post: left.x == (int)(*((unsigned int*)(&right.x)));
+    r_call3 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_x)), *((unsigned int*)(&r_i)));
 
-Per-Task Times (ms)
--------------------
-print-info: 0
-align-count-loops: 59
-aligned-crel: 3
-aligned-output: 0
-write-product: 6
-seahorn: 508
-print-info: 0
-
-KestRel completed in 579ms
-Verified: true
+No body for llvm_sadd_with_overflow_i32.

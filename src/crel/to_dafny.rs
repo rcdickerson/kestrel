@@ -242,6 +242,7 @@ fn expression_to_daf(expr: &Expression) -> Daf::Expression {
       }
     },
     Expression::Cast{..} => panic!("Casts must be normalized before Dafny."),
+    Expression::Member{..} => panic!("Struct members unsupported in Dafny."),
     Expression::Forall { bindings, condition } => {
       Daf::Expression::Forall {
         bindings: bindings.iter().map(|(v, t)| (v.clone(), type_to_daf(t).unwrap())).collect(),
@@ -373,6 +374,7 @@ fn type_to_daf(ty: &Type) -> Option<Daf::Type> {
     Type::Long     => panic!("long keyword unsupported in Dafny"),
     Type::Short    => panic!("short keyword unsupported in Dafny"),
     Type::Signed   => panic!("signed keyword unsupported in Dafny"),
+    Type::Struct{..} => panic!("struct keyword unsupported in Dafny"),
     Type::Unsigned => panic!("unsigned keyword unsupported in Dafny"),
     Type::Void     => None,
   }
@@ -433,6 +435,7 @@ impl DeclarationBuilder {
 
   fn visit_declarator(&mut self, decl: &Declarator) {
     match &decl {
+      Declarator::Abstract => (),
       Declarator::Identifier{name} => {
         self.name = Some(name.clone());
       },

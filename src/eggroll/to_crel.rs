@@ -160,6 +160,11 @@ fn expect_expression(sexp: &Sexp, ctx: &Context) -> Expression {
         let rhs = Box::new(expect_expression(&sexps[2], ctx));
         Expression::Binop{ lhs, rhs, op: BinaryOp::Index }
       },
+      Sexp::Atom(Atom::S(s)) if s == "member" => {
+        let expr = Box::new(expect_expression(&sexps[1], ctx));
+        let field = expect_string(&sexps[2]);
+        Expression::Member{ expr, field }
+      },
       Sexp::Atom(Atom::S(s)) if s == "forall" => {
         let bindings = expect_bindings(&sexps[1]);
         let condition = Box::new(expect_expression(&sexps[2], ctx));
@@ -671,6 +676,11 @@ fn expect_type(sexp: &Sexp) -> Type {
       "void"     => Type::Void,
       _ => panic!("Unknown type: {}", ty),
     },
+    Sexp::List(sexps) => match &sexps[0] {
+      Sexp::Atom(Atom::S(s)) if s == "struct-type" =>
+        Type::Struct{name: expect_string(&sexps[1]), fields: None},
+      _ => panic!("Expected type, got: {}", sexp),
+    },
     _ => panic!("Expected type, got: {}", sexp)
   }
 }
@@ -682,6 +692,8 @@ fn expect_type_name(sexp: &Sexp) -> TypeName {
         TypeName::Base(sexps[1..].iter().map(expect_type).collect()),
       Sexp::Atom(Atom::S(s)) if s == "pointer-type" =>
         TypeName::Pointer(Box::new(expect_type_name(&sexps[1]))),
+      Sexp::Atom(Atom::S(s)) if s == "array-type" =>
+        TypeName::Array(Box::new(expect_type_name(&sexps[1])), expect_usize(&sexps[2])),
       _ => panic!("Expected type name, got: {}", sexp),
     },
     _ => panic!("Expected type name, got: {}", sexp),
@@ -850,5 +862,12 @@ fn expect_string(sexp: &Sexp) -> String {
   match &sexp {
     Sexp::Atom(Atom::S(s)) => s.clone(),
     _ => panic!("Expected string literal, got: {}", sexp)
+  }
+}
+
+fn expect_usize(sexp: &Sexp) -> usize {
+  match &sexp {
+    Sexp::Atom(Atom::I(i)) => usize::try_from(*i).unwrap(),
+    _ => panic!("Expected usize literal, got: {}", sexp)
   }
 }

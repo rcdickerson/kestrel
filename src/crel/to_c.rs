@@ -162,6 +162,10 @@ fn expression_to_c(expr: &Expression, output_asserts: bool, output_assumes: bool
       let inner = Box::new(expression_to_c(expr, output_asserts, output_assumes));
       C::Expression::UnOp{ expr: inner, op: format!("({})", type_name_to_string(ty)) }
     },
+    Expression::Member{ expr, field } => {
+      let inner = Box::new(expression_to_c(expr, output_asserts, output_assumes));
+      C::Expression::Member{ expr: inner, field: field.clone() }
+    },
     Expression::Ternary { condition, then, els } => {
       C::Expression::Ternary {
         condition:  Box::new(expression_to_c(condition, output_asserts, output_assumes)),
@@ -258,7 +262,10 @@ fn initializer_to_c(decl: &Declarator, init: &Initializer) -> C::Initializer {
     Initializer::List(inits) => {
       let name = match decl {
         Declarator::Array{name, ..} => name,
-        _ => panic!("List initializer assigned to non-array declarator."),
+        // A struct gets one initializer per field.
+        _ => return C::Initializer::List(inits.iter()
+          .map(|init| initializer_to_c(decl, init))
+          .collect()),
       };
       if inits.len() == 0 {
         panic!("Empty list initializer");
@@ -300,6 +307,10 @@ fn type_to_c(ty: &Type) -> C::Type {
     Type::Long     => C::Type::Long,
     Type::Short    => C::Type::Short,
     Type::Signed   => C::Type::Signed,
+    Type::Struct{name, fields} => C::Type::Struct {
+      name: name.clone(),
+      fields: fields.as_ref().map(|fields| fields.iter().map(declaration_to_c).collect()),
+    },
     Type::Unsigned => C::Type::Unsigned,
     Type::Void     => C::Type::Void,
   }
@@ -367,6 +378,7 @@ impl DeclarationBuilder {
 
   fn visit_declarator(&mut self, decl: &Declarator) {
     match &decl {
+      Declarator::Abstract => (),
       Declarator::Identifier{name} => {
         self.name = Some(name.clone());
       },
@@ -429,6 +441,7 @@ fn type_name_to_string(ty: &TypeName) -> String {
       .collect::<Vec<String>>()
       .join(" "),
     TypeName::Pointer(inner) => format!("{}*", type_name_to_string(inner)),
+    TypeName::Array(inner, size) => format!("{}[{}]", type_name_to_string(inner), size),
   }
 }
 
@@ -442,6 +455,7 @@ fn type_to_string(ty: &Type) -> String {
     Type::Long     => "long".to_string(),
     Type::Short    => "short".to_string(),
     Type::Signed   => "signed".to_string(),
+    Type::Struct{name, ..} => format!("struct {}", name),
     Type::Unsigned => "unsigned".to_string(),
     Type::Void     => "void".to_string(),
   }

@@ -122,6 +122,7 @@ fn global_vars(decls: &Vec<Declaration>) -> HashSet<String> {
 
 fn declarator_name(decl: &Declarator) -> String {
   match &decl {
+    Declarator::Abstract => String::new(),
     Declarator::Identifier{name} => name.clone(),
     Declarator::Array{name, sizes:_} => name.clone(),
     Declarator::Function{name, params:_} => name.clone(),

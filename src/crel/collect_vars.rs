@@ -1,5 +1,8 @@
 use crate::names::{CollectVars, all_vars, union_all, singleton};
+use crate::names::{CollectVarTypes, all_var_types, union_all_types};
+use crate::names::{CollectVarAccessTypes, all_var_access_types, union_all_access_types};
 use crate::crel::ast::*;
+use std::collections::HashMap;
 use std::collections::HashSet;
 
 impl CollectVars for CRel {
@@ -50,6 +53,7 @@ impl CollectVars for Expression {
         union_all(vec!(lhs.vars(), rhs.vars()))
       },
       Expression::Cast{expr, ..} => expr.vars(),
+      Expression::Member{expr, ..} => expr.vars(),
       Expression::Forall{condition, ..} => condition.vars(),
       Expression::SketchHole => HashSet::new(),
       Expression::Statement(stmt) => stmt.vars(),
@@ -120,6 +124,7 @@ impl CollectVars for Declaration {
 impl CollectVars for Declarator {
   fn vars(&self) -> HashSet<String> {
     match self {
+      Declarator::Abstract => HashSet::new(),
       Declarator::Identifier{name} => singleton(name.clone()),
       Declarator::Array{name, sizes} => {
         let mut vars = sizes.iter()
@@ -169,6 +174,415 @@ impl CollectVars for ParameterDeclaration {
       BlockItem::Statement(stmt) => stmt.vars(),
     }
   }
+}
+
+impl CollectVarTypes for CRel {
+  fn var_types(&self) -> HashMap<String, TypeName> {
+    match self {
+      CRel::Declaration(decl) => decl.var_types(),
+      CRel::FunctionDefinition{specifiers:_, name:_, params, body} => {
+        union_all_types(vec!(
+          all_var_types(params.clone()),
+          body.var_types(),
+        ))
+      },
+      CRel::Seq(crels) => all_var_types(crels.clone()),
+    }
+  }
+}
+
+impl CollectVarTypes for Expression {
+  fn var_types(&self) -> HashMap<String, TypeName> {
+    match self {
+      Expression::Identifier{..} => HashMap::new(),
+      Expression::ConstBool(_) => HashMap::new(),
+      Expression::ConstInt(_) => HashMap::new(),
+      Expression::ConstFloat(_) => HashMap::new(),
+      Expression::StringLiteral(_) => HashMap::new(),
+      Expression::Call{callee, args} => {
+        union_all_types(vec!(
+          callee.var_types(),
+          all_var_types(args.clone()),
+        ))
+      },
+      Expression::ChoiceCall{callee, args} => {
+        union_all_types(vec!(
+          callee.var_types(),
+          all_var_types(args.clone()),
+        ))
+      },
+      Expression::Ternary { condition, then, els } => {
+        union_all_types(vec!(
+          condition.var_types(),
+          then.var_types(),
+          els.var_types(),
+        ))
+      },
+      Expression::Unop{expr, op: _} => expr.var_types(),
+      Expression::Binop{lhs, rhs, op: _} => {
+        union_all_types(vec!(lhs.var_types(), rhs.var_types()))
+      },
+      Expression::Cast{expr, ..} => expr.var_types(),
+      Expression::Member{expr, ..} => expr.var_types(),
+      Expression::Forall{condition, ..} => condition.var_types(),
+      Expression::SketchHole => HashMap::new(),
+      Expression::Statement(stmt) => stmt.var_types(),
+    }
+  }
+}
+
+impl CollectVarTypes for Statement {
+  fn var_types(&self) -> HashMap<String, TypeName> {
+    match self {
+      Statement::Assert(expr) => expr.var_types(),
+      Statement::Assume(expr) => expr.var_types(),
+      Statement::BasicBlock(items) => all_var_types(items.clone()),
+      Statement::Break => HashMap::new(),
+      Statement::Compound(items) => all_var_types(items.clone()),
+      Statement::Expression(expr) => expr.var_types(),
+      Statement::GuardedRepeat{condition, body, ..} => {
+        union_all_types(vec!(condition.var_types(), body.var_types()))
+      }
+      Statement::If{condition, then, els} => {
+        union_all_types(vec!(
+          condition.var_types(),
+          then.var_types(),
+          match els {
+            None => HashMap::new(),
+            Some(stmt) => stmt.var_types(),
+          },
+        ))
+      },
+      Statement::None => HashMap::new(),
+      Statement::Relation{lhs, rhs} => {
+        union_all_types(vec!(lhs.var_types(), rhs.var_types()))
+      },
+      Statement::Return(expr) => {
+        match expr {
+          None => HashMap::new(),
+          Some(expr) => expr.var_types(),
+        }
+      },
+      Statement::While{condition, body, ..} => {
+        match body {
+          None => condition.var_types(),
+          Some(body) => union_all_types(vec!(condition.var_types(), body.var_types()))
+        }
+      },
+      Statement::WhileRel{condition_left, condition_right, body_left, body_right, body_merged, ..} => {
+        let mut types = vec! [condition_left.var_types(), condition_right.var_types()];
+        body_left.as_ref().map(|body| types.push(body.var_types()));
+        body_right.as_ref().map(|body| types.push(body.var_types()));
+        body_merged.as_ref().map(|body| types.push(body.var_types()));
+        union_all_types(types)
+      },
+    }
+  }
+}
+
+impl CollectVarTypes for Declaration {
+  fn var_types(&self) -> HashMap<String, TypeName> {
+    let mut types = match &self.initializer {
+      None => self.declarator.var_types(),
+      Some(expr) => union_all_types(vec!(
+        self.declarator.var_types(),
+        expr.var_types()))
+    };
+    types.insert(self.declarator.name(), declared_type(&self.specifiers, &self.declarator));
+    types
+  }
+}
+
+impl CollectVarTypes for Declarator {
+  fn var_types(&self) -> HashMap<String, TypeName> {
+    match self {
+      Declarator::Abstract => HashMap::new(),
+      Declarator::Identifier{..} => HashMap::new(),
+      Declarator::Array{sizes, ..} => {
+        let types = sizes.iter()
+          .map(|expr| expr.var_types())
+          .collect::<Vec<HashMap<String, TypeName>>>();
+        union_all_types(types)
+      },
+      Declarator::Function{params, ..} => {
+        let types : Vec<HashMap<String, TypeName>> = params.iter()
+          .map(|p| p.var_types())
+          .collect();
+        union_all_types(types)
+      },
+      Declarator::Pointer(decl) => {
+        decl.var_types()
+      }
+    }
+  }
+}
+
+impl CollectVarTypes for Initializer {
+  fn var_types(&self) -> HashMap<String, TypeName> {
+    match self {
+      Initializer::Expression(expr) => expr.var_types(),
+      Initializer::List(exprs) => union_all_types(exprs.into_iter()
+          .map(|expr| expr.var_types())
+          .collect::<Vec<_>>()),
+    }
+  }
+}
+
+impl CollectVarTypes for ParameterDeclaration {
+  fn var_types(&self) -> HashMap<String, TypeName> {
+    match &self.declarator {
+      None => HashMap::new(),
+      Some(decl) => {
+        let mut types = decl.var_types();
+        types.insert(decl.name(), declared_type(&self.specifiers, decl));
+        types
+      },
+    }
+  }
+}
+
+impl CollectVarTypes for BlockItem {
+  fn var_types(&self) -> HashMap<String, TypeName> {
+    match self {
+      BlockItem::Declaration(decl) => decl.var_types(),
+      BlockItem::Statement(stmt) => stmt.var_types(),
+    }
+  }
+}
+
+fn declared_type(specifiers: &Vec<DeclarationSpecifier>, declarator: &Declarator) -> TypeName {
+  let base = TypeName::Base(specifiers.iter().filter_map(|spec| match spec {
+    DeclarationSpecifier::TypeSpecifier(ty) => Some(ty.clone()),
+    _ => None,
+  }).collect());
+  declarator_type(base, declarator)
+}
+
+fn declarator_type(ty: TypeName, declarator: &Declarator) -> TypeName {
+  match declarator {
+    Declarator::Pointer(inner) => declarator_type(TypeName::Pointer(Box::new(ty)), inner),
+    Declarator::Array{sizes, ..} => sizes.iter().rev().fold(ty, |ty, size| match const_size(size) {
+      Some(n) => TypeName::Array(Box::new(ty), n as usize),
+      None => ty,
+    }),
+    _ => ty,
+  }
+}
+
+fn const_size(size: &Expression) -> Option<i32> {
+  match size {
+    Expression::ConstInt(n) => Some(*n),
+    Expression::Binop{lhs, rhs, op} => {
+      let (l, r) = (const_size(lhs)?, const_size(rhs)?);
+      match op {
+        BinaryOp::Add => Some(l + r),
+        BinaryOp::Sub => Some(l - r),
+        BinaryOp::Mul => Some(l * r),
+        _ => None,
+      }
+    },
+    _ => None,
+  }
+}
+
+impl CollectVarAccessTypes for CRel {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match self {
+      CRel::Declaration(decl) => decl.var_access_types(),
+      CRel::FunctionDefinition{specifiers:_, name:_, params, body} => {
+        union_all_access_types(vec!(
+          all_var_access_types(params.clone()),
+          body.var_access_types(),
+        ))
+      },
+      CRel::Seq(crels) => all_var_access_types(crels.clone()),
+    }
+  }
+}
+
+impl CollectVarAccessTypes for Expression {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match self {
+      Expression::Identifier{..} => HashMap::new(),
+      Expression::ConstBool(_) => HashMap::new(),
+      Expression::ConstInt(_) => HashMap::new(),
+      Expression::ConstFloat(_) => HashMap::new(),
+      Expression::StringLiteral(_) => HashMap::new(),
+      Expression::Call{callee, args} => {
+        union_all_access_types(vec!(
+          callee.var_access_types(),
+          all_var_access_types(args.clone()),
+        ))
+      },
+      Expression::ChoiceCall{callee, args} => {
+        union_all_access_types(vec!(
+          callee.var_access_types(),
+          all_var_access_types(args.clone()),
+        ))
+      },
+      Expression::Ternary { condition, then, els } => {
+        union_all_access_types(vec!(
+          condition.var_access_types(),
+          then.var_access_types(),
+          els.var_access_types(),
+        ))
+      },
+      Expression::Unop{expr, op: _} => match punned_access(self) {
+        Some((name, ty)) => HashMap::from([(name, vec!(ty))]),
+        None => expr.var_access_types(),
+      },
+      Expression::Binop{lhs, rhs, op: _} => {
+        union_all_access_types(vec!(lhs.var_access_types(), rhs.var_access_types()))
+      },
+      Expression::Cast{expr, ..} => match cast_access(self) {
+        Some((name, ty)) => HashMap::from([(name, vec!(ty))]),
+        None => expr.var_access_types(),
+      },
+      Expression::Member{expr, ..} => expr.var_access_types(),
+      Expression::Forall{condition, ..} => condition.var_access_types(),
+      Expression::SketchHole => HashMap::new(),
+      Expression::Statement(stmt) => stmt.var_access_types(),
+    }
+  }
+}
+
+impl CollectVarAccessTypes for Statement {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match self {
+      Statement::Assert(expr) => expr.var_access_types(),
+      Statement::Assume(expr) => expr.var_access_types(),
+      Statement::BasicBlock(items) => all_var_access_types(items.clone()),
+      Statement::Break => HashMap::new(),
+      Statement::Compound(items) => all_var_access_types(items.clone()),
+      Statement::Expression(expr) => expr.var_access_types(),
+      Statement::GuardedRepeat{condition, body, ..} => {
+        union_all_access_types(vec!(condition.var_access_types(), body.var_access_types()))
+      }
+      Statement::If{condition, then, els} => {
+        union_all_access_types(vec!(
+          condition.var_access_types(),
+          then.var_access_types(),
+          match els {
+            None => HashMap::new(),
+            Some(stmt) => stmt.var_access_types(),
+          },
+        ))
+      },
+      Statement::None => HashMap::new(),
+      Statement::Relation{lhs, rhs} => {
+        union_all_access_types(vec!(lhs.var_access_types(), rhs.var_access_types()))
+      },
+      Statement::Return(expr) => {
+        match expr {
+          None => HashMap::new(),
+          Some(expr) => expr.var_access_types(),
+        }
+      },
+      Statement::While{condition, body, ..} => {
+        match body {
+          None => condition.var_access_types(),
+          Some(body) => union_all_access_types(vec!(condition.var_access_types(), body.var_access_types()))
+        }
+      },
+      Statement::WhileRel{condition_left, condition_right, body_left, body_right, body_merged, ..} => {
+        let mut types = vec! [condition_left.var_access_types(), condition_right.var_access_types()];
+        body_left.as_ref().map(|body| types.push(body.var_access_types()));
+        body_right.as_ref().map(|body| types.push(body.var_access_types()));
+        body_merged.as_ref().map(|body| types.push(body.var_access_types()));
+        union_all_access_types(types)
+      },
+    }
+  }
+}
+
+impl CollectVarAccessTypes for Declaration {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match &self.initializer {
+      None => self.declarator.var_access_types(),
+      Some(expr) => union_all_access_types(vec!(
+        self.declarator.var_access_types(),
+        expr.var_access_types()))
+    }
+  }
+}
+
+impl CollectVarAccessTypes for Declarator {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match self {
+      Declarator::Abstract => HashMap::new(),
+      Declarator::Identifier{..} => HashMap::new(),
+      Declarator::Array{sizes, ..} => {
+        let types = sizes.iter()
+          .map(|expr| expr.var_access_types())
+          .collect::<Vec<HashMap<String, Vec<TypeName>>>>();
+        union_all_access_types(types)
+      },
+      Declarator::Function{params, ..} => {
+        let types : Vec<HashMap<String, Vec<TypeName>>> = params.iter()
+          .map(|p| p.var_access_types())
+          .collect();
+        union_all_access_types(types)
+      },
+      Declarator::Pointer(decl) => {
+        decl.var_access_types()
+      }
+    }
+  }
+}
+
+impl CollectVarAccessTypes for Initializer {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match self {
+      Initializer::Expression(expr) => expr.var_access_types(),
+      Initializer::List(exprs) => union_all_access_types(exprs.into_iter()
+          .map(|expr| expr.var_access_types())
+          .collect::<Vec<_>>()),
+    }
+  }
+}
+
+impl CollectVarAccessTypes for ParameterDeclaration {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match &self.declarator {
+      None => HashMap::new(),
+      Some(decl) => decl.var_access_types(),
+    }
+  }
+}
+
+impl CollectVarAccessTypes for BlockItem {
+  fn var_access_types(&self) -> HashMap<String, Vec<TypeName>> {
+    match self {
+      BlockItem::Declaration(decl) => decl.var_access_types(),
+      BlockItem::Statement(stmt) => stmt.var_access_types(),
+    }
+  }
+}
+
+fn punned_access(expr: &Expression) -> Option<(String, TypeName)> {
+  if let Expression::Unop{expr: cast, op: UnaryOp::Deref} = expr {
+    if let Expression::Cast{ty: TypeName::Pointer(ty), expr: addr} = cast.as_ref() {
+      if let Expression::Unop{expr: var, op: UnaryOp::Address} = addr.as_ref() {
+        if let Expression::Identifier{name} = var.as_ref() {
+          return Some((name.clone(), (**ty).clone()));
+        }
+      }
+    }
+  }
+  None
+}
+
+fn cast_access(expr: &Expression) -> Option<(String, TypeName)> {
+  if let Expression::Cast{ty: TypeName::Pointer(ty), expr: target} = expr {
+    let var = match target.as_ref() {
+      Expression::Unop{expr: var, op: UnaryOp::Address} => var.as_ref(),
+      var => var,
+    };
+    if let Expression::Identifier{name} = var {
+      return Some((name.clone(), (**ty).clone()));
+    }
+  }
+  None
 }
 
 #[cfg(test)]

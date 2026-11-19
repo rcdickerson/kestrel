@@ -188,6 +188,10 @@ impl CRelInliner {
         ty: ty.clone(),
         expr: Box::new(self.inline_expression(expr)),
       },
+      Expression::Member{ expr, field } => Expression::Member {
+        expr: Box::new(self.inline_expression(expr)),
+        field: field.clone(),
+      },
       Expression::Forall{ bindings, condition } => Expression::Forall {
         bindings: bindings.clone(),
         condition: Box::new(self.inline_expression(condition)),

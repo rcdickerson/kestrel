@@ -1,14 +1,17 @@
-Original spec.txt
-  pre:   left.x == right.x;
-  post:  left.y == right.y;
-
-Updated spec.txt
+Status: Not verified (SeaHorn says sat)
+Manual spec edits still needed:
   pre:   left.x == right.x && left.x > -2 && left.x < 2;
-  post:  left.y == (int)(*((unsigned int*)(&right.y)));
+  (original pre was left.x == right.x)
 
-With the post change alone it ran endlessly so i 
+    r_call4 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_y)), r_x);
+    r_call3 = llvm_smul_with_overflow_i32(*((unsigned int*)(&r_y)), 2);
+
+No body for llvm_sadd_with_overflow_i32 and llvm_smul_with_overflow_i32.
+
+With the post change alone it ran endlessly so i
 added left.x > -2 && left.x < 2 to get it to finish.
-Below are the results of increasing the bounds.
+Below are the results of increasing the bounds (measured before spec
+repair was automatic, with the hand-written cast).
 
 WITH 0 < x < 2 (x = 1)
     Per-Task Times (ms)

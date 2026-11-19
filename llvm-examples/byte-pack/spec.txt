@@ -2,5 +2,5 @@
  * pre:   left.n == right.n;
  * left:  left;
  * right: right;
- * post:  left.prod == (int)(*((unsigned int*)(&right.prod)));
+ * post:  left.prod == right.prod;
  */

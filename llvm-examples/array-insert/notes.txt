@@ -1,4 +1,9 @@
-No result
+Status: Not verified (SeaHorn says sat)
+Manual spec edits:
+  pre: left.val == right.val;
+  (original pre used left.val_in, right.val_in, left.len_in and right.len_in,
+  which aren't variables in either program)
 
-thread 'main' (4172) panicked at src/workflow/tasks/align_count_loops.rs:30:27:
-called `Result::unwrap()` on an `Err` value: BadOp(FromOpError { op: "if", children: [537] })
+    void* r_a;
+
+r_a is a void* with no memory set up.

@@ -1,4 +1,5 @@
-No result.
+Status: Not verified (panics in the parser)
+Manual spec edits: none
 
-thread 'main' panicked at src/crel/parser.rs:218:12:
-Unsupported abstract declarator in type name: Array(Node { node: ArrayDeclarator { qualifiers: [], size: VariableExpression(Node { node: Constant(Node { node: Integer(Integer { base: Decimal, number: "10", suffix: IntegerSuffix { size: Int, unsigned: false, imaginary: false } }), span: 1817…1819 }), span: 1817…1819 }) }, span: 1817…1820 })
+    thread 'main' panicked at src/crel/parser.rs:256:12:
+    Unsupported abstract declarator in type name: Array(Node { node: ArrayDeclarator { qualifiers: [], size: Varia...

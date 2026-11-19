@@ -1,5 +1,5 @@
-cargo run -- --left llvm-examples/byte-pack/left.c \
+cargo run -- --spec-format translation \
+             --left llvm-examples/byte-pack/left.c \
              --right llvm-examples/byte-pack/right.rs \
              --spec llvm-examples/byte-pack/spec.txt \
-             count-loops --output-mode seahorn \
-             --is-rust --verbose --infer-invariants
+             count-loops --is-rust --verbose

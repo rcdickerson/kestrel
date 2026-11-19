@@ -7,7 +7,9 @@ target triple = "x86_64-unknown-linux-gnu"
 @alloc_0b8d4325adacc96c98125829e397f6bf = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5d2ee394d6cfc9bc3d9d880d91fe8220, [16 x i8] c"%\00\00\00\00\00\00\00\09\00\00\00\10\00\00\00" }>, align 8
 @alloc_e08b8f2b0a3e293c3668d56d940f8468 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5d2ee394d6cfc9bc3d9d880d91fe8220, [16 x i8] c"%\00\00\00\00\00\00\00\09\00\00\00\09\00\00\00" }>, align 8
 @alloc_cc41d17d5a9f127d988c0a9be0945e9f = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5d2ee394d6cfc9bc3d9d880d91fe8220, [16 x i8] c"%\00\00\00\00\00\00\00\0A\00\00\00\14\00\00\00" }>, align 8
+@alloc_542c985c08087436c995ec63d22547ce = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5d2ee394d6cfc9bc3d9d880d91fe8220, [16 x i8] c"%\00\00\00\00\00\00\00\0A\00\00\00\0B\00\00\00" }>, align 8
 @alloc_2a88a997bb9f1e7a11884c35234a2edc = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5d2ee394d6cfc9bc3d9d880d91fe8220, [16 x i8] c"%\00\00\00\00\00\00\00\0A\00\00\00\09\00\00\00" }>, align 8
+@alloc_7ca5d214dc51ac013b8e907289789fb4 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5d2ee394d6cfc9bc3d9d880d91fe8220, [16 x i8] c"%\00\00\00\00\00\00\00\0B\00\00\00\0D\00\00\00" }>, align 8
 
 ; Function Attrs: nounwind nonlazybind uwtable
 define void @right(ptr align 4 %a, ptr align 4 %b) unnamed_addr #0 !dbg !7 {
@@ -33,72 +35,90 @@ start:
   store i32 %_6, ptr %1, align 4, !dbg !37
   br label %bb3, !dbg !38
 
-bb3:                                              ; preds = %bb8, %start
+bb3:                                              ; preds = %bb11, %start
   %_12 = load i64, ptr %j, align 8, !dbg !39
   %_11 = icmp ule i64 %_12, 19, !dbg !39
-  br i1 %_11, label %bb4, label %bb9, !dbg !39
+  br i1 %_11, label %bb5, label %bb12, !dbg !39
 
-bb9:                                              ; preds = %bb3
+bb12:                                             ; preds = %bb3
   %2 = getelementptr inbounds i32, ptr %a, i64 20, !dbg !40
-  %_26 = load i32, ptr %2, align 4, !dbg !40
+  %_29 = load i32, ptr %2, align 4, !dbg !40
   %3 = getelementptr inbounds i32, ptr %b, i64 20, !dbg !41
-  store i32 %_26, ptr %3, align 4, !dbg !41
+  store i32 %_29, ptr %3, align 4, !dbg !41
   ret void, !dbg !42
 
-bb4:                                              ; preds = %bb3
-  %_15 = load i64, ptr %j, align 8, !dbg !44
-  %_16 = icmp ult i64 %_15, 21, !dbg !45
-  br i1 %_16, label %bb5, label %panic, !dbg !45
-
-bb5:                                              ; preds = %bb4
-  %4 = getelementptr inbounds i32, ptr %a, i64 %_15, !dbg !45
-  %_14 = load i32, ptr %4, align 4, !dbg !45
-  %_17 = load i64, ptr %j, align 8, !dbg !46
-  %_18 = icmp ult i64 %_17, 21, !dbg !47
-  br i1 %_18, label %bb6, label %panic1, !dbg !47
-
-panic:                                            ; preds = %bb4
-; call core::panicking::panic_bounds_check
-  call void @_RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(i64 %_15, i64 21, ptr align 8 @alloc_0b8d4325adacc96c98125829e397f6bf) #3, !dbg !45
-  unreachable, !dbg !45
+bb5:                                              ; preds = %bb3
+  %_16 = load i64, ptr %j, align 8, !dbg !44
+  %_17 = icmp ult i64 %_16, 21, !dbg !45
+  br i1 %_17, label %bb6, label %panic, !dbg !45
 
 bb6:                                              ; preds = %bb5
-  %5 = getelementptr inbounds i32, ptr %b, i64 %_17, !dbg !47
-  store i32 %_14, ptr %5, align 4, !dbg !47
-  %_20 = load i64, ptr %j, align 8, !dbg !48
-  %_21 = icmp ult i64 %_20, 21, !dbg !49
-  br i1 %_21, label %bb7, label %panic2, !dbg !49
+  %4 = getelementptr inbounds i32, ptr %a, i64 %_16, !dbg !45
+  %_15 = load i32, ptr %4, align 4, !dbg !45
+  %_18 = load i64, ptr %j, align 8, !dbg !46
+  %_19 = icmp ult i64 %_18, 21, !dbg !47
+  br i1 %_19, label %bb7, label %panic1, !dbg !47
 
-panic1:                                           ; preds = %bb5
+panic:                                            ; preds = %bb5
 ; call core::panicking::panic_bounds_check
-  call void @_RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(i64 %_17, i64 21, ptr align 8 @alloc_e08b8f2b0a3e293c3668d56d940f8468) #3, !dbg !47
-  unreachable, !dbg !47
+  call void @_RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(i64 %_16, i64 21, ptr align 8 @alloc_0b8d4325adacc96c98125829e397f6bf) #4, !dbg !45
+  unreachable, !dbg !45
 
 bb7:                                              ; preds = %bb6
-  %6 = getelementptr inbounds i32, ptr %b, i64 %_20, !dbg !49
-  %_19 = load i32, ptr %6, align 4, !dbg !49
-  %_23 = load i64, ptr %j, align 8, !dbg !50
-  %_22 = add i64 %_23, 1, !dbg !50
-  %_24 = icmp ult i64 %_22, 21, !dbg !51
-  br i1 %_24, label %bb8, label %panic3, !dbg !51
+  %5 = getelementptr inbounds i32, ptr %b, i64 %_18, !dbg !47
+  store i32 %_15, ptr %5, align 4, !dbg !47
+  %_21 = load i64, ptr %j, align 8, !dbg !48
+  %_22 = icmp ult i64 %_21, 21, !dbg !49
+  br i1 %_22, label %bb8, label %panic2, !dbg !49
 
-panic2:                                           ; preds = %bb6
+panic1:                                           ; preds = %bb6
 ; call core::panicking::panic_bounds_check
-  call void @_RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(i64 %_20, i64 21, ptr align 8 @alloc_cc41d17d5a9f127d988c0a9be0945e9f) #3, !dbg !49
-  unreachable, !dbg !49
+  call void @_RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(i64 %_18, i64 21, ptr align 8 @alloc_e08b8f2b0a3e293c3668d56d940f8468) #4, !dbg !47
+  unreachable, !dbg !47
 
 bb8:                                              ; preds = %bb7
-  %7 = getelementptr inbounds i32, ptr %d, i64 %_22, !dbg !51
-  store i32 %_19, ptr %7, align 4, !dbg !51
-  %_25 = load i64, ptr %j, align 8, !dbg !52
-  %8 = add i64 %_25, 1, !dbg !53
-  store i64 %8, ptr %j, align 8, !dbg !53
+  %6 = getelementptr inbounds i32, ptr %b, i64 %_21, !dbg !49
+  %_20 = load i32, ptr %6, align 4, !dbg !49
+  %_24 = load i64, ptr %j, align 8, !dbg !50
+  %_25.0 = add i64 %_24, 1, !dbg !50
+  %_25.1 = icmp ult i64 %_25.0, %_24, !dbg !50
+  br i1 %_25.1, label %panic3, label %bb9, !dbg !50
+
+panic2:                                           ; preds = %bb7
+; call core::panicking::panic_bounds_check
+  call void @_RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(i64 %_21, i64 21, ptr align 8 @alloc_cc41d17d5a9f127d988c0a9be0945e9f) #4, !dbg !49
+  unreachable, !dbg !49
+
+bb9:                                              ; preds = %bb8
+  %_26 = icmp ult i64 %_25.0, 21, !dbg !51
+  br i1 %_26, label %bb10, label %panic4, !dbg !51
+
+panic3:                                           ; preds = %bb8
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8 @alloc_542c985c08087436c995ec63d22547ce) #4, !dbg !50
+  unreachable, !dbg !50
+
+bb10:                                             ; preds = %bb9
+  %7 = getelementptr inbounds i32, ptr %d, i64 %_25.0, !dbg !51
+  store i32 %_20, ptr %7, align 4, !dbg !51
+  %_27 = load i64, ptr %j, align 8, !dbg !52
+  %_28.0 = add i64 %_27, 1, !dbg !52
+  %_28.1 = icmp ult i64 %_28.0, %_27, !dbg !52
+  br i1 %_28.1, label %panic5, label %bb11, !dbg !52
+
+panic4:                                           ; preds = %bb9
+; call core::panicking::panic_bounds_check
+  call void @_RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(i64 %_25.0, i64 21, ptr align 8 @alloc_2a88a997bb9f1e7a11884c35234a2edc) #4, !dbg !51
+  unreachable, !dbg !51
+
+bb11:                                             ; preds = %bb10
+  store i64 %_28.0, ptr %j, align 8, !dbg !53
   br label %bb3, !dbg !38
 
-panic3:                                           ; preds = %bb7
-; call core::panicking::panic_bounds_check
-  call void @_RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(i64 %_22, i64 21, ptr align 8 @alloc_2a88a997bb9f1e7a11884c35234a2edc) #3, !dbg !51
-  unreachable, !dbg !51
+panic5:                                           ; preds = %bb10
+; call core::panicking::panic_const::panic_const_add_overflow
+  call void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8 @alloc_7ca5d214dc51ac013b8e907289789fb4) #4, !dbg !52
+  unreachable, !dbg !52
 }
 
 ; Function Attrs: nounwind memory(argmem: write)
@@ -108,10 +128,15 @@ declare void @llvm.memset.p0.i64(ptr writeonly, i8, i64, i1 immarg) #1
 ; Function Attrs: cold minsize noinline noreturn nounwind nonlazybind optsize uwtable
 declare void @_RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(i64, i64, ptr align 8) unnamed_addr #2
 
+; core::panicking::panic_const::panic_const_add_overflow
+; Function Attrs: cold noinline noreturn nounwind nonlazybind uwtable
+declare void @_RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8) unnamed_addr #3
+
 attributes #0 = { nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
 attributes #1 = { nounwind memory(argmem: write) }
 attributes #2 = { cold minsize noinline noreturn nounwind nonlazybind optsize uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
-attributes #3 = { noreturn nounwind }
+attributes #3 = { cold noinline noreturn nounwind nonlazybind uwtable "probe-stack"="inline-asm" "target-cpu"="x86-64" }
+attributes #4 = { noreturn nounwind }
 
 !llvm.module.flags = !{!0, !1, !2, !3}
 !llvm.ident = !{!4}

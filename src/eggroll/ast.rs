@@ -37,6 +37,7 @@ define_language! {
     "while"         = While([Id; 3]),
     "while-no-body" = WhileNoBody([Id; 2]),
     "index"         = Index([Id; 2]),
+    "member"        = Member([Id; 2]),
     "seq"           = Seq([Id; 2]),
     "assert"        = Assert(Id),
     "assume"        = Assume(Id),
@@ -49,6 +50,8 @@ define_language! {
     "cast"          = Cast([Id; 2]),
     "type-name"     = TypeName(Box<[Id]>),
     "pointer-type"  = PointerType(Id),
+    "array-type"    = ArrayType([Id; 2]),
+    "struct-type"   = StructType(Id),
 
     // An abbreviated form of :
     //   while c1 && c2 { b1; b2 };

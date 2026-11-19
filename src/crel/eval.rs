@@ -138,6 +138,7 @@ fn eval_expression(expr: &Expression, exec: &mut Execution) {
     Expression::Unop{expr, op} => eval_unop(expr, op, exec),
     Expression::Binop{lhs, rhs, op} => eval_binop(lhs, rhs, op, exec),
     Expression::Cast{expr, ..} => eval_expression(expr, exec),
+    Expression::Member{..} => panic!("Cannot evaluate struct members"),
     Expression::Forall{..} => {
       //panic!("Forall unimplemented")
     },
@@ -317,6 +318,7 @@ fn eval_block_item(item: &BlockItem, exec: &mut Execution) {
 fn eval_declaration(decl: &Declaration, exec: &mut Execution) {
   match &decl.initializer {
     None => match &decl.declarator {
+      Declarator::Abstract => (),
       Declarator::Identifier{name} => {
         exec.push_alloc(name.clone(), 1, HeapValue::Int(0));
       },
@@ -332,6 +334,9 @@ fn eval_declaration(decl: &Declaration, exec: &mut Execution) {
       Declarator::Pointer(_) => (),
     },
     Some(init) => match &decl.declarator {
+      Declarator::Abstract => {
+        panic!("Unsupported: initializer for abstract declarator.");
+      },
       Declarator::Array{name:_, sizes:_} => {
         panic!("Unsupported: initializer for array.");
       }

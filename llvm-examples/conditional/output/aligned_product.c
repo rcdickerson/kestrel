@@ -1,5 +1,7 @@
 #include "seahorn/seahorn.h"
 extern int arb_int();
+void right(int age);
+
 void main() {
   int l_age = arb_int();
   int r_age = arb_int();
@@ -41,5 +43,5 @@ void main() {
       }
     }
   }
-  sassert(l_ret_val == ((int)(*((unsigned int*)(&r_ret_val)))));
+  sassert(l_ret_val == (*((unsigned int*)(&r_ret_val))));
 }

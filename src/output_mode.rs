@@ -16,6 +16,7 @@ use uuid::Uuid;
 pub enum OutputMode {
   Daikon,
   Dafny,
+  FramaC,
   Icra,
   Seahorn,
   SvComp,
@@ -396,6 +397,18 @@ impl OutputMode {
       OutputMode::Dafny => {
         "".to_string()
       },
+      OutputMode::FramaC => {
+        [
+          "/*@ assigns \\nothing; */",
+          "int arb_int();",
+          "/*@ assigns \\nothing;",
+          "    ensures cond != 0; */",
+          "void assume(int cond);",
+          "/*@ requires cond != 0;",
+          "    assigns \\nothing; */",
+          "void sassert(int cond);",
+        ].join("\n")
+      },
       OutputMode::Icra => {
         "#include \"assert.h\"".to_string()
       },
@@ -440,6 +453,7 @@ impl OutputMode {
     match self {
       OutputMode::Daikon => None,
       OutputMode::Dafny => None,
+      OutputMode::FramaC => Some("arb_int".to_string()),
       OutputMode::Icra => Some("nondet".to_string()),
       OutputMode::Seahorn => Some("arb_int".to_string()),
       OutputMode::SvComp => Some("arb_int".to_string()),

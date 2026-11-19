@@ -1,5 +1,24 @@
+== SeaHorn ==
 Status: Not verified (panics in the parser)
 Manual spec edits: none
 
     thread 'main' panicked at src/crel/parser.rs:256:12:
     Unsupported abstract declarator in type name: Array(Node { node: ArrayDeclarator { qualifiers: [], size: Varia...
+
+== Frama-C WP ==
+Status: Not verified (panics in the parser)
+Manual spec edits: none
+
+    thread 'main' panicked at src/crel/parser.rs:256:12:
+    Unsupported abstract declarator in type name: Array(Node { node: ArrayDeclarator { qualifiers: [], size: Varia...
+
+== Raw logs ==
+--- SeaHorn (llvm-examples/output/2026-11-19_02-55-08.log) ---
+thread 'main' (1591) panicked at src/crel/parser.rs:256:12:
+Unsupported abstract declarator in type name: Array(Node { node: ArrayDeclarator { qualifiers: [], size: VariableExpression(Node { node: Constant(Node { node: Integer(Integer { base: Decimal, number: "10", suffix: IntegerSuffix { size: Int, unsigned: false, imaginary: false } }), span: 4427…4429 }), span: 4427…4429 }) }, span: 4427…4430 })
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+--- Frama-C WP (llvm-examples/output/2026-11-19_02-47-45.log) ---
+thread 'main' (632) panicked at src/crel/parser.rs:256:12:
+Unsupported abstract declarator in type name: Array(Node { node: ArrayDeclarator { qualifiers: [], size: VariableExpression(Node { node: Constant(Node { node: Integer(Integer { base: Decimal, number: "10", suffix: IntegerSuffix { size: Int, unsigned: false, imaginary: false } }), span: 4427…4429 }), span: 4427…4429 }) }, span: 4427…4430 })
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

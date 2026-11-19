@@ -1,3 +1,4 @@
+== SeaHorn ==
 Status: Not verified (SeaHorn says sat)
 Manual spec edits still needed:
   pre:   left.a == right.arg0 && left.b == right.b;
@@ -10,3 +11,348 @@ No body for llvm_sadd_with_overflow_i32 and llvm_smul_with_overflow_i32.
 
 right.a is mutable in the Rust signature, and so it lost its name.
 Used right.arg0 in the pre condition instead.
+
+== Frama-C WP ==
+Status: Not verified (Frama-C WP proved 2 / 4 goals)
+Manual spec edits still needed: same as SeaHorn
+
+    Function arb_int is declared without prototype.
+    Too many initializers for character array alloc_d58fd7249401e5d7b0f8a03dedaf138b
+    Neither code nor explicit exits and terminates for function arb_int,
+    Neither code nor explicit exits and terminates for function assume,
+    Neither code nor explicit exits and terminates for function sassert,
+    Neither code nor specification for function llvm_smul_with_overflow_i32,
+    Neither code nor specification for function _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow,
+    Neither code nor specification for function llvm_sadd_with_overflow_i32,
+    Neither code nor specification for function _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow,
+    [wp] Warning: Missing RTE guards
+    Missing assigns clause (assigns 'everything' instead)
+    [wp] [Timeout] bytes_main_call_sassert_requires (Qed 2.0s) (Alt-Ergo) (Cached)
+    [wp] [Timeout] bytes_main_terminates_part2 (Qed 1s) (Alt-Ergo) (Cached)
+    No 'assigns' specification for function 'main'.
+
+== Raw logs ==
+--- SeaHorn (llvm-examples/output/2026-11-19_02-55-08.log) ---
+Writing llvm-examples/square-sum/output/unaligned_product.c...
+
+Unaligned Product Program
+-------------------------
+void main(int l_a, int l_b, int r_arg0, int r_b) {
+  int l_c = 0;
+  while (l_a < l_b) {
+    l_c = (l_c + (l_a * l_a));
+    l_a = (l_a + 1);
+  }
+  char r_b_var0[4];
+  char r_c[4];
+  char r_a[4];
+  struct literal_struct_0 r_call3;
+  struct literal_struct_0 r_call4;
+  struct literal_struct_0 r_call5;
+  (*((unsigned int*)(&r_a))) = r_arg0;
+  (*((unsigned int*)(&r_b_var0))) = r_b;
+  (*((unsigned int*)(&r_c))) = 0;
+  if (((int)(*((unsigned int*)(&r_a)))) >= ((int)r_b)) {
+  } else {
+    r_call3 = llvm_smul_with_overflow_i32(*((unsigned int*)(&r_a)), *((unsigned int*)(&r_a)));
+  }
+  if ((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call3.field1)) {
+    r_call4 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_c)), r_call3.field0);
+  }
+  if (((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call4.field1)) && (!r_call3.field1)) {
+    (*((unsigned int*)(&r_c))) = r_call4.field0;
+    r_call5 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_a)), 1);
+  }
+  if ((((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call4.field1)) && (!r_call5.field1)) && (!r_call3.field1)) {
+    (*((unsigned int*)(&r_a))) = r_call5.field0;
+  }
+  if ((((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call4.field1)) && (!r_call3.field1)) && r_call5.field1) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(&alloc_ec107ee395ac6b4ecf0fa2ec2dc85880);
+  }
+  if (((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call3.field1)) && r_call4.field1) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(&alloc_08ea59b51ec41ad24b2b5eec37f3909f);
+  }
+  if ((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && r_call3.field1) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow(&alloc_179c49ada6cb72719bfa512ac4b1923a);
+  }
+}
+Computed alignment by local loop counting.
+Writing output to llvm-examples/square-sum/output/aligned_product.c...
+Done
+seahorn.c:15:1: warning: return type of 'main' is not 'int' [-Wmain-return-type]
+void main() {
+^
+seahorn.c:15:1: note: change return type to 'int'
+void main() {
+^~~~
+int
+1 warning generated.
+WARNING: initializing DSA node due to memset()
+WARNING: initializing DSA node due to memset()
+WARNING: initializing DSA node due to memset()
+WARNING: initializing DSA node due to memset()
+WARNING: initializing DSA node due to memset()
+WARNING: initializing DSA node due to memset()
+WARNING: initializing DSA node due to memset()
+WARNING: initializing DSA node due to memset()
+WARNING: initializing DSA node due to memset()
+/usr/bin/clang-14 -c -emit-llvm -D__SEAHORN__ -fdeclspec -O1 -Xclang -disable-llvm-optzns -fgnu89-inline -m64 -I/seahorn/build/run/include -o /tmp/sea-mcr927r3/seahorn.bc seahorn.c
+/seahorn/build/run/bin/seapp -o /tmp/sea-mcr927r3/seahorn.pp.bc --simplifycfg-sink-common=false --strip-extern=false --promote-assumptions=false --kill-vaarg=true --ignore-def-verifier-fn=false --horn-keep-arith-overflow=false --promote-nondet-undef=true --horn-replace-loops-with-nd-funcs=false /tmp/sea-mcr927r3/seahorn.bc
+/seahorn/build/run/bin/seapp --simplifycfg-sink-common=false -o /tmp/sea-mcr927r3/seahorn.pp.ms.bc --horn-mixed-sem --ms-reduce-main /tmp/sea-mcr927r3/seahorn.pp.bc
+/seahorn/build/run/bin/seaopt -f --simplifycfg-sink-common=false -o /tmp/sea-mcr927r3/seahorn.pp.ms.o.bc -O3 --seaopt-enable-indvar=false --seaopt-enable-loop-idiom=false --unroll-threshold=150 --unroll-allow-partial=false --unroll-partial-threshold=0 --vectorize-slp=false /tmp/sea-mcr927r3/seahorn.pp.ms.bc
+/seahorn/build/run/bin/seahorn --keep-shadows=true --sea-dsa=ci --horn-solve -horn-inter-proc -horn-sem-lvl=mem --horn-step=large /tmp/sea-mcr927r3/seahorn.pp.ms.o.bc --horn-strictly-la=false
+sat
+
+
+Aligned Product Program
+-----------------------
+#include "seahorn/seahorn.h"
+extern int arb_int();
+void right(int arg0, int b);
+struct literal_struct_0 { int field0; char field1; } ;
+struct literal_struct_0 llvm_smul_with_overflow_i32(int arg0, int arg1);
+void _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow(void* arg0);
+struct literal_struct_0 llvm_sadd_with_overflow_i32(int arg0, int arg1);
+void _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(void* arg0);
+char alloc_d58fd7249401e5d7b0f8a03dedaf138b[34] = "llvm-examples/square-sum/right.rs\000";
+struct literal_struct_1 { void* field0; char field1[16]; } ;
+struct literal_struct_1 alloc_179c49ada6cb72719bfa512ac4b1923a = {"llvm-examples/square-sum/right.rs", "!\000\000\000\000\000\000\000\005\000\000\000\021\000\000\000"};
+struct literal_struct_1 alloc_08ea59b51ec41ad24b2b5eec37f3909f = {"llvm-examples/square-sum/right.rs", "!\000\000\000\000\000\000\000\005\000\000\000\r\000\000\000"};
+struct literal_struct_1 alloc_ec107ee395ac6b4ecf0fa2ec2dc85880 = {"llvm-examples/square-sum/right.rs", "!\000\000\000\000\000\000\000\006\000\000\000\r\000\000\000"};
+
+void main() {
+  int l_a = arb_int();
+  int l_b = arb_int();
+  int r_arg0 = arb_int();
+  int r_b = arb_int();
+  assume((l_a == r_arg0) && (l_b == r_b));
+  int l_c = 0;
+  char r_b_var0[4];
+  char r_c[4];
+  char r_a[4];
+  struct literal_struct_0 r_call3;
+  struct literal_struct_0 r_call4;
+  struct literal_struct_0 r_call5;
+  (*((unsigned int*)(&r_a))) = r_arg0;
+  (*((unsigned int*)(&r_b_var0))) = r_b;
+  (*((unsigned int*)(&r_c))) = 0;
+  if (((int)(*((unsigned int*)(&r_a)))) >= ((int)r_b)) {
+  } else {
+    r_call3 = llvm_smul_with_overflow_i32(*((unsigned int*)(&r_a)), *((unsigned int*)(&r_a)));
+  }
+  if ((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call3.field1)) {
+    r_call4 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_c)), r_call3.field0);
+  }
+  if (((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call4.field1)) && (!r_call3.field1)) {
+    (*((unsigned int*)(&r_c))) = r_call4.field0;
+    r_call5 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_a)), 1);
+  }
+  if ((((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call4.field1)) && (!r_call5.field1)) && (!r_call3.field1)) {
+    (*((unsigned int*)(&r_a))) = r_call5.field0;
+  }
+  if ((((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call4.field1)) && (!r_call3.field1)) && r_call5.field1) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(&alloc_ec107ee395ac6b4ecf0fa2ec2dc85880);
+  }
+  while (l_a < l_b) {
+    l_c = (l_c + (l_a * l_a));
+    l_a = (l_a + 1);
+  }
+  if (((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call3.field1)) && r_call4.field1) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(&alloc_08ea59b51ec41ad24b2b5eec37f3909f);
+  }
+  if ((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && r_call3.field1) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow(&alloc_179c49ada6cb72719bfa512ac4b1923a);
+  }
+  sassert(l_c == (*((unsigned int*)(&r_c))));
+}
+
+Per-Task Times (ms)
+-------------------
+print-info: 0
+align-count-loops: 689
+aligned-crel: 4
+aligned-output: 1
+write-product: 6
+seahorn: 269
+print-info: 0
+
+KestRel completed in 971ms
+Verified: false
+
+--- Frama-C WP (llvm-examples/output/2026-11-19_02-47-45.log) ---
+Writing llvm-examples/square-sum/output/unaligned_product.c...
+
+Unaligned Product Program
+-------------------------
+void main(int l_a, int l_b, int r_arg0, int r_b) {
+  int l_c = 0;
+  while (l_a < l_b) {
+    l_c = (l_c + (l_a * l_a));
+    l_a = (l_a + 1);
+  }
+  char r_b_var0[4];
+  char r_c[4];
+  char r_a[4];
+  struct literal_struct_0 r_call3;
+  struct literal_struct_0 r_call4;
+  struct literal_struct_0 r_call5;
+  (*((unsigned int*)(&r_a))) = r_arg0;
+  (*((unsigned int*)(&r_b_var0))) = r_b;
+  (*((unsigned int*)(&r_c))) = 0;
+  if (((int)(*((unsigned int*)(&r_a)))) >= ((int)r_b)) {
+  } else {
+    r_call3 = llvm_smul_with_overflow_i32(*((unsigned int*)(&r_a)), *((unsigned int*)(&r_a)));
+  }
+  if ((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call3.field1)) {
+    r_call4 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_c)), r_call3.field0);
+  }
+  if (((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call4.field1)) && (!r_call3.field1)) {
+    (*((unsigned int*)(&r_c))) = r_call4.field0;
+    r_call5 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_a)), 1);
+  }
+  if ((((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call4.field1)) && (!r_call5.field1)) && (!r_call3.field1)) {
+    (*((unsigned int*)(&r_a))) = r_call5.field0;
+  }
+  if ((((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call4.field1)) && (!r_call3.field1)) && r_call5.field1) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(&alloc_ec107ee395ac6b4ecf0fa2ec2dc85880);
+  }
+  if (((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call3.field1)) && r_call4.field1) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(&alloc_08ea59b51ec41ad24b2b5eec37f3909f);
+  }
+  if ((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && r_call3.field1) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow(&alloc_179c49ada6cb72719bfa512ac4b1923a);
+  }
+}
+Computed alignment by local loop counting.
+Writing output to llvm-examples/square-sum/output/aligned_product.c...
+Done
+[kernel] Parsing frama_c.c (with preprocessing)
+[kernel:typing:no-proto] frama_c.c:2: Warning: 
+  Function arb_int is declared without prototype.
+  Its formals will be inferred from actual arguments at first call.
+  Declare it as arb_int(void) if the function does not take any parameters.
+[kernel] frama_c.c:15: Warning: 
+  Too many initializers for character array alloc_d58fd7249401e5d7b0f8a03dedaf138b
+[wp] Running WP plugin...
+[kernel:annot:missing-spec] frama_c.c:2: Warning: 
+  Neither code nor explicit exits and terminates for function arb_int,
+  generating default clauses. See -generated-spec-* options for more info.
+[kernel:annot:missing-spec] frama_c.c:5: Warning: 
+  Neither code nor explicit exits and terminates for function assume,
+  generating default clauses. See -generated-spec-* options for more info.
+[kernel:annot:missing-spec] frama_c.c:8: Warning: 
+  Neither code nor explicit exits and terminates for function sassert,
+  generating default clauses. See -generated-spec-* options for more info.
+[kernel:annot:missing-spec] frama_c.c:11: Warning: 
+  Neither code nor specification for function llvm_smul_with_overflow_i32,
+  generating default exits, assigns and terminates.
+  See -generated-spec-* options for more info.
+[kernel:annot:missing-spec] frama_c.c:12: Warning: 
+  Neither code nor specification for function
+  _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow,
+  generating default exits, assigns and terminates.
+  See -generated-spec-* options for more info.
+[kernel:annot:missing-spec] frama_c.c:13: Warning: 
+  Neither code nor specification for function llvm_sadd_with_overflow_i32,
+  generating default exits, assigns and terminates.
+  See -generated-spec-* options for more info.
+[kernel:annot:missing-spec] frama_c.c:14: Warning: 
+  Neither code nor specification for function
+  _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow,
+  generating default exits, assigns and terminates.
+  See -generated-spec-* options for more info.
+[wp] Warning: Missing RTE guards
+[wp] frama_c.c:54: Warning: 
+  Missing assigns clause (assigns 'everything' instead)
+[wp] 4 goals scheduled
+[wp] [Timeout] bytes_main_call_sassert_requires (Qed 2.0s) (Alt-Ergo) (Cached)
+[wp] [Timeout] bytes_main_terminates_part2 (Qed 1s) (Alt-Ergo) (Cached)
+[wp] [Cache] updated:2
+[wp] Proved goals:    2 / 4
+  Qed:             2 (1s-758ms-2.0s)
+  Timeout:         2
+[wp:pedantic-assigns] frama_c.c:21: Warning: 
+  No 'assigns' specification for function 'main'.
+  Callers assumptions might be imprecise.
+
+
+Aligned Product Program
+-----------------------
+/*@ assigns \nothing; */
+int arb_int();
+/*@ assigns \nothing;
+    ensures cond != 0; */
+void assume(int cond);
+/*@ requires cond != 0;
+    assigns \nothing; */
+void sassert(int cond);
+void right(int arg0, int b);
+struct literal_struct_0 { int field0; char field1; } ;
+struct literal_struct_0 llvm_smul_with_overflow_i32(int arg0, int arg1);
+void _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow(void* arg0);
+struct literal_struct_0 llvm_sadd_with_overflow_i32(int arg0, int arg1);
+void _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(void* arg0);
+char alloc_d58fd7249401e5d7b0f8a03dedaf138b[34] = "llvm-examples/square-sum/right.rs\000";
+struct literal_struct_1 { void* field0; char field1[16]; } ;
+struct literal_struct_1 alloc_179c49ada6cb72719bfa512ac4b1923a = {"llvm-examples/square-sum/right.rs", "!\000\000\000\000\000\000\000\005\000\000\000\021\000\000\000"};
+struct literal_struct_1 alloc_08ea59b51ec41ad24b2b5eec37f3909f = {"llvm-examples/square-sum/right.rs", "!\000\000\000\000\000\000\000\005\000\000\000\r\000\000\000"};
+struct literal_struct_1 alloc_ec107ee395ac6b4ecf0fa2ec2dc85880 = {"llvm-examples/square-sum/right.rs", "!\000\000\000\000\000\000\000\006\000\000\000\r\000\000\000"};
+
+void main() {
+  int l_a = arb_int();
+  int l_b = arb_int();
+  int r_arg0 = arb_int();
+  int r_b = arb_int();
+  assume((l_a == r_arg0) && (l_b == r_b));
+  int l_c = 0;
+  char r_b_var0[4];
+  char r_c[4];
+  char r_a[4];
+  struct literal_struct_0 r_call3;
+  struct literal_struct_0 r_call4;
+  struct literal_struct_0 r_call5;
+  (*((unsigned int*)(&r_a))) = r_arg0;
+  (*((unsigned int*)(&r_b_var0))) = r_b;
+  (*((unsigned int*)(&r_c))) = 0;
+  if (((int)(*((unsigned int*)(&r_a)))) >= ((int)r_b)) {
+  } else {
+    r_call3 = llvm_smul_with_overflow_i32(*((unsigned int*)(&r_a)), *((unsigned int*)(&r_a)));
+  }
+  if ((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call3.field1)) {
+    r_call4 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_c)), r_call3.field0);
+  }
+  if (((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call4.field1)) && (!r_call3.field1)) {
+    (*((unsigned int*)(&r_c))) = r_call4.field0;
+    r_call5 = llvm_sadd_with_overflow_i32(*((unsigned int*)(&r_a)), 1);
+  }
+  if ((((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call4.field1)) && (!r_call5.field1)) && (!r_call3.field1)) {
+    (*((unsigned int*)(&r_a))) = r_call5.field0;
+  }
+  if ((((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call4.field1)) && (!r_call3.field1)) && r_call5.field1) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(&alloc_ec107ee395ac6b4ecf0fa2ec2dc85880);
+  }
+  while (l_a < l_b) {
+    l_c = (l_c + (l_a * l_a));
+    l_a = (l_a + 1);
+  }
+  if (((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && (!r_call3.field1)) && r_call4.field1) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(&alloc_08ea59b51ec41ad24b2b5eec37f3909f);
+  }
+  if ((((int)(*((unsigned int*)(&r_a)))) < ((int)r_b)) && r_call3.field1) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow(&alloc_179c49ada6cb72719bfa512ac4b1923a);
+  }
+  sassert(l_c == (*((unsigned int*)(&r_c))));
+}
+
+Per-Task Times (ms)
+-------------------
+print-info: 0
+align-count-loops: 662
+aligned-crel: 4
+aligned-output: 1
+write-product: 6
+frama_c: 7034
+print-info: 0
+
+KestRel completed in 7709ms
+Verified: false

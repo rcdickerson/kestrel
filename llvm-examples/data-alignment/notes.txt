@@ -1,5 +1,24 @@
+== SeaHorn ==
 Status: Not verified (panics in the parser)
 Manual spec edits: none
 
     thread 'main' panicked at src/crel/parser.rs:411:70:
     called `Result::unwrap()` on an `Err` value: ParseIntError { kind: PosOverflow }
+
+== Frama-C WP ==
+Status: Not verified (panics in the parser)
+Manual spec edits: none
+
+    thread 'main' panicked at src/crel/parser.rs:411:70:
+    called `Result::unwrap()` on an `Err` value: ParseIntError { kind: PosOverflow }
+
+== Raw logs ==
+--- SeaHorn (llvm-examples/output/2026-11-19_02-55-08.log) ---
+thread 'main' (1336) panicked at src/crel/parser.rs:411:70:
+called `Result::unwrap()` on an `Err` value: ParseIntError { kind: PosOverflow }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+--- Frama-C WP (llvm-examples/output/2026-11-19_02-47-45.log) ---
+thread 'main' (341) panicked at src/crel/parser.rs:411:70:
+called `Result::unwrap()` on an `Err` value: ParseIntError { kind: PosOverflow }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

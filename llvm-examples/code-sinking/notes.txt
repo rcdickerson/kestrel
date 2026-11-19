@@ -1,6 +1,447 @@
+== SeaHorn ==
 Status: Not verified (SeaHorn says sat)
 Manual spec edits: none
 
     void* r_a;
 
 r_a is a void* with no memory set up.
+
+== Frama-C WP ==
+Status: Not verified (Frama-C WP timed out after 60 s)
+Manual spec edits: none
+
+    Frama-C timed out.
+
+== Raw logs ==
+--- SeaHorn (llvm-examples/output/2026-11-19_02-55-08.log) ---
+Writing llvm-examples/code-sinking/output/unaligned_product.c...
+
+Unaligned Product Program
+-------------------------
+void main(int l_a[10 + 1], void* r_a) {
+  int l_max = l_a[0];
+  int l_maxi = 0;
+  int l_i = 0;
+  while (l_i < 10) {
+    if (l_max < l_a[l_i]) {
+      l_max = l_a[l_i];
+      l_maxi = l_i;
+    }
+    l_i = (l_i + 1);
+  }
+  int l_t = l_a[10];
+  l_a[10] = l_max;
+  l_a[l_maxi] = l_t;
+  char r_t[4];
+  char r_n[8];
+  char r_a_var2[8];
+  char r_maxi[8];
+  char r_max[4];
+  char r_j[8];
+  long r_val6;
+  long r_val7;
+  long r_val8;
+  long r_val9;
+  int r_val10;
+  long r_val11;
+  (*((void**)(&r_a_var2))) = r_a;
+  (*((unsigned long*)(&r_n))) = 10;
+  (*((unsigned long*)(&r_j))) = 0;
+  (*((unsigned int*)(&r_max))) = 0;
+  (*((unsigned long*)(&r_maxi))) = 0;
+  if ((*((unsigned long*)(&r_j))) >= 10) {
+  } else {
+    if ((*((unsigned long*)(&r_j))) == 0) {
+      (*((unsigned int*)(&r_max))) = (*((unsigned int*)r_a));
+      (*((unsigned long*)(&r_maxi))) = 0;
+    }
+    r_val6 = (*((unsigned long*)(&r_j)));
+  }
+  if (((*((unsigned long*)(&r_j))) < 10) && (r_val6 >= 11)) {
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val6, 11, &alloc_b6a9a667e486e61363affc1a8f96404f);
+  }
+  if ((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && (((int)(*((unsigned int*)(&r_max)))) < ((int)((unsigned int*)r_a)[r_val6]))) {
+    r_val7 = (*((unsigned long*)(&r_j)));
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && (r_val7 >= 11)) && (((int)(*((unsigned int*)(&r_max)))) < ((int)((unsigned int*)r_a)[r_val6]))) {
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val7, 11, &alloc_25839b1997cb2d6209d8d3c6ba0567b5);
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && (r_val7 < 11)) && (((int)(*((unsigned int*)(&r_max)))) < ((int)((unsigned int*)r_a)[r_val6]))) {
+    (*((unsigned int*)(&r_max))) = ((unsigned int*)r_a)[r_val7];
+    (*((unsigned long*)(&r_maxi))) = (*((unsigned long*)(&r_j)));
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && (r_val6 < 11)) && ((*((unsigned long*)(&r_j))) == 10)) {
+    r_val10 = ((unsigned int*)r_a)[10];
+    (*((unsigned int*)(&r_t))) = r_val10;
+    ((unsigned int*)r_a)[10] = (*((unsigned int*)(&r_max)));
+    r_val11 = (*((unsigned long*)(&r_maxi)));
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && (r_val6 < 11)) && (r_val11 >= 11)) && ((*((unsigned long*)(&r_j))) == 10)) {
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val11, 11, &alloc_f8b2f46ae7d9d9573fbd43ab55b46be9);
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && (r_val6 < 11)) && ((*((unsigned long*)(&r_j))) == 10)) && (r_val11 < 11)) {
+    ((unsigned int*)r_a)[r_val11] = r_val10;
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && (r_val6 < 11)) && (((*((unsigned long*)(&r_j))) != 10) || (r_val11 < 11))) {
+    r_val8 = (*((unsigned long*)(&r_j)));
+    r_val9 = (r_val8 + 1);
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && (r_val6 < 11)) && (r_val9 >= r_val8)) && (((*((unsigned long*)(&r_j))) != 10) || (r_val11 < 11))) {
+    (*((unsigned long*)(&r_j))) = r_val9;
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && (r_val6 < 11)) && (((*((unsigned long*)(&r_j))) != 10) || (r_val11 < 11))) && (r_val9 < r_val8)) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(&alloc_caa79b646cf59bcf219f4511c5e9fbeb);
+  }
+}
+Computed alignment by local loop counting.
+Writing output to llvm-examples/code-sinking/output/aligned_product.c...
+Done
+seahorn.c:13:1: warning: return type of 'main' is not 'int' [-Wmain-return-type]
+void main() {
+^
+seahorn.c:13:1: note: change return type to 'int'
+void main() {
+^~~~
+int
+1 warning generated.
+Warning: found 2 possible reads of undefined values
+WARNING: initializing DSA node due to memset()
+WARNING: initializing DSA node due to memset()
+WARNING: initializing DSA node due to memset()
+WARNING: initializing DSA node due to memset()
+Warning: `undef` in assumption:   tail call void @verifier.assume(i1 undef) #10 in BB: entry
+
+WARNING: initializing DSA node due to memset()
+WARNING: initializing DSA node due to memset()
+WARNING: initializing DSA node due to memset()
+WARNING: initializing DSA node due to memset()
+Warning: `undef` in assumption:   tail call void @verifier.assume(i1 undef) #10 in BB: entry
+
+/usr/bin/clang-14 -c -emit-llvm -D__SEAHORN__ -fdeclspec -O1 -Xclang -disable-llvm-optzns -fgnu89-inline -m64 -I/seahorn/build/run/include -o /tmp/sea-9vxab9w3/seahorn.bc seahorn.c
+/seahorn/build/run/bin/seapp -o /tmp/sea-9vxab9w3/seahorn.pp.bc --simplifycfg-sink-common=false --strip-extern=false --promote-assumptions=false --kill-vaarg=true --ignore-def-verifier-fn=false --horn-keep-arith-overflow=false --promote-nondet-undef=true --horn-replace-loops-with-nd-funcs=false /tmp/sea-9vxab9w3/seahorn.bc
+/seahorn/build/run/bin/seapp --simplifycfg-sink-common=false -o /tmp/sea-9vxab9w3/seahorn.pp.ms.bc --horn-mixed-sem --ms-reduce-main /tmp/sea-9vxab9w3/seahorn.pp.bc
+/seahorn/build/run/bin/seaopt -f --simplifycfg-sink-common=false -o /tmp/sea-9vxab9w3/seahorn.pp.ms.o.bc -O3 --seaopt-enable-indvar=false --seaopt-enable-loop-idiom=false --unroll-threshold=150 --unroll-allow-partial=false --unroll-partial-threshold=0 --vectorize-slp=false /tmp/sea-9vxab9w3/seahorn.pp.ms.bc
+/seahorn/build/run/bin/seahorn --keep-shadows=true --sea-dsa=ci --horn-solve -horn-inter-proc -horn-sem-lvl=mem --horn-step=large /tmp/sea-9vxab9w3/seahorn.pp.ms.o.bc --horn-strictly-la=false
+sat
+
+
+Aligned Product Program
+-----------------------
+#include "seahorn/seahorn.h"
+extern int arb_int();
+void right(void* a);
+void _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(long arg0, long arg1, void* arg2);
+void _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(void* arg0);
+char alloc_bf44ca51fc47be80b8773cb414d76a9d[36] = "llvm-examples/code-sinking/right.rs\000";
+struct literal_struct_0 { void* field0; char field1[16]; } ;
+struct literal_struct_0 alloc_b6a9a667e486e61363affc1a8f96404f = {"llvm-examples/code-sinking/right.rs", "#\000\000\000\000\000\000\000\r\000\000\000\022\000\000\000"};
+struct literal_struct_0 alloc_25839b1997cb2d6209d8d3c6ba0567b5 = {"llvm-examples/code-sinking/right.rs", "#\000\000\000\000\000\000\000\016\000\000\000\023\000\000\000"};
+struct literal_struct_0 alloc_f8b2f46ae7d9d9573fbd43ab55b46be9 = {"llvm-examples/code-sinking/right.rs", "#\000\000\000\000\000\000\000\024\000\000\000\r\000\000\000"};
+struct literal_struct_0 alloc_caa79b646cf59bcf219f4511c5e9fbeb = {"llvm-examples/code-sinking/right.rs", "#\000\000\000\000\000\000\000\026\000\000\000\r\000\000\000"};
+
+void main() {
+  int l_a[10 + 1];
+  void* r_a;
+  int _i = 0;
+  while (_i < 11) {
+    assume(l_a[_i] == ((unsigned int*)r_a)[_i]);
+    _i = (_i + 1);
+  }
+  int l_max = l_a[0];
+  int l_maxi = 0;
+  int l_i = 0;
+  char r_t[4];
+  char r_n[8];
+  char r_a_var2[8];
+  char r_maxi[8];
+  char r_max[4];
+  char r_j[8];
+  long r_val6;
+  long r_val7;
+  long r_val8;
+  long r_val9;
+  int r_val10;
+  long r_val11;
+  (*((void**)(&r_a_var2))) = r_a;
+  (*((unsigned long*)(&r_n))) = 10;
+  (*((unsigned long*)(&r_j))) = 0;
+  (*((unsigned int*)(&r_max))) = 0;
+  (*((unsigned long*)(&r_maxi))) = 0;
+  if ((*((unsigned long*)(&r_j))) >= 10) {
+  } else {
+    if ((*((unsigned long*)(&r_j))) == 0) {
+      (*((unsigned int*)(&r_max))) = (*((unsigned int*)r_a));
+      (*((unsigned long*)(&r_maxi))) = 0;
+    }
+    r_val6 = (*((unsigned long*)(&r_j)));
+  }
+  if (((*((unsigned long*)(&r_j))) < 10) && (r_val6 >= 11)) {
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val6, 11, &alloc_b6a9a667e486e61363affc1a8f96404f);
+  }
+  while (l_i < 10) {
+    if (l_max < l_a[l_i]) {
+      l_max = l_a[l_i];
+      l_maxi = l_i;
+    }
+    l_i = (l_i + 1);
+  }
+  int l_t = l_a[10];
+  l_a[10] = l_max;
+  l_a[l_maxi] = l_t;
+  if ((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && (((int)(*((unsigned int*)(&r_max)))) < ((int)((unsigned int*)r_a)[r_val6]))) {
+    r_val7 = (*((unsigned long*)(&r_j)));
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && (r_val7 >= 11)) && (((int)(*((unsigned int*)(&r_max)))) < ((int)((unsigned int*)r_a)[r_val6]))) {
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val7, 11, &alloc_25839b1997cb2d6209d8d3c6ba0567b5);
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && (r_val7 < 11)) && (((int)(*((unsigned int*)(&r_max)))) < ((int)((unsigned int*)r_a)[r_val6]))) {
+    (*((unsigned int*)(&r_max))) = ((unsigned int*)r_a)[r_val7];
+    (*((unsigned long*)(&r_maxi))) = (*((unsigned long*)(&r_j)));
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && (r_val6 < 11)) && ((*((unsigned long*)(&r_j))) == 10)) {
+    r_val10 = ((unsigned int*)r_a)[10];
+    (*((unsigned int*)(&r_t))) = r_val10;
+    ((unsigned int*)r_a)[10] = (*((unsigned int*)(&r_max)));
+    r_val11 = (*((unsigned long*)(&r_maxi)));
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && (r_val6 < 11)) && (r_val11 >= 11)) && ((*((unsigned long*)(&r_j))) == 10)) {
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val11, 11, &alloc_f8b2f46ae7d9d9573fbd43ab55b46be9);
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && (r_val6 < 11)) && ((*((unsigned long*)(&r_j))) == 10)) && (r_val11 < 11)) {
+    ((unsigned int*)r_a)[r_val11] = r_val10;
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && (r_val6 < 11)) && (((*((unsigned long*)(&r_j))) != 10) || (r_val11 < 11))) {
+    r_val8 = (*((unsigned long*)(&r_j)));
+    r_val9 = (r_val8 + 1);
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && (r_val6 < 11)) && (r_val9 >= r_val8)) && (((*((unsigned long*)(&r_j))) != 10) || (r_val11 < 11))) {
+    (*((unsigned long*)(&r_j))) = r_val9;
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && ((r_val7 < 11) || (((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])))) && (r_val6 < 11)) && (((*((unsigned long*)(&r_j))) != 10) || (r_val11 < 11))) && (r_val9 < r_val8)) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(&alloc_caa79b646cf59bcf219f4511c5e9fbeb);
+  }
+  int _j = 0;
+  while (_j < 11) {
+    sassert(l_a[_j] == ((unsigned int*)r_a)[_j]);
+    _j = (_j + 1);
+  }
+}
+
+Per-Task Times (ms)
+-------------------
+print-info: 1
+align-count-loops: 782
+aligned-crel: 7
+aligned-output: 1
+write-product: 4
+seahorn: 947
+print-info: 0
+
+KestRel completed in 1744ms
+Verified: false
+
+--- Frama-C WP (llvm-examples/output/2026-11-19_02-47-45.log) ---
+Writing llvm-examples/code-sinking/output/unaligned_product.c...
+
+Unaligned Product Program
+-------------------------
+void main(int l_a[10 + 1], void* r_a) {
+  int l_max = l_a[0];
+  int l_maxi = 0;
+  int l_i = 0;
+  while (l_i < 10) {
+    if (l_max < l_a[l_i]) {
+      l_max = l_a[l_i];
+      l_maxi = l_i;
+    }
+    l_i = (l_i + 1);
+  }
+  int l_t = l_a[10];
+  l_a[10] = l_max;
+  l_a[l_maxi] = l_t;
+  char r_t[4];
+  char r_n[8];
+  char r_a_var2[8];
+  char r_maxi[8];
+  char r_max[4];
+  char r_j[8];
+  long r_val6;
+  long r_val7;
+  long r_val8;
+  long r_val9;
+  int r_val10;
+  long r_val11;
+  (*((void**)(&r_a_var2))) = r_a;
+  (*((unsigned long*)(&r_n))) = 10;
+  (*((unsigned long*)(&r_j))) = 0;
+  (*((unsigned int*)(&r_max))) = 0;
+  (*((unsigned long*)(&r_maxi))) = 0;
+  if ((*((unsigned long*)(&r_j))) >= 10) {
+  } else {
+    if ((*((unsigned long*)(&r_j))) == 0) {
+      (*((unsigned int*)(&r_max))) = (*((unsigned int*)r_a));
+      (*((unsigned long*)(&r_maxi))) = 0;
+    }
+    r_val6 = (*((unsigned long*)(&r_j)));
+  }
+  if (((*((unsigned long*)(&r_j))) < 10) && (r_val6 >= 11)) {
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val6, 11, &alloc_b6a9a667e486e61363affc1a8f96404f);
+  }
+  if ((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && (((int)(*((unsigned int*)(&r_max)))) < ((int)((unsigned int*)r_a)[r_val6]))) {
+    r_val7 = (*((unsigned long*)(&r_j)));
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && (r_val7 >= 11)) && (((int)(*((unsigned int*)(&r_max)))) < ((int)((unsigned int*)r_a)[r_val6]))) {
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val7, 11, &alloc_25839b1997cb2d6209d8d3c6ba0567b5);
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && (r_val7 < 11)) && (((int)(*((unsigned int*)(&r_max)))) < ((int)((unsigned int*)r_a)[r_val6]))) {
+    (*((unsigned int*)(&r_max))) = ((unsigned int*)r_a)[r_val7];
+    (*((unsigned long*)(&r_maxi))) = (*((unsigned long*)(&r_j)));
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && ((((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])) || (r_val7 < 11))) && ((*((unsigned long*)(&r_j))) == 10)) {
+    r_val10 = ((unsigned int*)r_a)[10];
+    (*((unsigned int*)(&r_t))) = r_val10;
+    ((unsigned int*)r_a)[10] = (*((unsigned int*)(&r_max)));
+    r_val11 = (*((unsigned long*)(&r_maxi)));
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && ((((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])) || (r_val7 < 11))) && (r_val11 >= 11)) && ((*((unsigned long*)(&r_j))) == 10)) {
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val11, 11, &alloc_f8b2f46ae7d9d9573fbd43ab55b46be9);
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && ((((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])) || (r_val7 < 11))) && ((*((unsigned long*)(&r_j))) == 10)) && (r_val11 < 11)) {
+    ((unsigned int*)r_a)[r_val11] = r_val10;
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && (((*((unsigned long*)(&r_j))) != 10) || (r_val11 < 11))) && (r_val6 < 11)) && ((((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])) || (r_val7 < 11))) {
+    r_val8 = (*((unsigned long*)(&r_j)));
+    r_val9 = (r_val8 + 1);
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && (((*((unsigned long*)(&r_j))) != 10) || (r_val11 < 11))) && (r_val6 < 11)) && ((((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])) || (r_val7 < 11))) && (r_val9 >= r_val8)) {
+    (*((unsigned long*)(&r_j))) = r_val9;
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && (((*((unsigned long*)(&r_j))) != 10) || (r_val11 < 11))) && (r_val6 < 11)) && ((((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])) || (r_val7 < 11))) && (r_val9 < r_val8)) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(&alloc_caa79b646cf59bcf219f4511c5e9fbeb);
+  }
+}
+Computed alignment by local loop counting.
+Writing output to llvm-examples/code-sinking/output/aligned_product.c...
+Done
+Frama-C timed out.
+
+Aligned Product Program
+-----------------------
+/*@ assigns \nothing; */
+int arb_int();
+/*@ assigns \nothing;
+    ensures cond != 0; */
+void assume(int cond);
+/*@ requires cond != 0;
+    assigns \nothing; */
+void sassert(int cond);
+void right(void* a);
+void _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(long arg0, long arg1, void* arg2);
+void _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(void* arg0);
+char alloc_bf44ca51fc47be80b8773cb414d76a9d[36] = "llvm-examples/code-sinking/right.rs\000";
+struct literal_struct_0 { void* field0; char field1[16]; } ;
+struct literal_struct_0 alloc_b6a9a667e486e61363affc1a8f96404f = {"llvm-examples/code-sinking/right.rs", "#\000\000\000\000\000\000\000\r\000\000\000\022\000\000\000"};
+struct literal_struct_0 alloc_25839b1997cb2d6209d8d3c6ba0567b5 = {"llvm-examples/code-sinking/right.rs", "#\000\000\000\000\000\000\000\016\000\000\000\023\000\000\000"};
+struct literal_struct_0 alloc_f8b2f46ae7d9d9573fbd43ab55b46be9 = {"llvm-examples/code-sinking/right.rs", "#\000\000\000\000\000\000\000\024\000\000\000\r\000\000\000"};
+struct literal_struct_0 alloc_caa79b646cf59bcf219f4511c5e9fbeb = {"llvm-examples/code-sinking/right.rs", "#\000\000\000\000\000\000\000\026\000\000\000\r\000\000\000"};
+
+void main() {
+  int l_a[10 + 1];
+  void* r_a;
+  int _i = 0;
+  while (_i < 11) {
+    assume(l_a[_i] == ((unsigned int*)r_a)[_i]);
+    _i = (_i + 1);
+  }
+  int l_max = l_a[0];
+  int l_maxi = 0;
+  int l_i = 0;
+  while (l_i < 10) {
+    if (l_max < l_a[l_i]) {
+      l_max = l_a[l_i];
+      l_maxi = l_i;
+    }
+    l_i = (l_i + 1);
+  }
+  char r_t[4];
+  char r_n[8];
+  char r_a_var2[8];
+  char r_maxi[8];
+  char r_max[4];
+  char r_j[8];
+  long r_val6;
+  long r_val7;
+  long r_val8;
+  long r_val9;
+  int r_val10;
+  long r_val11;
+  (*((void**)(&r_a_var2))) = r_a;
+  (*((unsigned long*)(&r_n))) = 10;
+  (*((unsigned long*)(&r_j))) = 0;
+  (*((unsigned int*)(&r_max))) = 0;
+  (*((unsigned long*)(&r_maxi))) = 0;
+  if ((*((unsigned long*)(&r_j))) >= 10) {
+  } else {
+    if ((*((unsigned long*)(&r_j))) == 0) {
+      (*((unsigned int*)(&r_max))) = (*((unsigned int*)r_a));
+      (*((unsigned long*)(&r_maxi))) = 0;
+    }
+    r_val6 = (*((unsigned long*)(&r_j)));
+  }
+  int l_t = l_a[10];
+  l_a[10] = l_max;
+  l_a[l_maxi] = l_t;
+  if (((*((unsigned long*)(&r_j))) < 10) && (r_val6 >= 11)) {
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val6, 11, &alloc_b6a9a667e486e61363affc1a8f96404f);
+  }
+  if ((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && (((int)(*((unsigned int*)(&r_max)))) < ((int)((unsigned int*)r_a)[r_val6]))) {
+    r_val7 = (*((unsigned long*)(&r_j)));
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && (r_val7 >= 11)) && (((int)(*((unsigned int*)(&r_max)))) < ((int)((unsigned int*)r_a)[r_val6]))) {
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val7, 11, &alloc_25839b1997cb2d6209d8d3c6ba0567b5);
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && (r_val7 < 11)) && (((int)(*((unsigned int*)(&r_max)))) < ((int)((unsigned int*)r_a)[r_val6]))) {
+    (*((unsigned int*)(&r_max))) = ((unsigned int*)r_a)[r_val7];
+    (*((unsigned long*)(&r_maxi))) = (*((unsigned long*)(&r_j)));
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && ((((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])) || (r_val7 < 11))) && ((*((unsigned long*)(&r_j))) == 10)) {
+    r_val10 = ((unsigned int*)r_a)[10];
+    (*((unsigned int*)(&r_t))) = r_val10;
+    ((unsigned int*)r_a)[10] = (*((unsigned int*)(&r_max)));
+    r_val11 = (*((unsigned long*)(&r_maxi)));
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && ((((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])) || (r_val7 < 11))) && (r_val11 >= 11)) && ((*((unsigned long*)(&r_j))) == 10)) {
+    _RNvNtCscI6d9CVNmLh_4core9panicking18panic_bounds_check(r_val11, 11, &alloc_f8b2f46ae7d9d9573fbd43ab55b46be9);
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && (r_val6 < 11)) && ((((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])) || (r_val7 < 11))) && ((*((unsigned long*)(&r_j))) == 10)) && (r_val11 < 11)) {
+    ((unsigned int*)r_a)[r_val11] = r_val10;
+  }
+  if (((((*((unsigned long*)(&r_j))) < 10) && (((*((unsigned long*)(&r_j))) != 10) || (r_val11 < 11))) && (r_val6 < 11)) && ((((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])) || (r_val7 < 11))) {
+    r_val8 = (*((unsigned long*)(&r_j)));
+    r_val9 = (r_val8 + 1);
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && (((*((unsigned long*)(&r_j))) != 10) || (r_val11 < 11))) && (r_val6 < 11)) && ((((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])) || (r_val7 < 11))) && (r_val9 >= r_val8)) {
+    (*((unsigned long*)(&r_j))) = r_val9;
+  }
+  if ((((((*((unsigned long*)(&r_j))) < 10) && (((*((unsigned long*)(&r_j))) != 10) || (r_val11 < 11))) && (r_val6 < 11)) && ((((int)(*((unsigned int*)(&r_max)))) >= ((int)((unsigned int*)r_a)[r_val6])) || (r_val7 < 11))) && (r_val9 < r_val8)) {
+    _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow(&alloc_caa79b646cf59bcf219f4511c5e9fbeb);
+  }
+  int _j = 0;
+  while (_j < 11) {
+    sassert(l_a[_j] == ((unsigned int*)r_a)[_j]);
+    _j = (_j + 1);
+  }
+}
+
+Per-Task Times (ms)
+-------------------
+print-info: 1
+align-count-loops: 943
+aligned-crel: 7
+aligned-output: 1
+write-product: 5
+frama_c: 60097
+print-info: 0
+
+KestRel completed in 61057ms
+Verified: false

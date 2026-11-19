@@ -1,3 +1,4 @@
+== SeaHorn ==
 Status: Verified
 Manual spec edits still needed: none
 
@@ -13,3 +14,213 @@ print-info: 0
 
 KestRel completed in 358ms
 Verified: true
+
+== Frama-C WP ==
+Status: TBD
+
+== Raw logs ==
+--- SeaHorn (llvm-examples/output/2026-11-19_02-55-08.log) ---
+Writing llvm-examples/double-square-both-c/output/unaligned_product.c...
+
+Unaligned Product Program
+-------------------------
+void main(int l_x, int r_x) {
+  int l_z = 0;
+  int l_y = 0;
+  l_z = (2 * l_x);
+  while (l_z > 0) {
+    l_z = (l_z - 1);
+    l_y = (l_y + l_x);
+  }
+  int r_z = 0;
+  int r_y = 0;
+  r_z = (2 * r_x);
+  while (r_z > 0) {
+    r_z = (r_z - 1);
+    r_y = (r_y + r_x);
+  }
+}
+Computed alignment by local loop counting.
+Writing output to llvm-examples/double-square-both-c/output/aligned_product.c...
+Done
+seahorn.c:3:1: warning: return type of 'main' is not 'int' [-Wmain-return-type]
+void main() {
+^
+seahorn.c:3:1: note: change return type to 'int'
+void main() {
+^~~~
+int
+1 warning generated.
+/usr/bin/clang-14 -c -emit-llvm -D__SEAHORN__ -fdeclspec -O1 -Xclang -disable-llvm-optzns -fgnu89-inline -m64 -I/seahorn/build/run/include -o /tmp/sea-z8hf3gk3/seahorn.bc seahorn.c
+/seahorn/build/run/bin/seapp -o /tmp/sea-z8hf3gk3/seahorn.pp.bc --simplifycfg-sink-common=false --strip-extern=false --promote-assumptions=false --kill-vaarg=true --ignore-def-verifier-fn=false --horn-keep-arith-overflow=false --promote-nondet-undef=true --horn-replace-loops-with-nd-funcs=false /tmp/sea-z8hf3gk3/seahorn.bc
+/seahorn/build/run/bin/seapp --simplifycfg-sink-common=false -o /tmp/sea-z8hf3gk3/seahorn.pp.ms.bc --horn-mixed-sem --ms-reduce-main /tmp/sea-z8hf3gk3/seahorn.pp.bc
+/seahorn/build/run/bin/seaopt -f --simplifycfg-sink-common=false -o /tmp/sea-z8hf3gk3/seahorn.pp.ms.o.bc -O3 --seaopt-enable-indvar=false --seaopt-enable-loop-idiom=false --unroll-threshold=150 --unroll-allow-partial=false --unroll-partial-threshold=0 --vectorize-slp=false /tmp/sea-z8hf3gk3/seahorn.pp.ms.bc
+/seahorn/build/run/bin/seahorn --keep-shadows=true --sea-dsa=ci --horn-solve -horn-inter-proc -horn-sem-lvl=mem --horn-step=large /tmp/sea-z8hf3gk3/seahorn.pp.ms.o.bc --horn-strictly-la=false
+unsat
+
+
+Aligned Product Program
+-----------------------
+#include "seahorn/seahorn.h"
+extern int arb_int();
+void main() {
+  int l_x = arb_int();
+  int r_x = arb_int();
+  assume(l_x == r_x);
+  int l_z = 0;
+  int l_y = 0;
+  l_z = (2 * l_x);
+  int r_z = 0;
+  int r_y = 0;
+  r_z = (2 * r_x);
+  while ((l_z > 0) && (r_z > 0)) {
+    l_z = (l_z - 1);
+    l_y = (l_y + l_x);
+    r_z = (r_z - 1);
+    r_y = (r_y + r_x);
+  }
+  if (l_z > 0) {
+    while (l_z > 0) {
+      assume(!(r_z > 0));
+      l_z = (l_z - 1);
+      l_y = (l_y + l_x);
+    }
+  }
+  if (r_z > 0) {
+    while (r_z > 0) {
+      assume(!(l_z > 0));
+      r_z = (r_z - 1);
+      r_y = (r_y + r_x);
+    }
+  }
+  sassert(l_y == r_y);
+}
+
+Per-Task Times (ms)
+-------------------
+print-info: 0
+align-count-loops: 45
+aligned-crel: 1
+aligned-output: 0
+write-product: 4
+seahorn: 354
+print-info: 0
+
+KestRel completed in 407ms
+Verified: true
+
+--- Frama-C WP (llvm-examples/output/2026-11-19_02-47-45.log) ---
+Writing llvm-examples/double-square-both-c/output/unaligned_product.c...
+
+Unaligned Product Program
+-------------------------
+void main(int l_x, int r_x) {
+  int l_z = 0;
+  int l_y = 0;
+  l_z = (2 * l_x);
+  while (l_z > 0) {
+    l_z = (l_z - 1);
+    l_y = (l_y + l_x);
+  }
+  int r_z = 0;
+  int r_y = 0;
+  r_z = (2 * r_x);
+  while (r_z > 0) {
+    r_z = (r_z - 1);
+    r_y = (r_y + r_x);
+  }
+}
+Computed alignment by local loop counting.
+Writing output to llvm-examples/double-square-both-c/output/aligned_product.c...
+Done
+[kernel] Parsing frama_c.c (with preprocessing)
+[kernel:typing:no-proto] frama_c.c:2: Warning: 
+  Function arb_int is declared without prototype.
+  Its formals will be inferred from actual arguments at first call.
+  Declare it as arb_int(void) if the function does not take any parameters.
+[wp] Running WP plugin...
+[kernel:annot:missing-spec] frama_c.c:2: Warning: 
+  Neither code nor explicit exits and terminates for function arb_int,
+  generating default clauses. See -generated-spec-* options for more info.
+[kernel:annot:missing-spec] frama_c.c:5: Warning: 
+  Neither code nor explicit exits and terminates for function assume,
+  generating default clauses. See -generated-spec-* options for more info.
+[kernel:annot:missing-spec] frama_c.c:8: Warning: 
+  Neither code nor explicit exits and terminates for function sassert,
+  generating default clauses. See -generated-spec-* options for more info.
+[wp] Warning: Missing RTE guards
+[wp] frama_c.c:33: Warning: 
+  Missing assigns clause (assigns 'everything' instead)
+[wp] frama_c.c:26: Warning: 
+  Missing assigns clause (assigns 'everything' instead)
+[wp] frama_c.c:19: Warning: 
+  Missing assigns clause (assigns 'everything' instead)
+[wp] 6 goals scheduled
+[wp] [Timeout] bytes_main_call_sassert_requires (Qed 42ms) (Alt-Ergo) (Cached)
+[wp] [Timeout] bytes_main_terminates_part4 (Qed 22ms) (Alt-Ergo) (Cached)
+[wp] [Timeout] bytes_main_terminates_part3 (Qed 10ms) (Alt-Ergo) (Cached)
+[wp] [Timeout] bytes_main_terminates_part2 (Qed 4ms) (Alt-Ergo) (Cached)
+[wp] [Cache] updated:4
+[wp] Proved goals:    2 / 6
+  Qed:             2 (4ms-13ms-42ms)
+  Timeout:         4
+[wp:pedantic-assigns] frama_c.c:9: Warning: 
+  No 'assigns' specification for function 'main'.
+  Callers assumptions might be imprecise.
+
+
+Aligned Product Program
+-----------------------
+/*@ assigns \nothing; */
+int arb_int();
+/*@ assigns \nothing;
+    ensures cond != 0; */
+void assume(int cond);
+/*@ requires cond != 0;
+    assigns \nothing; */
+void sassert(int cond);
+void main() {
+  int l_x = arb_int();
+  int r_x = arb_int();
+  assume(l_x == r_x);
+  int l_z = 0;
+  int l_y = 0;
+  l_z = (2 * l_x);
+  int r_z = 0;
+  int r_y = 0;
+  r_z = (2 * r_x);
+  while ((l_z > 0) && (r_z > 0)) {
+    l_z = (l_z - 1);
+    l_y = (l_y + l_x);
+    r_z = (r_z - 1);
+    r_y = (r_y + r_x);
+  }
+  if (l_z > 0) {
+    while (l_z > 0) {
+      assume(!(r_z > 0));
+      l_z = (l_z - 1);
+      l_y = (l_y + l_x);
+    }
+  }
+  if (r_z > 0) {
+    while (r_z > 0) {
+      assume(!(l_z > 0));
+      r_z = (r_z - 1);
+      r_y = (r_y + r_x);
+    }
+  }
+  sassert(l_y == r_y);
+}
+
+Per-Task Times (ms)
+-------------------
+print-info: 0
+align-count-loops: 58
+aligned-crel: 2
+aligned-output: 0
+write-product: 7
+frama_c: 3369
+print-info: 0
+
+KestRel completed in 3438ms
+Verified: false

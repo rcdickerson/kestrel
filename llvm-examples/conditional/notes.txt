@@ -1,3 +1,4 @@
+== SeaHorn ==
 Status: Verified
 Manual spec edits still needed: none
 
@@ -12,4 +13,240 @@ seahorn: 190
 print-info: 0
 
 KestRel completed in 229ms
+Verified: true
+
+== Frama-C WP ==
+Status: TBD
+
+== Raw logs ==
+--- SeaHorn (llvm-examples/output/2026-11-19_02-55-08.log) ---
+Writing llvm-examples/conditional/output/unaligned_product.c...
+
+Unaligned Product Program
+-------------------------
+void main(int l_age, int r_age) {
+  int l_ret_val = 0;
+  if (l_age >= 65) {
+    l_ret_val = 20;
+  } else {
+    if (l_age <= 12) {
+      l_ret_val = 50;
+    }
+  }
+  char r_age_var0[4];
+  char r_ret_val[4];
+  (*((unsigned int*)(&r_age_var0))) = r_age;
+  (*((unsigned int*)(&r_ret_val))) = 0;
+  if (((int)r_age) < 65) {
+    if (((int)r_age) <= 12) {
+      (*((unsigned int*)(&r_ret_val))) = 50;
+    }
+  } else {
+    (*((unsigned int*)(&r_ret_val))) = 20;
+  }
+}
+Computed alignment by local loop counting.
+Writing output to llvm-examples/conditional/output/aligned_product.c...
+Done
+seahorn.c:5:1: warning: return type of 'main' is not 'int' [-Wmain-return-type]
+void main() {
+^
+seahorn.c:5:1: note: change return type to 'int'
+void main() {
+^~~~
+int
+1 warning generated.
+/usr/bin/clang-14 -c -emit-llvm -D__SEAHORN__ -fdeclspec -O1 -Xclang -disable-llvm-optzns -fgnu89-inline -m64 -I/seahorn/build/run/include -o /tmp/sea-956rkyqp/seahorn.bc seahorn.c
+/seahorn/build/run/bin/seapp -o /tmp/sea-956rkyqp/seahorn.pp.bc --simplifycfg-sink-common=false --strip-extern=false --promote-assumptions=false --kill-vaarg=true --ignore-def-verifier-fn=false --horn-keep-arith-overflow=false --promote-nondet-undef=true --horn-replace-loops-with-nd-funcs=false /tmp/sea-956rkyqp/seahorn.bc
+/seahorn/build/run/bin/seapp --simplifycfg-sink-common=false -o /tmp/sea-956rkyqp/seahorn.pp.ms.bc --horn-mixed-sem --ms-reduce-main /tmp/sea-956rkyqp/seahorn.pp.bc
+/seahorn/build/run/bin/seaopt -f --simplifycfg-sink-common=false -o /tmp/sea-956rkyqp/seahorn.pp.ms.o.bc -O3 --seaopt-enable-indvar=false --seaopt-enable-loop-idiom=false --unroll-threshold=150 --unroll-allow-partial=false --unroll-partial-threshold=0 --vectorize-slp=false /tmp/sea-956rkyqp/seahorn.pp.ms.bc
+/seahorn/build/run/bin/seahorn --keep-shadows=true --sea-dsa=ci --horn-solve -horn-inter-proc -horn-sem-lvl=mem --horn-step=large /tmp/sea-956rkyqp/seahorn.pp.ms.o.bc --horn-strictly-la=false
+unsat
+
+
+Aligned Product Program
+-----------------------
+#include "seahorn/seahorn.h"
+extern int arb_int();
+void right(int age);
+
+void main() {
+  int l_age = arb_int();
+  int r_age = arb_int();
+  assume(l_age == r_age);
+  int l_ret_val = 0;
+  char r_age_var0[4];
+  char r_ret_val[4];
+  (*((unsigned int*)(&r_age_var0))) = r_age;
+  (*((unsigned int*)(&r_ret_val))) = 0;
+  if ((l_age >= 65) && (((int)r_age) < 65)) {
+    l_ret_val = 20;
+    if (((int)r_age) <= 12) {
+      (*((unsigned int*)(&r_ret_val))) = 50;
+    }
+  } else {
+    if ((l_age >= 65) && (!(((int)r_age) < 65))) {
+      l_ret_val = 20;
+      (*((unsigned int*)(&r_ret_val))) = 20;
+    } else {
+      if ((!(l_age >= 65)) && (((int)r_age) < 65)) {
+        if ((l_age <= 12) && (((int)r_age) <= 12)) {
+          l_ret_val = 50;
+          (*((unsigned int*)(&r_ret_val))) = 50;
+        } else {
+          if ((l_age <= 12) && (!(((int)r_age) <= 12))) {
+            l_ret_val = 50;
+          } else {
+            if ((!(l_age <= 12)) && (((int)r_age) <= 12)) {
+              (*((unsigned int*)(&r_ret_val))) = 50;
+            } else {
+            }
+          }
+        }
+      } else {
+        if (l_age <= 12) {
+          l_ret_val = 50;
+        }
+        (*((unsigned int*)(&r_ret_val))) = 20;
+      }
+    }
+  }
+  sassert(l_ret_val == (*((unsigned int*)(&r_ret_val))));
+}
+
+Per-Task Times (ms)
+-------------------
+print-info: 0
+align-count-loops: 89
+aligned-crel: 16
+aligned-output: 0
+write-product: 17
+seahorn: 200
+print-info: 0
+
+KestRel completed in 325ms
+Verified: true
+
+--- Frama-C WP (llvm-examples/output/2026-11-19_02-47-45.log) ---
+Writing llvm-examples/conditional/output/unaligned_product.c...
+
+Unaligned Product Program
+-------------------------
+void main(int l_age, int r_age) {
+  int l_ret_val = 0;
+  if (l_age >= 65) {
+    l_ret_val = 20;
+  } else {
+    if (l_age <= 12) {
+      l_ret_val = 50;
+    }
+  }
+  char r_age_var0[4];
+  char r_ret_val[4];
+  (*((unsigned int*)(&r_age_var0))) = r_age;
+  (*((unsigned int*)(&r_ret_val))) = 0;
+  if (((int)r_age) < 65) {
+    if (((int)r_age) <= 12) {
+      (*((unsigned int*)(&r_ret_val))) = 50;
+    }
+  } else {
+    (*((unsigned int*)(&r_ret_val))) = 20;
+  }
+}
+Computed alignment by local loop counting.
+Writing output to llvm-examples/conditional/output/aligned_product.c...
+Done
+[kernel] Parsing frama_c.c (with preprocessing)
+[kernel:typing:no-proto] frama_c.c:2: Warning: 
+  Function arb_int is declared without prototype.
+  Its formals will be inferred from actual arguments at first call.
+  Declare it as arb_int(void) if the function does not take any parameters.
+[wp] Running WP plugin...
+[kernel:annot:missing-spec] frama_c.c:2: Warning: 
+  Neither code nor explicit exits and terminates for function arb_int,
+  generating default clauses. See -generated-spec-* options for more info.
+[kernel:annot:missing-spec] frama_c.c:5: Warning: 
+  Neither code nor explicit exits and terminates for function assume,
+  generating default clauses. See -generated-spec-* options for more info.
+[kernel:annot:missing-spec] frama_c.c:8: Warning: 
+  Neither code nor explicit exits and terminates for function sassert,
+  generating default clauses. See -generated-spec-* options for more info.
+[wp] Warning: Missing RTE guards
+[wp] 3 goals scheduled
+[wp] [Cache] updated:1
+[wp] Proved goals:    3 / 3
+  Qed:               2 (43ms)
+  Alt-Ergo 2.6.4:    1 (117ms)
+[wp:pedantic-assigns] frama_c.c:11: Warning: 
+  No 'assigns' specification for function 'main'.
+  Callers assumptions might be imprecise.
+
+
+Aligned Product Program
+-----------------------
+/*@ assigns \nothing; */
+int arb_int();
+/*@ assigns \nothing;
+    ensures cond != 0; */
+void assume(int cond);
+/*@ requires cond != 0;
+    assigns \nothing; */
+void sassert(int cond);
+void right(int age);
+
+void main() {
+  int l_age = arb_int();
+  int r_age = arb_int();
+  assume(l_age == r_age);
+  int l_ret_val = 0;
+  char r_age_var0[4];
+  char r_ret_val[4];
+  (*((unsigned int*)(&r_age_var0))) = r_age;
+  (*((unsigned int*)(&r_ret_val))) = 0;
+  if ((l_age >= 65) && (((int)r_age) < 65)) {
+    l_ret_val = 20;
+    if (((int)r_age) <= 12) {
+      (*((unsigned int*)(&r_ret_val))) = 50;
+    }
+  } else {
+    if ((l_age >= 65) && (!(((int)r_age) < 65))) {
+      l_ret_val = 20;
+      (*((unsigned int*)(&r_ret_val))) = 20;
+    } else {
+      if ((!(l_age >= 65)) && (((int)r_age) < 65)) {
+        if ((l_age <= 12) && (((int)r_age) <= 12)) {
+          l_ret_val = 50;
+          (*((unsigned int*)(&r_ret_val))) = 50;
+        } else {
+          if ((l_age <= 12) && (!(((int)r_age) <= 12))) {
+            l_ret_val = 50;
+          } else {
+            if ((!(l_age <= 12)) && (((int)r_age) <= 12)) {
+              (*((unsigned int*)(&r_ret_val))) = 50;
+            } else {
+            }
+          }
+        }
+      } else {
+        if (l_age <= 12) {
+          l_ret_val = 50;
+        }
+        (*((unsigned int*)(&r_ret_val))) = 20;
+      }
+    }
+  }
+  sassert(l_ret_val == (*((unsigned int*)(&r_ret_val))));
+}
+
+Per-Task Times (ms)
+-------------------
+print-info: 0
+align-count-loops: 39
+aligned-crel: 2
+aligned-output: 0
+write-product: 5
+frama_c: 1901
+print-info: 0
+
+KestRel completed in 1949ms
 Verified: true

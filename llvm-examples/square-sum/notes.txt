@@ -13,7 +13,23 @@ right.a is mutable in the Rust signature, and so it lost its name.
 Used right.arg0 in the pre condition instead.
 
 == Frama-C WP ==
-Status: TBD
+Status: Not verified (Frama-C WP proved 2 / 4 goals)
+Manual spec edits still needed: same as SeaHorn
+
+    Function arb_int is declared without prototype.
+    Too many initializers for character array alloc_d58fd7249401e5d7b0f8a03dedaf138b
+    Neither code nor explicit exits and terminates for function arb_int,
+    Neither code nor explicit exits and terminates for function assume,
+    Neither code nor explicit exits and terminates for function sassert,
+    Neither code nor specification for function llvm_smul_with_overflow_i32,
+    Neither code nor specification for function _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow,
+    Neither code nor specification for function llvm_sadd_with_overflow_i32,
+    Neither code nor specification for function _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow,
+    [wp] Warning: Missing RTE guards
+    Missing assigns clause (assigns 'everything' instead)
+    [wp] [Timeout] bytes_main_call_sassert_requires (Qed 2.0s) (Alt-Ergo) (Cached)
+    [wp] [Timeout] bytes_main_terminates_part2 (Qed 1s) (Alt-Ergo) (Cached)
+    No 'assigns' specification for function 'main'.
 
 == Raw logs ==
 --- SeaHorn (llvm-examples/output/2026-11-19_02-55-08.log) ---

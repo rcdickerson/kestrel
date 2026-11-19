@@ -8,7 +8,21 @@ Manual spec edits still needed: none
 No body for llvm_sadd_with_overflow_i32 and llvm_smul_with_overflow_i32.
 
 == Frama-C WP ==
-Status: TBD
+Status: Not verified (Frama-C WP proved 2 / 3 goals)
+Manual spec edits still needed: none
+
+    Function arb_int is declared without prototype.
+    Too many initializers for character array alloc_28b8e771a7726746841cf729893543f2
+    Neither code nor explicit exits and terminates for function arb_int,
+    Neither code nor explicit exits and terminates for function assume,
+    Neither code nor explicit exits and terminates for function sassert,
+    Neither code nor specification for function llvm_sadd_with_overflow_i32,
+    Neither code nor specification for function _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_add_overflow,
+    Neither code nor specification for function llvm_smul_with_overflow_i32,
+    Neither code nor specification for function _RNvNtNtCscI6d9CVNmLh_4core9panicking11panic_const24panic_const_mul_overflow,
+    [wp] Warning: Missing RTE guards
+    [wp] [Timeout] bytes_main_call_sassert_requires (Qed 364ms) (Alt-Ergo) (Cached)
+    No 'assigns' specification for function 'main'.
 
 == Raw logs ==
 --- SeaHorn (llvm-examples/output/2026-11-19_02-55-08.log) ---

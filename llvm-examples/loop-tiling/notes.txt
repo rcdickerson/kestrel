@@ -6,7 +6,11 @@ Manual spec edits: none
     Unsupported abstract declarator in type name: Array(Node { node: ArrayDeclarator { qualifiers: [], size: Varia...
 
 == Frama-C WP ==
-Status: TBD
+Status: Not verified (panics in the parser)
+Manual spec edits: none
+
+    thread 'main' panicked at src/crel/parser.rs:256:12:
+    Unsupported abstract declarator in type name: Array(Node { node: ArrayDeclarator { qualifiers: [], size: Varia...
 
 == Raw logs ==
 --- SeaHorn (llvm-examples/output/2026-11-19_02-55-08.log) ---

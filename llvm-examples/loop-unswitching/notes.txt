@@ -8,7 +8,10 @@ Manual spec edits: none
 No body for llvm_sadd_with_overflow_i32 and llvm_smul_with_overflow_i32.
 
 == Frama-C WP ==
-Status: TBD
+Status: Not verified (Frama-C WP timed out after 60 s)
+Manual spec edits: none
+
+    Frama-C timed out.
 
 == Raw logs ==
 --- SeaHorn (llvm-examples/output/2026-11-19_02-55-08.log) ---

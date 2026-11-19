@@ -16,7 +16,28 @@ KestRel completed in 229ms
 Verified: true
 
 == Frama-C WP ==
-Status: TBD
+Status: Verified
+Manual spec edits still needed: none
+
+    Function arb_int is declared without prototype.
+    Neither code nor explicit exits and terminates for function arb_int,
+    Neither code nor explicit exits and terminates for function assume,
+    Neither code nor explicit exits and terminates for function sassert,
+    [wp] Warning: Missing RTE guards
+    No 'assigns' specification for function 'main'.
+
+Per-Task Times (ms)
+-------------------
+print-info: 0
+align-count-loops: 39
+aligned-crel: 2
+aligned-output: 0
+write-product: 5
+frama_c: 1901
+print-info: 0
+
+KestRel completed in 1949ms
+Verified: true
 
 == Raw logs ==
 --- SeaHorn (llvm-examples/output/2026-11-19_02-55-08.log) ---

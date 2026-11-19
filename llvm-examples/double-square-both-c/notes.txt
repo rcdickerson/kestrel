@@ -16,7 +16,22 @@ KestRel completed in 358ms
 Verified: true
 
 == Frama-C WP ==
-Status: TBD
+Status: Not verified (Frama-C WP proved 2 / 6 goals)
+Manual spec edits still needed: none
+
+    Function arb_int is declared without prototype.
+    Neither code nor explicit exits and terminates for function arb_int,
+    Neither code nor explicit exits and terminates for function assume,
+    Neither code nor explicit exits and terminates for function sassert,
+    [wp] Warning: Missing RTE guards
+    Missing assigns clause (assigns 'everything' instead)
+    Missing assigns clause (assigns 'everything' instead)
+    Missing assigns clause (assigns 'everything' instead)
+    [wp] [Timeout] bytes_main_call_sassert_requires (Qed 42ms) (Alt-Ergo) (Cached)
+    [wp] [Timeout] bytes_main_terminates_part4 (Qed 22ms) (Alt-Ergo) (Cached)
+    [wp] [Timeout] bytes_main_terminates_part3 (Qed 10ms) (Alt-Ergo) (Cached)
+    [wp] [Timeout] bytes_main_terminates_part2 (Qed 4ms) (Alt-Ergo) (Cached)
+    No 'assigns' specification for function 'main'.
 
 == Raw logs ==
 --- SeaHorn (llvm-examples/output/2026-11-19_02-55-08.log) ---
